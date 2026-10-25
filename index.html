@@ -1057,42 +1057,64 @@ el("customerWalletPanel").querySelector("[data-back]").addEventListener("click",
   });
 });
 
+
 el("menuMyOrders").addEventListener("click", async () => {
   const {data} = await db.auth.getSession();
+
   if (!data?.session?.user) {
-    el("mainMenu").hidden = true;
-    el("menuToggle").setAttribute("aria-expanded", "false");
+    el("mainMenu").hidden = false;
+    el("menuToggle").setAttribute("aria-expanded", "true");
     setMessage("authMsg", "سجّل الدخول أولاً حتى تشوف طلباتك.", "error");
     el("loginForm").scrollIntoView({behavior:"smooth", block:"start"});
     return;
   }
+
+  el("productsPanel").hidden = true;
+  el("customerWalletPanel").hidden = true;
   el("myOrdersPanel").hidden = false;
+  el("purchasePanel").hidden = true;
+  el("contactPanel").hidden = true;
+
   el("mainMenu").hidden = true;
   el("menuToggle").setAttribute("aria-expanded", "false");
+
   await loadMyOrders();
+
   el("myOrdersPanel").scrollIntoView({behavior:"smooth", block:"start"});
 });
+
 el("menuProducts").addEventListener("click", () => {
+  el("productsPanel").hidden = false;
+  el("customerWalletPanel").hidden = true;
   el("myOrdersPanel").hidden = true;
+  el("purchasePanel").hidden = true;
+  el("contactPanel").hidden = false;
+
   el("mainMenu").hidden = true;
   el("menuToggle").setAttribute("aria-expanded", "false");
-  document.querySelector("#products").closest(".panel").scrollIntoView({behavior:"smooth", block:"start"});
+
+  el("productsPanel").scrollIntoView({behavior:"smooth", block:"start"});
 });
+
 el("refreshOrders").addEventListener("click", loadAdminOrders);
 el("refreshAdminDeposits").addEventListener("click", loadAdminDeposits);
+
 el("clearAdminNotifications").addEventListener("click", () => {
   adminNotifications = [];
   el("adminNotificationSummary").textContent = "تم مسح إشعارات الواجهة. ستظهر هنا الطلبات الجديدة القادمة.";
   el("orderToast").hidden = true;
 });
+
 el("refreshMyOrders").addEventListener("click", loadMyOrders);
 el("provider").addEventListener("change", renderProducts);
+
 db.auth.onAuthStateChange(() => {
   setTimeout(async () => {
     await refreshSession();
     await loadAdminOrders();
   }, 0);
 });
+
 updatePaymentFields();
 refreshSession();
 loadProducts();
