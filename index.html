@@ -998,6 +998,19 @@ el("depositForm").addEventListener("submit", submitDepositRequest);
 el("refreshDeposits").addEventListener("click", loadCustomerDeposits);
 renderPaymentInfo("depositPaymentInfo", "mastercard");
 
+function showCustomerPage(page) {
+  // اخفِ جميع صفحات المحتوى أولاً، ثم أظهر الصفحة المطلوبة فقط.
+  ["productsPanel", "customerWalletPanel", "myOrdersPanel", "purchasePanel", "adminPanel"].forEach(id => {
+    const panel = el(id);
+    if (panel) panel.hidden = true;
+  });
+  if (page === "productsPanel") el("productsPanel").hidden = currentUserIsAdmin;
+  else if (page && el(page)) el(page).hidden = false;
+  el("mainMenu").hidden = true;
+  el("menuToggle").setAttribute("aria-expanded", "false");
+  window.scrollTo({top: 0, behavior: "smooth"});
+}
+
 el("menuToggle").addEventListener("click", () => {
   const menu = el("mainMenu");
   menu.hidden = !menu.hidden;
@@ -1011,14 +1024,8 @@ el("menuWallet").addEventListener("click", async () => {
     setMessage("authMsg", "سجّل الدخول أولاً حتى تشوف محفظتك.", "error");
     return;
   }
-  // عرض المحفظة كصفحة داخلية مستقلة وإخفاء بقية صفحات الزبون.
-  el("productsPanel").hidden = true;
-  el("customerWalletPanel").hidden = false;
-  el("myOrdersPanel").hidden = true;
-  el("purchasePanel").hidden = true;
-  el("adminPanel").hidden = true;
-  el("mainMenu").hidden = true;
-  el("menuToggle").setAttribute("aria-expanded", "false");
+  // المحفظة صفحة مستقلة: إخفاء كل الصفحات الأخرى.
+  showCustomerPage("customerWalletPanel");
   history.replaceState(null, "", "#wallet");
   await loadCustomerWallet();
   window.scrollTo({top:0, behavior:"smooth"});
@@ -1026,12 +1033,8 @@ el("menuWallet").addEventListener("click", async () => {
 el("refreshCustomerWallet").addEventListener("click", loadCustomerWallet);
 
 el("walletBackToStore").addEventListener("click", () => {
-  el("customerWalletPanel").hidden = true;
-  el("productsPanel").hidden = currentUserIsAdmin;
-  el("myOrdersPanel").hidden = true;
-  el("purchasePanel").hidden = true;
+  showCustomerPage("productsPanel");
   history.replaceState(null, "", location.pathname + location.search);
-  window.scrollTo({top:0, behavior:"smooth"});
 });
 
 el("menuMyOrders").addEventListener("click", async () => {
@@ -1043,24 +1046,13 @@ el("menuMyOrders").addEventListener("click", async () => {
     el("loginForm").scrollIntoView({behavior:"smooth", block:"start"});
     return;
   }
-  el("productsPanel").hidden = true;
-  el("customerWalletPanel").hidden = true;
-  el("purchasePanel").hidden = true;
-  el("myOrdersPanel").hidden = false;
-  el("mainMenu").hidden = true;
-  el("menuToggle").setAttribute("aria-expanded", "false");
+  showCustomerPage("myOrdersPanel");
   await loadMyOrders();
   el("myOrdersPanel").scrollIntoView({behavior:"smooth", block:"start"});
 });
 el("menuProducts").addEventListener("click", () => {
-  el("customerWalletPanel").hidden = true;
-  el("myOrdersPanel").hidden = true;
-  el("purchasePanel").hidden = true;
-  el("productsPanel").hidden = currentUserIsAdmin;
+  showCustomerPage("productsPanel");
   history.replaceState(null, "", location.pathname + location.search);
-  el("mainMenu").hidden = true;
-  el("menuToggle").setAttribute("aria-expanded", "false");
-  document.querySelector("#products").closest(".panel").scrollIntoView({behavior:"smooth", block:"start"});
 });
 el("refreshOrders").addEventListener("click", loadAdminOrders);
 el("refreshAdminDeposits").addEventListener("click", loadAdminDeposits);
