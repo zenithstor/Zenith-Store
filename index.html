@@ -1086,7 +1086,7 @@ el("menuMyOrders").addEventListener("click", async () => {
 el("menuProducts").addEventListener("click", () => {
   el("productsPanel").hidden = false;
   el("customerWalletPanel").hidden = true;
-  el("myOrdersPanel").hidden = true;
+  el("myOrdersPanel").hidden = false;
   el("purchasePanel").hidden = true;
   el("contactPanel").hidden = false;
 
@@ -1106,6 +1106,14 @@ el("clearAdminNotifications").addEventListener("click", () => {
 });
 
 el("refreshMyOrders").addEventListener("click", loadMyOrders);
+  el("myOrdersPanel").querySelector("[data-back]").addEventListener("click", () => {
+  el("myOrdersPanel").hidden = true;
+  el("productsPanel").hidden = false;
+  el("contactPanel").hidden = false;
+  el("customerWalletPanel").hidden = true;
+  el("purchasePanel").hidden = true;
+  el("productsPanel").scrollIntoView({behavior:"smooth", block:"start"});
+});
 el("provider").addEventListener("change", renderProducts);
 
 db.auth.onAuthStateChange(() => {
