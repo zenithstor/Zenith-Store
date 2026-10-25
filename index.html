@@ -429,13 +429,13 @@ async function loadAdminOrders() {
       if (order.status === "pending") {
         const actions = document.createElement("div");
         actions.className = "actions";
-        for (const [status, label, css] of [["processing", "قبول الطلب", ""],, ["rejected", "رفض الطلب", "danger"]]) {
+        for (const [status, label, css] of [["processing", "قبول الطلب", ""], ["rejected", "رفض الطلب", "danger"]]) {
           const btn = document.createElement("button");
           btn.type = "button";
           btn.textContent = label;
           if (css) btn.className = css;
           btn.addEventListener("click", async () => {
-            const confirmText = status === "approved"
+            const confirmText = status === "processing"
               ? "تأكدت من استلام المبلغ؟ الموافقة لا تعني أن الشحن اكتمل."
               : "هل تريد رفض هذا الطلب؟";
             if (!window.confirm(confirmText)) return;
