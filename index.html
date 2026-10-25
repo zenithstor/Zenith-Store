@@ -60,6 +60,14 @@ footer{text-align:center;padding:25px;color:#9eafc9;font-size:13px}
     <div id="authMsg" class="msg" aria-live="polite"></div>
   </section>
 
+  <section class="panel" id="myOrdersPanel" hidden>
+    <h2>طلباتي</h2>
+    <div class="muted">تابع حالة طلباتك وتاريخها من هنا.</div>
+    <button type="button" class="secondary" id="refreshMyOrders">تحديث طلباتي</button>
+    <div id="myOrdersMsg" class="msg" aria-live="polite"></div>
+    <div id="myOrdersList"></div>
+  </section>
+
   <section class="panel">
     <h2>منتجات المتجر</h2>
     <label for="provider">طريقة التسعير</label>
@@ -82,18 +90,15 @@ footer{text-align:center;padding:25px;color:#9eafc9;font-size:13px}
       <input id="playerId" inputmode="numeric" autocomplete="off" placeholder="أدخل Player ID" required>
       <label for="zoneId">Zone ID</label>
       <input id="zoneId" inputmode="numeric" autocomplete="off" placeholder="أدخل Zone ID" required>
-
       <label for="paymentMethod">طريقة الدفع</label>
       <select id="paymentMethod" required>
         <option value="wallet">الدفع من رصيد المحفظة</option>
         <option value="direct">تحويل يدوي وإرفاق إثبات الدفع</option>
       </select>
-
       <div id="walletInfo" class="notice">
         <div>سيتم خصم سعر المنتج من رصيد محفظتك عند إرسال الطلب.</div>
         <div class="muted">إذا كان الرصيد غير كافٍ، سيرفض النظام الطلب.</div>
       </div>
-
       <div id="directFields" hidden>
         <label for="proofFile">صورة إثبات التحويل (مطلوبة)</label>
         <input id="proofFile" type="file" accept="image/*">
@@ -101,7 +106,6 @@ footer{text-align:center;padding:25px;color:#9eafc9;font-size:13px}
         <input id="transactionRef" type="text" maxlength="120" placeholder="رقم العملية إن وجد">
         <div class="muted">ارفع صورة واضحة. الحد الأعلى 5 ميغابايت. سيبقى الطلب قيد المراجعة إلى أن يتحقق المسؤول من الدفع.</div>
       </div>
-
       <button type="submit" id="submitOrderBtn">إرسال الطلب</button>
       <button type="button" class="secondary" id="cancelPurchase">إلغاء</button>
     </form>
@@ -134,6 +138,7 @@ let productsCache = [];
 let selectedProduct = null;
 let selectedProvider = null;
 let adminLoadInProgress = false;
+let myOrdersLoadInProgress = false;
 
 const money = n => Number(n).toLocaleString("en-US") + " د.ع";
 const el = id => document.getElementById(id);
@@ -162,6 +167,7 @@ async function loadProducts() {
   }
   productsCache = data || [];
   renderProducts();
+  if (el("myOrdersPanel") && !el("myOrdersPanel").hidden) loadMyOrders();
 }
 
 function renderProducts() {
@@ -234,6 +240,7 @@ async function refreshSession() {
   el("email").disabled = !!user;
   el("password").disabled = !!user;
   if (error) setMessage("authMsg", error.message, "error");
+  await loadMyOrders();
 }
 
 el("loginForm").addEventListener("submit", async e => {
@@ -283,7 +290,6 @@ el("purchaseForm").addEventListener("submit", async e => {
     setMessage("orderMsg", "اختَر المنتج من جديد وحاول مرة ثانية.", "error");
     return;
   }
-
   const playerId = el("playerId").value.trim();
   const zoneId = el("zoneId").value.trim();
   if (!playerId || !zoneId) {
@@ -322,9 +328,7 @@ el("purchaseForm").addEventListener("submit", async e => {
       const {error: uploadError} = await db.storage.from("payment-proofs").upload(
         proofPath, file, {contentType: file.type, upsert: false}
       );
-      if (uploadError) {
-        throw new Error("تعذر رفع صورة الإثبات: " + uploadError.message);
-      }
+      if (uploadError) throw new Error("تعذر رفع صورة الإثبات: " + uploadError.message);
       result = await db.rpc("create_direct_order", {
         p_product_id: selectedProduct.id,
         p_player_id: playerId,
@@ -342,6 +346,7 @@ el("purchaseForm").addEventListener("submit", async e => {
       "success");
     el("purchaseForm").reset();
     updatePaymentFields();
+    await loadMyOrders();
   } catch (error) {
     setMessage("orderMsg", "ما تم إرسال الطلب: " + (error?.message || "حدث خطأ غير معروف."), "error");
   } finally {
@@ -349,6 +354,91 @@ el("purchaseForm").addEventListener("submit", async e => {
     submitBtn.textContent = "إرسال الطلب";
   }
 });
+
+function orderStatusArabic(status) {
+  const statuses = {
+    pending: "قيد الانتظار",
+    processing: "قيد المعالجة",
+    completed: "اكتمل الشحن",
+    rejected: "مرفوض"
+  };
+  return statuses[status] || status || "غير معروف";
+}
+
+async function loadMyOrders() {
+  if (myOrdersLoadInProgress) return;
+  myOrdersLoadInProgress = true;
+  try {
+    const {data: sessionData, error: sessionError} = await db.auth.getSession();
+    const user = sessionData?.session?.user;
+    el("myOrdersPanel").hidden = !user;
+    if (sessionError) {
+      setMessage("myOrdersMsg", "تعذر التحقق من الحساب: " + sessionError.message, "error");
+      return;
+    }
+    if (!user) {
+      el("myOrdersList").replaceChildren();
+      setMessage("myOrdersMsg", "");
+      return;
+    }
+
+    const box = el("myOrdersList");
+    box.replaceChildren();
+    setMessage("myOrdersMsg", "جارٍ تحميل طلباتك...");
+
+    const {data: orders, error} = await db.from("orders")
+      .select("id, created_at, status, price_iqd, player_id, zone_id, product_id")
+      .eq("user_id", user.id)
+      .order("created_at", {ascending:false})
+      .limit(100);
+
+    if (error) {
+      setMessage("myOrdersMsg", "تعذر تحميل الطلبات: " + error.message, "error");
+      return;
+    }
+    if (!orders || !orders.length) {
+      setMessage("myOrdersMsg", "ما عندك طلبات حالياً.");
+      return;
+    }
+
+    setMessage("myOrdersMsg", `عدد طلباتك: ${orders.length}`);
+    for (const order of orders) {
+      const card = document.createElement("article");
+      card.className = "product";
+      card.style.marginTop = "12px";
+
+      const title = document.createElement("h3");
+      title.textContent = `طلب #${order.id}`;
+
+      const productInfo = document.createElement("p");
+      productInfo.className = "muted";
+      const product = productsCache.find(p => String(p.id) === String(order.product_id));
+      productInfo.textContent = "المنتج: " + (product ? productTitle(product) : `رقم ${order.product_id}`);
+
+      const price = document.createElement("p");
+      price.className = "muted";
+      price.textContent = "السعر: " + money(order.price_iqd);
+
+      const status = document.createElement("p");
+      status.className = "msg";
+      status.textContent = "الحالة: " + orderStatusArabic(order.status);
+
+      const player = document.createElement("p");
+      player.className = "muted";
+      player.textContent = `Player ID: ${order.player_id} | Zone ID: ${order.zone_id}`;
+
+      const date = document.createElement("p");
+      date.className = "muted";
+      date.textContent = "تاريخ الطلب: " +
+        (order.created_at ? new Date(order.created_at).toLocaleString("ar-IQ") : "-");
+
+      card.append(title, productInfo, price, status, player, date);
+      box.appendChild(card);
+    }
+  } finally {
+    myOrdersLoadInProgress = false;
+  }
+}
 
 async function loadAdminOrders() {
   if (adminLoadInProgress) return;
@@ -360,7 +450,6 @@ async function loadAdminOrders() {
       el("adminPanel").hidden = true;
       return;
     }
-
     const {data: isAdmin, error: adminError} = await db.rpc("is_admin");
     if (adminError || isAdmin !== true) {
       el("adminPanel").hidden = true;
@@ -380,7 +469,6 @@ async function loadAdminOrders() {
       setMessage("adminMsg", "تعذر تحميل الطلبات: " + error.message, "error");
       return;
     }
-
     setMessage("adminMsg", `عدد الطلبات المعروضة: ${(orders || []).length}`);
     if (!orders || !orders.length) {
       el("adminOrders").textContent = "لا توجد طلبات حالياً.";
@@ -391,12 +479,11 @@ async function loadAdminOrders() {
       const card = document.createElement("article");
       card.className = "product";
       card.style.marginTop = "12px";
-
       const title = document.createElement("h3");
       title.textContent = `طلب #${order.id}`;
       const details = document.createElement("p");
       details.className = "muted";
-      details.textContent = `المنتج رقم: ${order.product_id} | السعر: ${money(order.price_iqd)} | الحالة: ${order.status}`;
+      details.textContent = `المنتج رقم: ${order.product_id} | السعر: ${money(order.price_iqd)} | الحالة: ${orderStatusArabic(order.status)}`;
       const player = document.createElement("p");
       player.className = "muted";
       player.textContent = `Player ID: ${order.player_id} | Zone ID: ${order.zone_id}`;
@@ -456,6 +543,7 @@ async function loadAdminOrders() {
             }
             setMessage("adminMsg", `تم تحديث حالة الطلب #${order.id}.`, "success");
             await loadAdminOrders();
+            await loadMyOrders();
           });
           actions.appendChild(btn);
         }
@@ -469,14 +557,14 @@ async function loadAdminOrders() {
 }
 
 el("refreshOrders").addEventListener("click", loadAdminOrders);
+el("refreshMyOrders").addEventListener("click", loadMyOrders);
 el("provider").addEventListener("change", renderProducts);
 db.auth.onAuthStateChange(() => {
-  setTimeout(() => {
-    refreshSession();
-    loadAdminOrders();
+  setTimeout(async () => {
+    await refreshSession();
+    await loadAdminOrders();
   }, 0);
 });
-el("paymentMethod").addEventListener("change", updatePaymentFields);
 updatePaymentFields();
 refreshSession();
 loadProducts();
