@@ -266,42 +266,6 @@ function applyRoleUI(isAdmin) {
 
 const money = n => Number(n).toLocaleString("en-US") + " د.ع";
 const el = id => document.getElementById(id);
-  let currentStorePage = "products";
-const storePageHistory = [];
-
-function showStorePage(page, remember = true) {
-  const pages = {
-    products: el("productsPanel"),
-    wallet: el("customerWalletPanel"),
-    orders: el("myOrdersPanel"),
-    purchase: el("purchasePanel")
-  };
-
-  if (!pages[page]) return;
-
-  if (remember && page !== currentStorePage) {
-    storePageHistory.push(currentStorePage);
-  }
-
-  currentStorePage = page;
-
-  Object.entries(pages).forEach(([name, panel]) => {
-    panel.hidden = name !== page;
-  });
-
-  el("contactPanel").hidden = page !== "products";
-
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-function goBackStorePage() {
-  const previousPage = storePageHistory.pop() || "products";
-  showStorePage(previousPage, false);
-}
-
-document.querySelectorAll("[data-back]").forEach(button => {
-  button.addEventListener("click", goBackStorePage);
-});
 // Buttons provide a clear, direct user gesture to open the device's file picker.
 function openProofPicker(inputId) {
   const input = el(inputId);
@@ -364,30 +328,13 @@ function renderProducts() {
     buy.type = "button";
     buy.textContent = "شراء";
     buy.addEventListener("click", () => openPurchase(p, provider));
-        card.append(h, priceEl, note, buy);
+    card.append(h, priceEl, note, buy);
     box.appendChild(card);
   });
-}
   setMessage("productsMsg", "عدد المنتجات المتاحة: " + list.length);
 }
 
 function openPurchase(product, provider) {
-  selectedProduct = product;
-  selectedProvider = provider;
-
-  const price = getPrice(product, provider);
-
-  el("selectedProductInfo").textContent =
-    `${productTitle(product)} — ${money(price)} (${
-      provider === "mastercard"
-        ? "تسعير ماستركارد"
-        : "تسعير آسياسيل"
-    })`;
-
-  setMessage("orderMsg", "");
-  updatePaymentFields();
-  showStorePage("purchase");
-}
   selectedProduct = product;
   selectedProvider = provider;
   const price = getPrice(product, provider);
@@ -1066,45 +1013,44 @@ el("menuToggle").addEventListener("click", () => {
   menu.hidden = !menu.hidden;
   el("menuToggle").setAttribute("aria-expanded", String(!menu.hidden));
 });
-
 el("menuWallet").addEventListener("click", async () => {
-  const { data } = await db.auth.getSession();
-
+  const {data} = await db.auth.getSession();
   if (!data?.session?.user) {
     el("mainMenu").hidden = false;
     el("menuToggle").setAttribute("aria-expanded", "true");
     setMessage("authMsg", "سجّل الدخول أولاً حتى تشوف محفظتك.", "error");
     return;
   }
-
-  showStorePage("wallet");
+  el("customerWalletPanel").hidden = false;
+  el("myOrdersPanel").hidden = true;
+  el("purchasePanel").hidden = true;
   el("mainMenu").hidden = true;
   el("menuToggle").setAttribute("aria-expanded", "false");
   await loadCustomerWallet();
+  el("customerWalletPanel").scrollIntoView({behavior:"smooth", block:"start"});
 });
-
 el("refreshCustomerWallet").addEventListener("click", loadCustomerWallet);
 
 el("menuMyOrders").addEventListener("click", async () => {
-  const { data } = await db.auth.getSession();
-
+  const {data} = await db.auth.getSession();
   if (!data?.session?.user) {
-    el("mainMenu").hidden = false;
-    el("menuToggle").setAttribute("aria-expanded", "true");
+    el("mainMenu").hidden = true;
+    el("menuToggle").setAttribute("aria-expanded", "false");
     setMessage("authMsg", "سجّل الدخول أولاً حتى تشوف طلباتك.", "error");
+    el("loginForm").scrollIntoView({behavior:"smooth", block:"start"});
     return;
   }
-
-  showStorePage("orders");
+  el("myOrdersPanel").hidden = false;
   el("mainMenu").hidden = true;
   el("menuToggle").setAttribute("aria-expanded", "false");
   await loadMyOrders();
+  el("myOrdersPanel").scrollIntoView({behavior:"smooth", block:"start"});
 });
-
 el("menuProducts").addEventListener("click", () => {
-  showStorePage("products");
+  el("myOrdersPanel").hidden = true;
   el("mainMenu").hidden = true;
   el("menuToggle").setAttribute("aria-expanded", "false");
+  document.querySelector("#products").closest(".panel").scrollIntoView({behavior:"smooth", block:"start"});
 });
 el("refreshOrders").addEventListener("click", loadAdminOrders);
 el("refreshAdminDeposits").addEventListener("click", loadAdminDeposits);
