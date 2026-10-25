@@ -10,7 +10,11 @@
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 body{margin:0;background:#080d18;color:#f5f7ff;font-family:Arial,sans-serif}
-header{padding:24px 16px;background:#0d1525;border-bottom:1px solid #234166}
+header{padding:18px 16px;background:#0d1525;border-bottom:1px solid #234166;position:relative}
+.headerTop{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:850px;margin:auto}
+.menuBtn{width:48px;min-width:48px;margin:0;padding:10px;font-size:24px;line-height:1;background:#233650}
+.menuBox{max-width:850px;margin:12px auto 0;padding:10px;background:#101a2b;border:1px solid #304562;border-radius:12px}
+.menuBox button{text-align:right;margin:3px 0}
 .brand{font-size:26px;font-weight:900;color:#69baff}
 .brand span{color:#fff}
 .sub{color:#9eafc9;margin-top:8px;font-size:13px}
@@ -34,7 +38,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .price{font-size:18px;font-weight:bold;color:#72bdff;margin:9px 0}
 .muted{font-size:12px;color:#a8b7cc;line-height:1.7;overflow-wrap:anywhere}
 label{display:block;font-size:14px;color:#dbe8ff;margin-top:9px}
-.notice{padding:11px;border:1px solid #304562;border-radius:10px;background:#0b1423;margin:10px 0}
+.toastNotice{position:fixed;z-index:9999;top:14px;left:14px;right:14px;max-width:520px;margin:auto;padding:14px;background:#102b20;border:1px solid #38b879;border-radius:12px;box-shadow:0 10px 35px #0009;color:#eafff2;line-height:1.8}.toastNotice button{margin-top:8px}.adminAlert{padding:12px;margin:10px 0;border:1px solid #347bff;border-radius:10px;background:#0b1c35;line-height:1.8}.notice{padding:11px;border:1px solid #304562;border-radius:10px;background:#0b1423;margin:10px 0}
 .actions{display:flex;gap:8px;flex-wrap:wrap}
 .actions button{flex:1;min-width:120px}
 footer{text-align:center;padding:25px;color:#9eafc9;font-size:13px}
@@ -43,8 +47,18 @@ footer{text-align:center;padding:25px;color:#9eafc9;font-size:13px}
 </head>
 <body>
 <header>
-  <div class="brand">316 <span>ZENITH STORE</span></div>
-  <div class="sub">متجر زينيث لشحن الجواهر والاشتراكات</div>
+  <div class="headerTop">
+    <div>
+      <div class="brand">316 <span>ZENITH STORE</span></div>
+      <div class="sub">متجر زينيث لشحن الجواهر والاشتراكات</div>
+    </div>
+    <button type="button" class="menuBtn" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false">☰</button>
+  </div>
+  <nav class="menuBox" id="mainMenu" hidden>
+    <button type="button" class="secondary" id="menuMyOrders">طلباتي</button>
+    <button type="button" class="secondary" id="menuProducts">منتجات المتجر</button>
+    <button type="button" class="secondary" id="menuAccount">حسابي</button>
+  </nav>
 </header>
 <main>
   <section class="panel">
@@ -60,13 +74,7 @@ footer{text-align:center;padding:25px;color:#9eafc9;font-size:13px}
     <div id="authMsg" class="msg" aria-live="polite"></div>
   </section>
 
-  <section class="panel" id="myOrdersPanel" hidden>
-    <h2>طلباتي</h2>
-    <div class="muted">تابع حالة طلباتك وتاريخها من هنا.</div>
-    <button type="button" class="secondary" id="refreshMyOrders">تحديث طلباتي</button>
-    <div id="myOrdersMsg" class="msg" aria-live="polite"></div>
-    <div id="myOrdersList"></div>
-  </section>
+
 
   <section class="panel">
     <h2>منتجات المتجر</h2>
@@ -80,6 +88,14 @@ footer{text-align:center;padding:25px;color:#9eafc9;font-size:13px}
       <p class="msg">جارٍ تحميل المنتجات...</p>
     </div>
     <div id="productsMsg" class="msg"></div>
+  </section>
+
+  <section class="panel" id="myOrdersPanel" hidden>
+    <h2>طلباتي</h2>
+    <div class="muted">تابع حالة طلباتك وتاريخها من هنا.</div>
+    <button type="button" class="secondary" id="refreshMyOrders">تحديث طلباتي</button>
+    <div id="myOrdersMsg" class="msg" aria-live="polite"></div>
+    <div id="myOrdersList"></div>
   </section>
 
   <section class="panel" id="purchasePanel" hidden>
@@ -114,6 +130,8 @@ footer{text-align:center;padding:25px;color:#9eafc9;font-size:13px}
 
   <section class="panel" id="adminPanel" hidden>
     <h2>لوحة إدارة الطلبات</h2>
+    <div class="adminAlert" id="adminNotificationSummary" aria-live="polite">🔔 إشعارات الطلبات الجديدة تظهر هنا أثناء فتح الموقع.</div>
+    <button type="button" class="secondary" id="clearAdminNotifications">مسح إشعارات الواجهة</button>
     <div class="muted">تأكد من استلام المبلغ قبل قبول طلب التحويل. الموافقة لا تعني أن الشحن اكتمل.</div>
     <button type="button" id="refreshOrders">تحديث الطلبات</button>
     <div id="adminMsg" class="msg" aria-live="polite"></div>
@@ -127,6 +145,7 @@ footer{text-align:center;padding:25px;color:#9eafc9;font-size:13px}
     <p class="muted">إرسال الطلب لا يعني أن الشحن اكتمل؛ الطلب يحتاج إلى المعالجة والتحقق حسب طريقة الدفع.</p>
   </section>
 </main>
+<div id="orderToast" class="toastNotice" role="status" aria-live="assertive" hidden></div>
 <footer>© ZenithStore — متجر زينيث</footer>
 
 <script>
@@ -139,6 +158,9 @@ let selectedProduct = null;
 let selectedProvider = null;
 let adminLoadInProgress = false;
 let myOrdersLoadInProgress = false;
+let knownOrderIds = null;
+let adminNotifications = [];
+let notificationPollBusy = false;
 
 const money = n => Number(n).toLocaleString("en-US") + " د.ع";
 const el = id => document.getElementById(id);
@@ -371,7 +393,9 @@ async function loadMyOrders() {
   try {
     const {data: sessionData, error: sessionError} = await db.auth.getSession();
     const user = sessionData?.session?.user;
-    el("myOrdersPanel").hidden = !user;
+    if (!user) {
+      el("myOrdersPanel").hidden = true;
+    }
     if (sessionError) {
       setMessage("myOrdersMsg", "تعذر التحقق من الحساب: " + sessionError.message, "error");
       return;
@@ -437,6 +461,57 @@ async function loadMyOrders() {
     }
   } finally {
     myOrdersLoadInProgress = false;
+  }
+}
+
+function showAdminOrderNotification(order) {
+  const notice = {id: String(order.id), created_at: order.created_at, price_iqd: order.price_iqd, player_id: order.player_id, product_id: order.product_id};
+  adminNotifications.unshift(notice);
+  adminNotifications = adminNotifications.slice(0, 20);
+  const summary = el("adminNotificationSummary");
+  summary.textContent = `🔔 طلب جديد وصل! رقم الطلب #${order.id} — ${money(order.price_iqd)} — Player ID: ${order.player_id || "-"}`;
+  const toast = el("orderToast");
+  toast.replaceChildren();
+  const message = document.createElement("div");
+  message.textContent = `🔔 وصل طلب جواهر جديد! الطلب #${order.id} | المبلغ: ${money(order.price_iqd)} | Player ID: ${order.player_id || "-"}`;
+  const button = document.createElement("button");
+  button.type = "button";
+  button.textContent = "عرض الطلبات";
+  button.addEventListener("click", () => {
+    toast.hidden = true;
+    el("adminPanel").hidden = false;
+    el("adminPanel").scrollIntoView({behavior:"smooth", block:"start"});
+    loadAdminOrders();
+  });
+  toast.append(message, button);
+  toast.hidden = false;
+  // Automatically hide the popup after 12 seconds; the notification summary remains visible.
+  window.setTimeout(() => { toast.hidden = true; }, 12000);
+}
+
+async function checkForNewAdminOrders() {
+  if (notificationPollBusy) return;
+  notificationPollBusy = true;
+  try {
+    const {data: authData, error: authError} = await db.auth.getUser();
+    if (authError || !authData?.user) { knownOrderIds = null; return; }
+    const {data: isAdmin, error: adminError} = await db.rpc("is_admin");
+    if (adminError || isAdmin !== true) { knownOrderIds = null; return; }
+    const {data: latestOrders, error} = await db.from("orders")
+      .select("id,created_at,status,price_iqd,player_id,product_id")
+      .order("created_at", {ascending:false}).limit(20);
+    if (error || !latestOrders) return;
+    const currentIds = new Set(latestOrders.map(order => String(order.id)));
+    // First successful check establishes a baseline and avoids notifying for old orders.
+    if (knownOrderIds === null) { knownOrderIds = currentIds; return; }
+    const newOrders = latestOrders.filter(order => !knownOrderIds.has(String(order.id)));
+    knownOrderIds = currentIds;
+    for (const order of newOrders.reverse()) showAdminOrderNotification(order);
+    if (newOrders.length) await loadAdminOrders();
+  } catch (error) {
+    console.error("Admin notification check failed:", error);
+  } finally {
+    notificationPollBusy = false;
   }
 }
 
@@ -556,7 +631,44 @@ async function loadAdminOrders() {
   }
 }
 
+el("menuToggle").addEventListener("click", () => {
+  const menu = el("mainMenu");
+  menu.hidden = !menu.hidden;
+  el("menuToggle").setAttribute("aria-expanded", String(!menu.hidden));
+});
+el("menuMyOrders").addEventListener("click", async () => {
+  const {data} = await db.auth.getSession();
+  if (!data?.session?.user) {
+    el("mainMenu").hidden = true;
+    el("menuToggle").setAttribute("aria-expanded", "false");
+    setMessage("authMsg", "سجّل الدخول أولاً حتى تشوف طلباتك.", "error");
+    el("loginForm").scrollIntoView({behavior:"smooth", block:"start"});
+    return;
+  }
+  el("myOrdersPanel").hidden = false;
+  el("mainMenu").hidden = true;
+  el("menuToggle").setAttribute("aria-expanded", "false");
+  await loadMyOrders();
+  el("myOrdersPanel").scrollIntoView({behavior:"smooth", block:"start"});
+});
+el("menuProducts").addEventListener("click", () => {
+  el("myOrdersPanel").hidden = true;
+  el("mainMenu").hidden = true;
+  el("menuToggle").setAttribute("aria-expanded", "false");
+  document.querySelector("#products").closest(".panel").scrollIntoView({behavior:"smooth", block:"start"});
+});
+el("menuAccount").addEventListener("click", () => {
+  el("mainMenu").hidden = true;
+  el("menuToggle").setAttribute("aria-expanded", "false");
+  el("loginForm").scrollIntoView({behavior:"smooth", block:"start"});
+});
+
 el("refreshOrders").addEventListener("click", loadAdminOrders);
+el("clearAdminNotifications").addEventListener("click", () => {
+  adminNotifications = [];
+  el("adminNotificationSummary").textContent = "تم مسح إشعارات الواجهة. ستظهر هنا الطلبات الجديدة القادمة.";
+  el("orderToast").hidden = true;
+});
 el("refreshMyOrders").addEventListener("click", loadMyOrders);
 el("provider").addEventListener("change", renderProducts);
 db.auth.onAuthStateChange(() => {
@@ -569,6 +681,8 @@ updatePaymentFields();
 refreshSession();
 loadProducts();
 loadAdminOrders();
+checkForNewAdminOrders();
+window.setInterval(checkForNewAdminOrders, 15000);
 </script>
 </body>
 </html>
