@@ -412,7 +412,7 @@ async function submitDepositRequest(e) {
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(-90) || "deposit-proof";
     proofPath = `${user.id}/deposit-${Date.now()}-${safeName}`;
     const {error: uploadError} = await db.storage.from("payment-proofs").upload(proofPath, file, {contentType:file.type, upsert:false});
-    if (uploadError) throw new Error("تعذر رفع الإثبات: " + uploadError.message);
+    if (uploadError) throw new Error("تعذر رفع الإثبات إلى التخزين: " + uploadError.message + " — تحقق من وجود bucket باسم payment-proofs وصلاحية رفع الملفات للمستخدم المسجل.");
     // الطلب يُنشأ بحالة pending فقط؛ اعتماد الإيداع وإضافة الرصيد من صلاحية الإدارة.
     const {data, error} = await db.from("deposits").insert({
       user_id: user.id,
@@ -591,7 +591,7 @@ el("purchaseForm").addEventListener("submit", async e => {
       const {error: uploadError} = await db.storage.from("payment-proofs").upload(
         proofPath, file, {contentType: file.type, upsert: false}
       );
-      if (uploadError) throw new Error("تعذر رفع صورة الإثبات: " + uploadError.message);
+      if (uploadError) throw new Error("تعذر رفع صورة الإثبات إلى التخزين: " + uploadError.message + " — تحقق من bucket باسم payment-proofs وسياسة INSERT للمستخدم المسجل داخل مجلده.");
       result = await db.rpc("create_direct_order", {
         p_product_id: selectedProduct.id,
         p_player_id: playerId,
@@ -1069,13 +1069,20 @@ db.auth.onAuthStateChange(() => {
     await loadAdminOrders();
   }, 0);
 });
+// تهيئة العرض عند أول فتح: لا تعرض إلا المنتجات، حتى لو كان المستخدم مسجلاً سابقاً.
+function initializePageVisibility() {
+  ["customerWalletPanel", "myOrdersPanel", "purchasePanel", "adminPanel"].forEach(id => {
+    const panel = el(id);
+    if (panel) panel.hidden = true;
+  });
+  el("productsPanel").hidden = false;
+  el("mainMenu").hidden = true;
+  el("menuToggle").setAttribute("aria-expanded", "false");
+}
+initializePageVisibility();
 updatePaymentFields();
 refreshSession();
 loadProducts();
 loadAdminOrders();
 loadAdminDeposits();
-checkForNewAdminOrders();
-window.setInterval(checkForNewAdminOrders, 15000);
-</script>
-</body>
-</html>
+chec
