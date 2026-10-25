@@ -99,7 +99,31 @@ footer{text-align:center;padding:25px;color:#9eafc9;font-size:13px}
       <button type="button" class="secondary" id="refreshCustomerWallet">تحديث الرصيد</button>
     </div>
     <div id="customerWalletMsg" class="msg" aria-live="polite"></div>
-    <div class="notice">لإضافة رصيد، تواصل مع إدارة المتجر وأرسل إثبات الدفع. سيضيف المشرف الرصيد إلى حسابك بعد التحقق من الدفع. لا يمكن للزبون زيادة رصيده بنفسه.</div>
+    <section class="notice" aria-labelledby="depositHeading">
+      <h3 id="depositHeading">إضافة رصيد للمحفظة</h3>
+      <div class="muted">حدد المبلغ، ثم اختر طريقة التحويل واتبع المعلومات المعروضة. لا يتم إضافة الرصيد إلا بعد مراجعة الإدارة.</div>
+      <form id="depositForm">
+        <label for="depositAmount">المبلغ المراد إضافته (دينار عراقي)</label>
+        <input id="depositAmount" type="number" min="1000" max="10000000" step="250" inputmode="numeric" placeholder="مثال: 5000" required>
+        <label for="depositProvider">طريقة الدفع</label>
+        <select id="depositProvider" required>
+          <option value="mastercard">ماستركارد</option>
+          <option value="asiacell">آسياسيل</option>
+        </select>
+        <div class="notice" id="depositPaymentInfo" aria-live="polite"></div>
+        <label for="depositProof">إثبات الدفع (صورة مطلوبة)</label>
+        <input id="depositProof" type="file" accept="image/*" required>
+        <label for="depositTransactionRef">رقم العملية / ملاحظة (اختياري)</label>
+        <input id="depositTransactionRef" type="text" maxlength="120" placeholder="اكتب رقم العملية إن وجد">
+        <div class="muted">ملاحظة المتجر: الرجاء تأكد من اضافة المعلومات بشكل صحيح قبل الدفع !</div>
+        <button type="submit" id="submitDepositBtn">إرسال طلب إضافة الرصيد</button>
+      </form>
+      <div id="depositMsg" class="msg" aria-live="polite"></div>
+    </section>
+    <section class="notice">
+      <div class="actions" style="align-items:center;justify-content:space-between"><h3>سجل طلبات إضافة الرصيد</h3><button type="button" class="secondary" id="refreshDeposits" style="width:auto">تحديث السجل</button></div>
+      <div id="depositsList" class="muted">سجّل الدخول لعرض طلباتك.</div>
+    </section>
   </section>
 
   <section class="panel" id="myOrdersPanel" hidden>
@@ -128,6 +152,7 @@ footer{text-align:center;padding:25px;color:#9eafc9;font-size:13px}
         <div class="muted">إذا كان الرصيد غير كافٍ، سيرفض النظام الطلب.</div>
       </div>
       <div id="directFields" hidden>
+        <div class="notice" id="directPaymentInfo"></div>
         <label for="proofFile">صورة إثبات التحويل (مطلوبة)</label>
         <input id="proofFile" type="file" accept="image/*">
         <label for="transactionRef">رقم العملية أو ملاحظة (اختياري)</label>
@@ -148,6 +173,13 @@ footer{text-align:center;padding:25px;color:#9eafc9;font-size:13px}
     <button type="button" id="refreshOrders">تحديث الطلبات</button>
     <div id="adminMsg" class="msg" aria-live="polite"></div>
     <div id="adminOrders"></div>
+
+    <hr style="border:0;border-top:1px solid #304562;margin:22px 0">
+    <h2>طلبات إضافة رصيد المحفظة</h2>
+    <div class="muted">راجع إثبات الدفع قبل الموافقة. الموافقة تستخدم دالة الخادم approve_deposit ولا يستطيع الزبون اعتماد طلبه بنفسه.</div>
+    <button type="button" class="secondary" id="refreshAdminDeposits">تحديث طلبات الإيداع</button>
+    <div id="adminDepositsMsg" class="msg" aria-live="polite"></div>
+    <div id="adminDepositsList"></div>
 
     <hr style="border:0;border-top:1px solid #304562;margin:22px 0">
     <h2>إدارة أرصدة المحافظ</h2>
@@ -192,6 +224,11 @@ footer{text-align:center;padding:25px;color:#9eafc9;font-size:13px}
 const SUPABASE_URL = "https://jffcrqxpvaeteovcaetr.supabase.co";
 const SUPABASE_KEY = "sb_publishable_q-I_qTrXfPNs7IUIXwDy_g_rSpi2C4B";
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// بيانات التحويل المعتمدة من إدارة ZenithStore
+const PAYMENT_DETAILS = {
+  mastercard: {label: "ماستركارد", number: "910172198525"},
+  asiacell: {label: "آسياسيل", number: "07766214212"}
+};
 
 let productsCache = [];
 let selectedProduct = null;
@@ -298,6 +335,7 @@ function updatePaymentFields() {
   el("directFields").hidden = !direct;
   el("walletInfo").hidden = direct;
   el("proofFile").required = direct;
+  if (direct) renderPaymentInfo("directPaymentInfo", selectedProvider || el("provider").value);
 }
 el("paymentMethod").addEventListener("change", updatePaymentFields);
 el("cancelPurchase").addEventListener("click", () => {
@@ -308,6 +346,87 @@ el("cancelPurchase").addEventListener("click", () => {
   selectedProvider = null;
   setMessage("orderMsg", "");
 });
+
+function renderPaymentInfo(targetId, provider) {
+  const target = el(targetId);
+  if (!target) return;
+  const detail = PAYMENT_DETAILS[provider] || PAYMENT_DETAILS.mastercard;
+  target.replaceChildren();
+  const title = document.createElement("div"); title.className = "muted"; title.textContent = "حوّل المبلغ إلى بيانات الدفع التالية:";
+  const method = document.createElement("div"); method.style.fontWeight = "bold"; method.textContent = detail.label;
+  const number = document.createElement("div"); number.className = "price"; number.textContent = detail.number;
+  const note = document.createElement("div"); note.className = "muted"; note.textContent = "الرجاء تأكد من اضافة المعلومات بشكل صحيح قبل الدفع !";
+  const copy = document.createElement("button"); copy.type = "button"; copy.className = "secondary"; copy.textContent = "نسخ رقم الدفع";
+  copy.addEventListener("click", async () => { try { await navigator.clipboard.writeText(detail.number); copy.textContent = "تم نسخ الرقم"; } catch (_) { copy.textContent = "انسخ الرقم يدوياً"; } });
+  target.append(title, method, number, note, copy);
+}
+
+function depositStatusLabel(status) {
+  const labels = {pending:"قيد المراجعة", processing:"قيد المعالجة", approved:"مقبول", completed:"مكتمل", rejected:"مرفوض", cancelled:"ملغي"};
+  return labels[String(status || "pending").toLowerCase()] || String(status || "قيد المراجعة");
+}
+
+async function loadCustomerDeposits() {
+  const box = el("depositsList");
+  const {data: authData} = await db.auth.getUser();
+  const user = authData?.user;
+  if (!user) { box.textContent = "سجّل الدخول لعرض طلباتك."; return; }
+  box.textContent = "جارٍ تحميل طلبات إضافة الرصيد...";
+  // RLS يجب أن يسمح للمستخدم بقراءة طلبات الإيداع الخاصة به فقط.
+  const {data, error} = await db.from("deposits")
+    .select("id,created_at,amount_iqd,status,payment_method,transaction_ref")
+    .eq("user_id", user.id).order("created_at", {ascending:false}).limit(50);
+  if (error) { box.textContent = "تعذر تحميل سجل الإيداعات: " + error.message; return; }
+  box.replaceChildren();
+  if (!data || !data.length) { box.textContent = "ما عندك طلبات إضافة رصيد حالياً."; return; }
+  data.forEach(row => {
+    const card = document.createElement("div"); card.className = "product"; card.style.marginTop = "9px";
+    const title = document.createElement("strong"); title.textContent = `طلب إيداع #${row.id}`;
+    const amount = document.createElement("div"); amount.className = "price"; amount.textContent = money(row.amount_iqd);
+    const details = document.createElement("div"); details.className = "muted";
+    const provider = row.payment_method || "غير محدد";
+    const date = row.created_at ? new Date(row.created_at).toLocaleString("ar-IQ") : "—";
+    details.textContent = `الطريقة: ${provider} · الحالة: ${depositStatusLabel(row.status)} · التاريخ: ${date}${row.transaction_ref ? " · رقم العملية: " + row.transaction_ref : ""}`;
+    card.append(title, amount, details); box.append(card);
+  });
+}
+
+async function submitDepositRequest(e) {
+  e.preventDefault();
+  const {data: authData, error: authError} = await db.auth.getUser();
+  const user = authData?.user;
+  if (authError || !user) { setMessage("depositMsg", "سجّل الدخول أولاً لإرسال طلب الإيداع.", "error"); return; }
+  const amount = Number(el("depositAmount").value);
+  const provider = el("depositProvider").value;
+  const file = el("depositProof").files[0];
+  if (!Number.isSafeInteger(amount) || amount < 1000 || amount > 10000000) { setMessage("depositMsg", "أدخل مبلغاً صحيحاً بين 1,000 و10,000,000 دينار.", "error"); return; }
+  if (!file || !file.type || !file.type.startsWith("image/")) { setMessage("depositMsg", "ارفع صورة إثبات الدفع أولاً.", "error"); return; }
+  if (file.size > 5 * 1024 * 1024) { setMessage("depositMsg", "حجم الصورة يجب ألا يتجاوز 5 ميغابايت.", "error"); return; }
+  const btn = el("submitDepositBtn"); btn.disabled = true; btn.textContent = "جارٍ إرسال الطلب...";
+  let proofPath = null;
+  try {
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(-90) || "deposit-proof";
+    proofPath = `${user.id}/deposit-${Date.now()}-${safeName}`;
+    const {error: uploadError} = await db.storage.from("payment-proofs").upload(proofPath, file, {contentType:file.type, upsert:false});
+    if (uploadError) throw new Error("تعذر رفع الإثبات: " + uploadError.message);
+    // الطلب يُنشأ بحالة pending فقط؛ اعتماد الإيداع وإضافة الرصيد من صلاحية الإدارة.
+    const {data, error} = await db.from("deposits").insert({
+      user_id: user.id,
+      amount_iqd: amount,
+      payment_method: provider,
+      proof_path: proofPath,
+      transaction_ref: el("depositTransactionRef").value.trim() || null,
+      status: "pending"
+    }).select("id").single();
+    if (error) throw new Error("تم رفع الصورة لكن تعذر تسجيل طلب الإيداع في جدول deposits: " + error.message);
+    setMessage("depositMsg", `تم إرسال طلب إضافة الرصيد رقم #${data.id}. سيبقى قيد المراجعة ولن يُضاف الرصيد إلا بعد موافقة الإدارة.`, "success");
+    el("depositForm").reset();
+    renderPaymentInfo("depositPaymentInfo", el("depositProvider").value);
+    await loadCustomerDeposits();
+  } catch (err) {
+    setMessage("depositMsg", err?.message || "حدث خطأ أثناء إرسال الطلب.", "error");
+  } finally { btn.disabled = false; btn.textContent = "إرسال طلب إضافة الرصيد"; }
+}
 
 async function loadCustomerWallet() {
   if (customerWalletLoadBusy) return;
@@ -339,6 +458,7 @@ async function loadCustomerWallet() {
     const balance = (data || []).reduce((sum, row) => sum + Number(row.amount_iqd || 0), 0);
     el("customerWalletBalance").textContent = money(balance);
     setMessage("customerWalletMsg", "تم تحديث رصيد محفظتك.", "success");
+    await loadCustomerDeposits();
   } finally {
     customerWalletLoadBusy = false;
   }
@@ -377,6 +497,7 @@ el("loginForm").addEventListener("submit", async e => {
   el("mainMenu").hidden = true;
   el("menuToggle").setAttribute("aria-expanded", "false");
   await loadAdminOrders();
+    await loadAdminDeposits();
 });
 
 el("signup").addEventListener("click", async () => {
@@ -400,6 +521,7 @@ el("signup").addEventListener("click", async () => {
       el("mainMenu").hidden = true;
       el("menuToggle").setAttribute("aria-expanded", "false");
       await loadAdminOrders();
+      await loadAdminDeposits();
     }
   }
 });
@@ -751,6 +873,44 @@ async function loadAdminOrders() {
   }
 }
 
+async function loadAdminDeposits() {
+  if (!currentUserIsAdmin) return;
+  const box = el("adminDepositsList");
+  box.textContent = "جارٍ تحميل طلبات الإيداع...";
+  const {data, error} = await db.from("deposits")
+    .select("id,user_id,created_at,amount_iqd,status,payment_method,proof_path,transaction_ref")
+    .order("created_at", {ascending:false}).limit(100);
+  if (error) { box.textContent = "تعذر تحميل طلبات الإيداع: " + error.message; return; }
+  box.replaceChildren();
+  const pending = (data || []).filter(row => String(row.status || "pending").toLowerCase() === "pending");
+  if (!pending.length) { box.textContent = "لا توجد طلبات إيداع قيد المراجعة حالياً."; return; }
+  pending.forEach(row => {
+    const card = document.createElement("div"); card.className = "product"; card.style.marginTop = "9px";
+    const title = document.createElement("strong"); title.textContent = `طلب إيداع #${row.id}`;
+    const amount = document.createElement("div"); amount.className = "price"; amount.textContent = money(row.amount_iqd);
+    const details = document.createElement("div"); details.className = "muted";
+    details.textContent = `المستخدم: ${row.user_id} · الطريقة: ${row.payment_method || "—"} · التاريخ: ${row.created_at ? new Date(row.created_at).toLocaleString("ar-IQ") : "—"}${row.transaction_ref ? " · رقم العملية: " + row.transaction_ref : ""}`;
+    card.append(title, amount, details);
+    if (row.proof_path) {
+      const proof = document.createElement("button"); proof.type = "button"; proof.className = "secondary"; proof.textContent = "عرض إثبات الدفع";
+      proof.addEventListener("click", async () => {
+        const {data: signed, error: signError} = await db.storage.from("payment-proofs").createSignedUrl(row.proof_path, 60);
+        if (signError) { setMessage("adminDepositsMsg", "تعذر فتح الإثبات: " + signError.message, "error"); return; }
+        window.open(signed.signedUrl, "_blank", "noopener");
+      }); card.append(proof);
+    }
+    const approve = document.createElement("button"); approve.type = "button"; approve.textContent = "تأكيد الدفع وإضافة الرصيد";
+    approve.addEventListener("click", async () => {
+      if (!confirm(`تأكدت من استلام ${money(row.amount_iqd)} لهذا الطلب؟ سيتم إضافة الرصيد لحساب الزبون.`)) return;
+      approve.disabled = true;
+      const {error: approveError} = await db.rpc("approve_deposit", {p_deposit_id: row.id});
+      if (approveError) { setMessage("adminDepositsMsg", "تعذرت الموافقة: " + approveError.message, "error"); approve.disabled = false; return; }
+      setMessage("adminDepositsMsg", `تم اعتماد طلب الإيداع #${row.id} وإضافة الرصيد.`, "success");
+      await loadAdminDeposits();
+    }); card.append(approve); box.append(card);
+  });
+}
+
 el("walletSearchForm").addEventListener("submit", async e => {
   e.preventDefault();
   const email = el("walletSearchEmail").value.trim();
@@ -829,6 +989,11 @@ el("walletAdjustForm").addEventListener("submit", async e => {
   }
 });
 
+el("depositProvider").addEventListener("change", () => renderPaymentInfo("depositPaymentInfo", el("depositProvider").value));
+el("depositForm").addEventListener("submit", submitDepositRequest);
+el("refreshDeposits").addEventListener("click", loadCustomerDeposits);
+renderPaymentInfo("depositPaymentInfo", "mastercard");
+
 el("menuToggle").addEventListener("click", () => {
   const menu = el("mainMenu");
   menu.hidden = !menu.hidden;
@@ -874,6 +1039,7 @@ el("menuProducts").addEventListener("click", () => {
   document.querySelector("#products").closest(".panel").scrollIntoView({behavior:"smooth", block:"start"});
 });
 el("refreshOrders").addEventListener("click", loadAdminOrders);
+el("refreshAdminDeposits").addEventListener("click", loadAdminDeposits);
 el("clearAdminNotifications").addEventListener("click", () => {
   adminNotifications = [];
   el("adminNotificationSummary").textContent = "تم مسح إشعارات الواجهة. ستظهر هنا الطلبات الجديدة القادمة.";
@@ -891,6 +1057,7 @@ updatePaymentFields();
 refreshSession();
 loadProducts();
 loadAdminOrders();
+loadAdminDeposits();
 checkForNewAdminOrders();
 window.setInterval(checkForNewAdminOrders, 15000);
 </script>
