@@ -426,10 +426,13 @@ async function loadAdminOrders() {
         card.appendChild(proofBtn);
       }
 
-      if (order.status === "pending") {
+      if (order.status === "pending" || order.status === "processing") {
         const actions = document.createElement("div");
         actions.className = "actions";
-        for (const [status, label, css] of [["processing", "قبول الطلب", ""], ["rejected", "رفض الطلب", "danger"]]) {
+        const availableActions = order.status === "pending"
+          ? [["processing", "قبول الطلب", ""], ["rejected", "رفض الطلب", "danger"]]
+          : [["completed", "اكتمل الشحن", ""]];
+        for (const [status, label, css] of availableActions) {
           const btn = document.createElement("button");
           btn.type = "button";
           btn.textContent = label;
@@ -437,7 +440,9 @@ async function loadAdminOrders() {
           btn.addEventListener("click", async () => {
             const confirmText = status === "processing"
               ? "تأكدت من استلام المبلغ؟ الموافقة لا تعني أن الشحن اكتمل."
-              : "هل تريد رفض هذا الطلب؟";
+              : status === "completed"
+                ? "هل أكملت شحن اللاعب فعلياً؟ سيتم وضع الطلب كمكتمل."
+                : "هل تريد رفض هذا الطلب؟";
             if (!window.confirm(confirmText)) return;
             btn.disabled = true;
             const {error: updateError} = await db.rpc("admin_update_order_status", {
