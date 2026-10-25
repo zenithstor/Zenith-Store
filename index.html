@@ -75,7 +75,7 @@ footer{text-align:center;padding:25px;color:#9eafc9;font-size:13px}
 
 
 
-  <section class="panel">
+  <section class="panel" id="productsPanel">
     <h2>منتجات المتجر</h2>
     <label for="provider">طريقة التسعير</label>
     <select id="provider">
@@ -135,6 +135,34 @@ footer{text-align:center;padding:25px;color:#9eafc9;font-size:13px}
     <button type="button" id="refreshOrders">تحديث الطلبات</button>
     <div id="adminMsg" class="msg" aria-live="polite"></div>
     <div id="adminOrders"></div>
+
+    <hr style="border:0;border-top:1px solid #304562;margin:22px 0">
+    <h2>إدارة أرصدة المحافظ</h2>
+    <div class="muted">ابحث عن حساب الزبون بالبريد الإلكتروني، ثم أضف أو اخصم رصيداً. كل عملية تُسجّل في سجل المحفظة.</div>
+    <form id="walletSearchForm">
+      <label for="walletSearchEmail">البريد الإلكتروني للزبون</label>
+      <input id="walletSearchEmail" type="email" placeholder="customer@example.com" required>
+      <button type="submit" id="walletSearchBtn">البحث عن الحساب</button>
+    </form>
+    <div id="walletSearchMsg" class="msg" aria-live="polite"></div>
+    <div id="walletManageBox" class="notice" hidden>
+      <h3>الحساب المحدد</h3>
+      <div id="walletUserInfo" class="muted"></div>
+      <div class="price" id="walletCurrentBalance">الرصيد: —</div>
+      <form id="walletAdjustForm">
+        <label for="walletAction">نوع العملية</label>
+        <select id="walletAction" required>
+          <option value="add">إضافة رصيد</option>
+          <option value="deduct">خصم رصيد</option>
+        </select>
+        <label for="walletAmount">المبلغ بالدينار العراقي</label>
+        <input id="walletAmount" type="number" min="1" step="1" inputmode="numeric" placeholder="مثال: 5000" required>
+        <label for="walletReason">سبب العملية</label>
+        <input id="walletReason" type="text" maxlength="250" placeholder="مثال: إضافة رصيد للزبون" required>
+        <button type="submit" id="walletAdjustBtn">تنفيذ العملية</button>
+      </form>
+      <div id="walletAdjustMsg" class="msg" aria-live="polite"></div>
+    </div>
   </section>
 
   <section class="panel">
@@ -160,6 +188,22 @@ let myOrdersLoadInProgress = false;
 let knownOrderIds = null;
 let adminNotifications = [];
 let notificationPollBusy = false;
+let selectedWalletUser = null;
+let currentUserIsAdmin = false;
+
+function applyRoleUI(isAdmin) {
+  currentUserIsAdmin = isAdmin === true;
+  el("productsPanel").hidden = currentUserIsAdmin;
+  el("purchasePanel").hidden = currentUserIsAdmin;
+  el("myOrdersPanel").hidden = currentUserIsAdmin;
+  el("menuProducts").hidden = currentUserIsAdmin;
+  el("menuMyOrders").hidden = currentUserIsAdmin;
+  if (currentUserIsAdmin) {
+    el("selectedProductInfo").textContent = "";
+    selectedProduct = null;
+    selectedProvider = null;
+  }
+}
 
 const money = n => Number(n).toLocaleString("en-US") + " د.ع";
 const el = id => document.getElementById(id);
@@ -312,6 +356,7 @@ el("logout").addEventListener("click", async () => {
   const {error} = await db.auth.signOut();
   setMessage("authMsg", error ? error.message : "تم تسجيل الخروج.", error ? "error" : "success");
   el("adminPanel").hidden = true;
+  applyRoleUI(false);
   await refreshSession();
   el("mainMenu").hidden = false;
   el("menuToggle").setAttribute("aria-expanded", "true");
@@ -541,14 +586,19 @@ async function loadAdminOrders() {
     const user = authData?.user;
     if (authError || !user) {
       el("adminPanel").hidden = true;
+      applyRoleUI(false);
       return;
     }
     const {data: isAdmin, error: adminError} = await db.rpc("is_admin");
     if (adminError || isAdmin !== true) {
       el("adminPanel").hidden = true;
+      selectedWalletUser = null;
+      el("walletManageBox").hidden = true;
+      applyRoleUI(false);
       return;
     }
 
+    applyRoleUI(true);
     el("adminPanel").hidden = false;
     setMessage("adminMsg", "جارٍ تحميل الطلبات...");
     el("adminOrders").replaceChildren();
@@ -648,6 +698,84 @@ async function loadAdminOrders() {
     adminLoadInProgress = false;
   }
 }
+
+el("walletSearchForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const email = el("walletSearchEmail").value.trim();
+  const btn = el("walletSearchBtn");
+  btn.disabled = true;
+  setMessage("walletSearchMsg", "جارٍ البحث عن الحساب...");
+  setMessage("walletAdjustMsg", "");
+  el("walletManageBox").hidden = true;
+  selectedWalletUser = null;
+  try {
+    const {data: authData, error: authError} = await db.auth.getUser();
+    if (authError || !authData?.user) throw new Error("سجّل الدخول بحساب المشرف أولاً.");
+    const {data: isAdmin, error: adminError} = await db.rpc("is_admin");
+    if (adminError || isAdmin !== true) throw new Error("هذه العملية متاحة للمشرف فقط.");
+    const {data, error} = await db.rpc("admin_find_wallet_user", {p_email: email});
+    if (error) throw error;
+    if (!data || !data.length) {
+      setMessage("walletSearchMsg", "ما لكيت حساب بهذا البريد الإلكتروني.", "error");
+      return;
+    }
+    selectedWalletUser = data[0];
+    el("walletUserInfo").textContent = `البريد: ${selectedWalletUser.user_email || email} | اسم المستخدم: ${selectedWalletUser.username || "غير محدد"} | رقم الحساب: ${selectedWalletUser.user_id}`;
+    el("walletCurrentBalance").textContent = "الرصيد الحالي: " + money(selectedWalletUser.balance_iqd);
+    el("walletManageBox").hidden = false;
+    setMessage("walletSearchMsg", "تم العثور على الحساب. تأكد من البريد قبل تنفيذ أي عملية.", "success");
+  } catch (error) {
+    setMessage("walletSearchMsg", "تعذر البحث: " + (error?.message || "حدث خطأ غير معروف."), "error");
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+el("walletAdjustForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  if (!selectedWalletUser?.user_id) {
+    setMessage("walletAdjustMsg", "ابحث عن حساب الزبون أولاً.", "error");
+    return;
+  }
+  const amount = Number(el("walletAmount").value);
+  const action = el("walletAction").value;
+  const reason = el("walletReason").value.trim();
+  if (!Number.isSafeInteger(amount) || amount <= 0) {
+    setMessage("walletAdjustMsg", "أدخل مبلغاً صحيحاً بالدينار، أكبر من صفر.", "error");
+    return;
+  }
+  if (!reason) {
+    setMessage("walletAdjustMsg", "اكتب سبب العملية.", "error");
+    return;
+  }
+  const signedAmount = action === "deduct" ? -amount : amount;
+  const actionText = action === "deduct" ? "خصم" : "إضافة";
+  if (!window.confirm(`تأكيد ${actionText} مبلغ ${money(amount)} للحساب ${selectedWalletUser.user_email || selectedWalletUser.user_id}؟\nالسبب: ${reason}`)) return;
+  const btn = el("walletAdjustBtn");
+  btn.disabled = true;
+  setMessage("walletAdjustMsg", "جارٍ تنفيذ العملية...");
+  try {
+    const {data: authData, error: authError} = await db.auth.getUser();
+    if (authError || !authData?.user) throw new Error("انتهت الجلسة. سجّل الدخول مجدداً.");
+    const {data: isAdmin, error: adminError} = await db.rpc("is_admin");
+    if (adminError || isAdmin !== true) throw new Error("هذه العملية متاحة للمشرف فقط.");
+    const {data, error} = await db.rpc("admin_adjust_wallet", {
+      p_user_id: selectedWalletUser.user_id,
+      p_amount_iqd: signedAmount,
+      p_reason: reason
+    });
+    if (error) throw error;
+    selectedWalletUser.balance_iqd = data;
+    el("walletCurrentBalance").textContent = "الرصيد الحالي: " + money(data);
+    el("walletAmount").value = "";
+    el("walletReason").value = "";
+    setMessage("walletAdjustMsg", `نجحت العملية. الرصيد الجديد: ${money(data)}. تم تسجيل العملية في سجل المحفظة.`, "success");
+  } catch (error) {
+    setMessage("walletAdjustMsg", "فشلت العملية: " + (error?.message || "حدث خطأ غير معروف."), "error");
+  } finally {
+    btn.disabled = false;
+  }
+});
 
 el("menuToggle").addEventListener("click", () => {
   const menu = el("mainMenu");
