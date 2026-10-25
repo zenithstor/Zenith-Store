@@ -1013,22 +1013,33 @@ el("menuToggle").addEventListener("click", () => {
   menu.hidden = !menu.hidden;
   el("menuToggle").setAttribute("aria-expanded", String(!menu.hidden));
 });
+
 el("menuWallet").addEventListener("click", async () => {
   const {data} = await db.auth.getSession();
+
   if (!data?.session?.user) {
     el("mainMenu").hidden = false;
     el("menuToggle").setAttribute("aria-expanded", "true");
     setMessage("authMsg", "سجّل الدخول أولاً حتى تشوف محفظتك.", "error");
     return;
   }
+
+  el("productsPanel").hidden = true;
   el("customerWalletPanel").hidden = false;
   el("myOrdersPanel").hidden = true;
   el("purchasePanel").hidden = true;
+  el("contactPanel").hidden = true;
+
   el("mainMenu").hidden = true;
   el("menuToggle").setAttribute("aria-expanded", "false");
+
   await loadCustomerWallet();
-  el("customerWalletPanel").scrollIntoView({behavior:"smooth", block:"start"});
+  el("customerWalletPanel").scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
 });
+
 el("refreshCustomerWallet").addEventListener("click", loadCustomerWallet);
 
 el("menuMyOrders").addEventListener("click", async () => {
