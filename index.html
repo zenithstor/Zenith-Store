@@ -67,6 +67,7 @@ footer{text-align:center;padding:25px;color:#9eafc9;font-size:13px}
       </form>
       <div id="authMsg" class="msg" aria-live="polite"></div>
     </div>
+    <button type="button" class="secondary" id="menuWallet" hidden>محفظتي</button>
     <button type="button" class="secondary" id="menuMyOrders">طلباتي</button>
     <button type="button" class="secondary" id="menuProducts">منتجات المتجر</button>
   </nav>
@@ -87,6 +88,18 @@ footer{text-align:center;padding:25px;color:#9eafc9;font-size:13px}
       <p class="msg">جارٍ تحميل المنتجات...</p>
     </div>
     <div id="productsMsg" class="msg"></div>
+  </section>
+
+  <section class="panel" id="customerWalletPanel" hidden>
+    <h2>محفظتي</h2>
+    <div class="muted">هذا رصيدك الداخلي في متجر زينيث، وتكدر تستخدمه للدفع عند شراء المنتجات.</div>
+    <div class="notice">
+      <div class="muted">الرصيد الحالي</div>
+      <div class="price" id="customerWalletBalance">جارٍ تحميل الرصيد...</div>
+      <button type="button" class="secondary" id="refreshCustomerWallet">تحديث الرصيد</button>
+    </div>
+    <div id="customerWalletMsg" class="msg" aria-live="polite"></div>
+    <div class="notice">لإضافة رصيد، تواصل مع إدارة المتجر وأرسل إثبات الدفع. سيضيف المشرف الرصيد إلى حسابك بعد التحقق من الدفع. لا يمكن للزبون زيادة رصيده بنفسه.</div>
   </section>
 
   <section class="panel" id="myOrdersPanel" hidden>
@@ -190,12 +203,15 @@ let adminNotifications = [];
 let notificationPollBusy = false;
 let selectedWalletUser = null;
 let currentUserIsAdmin = false;
+let customerWalletLoadBusy = false;
 
 function applyRoleUI(isAdmin) {
   currentUserIsAdmin = isAdmin === true;
   el("productsPanel").hidden = currentUserIsAdmin;
   el("purchasePanel").hidden = currentUserIsAdmin;
   el("myOrdersPanel").hidden = currentUserIsAdmin;
+  el("customerWalletPanel").hidden = currentUserIsAdmin;
+  el("menuWallet").hidden = currentUserIsAdmin;
   el("menuProducts").hidden = currentUserIsAdmin;
   el("menuMyOrders").hidden = currentUserIsAdmin;
   if (currentUserIsAdmin) {
@@ -293,6 +309,41 @@ el("cancelPurchase").addEventListener("click", () => {
   setMessage("orderMsg", "");
 });
 
+async function loadCustomerWallet() {
+  if (customerWalletLoadBusy) return;
+  customerWalletLoadBusy = true;
+  try {
+    const {data: authData, error: authError} = await db.auth.getUser();
+    const user = authData?.user;
+    if (authError || !user) {
+      el("customerWalletPanel").hidden = true;
+      el("menuWallet").hidden = true;
+      return;
+    }
+    const {data: isAdmin, error: adminError} = await db.rpc("is_admin");
+    if (!adminError && isAdmin === true) {
+      el("customerWalletPanel").hidden = true;
+      el("menuWallet").hidden = true;
+      return;
+    }
+    el("menuWallet").hidden = false;
+    el("customerWalletBalance").textContent = "جارٍ تحميل الرصيد...";
+    const {data, error} = await db.from("wallet_transactions")
+      .select("amount_iqd")
+      .eq("user_id", user.id);
+    if (error) {
+      el("customerWalletBalance").textContent = "تعذر تحميل الرصيد";
+      setMessage("customerWalletMsg", "تعذر قراءة رصيد المحفظة: " + error.message, "error");
+      return;
+    }
+    const balance = (data || []).reduce((sum, row) => sum + Number(row.amount_iqd || 0), 0);
+    el("customerWalletBalance").textContent = money(balance);
+    setMessage("customerWalletMsg", "تم تحديث رصيد محفظتك.", "success");
+  } finally {
+    customerWalletLoadBusy = false;
+  }
+}
+
 async function refreshSession() {
   const {data, error} = await db.auth.getSession();
   const user = data?.session?.user;
@@ -312,6 +363,7 @@ async function refreshSession() {
   }
   if (error) setMessage("authMsg", error.message, "error");
   await loadMyOrders();
+  await loadCustomerWallet();
 }
 
 el("loginForm").addEventListener("submit", async e => {
@@ -782,6 +834,24 @@ el("menuToggle").addEventListener("click", () => {
   menu.hidden = !menu.hidden;
   el("menuToggle").setAttribute("aria-expanded", String(!menu.hidden));
 });
+el("menuWallet").addEventListener("click", async () => {
+  const {data} = await db.auth.getSession();
+  if (!data?.session?.user) {
+    el("mainMenu").hidden = false;
+    el("menuToggle").setAttribute("aria-expanded", "true");
+    setMessage("authMsg", "سجّل الدخول أولاً حتى تشوف محفظتك.", "error");
+    return;
+  }
+  el("customerWalletPanel").hidden = false;
+  el("myOrdersPanel").hidden = true;
+  el("purchasePanel").hidden = true;
+  el("mainMenu").hidden = true;
+  el("menuToggle").setAttribute("aria-expanded", "false");
+  await loadCustomerWallet();
+  el("customerWalletPanel").scrollIntoView({behavior:"smooth", block:"start"});
+});
+el("refreshCustomerWallet").addEventListener("click", loadCustomerWallet);
+
 el("menuMyOrders").addEventListener("click", async () => {
   const {data} = await db.auth.getSession();
   if (!data?.session?.user) {
