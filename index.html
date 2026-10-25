@@ -253,7 +253,9 @@ function applyRoleUI(isAdmin) {
   el("productsPanel").hidden = currentUserIsAdmin;
   el("purchasePanel").hidden = currentUserIsAdmin;
   el("myOrdersPanel").hidden = currentUserIsAdmin;
-  el("customerWalletPanel").hidden = currentUserIsAdmin;
+  if (currentUserIsAdmin) {
+  el("customerWalletPanel").hidden = true;
+  }
   el("menuWallet").hidden = currentUserIsAdmin;
   el("menuProducts").hidden = currentUserIsAdmin;
   el("menuMyOrders").hidden = currentUserIsAdmin;
