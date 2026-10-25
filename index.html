@@ -91,7 +91,11 @@ footer{text-align:center;padding:25px;color:#9eafc9;font-size:13px}
   </section>
 
   <section class="panel" id="customerWalletPanel" hidden>
-    <h2>محفظتي</h2>
+    <div class="actions" style="align-items:center;justify-content:space-between;margin-bottom:12px">
+      <h2 style="margin:0">محفظتي</h2>
+      <button type="button" class="secondary" id="walletBackToStore" style="width:auto">← العودة للمتجر</button>
+    </div>
+    <div class="muted" style="margin-bottom:12px">صفحة المحفظة الخاصة بك — إدارة الرصيد وطلبات الإيداع من هنا فقط.</div>
     <div class="muted">هذا رصيدك الداخلي في متجر زينيث، وتكدر تستخدمه للدفع عند شراء المنتجات.</div>
     <div class="notice">
       <div class="muted">الرصيد الحالي</div>
@@ -1007,15 +1011,28 @@ el("menuWallet").addEventListener("click", async () => {
     setMessage("authMsg", "سجّل الدخول أولاً حتى تشوف محفظتك.", "error");
     return;
   }
+  // عرض المحفظة كصفحة داخلية مستقلة وإخفاء بقية صفحات الزبون.
+  el("productsPanel").hidden = true;
   el("customerWalletPanel").hidden = false;
   el("myOrdersPanel").hidden = true;
   el("purchasePanel").hidden = true;
+  el("adminPanel").hidden = true;
   el("mainMenu").hidden = true;
   el("menuToggle").setAttribute("aria-expanded", "false");
+  history.replaceState(null, "", "#wallet");
   await loadCustomerWallet();
-  el("customerWalletPanel").scrollIntoView({behavior:"smooth", block:"start"});
+  window.scrollTo({top:0, behavior:"smooth"});
 });
 el("refreshCustomerWallet").addEventListener("click", loadCustomerWallet);
+
+el("walletBackToStore").addEventListener("click", () => {
+  el("customerWalletPanel").hidden = true;
+  el("productsPanel").hidden = currentUserIsAdmin;
+  el("myOrdersPanel").hidden = true;
+  el("purchasePanel").hidden = true;
+  history.replaceState(null, "", location.pathname + location.search);
+  window.scrollTo({top:0, behavior:"smooth"});
+});
 
 el("menuMyOrders").addEventListener("click", async () => {
   const {data} = await db.auth.getSession();
@@ -1026,6 +1043,9 @@ el("menuMyOrders").addEventListener("click", async () => {
     el("loginForm").scrollIntoView({behavior:"smooth", block:"start"});
     return;
   }
+  el("productsPanel").hidden = true;
+  el("customerWalletPanel").hidden = true;
+  el("purchasePanel").hidden = true;
   el("myOrdersPanel").hidden = false;
   el("mainMenu").hidden = true;
   el("menuToggle").setAttribute("aria-expanded", "false");
@@ -1033,7 +1053,11 @@ el("menuMyOrders").addEventListener("click", async () => {
   el("myOrdersPanel").scrollIntoView({behavior:"smooth", block:"start"});
 });
 el("menuProducts").addEventListener("click", () => {
+  el("customerWalletPanel").hidden = true;
   el("myOrdersPanel").hidden = true;
+  el("purchasePanel").hidden = true;
+  el("productsPanel").hidden = currentUserIsAdmin;
+  history.replaceState(null, "", location.pathname + location.search);
   el("mainMenu").hidden = true;
   el("menuToggle").setAttribute("aria-expanded", "false");
   document.querySelector("#products").closest(".panel").scrollIntoView({behavior:"smooth", block:"start"});
