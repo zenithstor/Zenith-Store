@@ -14,7 +14,7 @@ header{padding:18px 16px;background:#0d1525;border-bottom:1px solid #234166;posi
 .headerTop{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:850px;margin:auto}
 .menuBtn{width:48px;min-width:48px;margin:0;padding:10px;font-size:24px;line-height:1;background:#233650}
 .menuBox{max-width:850px;margin:12px auto 0;padding:10px;background:#101a2b;border:1px solid #304562;border-radius:12px}
-.menuBox button{text-align:right;margin:3px 0}
+.menuBox button{text-align:right;margin:3px 0}.menuAccountArea{padding:8px 6px 12px;border-bottom:1px solid #304562;margin-bottom:8px}.menuAccountArea h3{margin:0 0 8px}.menuAccountArea input{width:100%}
 .brand{font-size:26px;font-weight:900;color:#69baff}
 .brand span{color:#fff}
 .sub{color:#9eafc9;margin-top:8px;font-size:13px}
@@ -55,24 +55,23 @@ footer{text-align:center;padding:25px;color:#9eafc9;font-size:13px}
     <button type="button" class="menuBtn" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false">☰</button>
   </div>
   <nav class="menuBox" id="mainMenu" hidden>
+    <div class="menuAccountArea">
+      <h3>حسابك</h3>
+      <div id="accountStatus" class="msg">أنت تتصفح المتجر كزائر.</div>
+      <form id="loginForm">
+        <input id="email" type="email" placeholder="البريد الإلكتروني" autocomplete="email" required>
+        <input id="password" type="password" placeholder="كلمة المرور (6 أحرف على الأقل)" minlength="6" autocomplete="current-password" required>
+        <button type="submit" id="loginBtn">تسجيل الدخول</button>
+        <button type="button" class="secondary" id="signup">إنشاء حساب جديد</button>
+        <button type="button" class="secondary" id="logout" hidden>تسجيل الخروج</button>
+      </form>
+      <div id="authMsg" class="msg" aria-live="polite"></div>
+    </div>
     <button type="button" class="secondary" id="menuMyOrders">طلباتي</button>
     <button type="button" class="secondary" id="menuProducts">منتجات المتجر</button>
-    <button type="button" class="secondary" id="menuAccount">حسابي</button>
   </nav>
 </header>
 <main>
-  <section class="panel">
-    <h2>حسابك</h2>
-    <div id="accountStatus" class="msg">أنت تتصفح المتجر كزائر.</div>
-    <form id="loginForm">
-      <input id="email" type="email" placeholder="البريد الإلكتروني" autocomplete="email" required>
-      <input id="password" type="password" placeholder="كلمة المرور (6 أحرف على الأقل)" minlength="6" autocomplete="current-password" required>
-      <button type="submit" id="loginBtn">تسجيل الدخول</button>
-      <button type="button" class="secondary" id="signup">إنشاء حساب جديد</button>
-      <button type="button" class="secondary" id="logout" hidden>تسجيل الخروج</button>
-    </form>
-    <div id="authMsg" class="msg" aria-live="polite"></div>
-  </section>
 
 
 
@@ -259,8 +258,14 @@ async function refreshSession() {
   el("logout").hidden = !user;
   el("loginBtn").hidden = !!user;
   el("signup").hidden = !!user;
+  el("email").hidden = !!user;
+  el("password").hidden = !!user;
   el("email").disabled = !!user;
   el("password").disabled = !!user;
+  if (user) {
+    el("mainMenu").hidden = true;
+    el("menuToggle").setAttribute("aria-expanded", "false");
+  }
   if (error) setMessage("authMsg", error.message, "error");
   await loadMyOrders();
 }
@@ -273,6 +278,8 @@ el("loginForm").addEventListener("submit", async e => {
   const {error} = await db.auth.signInWithPassword({email, password});
   setMessage("authMsg", error ? error.message : "تم تسجيل الدخول بنجاح.", error ? "error" : "success");
   await refreshSession();
+  el("mainMenu").hidden = true;
+  el("menuToggle").setAttribute("aria-expanded", "false");
   await loadAdminOrders();
 });
 
@@ -289,7 +296,16 @@ el("signup").addEventListener("click", async () => {
     password,
     options: {data: {username: email.split("@")[0]}}
   });
-  setMessage("authMsg", error ? error.message : "تم إرسال طلب التسجيل. قد تحتاج إلى تأكيد بريدك الإلكتروني.", error ? "error" : "success");
+  setMessage("authMsg", error ? error.message : "تم إنشاء الحساب. إذا كان تأكيد البريد مفعّلاً فقد تحتاج إلى تأكيده قبل الدخول.", error ? "error" : "success");
+  if (!error) {
+    await refreshSession();
+    const {data: sessionData} = await db.auth.getSession();
+    if (sessionData?.session?.user) {
+      el("mainMenu").hidden = true;
+      el("menuToggle").setAttribute("aria-expanded", "false");
+      await loadAdminOrders();
+    }
+  }
 });
 
 el("logout").addEventListener("click", async () => {
@@ -297,6 +313,8 @@ el("logout").addEventListener("click", async () => {
   setMessage("authMsg", error ? error.message : "تم تسجيل الخروج.", error ? "error" : "success");
   el("adminPanel").hidden = true;
   await refreshSession();
+  el("mainMenu").hidden = false;
+  el("menuToggle").setAttribute("aria-expanded", "true");
 });
 
 el("purchaseForm").addEventListener("submit", async e => {
@@ -657,12 +675,6 @@ el("menuProducts").addEventListener("click", () => {
   el("menuToggle").setAttribute("aria-expanded", "false");
   document.querySelector("#products").closest(".panel").scrollIntoView({behavior:"smooth", block:"start"});
 });
-el("menuAccount").addEventListener("click", () => {
-  el("mainMenu").hidden = true;
-  el("menuToggle").setAttribute("aria-expanded", "false");
-  el("loginForm").scrollIntoView({behavior:"smooth", block:"start"});
-});
-
 el("refreshOrders").addEventListener("click", loadAdminOrders);
 el("clearAdminNotifications").addEventListener("click", () => {
   adminNotifications = [];
