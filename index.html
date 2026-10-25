@@ -24,8 +24,7 @@ h2{font-size:19px;margin:0 0 14px}
 h3{font-size:16px;margin:0 0 10px}
 input,select,button{width:100%;padding:13px;margin:6px 0;border-radius:9px;font-size:15px}
 input,select{background:#080f1d;color:white;border:1px solid #304562}
-input[type=file]{padding:10px;position:relative;z-index:2;pointer-events:auto;cursor:pointer;touch-action:manipulation}
-.filePickBtn{display:block;width:100%;margin:6px 0 10px;background:#233650;border:1px solid #4a6b93;touch-action:manipulation}
+input[type=file]{padding:10px}
 button{border:0;background:#318bff;color:white;font-weight:bold;cursor:pointer}
 button:disabled{opacity:.55;cursor:not-allowed}
 .secondary{background:#233650}
@@ -114,7 +113,6 @@ footer{text-align:center;padding:25px;color:#9eafc9;font-size:13px}
         <div class="notice" id="depositPaymentInfo" aria-live="polite"></div>
         <label for="depositProof">إثبات الدفع (صورة مطلوبة)</label>
         <input id="depositProof" type="file" accept="image/*" required>
-        <button type="button" class="filePickBtn" id="chooseDepositProof">اختيار صورة الإثبات من الجهاز</button>
         <label for="depositTransactionRef">رقم العملية / ملاحظة (اختياري)</label>
         <input id="depositTransactionRef" type="text" maxlength="120" placeholder="اكتب رقم العملية إن وجد">
         <div class="muted">ملاحظة المتجر: الرجاء تأكد من اضافة المعلومات بشكل صحيح قبل الدفع !</div>
@@ -157,7 +155,6 @@ footer{text-align:center;padding:25px;color:#9eafc9;font-size:13px}
         <div class="notice" id="directPaymentInfo"></div>
         <label for="proofFile">صورة إثبات التحويل (مطلوبة)</label>
         <input id="proofFile" type="file" accept="image/*">
-        <button type="button" class="filePickBtn" id="chooseOrderProof">اختيار صورة الإثبات من الجهاز</button>
         <label for="transactionRef">رقم العملية أو ملاحظة (اختياري)</label>
         <input id="transactionRef" type="text" maxlength="120" placeholder="رقم العملية إن وجد">
         <div class="muted">ارفع صورة واضحة. الحد الأعلى 5 ميغابايت. سيبقى الطلب قيد المراجعة إلى أن يتحقق المسؤول من الدفع.</div>
@@ -263,14 +260,6 @@ function applyRoleUI(isAdmin) {
 
 const money = n => Number(n).toLocaleString("en-US") + " د.ع";
 const el = id => document.getElementById(id);
-// Buttons provide a clear, direct user gesture to open the device's file picker.
-function openProofPicker(inputId) {
-  const input = el(inputId);
-  if (!input) return;
-  try { input.click(); } catch (error) { console.error("تعذر فتح اختيار الصورة", error); }
-}
-el("chooseDepositProof").addEventListener("click", () => openProofPicker("depositProof"));
-el("chooseOrderProof").addEventListener("click", () => openProofPicker("proofFile"));
 function setMessage(id, message, type="") {
   const node = el(id);
   node.textContent = message || "";
