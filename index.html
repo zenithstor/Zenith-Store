@@ -32,7 +32,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .product{padding:14px;background:#111e32;border:1px solid #263e60;border-radius:13px}
 .product h3{font-size:16px;margin:0 0 10px}
 .price{font-size:18px;font-weight:bold;color:#72bdff;margin:9px 0}
-.muted{font-size:12px;color:#a8b7cc;line-height:1.7}
+.muted{font-size:12px;color:#a8b7cc;line-height:1.7;overflow-wrap:anywhere}
 label{display:block;font-size:14px;color:#dbe8ff;margin-top:9px}
 .notice{padding:11px;border:1px solid #304562;border-radius:10px;background:#0b1423;margin:10px 0}
 .actions{display:flex;gap:8px;flex-wrap:wrap}
@@ -108,6 +108,14 @@ footer{text-align:center;padding:25px;color:#9eafc9;font-size:13px}
     <div id="orderMsg" class="msg" aria-live="polite"></div>
   </section>
 
+  <section class="panel" id="adminPanel" hidden>
+    <h2>لوحة إدارة الطلبات</h2>
+    <div class="muted">تأكد من استلام المبلغ قبل قبول طلب التحويل. الموافقة لا تعني أن الشحن اكتمل.</div>
+    <button type="button" id="refreshOrders">تحديث الطلبات</button>
+    <div id="adminMsg" class="msg" aria-live="polite"></div>
+    <div id="adminOrders"></div>
+  </section>
+
   <section class="panel">
     <h2>تواصل معنا</h2>
     <p>إنستغرام: @zenith.mlbb1</p>
@@ -125,6 +133,7 @@ const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let productsCache = [];
 let selectedProduct = null;
 let selectedProvider = null;
+let adminLoadInProgress = false;
 
 const money = n => Number(n).toLocaleString("en-US") + " د.ع";
 const el = id => document.getElementById(id);
@@ -158,7 +167,7 @@ async function loadProducts() {
 function renderProducts() {
   const box = el("products");
   const provider = el("provider").value;
-  box.innerHTML = "";
+  box.replaceChildren();
   const list = productsCache.filter(p => getPrice(p, provider) != null);
   if (!list.length) {
     box.textContent = "لا توجد منتجات متاحة لهذه الطريقة حالياً.";
@@ -235,6 +244,7 @@ el("loginForm").addEventListener("submit", async e => {
   const {error} = await db.auth.signInWithPassword({email, password});
   setMessage("authMsg", error ? error.message : "تم تسجيل الدخول بنجاح.", error ? "error" : "success");
   await refreshSession();
+  await loadAdminOrders();
 });
 
 el("signup").addEventListener("click", async () => {
@@ -256,6 +266,7 @@ el("signup").addEventListener("click", async () => {
 el("logout").addEventListener("click", async () => {
   const {error} = await db.auth.signOut();
   setMessage("authMsg", error ? error.message : "تم تسجيل الخروج.", error ? "error" : "success");
+  el("adminPanel").hidden = true;
   await refreshSession();
 });
 
@@ -339,11 +350,132 @@ el("purchaseForm").addEventListener("submit", async e => {
   }
 });
 
+async function loadAdminOrders() {
+  if (adminLoadInProgress) return;
+  adminLoadInProgress = true;
+  try {
+    const {data: authData, error: authError} = await db.auth.getUser();
+    const user = authData?.user;
+    if (authError || !user) {
+      el("adminPanel").hidden = true;
+      return;
+    }
+
+    const {data: isAdmin, error: adminError} = await db.rpc("is_admin");
+    if (adminError || isAdmin !== true) {
+      el("adminPanel").hidden = true;
+      return;
+    }
+
+    el("adminPanel").hidden = false;
+    setMessage("adminMsg", "جارٍ تحميل الطلبات...");
+    el("adminOrders").replaceChildren();
+
+    const {data: orders, error} = await db.from("orders")
+      .select("id, created_at, status, price_iqd, zone_id, player_id, product_id, user_id, payment_method, payment_provider, transaction_ref, proof_path")
+      .order("created_at", {ascending:false})
+      .limit(100);
+
+    if (error) {
+      setMessage("adminMsg", "تعذر تحميل الطلبات: " + error.message, "error");
+      return;
+    }
+
+    setMessage("adminMsg", `عدد الطلبات المعروضة: ${(orders || []).length}`);
+    if (!orders || !orders.length) {
+      el("adminOrders").textContent = "لا توجد طلبات حالياً.";
+      return;
+    }
+
+    for (const order of orders) {
+      const card = document.createElement("article");
+      card.className = "product";
+      card.style.marginTop = "12px";
+
+      const title = document.createElement("h3");
+      title.textContent = `طلب #${order.id}`;
+      const details = document.createElement("p");
+      details.className = "muted";
+      details.textContent = `المنتج رقم: ${order.product_id} | السعر: ${money(order.price_iqd)} | الحالة: ${order.status}`;
+      const player = document.createElement("p");
+      player.className = "muted";
+      player.textContent = `Player ID: ${order.player_id} | Zone ID: ${order.zone_id}`;
+      const payment = document.createElement("p");
+      payment.className = "muted";
+      payment.textContent = `طريقة الدفع: ${order.payment_method || "-"} | المزود: ${order.payment_provider || "-"} | رقم العملية: ${order.transaction_ref || "-"}`;
+      const created = document.createElement("p");
+      created.className = "muted";
+      created.textContent = `تاريخ الطلب: ${order.created_at ? new Date(order.created_at).toLocaleString("ar-IQ") : "-"}`;
+      card.append(title, details, player, payment, created);
+
+      if (order.proof_path) {
+        const proofBtn = document.createElement("button");
+        proofBtn.type = "button";
+        proofBtn.className = "secondary";
+        proofBtn.textContent = "عرض إثبات التحويل";
+        proofBtn.addEventListener("click", async () => {
+          proofBtn.disabled = true;
+          const {data, error: proofError} = await db.storage.from("payment-proofs").createSignedUrl(order.proof_path, 60);
+          proofBtn.disabled = false;
+          if (proofError) {
+            setMessage("adminMsg", "تعذر فتح الإثبات: " + proofError.message, "error");
+            return;
+          }
+          window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+        });
+        card.appendChild(proofBtn);
+      }
+
+      if (order.status === "pending") {
+        const actions = document.createElement("div");
+        actions.className = "actions";
+        for (const [status, label, css] of [["approved", "قبول الطلب", ""], ["rejected", "رفض الطلب", "danger"]]) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.textContent = label;
+          if (css) btn.className = css;
+          btn.addEventListener("click", async () => {
+            const confirmText = status === "approved"
+              ? "تأكدت من استلام المبلغ؟ الموافقة لا تعني أن الشحن اكتمل."
+              : "هل تريد رفض هذا الطلب؟";
+            if (!window.confirm(confirmText)) return;
+            btn.disabled = true;
+            const {error: updateError} = await db.rpc("admin_update_order_status", {
+              p_order_id: order.id,
+              p_new_status: status
+            });
+            if (updateError) {
+              setMessage("adminMsg", "فشل تحديث الطلب: " + updateError.message, "error");
+              btn.disabled = false;
+              return;
+            }
+            setMessage("adminMsg", `تم تحديث حالة الطلب #${order.id}.`, "success");
+            await loadAdminOrders();
+          });
+          actions.appendChild(btn);
+        }
+        card.appendChild(actions);
+      }
+      el("adminOrders").appendChild(card);
+    }
+  } finally {
+    adminLoadInProgress = false;
+  }
+}
+
+el("refreshOrders").addEventListener("click", loadAdminOrders);
 el("provider").addEventListener("change", renderProducts);
-db.auth.onAuthStateChange(() => { refreshSession(); });
+db.auth.onAuthStateChange(() => {
+  setTimeout(() => {
+    refreshSession();
+    loadAdminOrders();
+  }, 0);
+});
+el("paymentMethod").addEventListener("change", updatePaymentFields);
 updatePaymentFields();
 refreshSession();
 loadProducts();
+loadAdminOrders();
 </script>
 </body>
 </html>
