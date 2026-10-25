@@ -364,9 +364,10 @@ function renderProducts() {
     buy.type = "button";
     buy.textContent = "شراء";
     buy.addEventListener("click", () => openPurchase(p, provider));
-    card.append(h, priceEl, note, buy);
+        card.append(h, priceEl, note, buy);
     box.appendChild(card);
   });
+}
   setMessage("productsMsg", "عدد المنتجات المتاحة: " + list.length);
 }
 
