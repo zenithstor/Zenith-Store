@@ -429,7 +429,7 @@ async function loadAdminOrders() {
       if (order.status === "pending") {
         const actions = document.createElement("div");
         actions.className = "actions";
-        for (const [status, label, css] of [["approved", "قبول الطلب", ""], ["rejected", "رفض الطلب", "danger"]]) {
+        for (const [status, label, css] of ["processing", "قبول الطلب", ""],, ["rejected", "رفض الطلب", "danger"]]) {
           const btn = document.createElement("button");
           btn.type = "button";
           btn.textContent = label;
