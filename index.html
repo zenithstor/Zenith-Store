@@ -647,7 +647,7 @@ async function loadMyOrders() {
     const {data: sessionData, error: sessionError} = await db.auth.getSession();
     const user = sessionData?.session?.user;
     if (!user) {
-      el("myOrdersPanel").hidden = true;
+      el("myOrdersPanel").hidden = false;
     }
     if (sessionError) {
       setMessage("myOrdersMsg", "تعذر التحقق من الحساب: " + sessionError.message, "error");
