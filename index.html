@@ -1041,6 +1041,19 @@ el("menuWallet").addEventListener("click", async () => {
 });
 
 el("refreshCustomerWallet").addEventListener("click", loadCustomerWallet);
+  
+el("customerWalletPanel").querySelector("[data-back]").addEventListener("click", () => {
+  el("customerWalletPanel").hidden = true;
+  el("productsPanel").hidden = false;
+  el("contactPanel").hidden = false;
+  el("myOrdersPanel").hidden = true;
+  el("purchasePanel").hidden = true;
+
+  el("productsPanel").scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+});
 
 el("menuMyOrders").addEventListener("click", async () => {
   const {data} = await db.auth.getSession();
