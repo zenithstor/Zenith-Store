@@ -1,0 +1,207 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080d18">
+<title>ZenithStore | متجر زينيث</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#080d18;color:#f5f7ff;font-family:Arial,sans-serif}
+header{padding:24px 16px;background:#0d1525;border-bottom:1px solid #234166}
+.brand{font-size:26px;font-weight:900;color:#69baff}
+.brand span{color:#fff}
+.sub{color:#9eafc9;margin-top:8px;font-size:13px}
+main{max-width:850px;margin:auto;padding:18px 14px}
+.panel{background:#101a2b;border:1px solid #203452;border-radius:16px;padding:17px;margin-bottom:18px}
+h2{font-size:19px;margin:0 0 14px}
+input,select,button{width:100%;padding:13px;margin:6px 0;border-radius:9px;font-size:15px}
+input,select{background:#080f1d;color:white;border:1px solid #304562}
+button{border:0;background:#318bff;color:white;font-weight:bold;cursor:pointer}
+.secondary{background:#233650}
+.msg{font-size:14px;color:#8dc9ff;line-height:1.8;overflow-wrap:anywhere}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}
+.product{padding:14px;background:#111e32;border:1px solid #263e60;border-radius:13px}
+.product h3{font-size:16px;margin:0 0 10px}
+.price{font-size:18px;font-weight:bold;color:#72bdff;margin:9px 0}
+.muted{font-size:12px;color:#a8b7cc}
+footer{text-align:center;padding:25px;color:#9eafc9;font-size:13px}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">316 <span>ZENITH STORE</span></div>
+  <div class="sub">متجر زينيث لشحن الجواهر والاشتراكات</div>
+</header>
+
+<main>
+  <section class="panel">
+    <h2>حسابك</h2>
+    <div id="accountStatus" class="msg">أنت تتصفح المتجر كزائر.</div>
+    <form id="loginForm">
+      <input id="email" type="email" placeholder="البريد الإلكتروني" required>
+      <input id="password" type="password" placeholder="كلمة المرور (6 أحرف على الأقل)" minlength="6" required>
+      <button type="submit">تسجيل الدخول</button>
+      <button type="button" class="secondary" id="signup">إنشاء حساب جديد</button>
+      <button type="button" class="secondary" id="logout" hidden>تسجيل الخروج</button>
+    </form>
+    <div id="authMsg" class="msg" aria-live="polite"></div>
+  </section>
+
+  <section class="panel">
+    <h2>منتجات المتجر</h2>
+    <label for="provider">طريقة التسعير</label>
+    <select id="provider">
+      <option value="mastercard">ماستركارد</option>
+      <option value="asiacell">آسياسيل</option>
+    </select>
+    <div id="products" class="grid">
+      <p class="msg">جارٍ تحميل المنتجات...</p>
+    </div>
+    <div id="productsMsg" class="msg"></div>
+  </section>
+
+  <section class="panel">
+    <h2>تواصل معنا</h2>
+    <p>إنستغرام: @zenith.mlbb1</p>
+    <p>تيليغرام: @zenithmlb</p>
+    <p class="muted">هذه نسخة تجريبية لعرض المنتجات وتسجيل الحسابات فقط.</p>
+  </section>
+</main>
+
+<footer>© ZenithStore — متجر زينيث</footer>
+
+<script>
+const SUPABASE_URL = "https://jffcrqxpvaeteovcaetr.supabase.co";
+const SUPABASE_KEY = "sb_publishable_q-I_qTrXfPNs7IUIXwDy_g_rSpi2C4B";
+
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let productsCache = [];
+
+const money = n => Number(n).toLocaleString("en-US") + " د.ع";
+
+async function loadProducts() {
+  const box = document.getElementById("products");
+  box.innerHTML = '<p class="msg">جارٍ تحميل المنتجات...</p>';
+
+  const {data, error} = await db.from("products")
+    .select("id,name,diamonds,product_type,price_mastercard_iqd,price_asiacell_iqd,active")
+    .eq("active", true).order("id");
+
+  if (error) {
+    box.innerHTML = "";
+    document.getElementById("productsMsg").textContent =
+      "تعذر تحميل المنتجات. تأكد من صلاحيات قراءة المنتجات في Supabase.";
+    return;
+  }
+
+  productsCache = data || [];
+  renderProducts();
+}
+
+function renderProducts() {
+  const box = document.getElementById("products");
+  const provider = document.getElementById("provider").value;
+  box.innerHTML = "";
+
+  const list = productsCache.filter(p =>
+    provider === "mastercard"
+      ? p.price_mastercard_iqd != null
+      : p.price_asiacell_iqd != null
+  );
+
+  if (!list.length) {
+    box.textContent = "لا توجد منتجات متاحة لهذه الطريقة حالياً.";
+    return;
+  }
+
+  list.forEach(p => {
+    const price = provider === "mastercard"
+      ? p.price_mastercard_iqd : p.price_asiacell_iqd;
+    const title = p.name || (
+      p.product_type === "weekly"
+        ? "الاشتراك الأسبوعي" : `${p.diamonds || ""} جوهرة`
+    );
+
+    const card = document.createElement("article");
+    card.className = "product";
+
+    const h = document.createElement("h3");
+    h.textContent = title;
+    const priceEl = document.createElement("div");
+    priceEl.className = "price";
+    priceEl.textContent = money(price);
+    const note = document.createElement("div");
+    note.className = "muted";
+    note.textContent = provider === "mastercard" ? "سعر ماستركارد" : "سعر آسياسيل";
+
+    card.append(h, priceEl, note);
+    box.appendChild(card);
+  });
+
+  document.getElementById("productsMsg").textContent =
+    "عدد المنتجات المتاحة: " + list.length;
+}
+
+async function refreshSession() {
+  const {data} = await db.auth.getSession();
+  const user = data.session?.user;
+  document.getElementById("accountStatus").textContent = user
+    ? "تم تسجيل الدخول: " + user.email
+    : "أنت تتصفح المتجر كزائر.";
+  document.getElementById("logout").hidden = !user;
+}
+
+document.getElementById("loginForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const msg = document.getElementById("authMsg");
+  msg.textContent = "جارٍ تسجيل الدخول...";
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+
+  const {error} = await db.auth.signInWithPassword({email, password});
+  msg.textContent = error ? error.message : "تم تسجيل الدخول بنجاح.";
+  await refreshSession();
+});
+
+document.getElementById("signup").addEventListener("click", async () => {
+  const msg = document.getElementById("authMsg");
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+
+  if (!email || password.length < 6) {
+    msg.textContent = "أدخل البريد الإلكتروني وكلمة مرور من 6 أحرف على الأقل.";
+    return;
+  }
+
+  msg.textContent = "جارٍ إنشاء الحساب...";
+  const {error} = await db.auth.signUp({
+    email,
+    password,
+    options: {data: {username: email.split("@")[0]}}
+  });
+
+  msg.textContent = error ? error.message :
+    "تم إرسال طلب التسجيل. قد تحتاج إلى تأكيد بريدك الإلكتروني.";
+});
+
+document.getElementById("logout").addEventListener("click", async () => {
+  const {error} = await db.auth.signOut();
+  document.getElementById("authMsg").textContent =
+    error ? error.message : "تم تسجيل الخروج.";
+  await refreshSession();
+});
+
+document.getElementById("provider").addEventListener("change", renderProducts);
+
+db.auth.onAuthStateChange(() => {
+  refreshSession();
+});
+
+refreshSession();
+loadProducts();
+</script>
+</body>
+</html>
