@@ -1,1543 +1,1024 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#080d18">
-<title>ZenithStore | متجر زينيث</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
-* {
-  box-sizing: border-box;
-}
-
-[hidden] {
-  display: none !important;
-}
-
-:root {
-  color-scheme: light;
-  --blue: #2878f0;
-  --blue-dark: #1659c9;
-  --blue-light: #eaf3ff;
-  --ink: #17243a;
-  --muted: #718096;
-  --border: #e2eaf5;
-  --surface: #ffffff;
-  --page: #f4f7fc;
-  --shadow: 0 8px 24px rgba(36, 79, 140, .07);
-}
-
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 18px;
-}
-
-body {
-  margin: 0;
-  background: var(--page);
-  color: var(--ink);
-  font-family: Arial, sans-serif;
-  line-height: 1.65;
-}
-
-header {
-  position: relative;
-  z-index: 20;
-  padding: 20px 16px;
-  background: rgba(255, 255, 255, .96);
-  border-bottom: 1px solid var(--border);
-  box-shadow: 0 3px 15px rgba(28, 63, 110, .035);
-}
-
-.headerTop {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  max-width: 1000px;
-  margin: auto;
-}
-
-.brand {
-  color: var(--blue);
-  font-size: clamp(21px, 5vw, 30px);
-  font-weight: 900;
-  letter-spacing: -.7px;
-}
-
-.brand span {
-  color: var(--ink);
-}
-
-.sub {
-  color: var(--muted);
-  margin-top: 5px;
-  font-size: 13px;
-}
-
-.menuBtn {
-  width: 48px;
-  min-width: 48px;
-  height: 46px;
-  margin: 0;
-  padding: 8px;
-  border-radius: 14px;
-  font-size: 23px;
-  background: var(--blue-light);
-  color: var(--blue);
-  border: 1px solid #d8e8ff;
-}
-
-.menuBox {
-  max-width: 1000px;
-  margin: 15px auto 0;
-  padding: 14px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  box-shadow: var(--shadow);
-  animation: menuAppear .18s ease-out;
-}
-
-.menuBox button {
-  text-align: right;
-  margin: 4px 0;
-}
-
-.menuAccountArea {
-  padding: 8px 6px 14px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 10px;
-}
-
-.menuAccountArea h3 {
-  margin: 0 0 8px;
-}
-
-.menuAccountArea input {
-  width: 100%;
-}
-
-main {
-  width: 100%;
-  max-width: 1000px;
-  margin: auto;
-  padding: 22px 14px;
-}
-
-.panel {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: var(--shadow);
-  animation: panelAppear .3s ease-out;
-}
-
-h2 {
-  font-size: 21px;
-  font-weight: 800;
-  margin: 0 0 18px;
-  letter-spacing: -.3px;
-}
-
-h3 {
-  font-size: 16px;
-  margin: 0 0 10px;
-}
-
-label {
-  display: block;
-  font-size: 14px;
-  font-weight: 700;
-  color: #455875;
-  margin-top: 12px;
-}
-
-input,
-select,
-button {
-  width: 100%;
-  padding: 13px;
-  margin: 6px 0;
-  border-radius: 12px;
-  font-size: 15px;
-  font-family: inherit;
-}
-
-input,
-select {
-  background: #fbfdff;
-  color: var(--ink);
-  border: 1px solid #dce5f1;
-  outline: none;
-  transition: border-color .18s, box-shadow .18s;
-}
-
-input:focus,
-select:focus {
-  border-color: #6aa4ff;
-  box-shadow: 0 0 0 3px rgba(40, 120, 240, .10);
-}
-
-input[type="file"] {
-  padding: 10px;
-  position: relative;
-  z-index: 2;
-  pointer-events: auto;
-  cursor: pointer;
-  touch-action: manipulation;
-}
-
-button {
-  border: 1px solid transparent;
-  background: var(--blue);
-  color: white;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background .18s, transform .18s, box-shadow .18s;
-  box-shadow: 0 3px 8px rgba(40, 120, 240, .12);
-}
-
-button:hover {
-  background: var(--blue-dark);
-  box-shadow: 0 5px 13px rgba(40, 120, 240, .18);
-}
-
-button:active {
-  transform: scale(.985);
-}
-
-button:disabled {
-  opacity: .55;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-.secondary,
-.filePickBtn {
-  background: #edf4ff;
-  color: #2466cb;
-  border: 1px solid #d9e8ff;
-  box-shadow: none;
-}
-
-.secondary:hover,
-.filePickBtn:hover {
-  background: #dfebff;
-}
-
-.danger {
-  background: #fff0f1;
-  color: #c33e50;
-  border: 1px solid #ffd9de;
-  box-shadow: none;
-}
-
-.danger:hover {
-  background: #ffe2e6;
-}
-
-.filePickBtn {
-  display: block;
-  width: 100%;
-  margin: 6px 0 10px;
-  touch-action: manipulation;
-}
-
-.msg {
-  font-size: 14px;
-  color: #286bc7;
-  line-height: 1.8;
-  overflow-wrap: anywhere;
-}
-
-.error {
-  color: #d63f50;
-}
-
-.success {
-  color: #138456;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  align-items: stretch;
-  margin-top: 18px;
-}
-
-.product {
-  min-width: 0;
-  padding: 15px;
-  background: linear-gradient(155deg, #ffffff 0%, #f9fbff 100%);
-  border: 1px solid #e1eaf6;
-  border-radius: 18px;
-  box-shadow: 0 4px 13px rgba(40, 72, 120, .045);
-  transition: transform .2s, border-color .2s, box-shadow .2s;
-}
-
-.product:hover {
-  transform: translateY(-2px);
-  border-color: #c4dcff;
-  box-shadow: 0 9px 22px rgba(40, 100, 190, .09);
-}
-
-.product h3 {
-  color: #23334d;
-  font-size: 15px;
-  line-height: 1.6;
-  overflow-wrap: anywhere;
-}
-
-.price {
-  font-size: clamp(16px, 4vw, 21px);
-  font-weight: 800;
-  color: var(--blue);
-  margin: 12px 0;
-  overflow-wrap: anywhere;
-}
-
-.muted {
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.8;
-  overflow-wrap: anywhere;
-}
-
-.product button {
-  margin-top: 12px;
-  min-height: 44px;
-  border-radius: 11px;
-}
-
-.notice {
-  padding: 14px;
-  border: 1px solid #e0eaf8;
-  border-radius: 15px;
-  background: #f7faff;
-  margin: 12px 0;
-}
-
-.adminAlert {
-  padding: 13px;
-  margin: 10px 0;
-  border: 1px solid #c9dfff;
-  border-radius: 14px;
-  background: #eff6ff;
-  color: #2459a5;
-  line-height: 1.8;
-}
-
-.actions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.actions button {
-  flex: 1;
-  min-width: 110px;
-}
-
-.toastNotice {
-  position: fixed;
-  z-index: 9999;
-  top: 14px;
-  left: 14px;
-  right: 14px;
-  max-width: 520px;
-  margin: auto;
-  padding: 15px;
-  background: #ffffff;
-  border: 1px solid #b7e8d0;
-  border-radius: 16px;
-  box-shadow: 0 12px 35px rgba(20, 45, 80, .16);
-  color: #176b49;
-  line-height: 1.8;
-}
-
-.toastNotice button {
-  margin-top: 8px;
-}
-
-hr {
-  border-color: var(--border) !important;
-}
-
-footer {
-  text-align: center;
-  padding: 28px 16px;
-  color: #7d8ca2;
-  font-size: 13px;
-}
-
-@keyframes panelAppear {
-  from {
-    opacity: 0;
-    transform: translateY(5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes menuAppear {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (min-width: 700px) {
-  main {
-    padding: 30px 22px;
-  }
-
-  .panel {
-    padding: 26px;
-  }
-
-  .grid {
-    gap: 16px;
-  }
-
-  .product {
-    padding: 20px;
-  }
-}
-
-@media (max-width: 360px) {
-  main {
-    padding: 14px 9px;
-  }
-
-  .panel {
-    padding: 12px;
-    border-radius: 17px;
-  }
-
-  .grid {
-    gap: 8px;
-  }
-
-  .product {
-    padding: 11px;
-    border-radius: 14px;
-  }
-
-  .product h3 {
-    font-size: 14px;
-  }
-
-  .product button {
-    padding: 11px 7px;
-    font-size: 14px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    animation-duration: .01ms !important;
-    transition-duration: .01ms !important;
-  }
-}
-</style>
-</head>
-<body>
-<header>
-  <div class="headerTop">
-    <div>
-      <div class="brand">316 <span>ZENITH STORE</span></div>
-      <div class="sub">متجر زينيث لشحن الجواهر والاشتراكات</div>
-    </div>
-    <button type="button" class="menuBtn" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false">☰</button>
-  </div>
-  <nav class="menuBox" id="mainMenu" hidden>
-    <div class="menuAccountArea">
-      <h3>حسابك</h3>
-      <div id="accountStatus" class="msg">أنت تتصفح المتجر كزائر.</div>
-      <form id="loginForm">
-        <input id="email" type="email" placeholder="البريد الإلكتروني" autocomplete="email" required>
-        <input id="password" type="password" placeholder="كلمة المرور (6 أحرف على الأقل)" minlength="6" autocomplete="current-password" required>
-        <button type="submit" id="loginBtn">تسجيل الدخول</button>
-        <button type="button" class="secondary" id="signup">إنشاء حساب جديد</button>
-        <button type="button" class="secondary" id="logout" hidden>تسجيل الخروج</button>
-      </form>
-      <div id="authMsg" class="msg" aria-live="polite"></div>
-    </div>
-    <button type="button" class="secondary" id="menuWallet" hidden>محفظتي</button>
-    <button type="button" class="secondary" id="menuMyOrders">طلباتي</button>
-    <button type="button" class="secondary" id="menuProducts">منتجات المتجر</button>
-  </nav>
-</header>
-<main>
-
-
-
-  <section class="panel" id="productsPanel">
-    <h2>منتجات المتجر</h2>
-    <label for="provider">طريقة التسعير</label>
-    <select id="provider">
-      <option value="mastercard">ماستركارد</option>
-      <option value="asiacell">آسياسيل</option>
-    </select>
-    <div class="muted">اختيار ماستركارد أو آسياسيل يحدد السعر فقط. عند الشراء تختار طريقة الدفع بشكل منفصل.</div>
-    <div id="products" class="grid">
-      <p class="msg">جارٍ تحميل المنتجات...</p>
-    </div>
-    <div id="productsMsg" class="msg"></div>
-  </section>
-
-  <section class="panel" id="customerWalletPanel" hidden>
-    <h2>محفظتي</h2>
-<button type="button" class="secondary backBtn" data-back>← رجوع</button>
-    <div class="muted">هذا رصيدك الداخلي في متجر زينيث، وتكدر تستخدمه للدفع عند شراء المنتجات.</div>
-    <div class="notice">
-      <div class="muted">الرصيد الحالي</div>
-      <div class="price" id="customerWalletBalance">جارٍ تحميل الرصيد...</div>
-      <button type="button" class="secondary" id="refreshCustomerWallet">تحديث الرصيد</button>
-    </div>
-    <div id="customerWalletMsg" class="msg" aria-live="polite"></div>
-    <section class="notice" aria-labelledby="depositHeading">
-      <h3 id="depositHeading">إضافة رصيد للمحفظة</h3>
-      <div class="muted">حدد المبلغ، ثم اختر طريقة التحويل واتبع المعلومات المعروضة. لا يتم إضافة الرصيد إلا بعد مراجعة الإدارة.</div>
-      <form id="depositForm">
-        <label for="depositAmount">المبلغ المراد إضافته (دينار عراقي)</label>
-        <input id="depositAmount" type="number" min="1000" max="10000000" step="250" inputmode="numeric" placeholder="مثال: 5000" required>
-        <label for="depositProvider">طريقة الدفع</label>
-        <select id="depositProvider" required>
-          <option value="mastercard">ماستركارد</option>
-          <option value="asiacell">آسياسيل</option>
-        </select>
-        <div class="notice" id="depositPaymentInfo" aria-live="polite"></div>
-        <label for="depositProof">إثبات الدفع (صورة مطلوبة)</label>
-        <input id="depositProof" type="file" accept="image/*" required>
-        <button type="button" class="filePickBtn" id="chooseDepositProof">اختيار صورة الإثبات من الجهاز</button>
-        <label for="depositTransactionRef">رقم العملية / ملاحظة (اختياري)</label>
-        <input id="depositTransactionRef" type="text" maxlength="120" placeholder="اكتب رقم العملية إن وجد">
-        <div class="muted">ملاحظة المتجر: الرجاء تأكد من اضافة المعلومات بشكل صحيح قبل الدفع !</div>
-        <button type="submit" id="submitDepositBtn">إرسال طلب إضافة الرصيد</button>
-      </form>
-      <div id="depositMsg" class="msg" aria-live="polite"></div>
-    </section>
-    <section class="notice">
-      <div class="actions" style="align-items:center;justify-content:space-between"><h3>سجل طلبات إضافة الرصيد</h3><button type="button" class="secondary" id="refreshDeposits" style="width:auto">تحديث السجل</button></div>
-      <div id="depositsList" class="muted">سجّل الدخول لعرض طلباتك.</div>
-    </section>
-  </section>
-
-  <section class="panel" id="myOrdersPanel" hidden>
-    <h2>طلباتي</h2>
-<button type="button" class="secondary backBtn" data-back>← رجوع</button>
-    <div class="muted">تابع حالة طلباتك وتاريخها من هنا.</div>
-    <button type="button" class="secondary" id="refreshMyOrders">تحديث طلباتي</button>
-    <div id="myOrdersMsg" class="msg" aria-live="polite"></div>
-    <div id="myOrdersList"></div>
-  </section>
-
-  <section class="panel" id="purchasePanel" hidden>
-    <h2>إتمام الطلب</h2>
-<button type="button" class="secondary backBtn" data-back>← رجوع</button>
-    <div id="selectedProductInfo" class="notice"></div>
-    <form id="purchaseForm">
-      <label for="playerId">Player ID</label>
-      <input id="playerId" inputmode="numeric" autocomplete="off" placeholder="أدخل Player ID" required>
-      <label for="zoneId">Zone ID</label>
-      <input id="zoneId" inputmode="numeric" autocomplete="off" placeholder="أدخل Zone ID" required>
-      <label for="paymentMethod">طريقة الدفع</label>
-      <select id="paymentMethod" required>
-        <option value="wallet">الدفع من رصيد المحفظة</option>
-        <option value="direct">تحويل يدوي وإرفاق إثبات الدفع</option>
-      </select>
-      <div id="walletInfo" class="notice">
-        <div>سيتم خصم سعر المنتج من رصيد محفظتك عند إرسال الطلب.</div>
-        <div class="muted">إذا كان الرصيد غير كافٍ، سيرفض النظام الطلب.</div>
-      </div>
-      <div id="directFields" hidden>
-        <div class="notice" id="directPaymentInfo"></div>
-        <label for="proofFile">صورة إثبات التحويل (مطلوبة)</label>
-        <input id="proofFile" type="file" accept="image/*">
-        <button type="button" class="filePickBtn" id="chooseOrderProof">اختيار صورة الإثبات من الجهاز</button>
-        <label for="transactionRef">رقم العملية أو ملاحظة (اختياري)</label>
-        <input id="transactionRef" type="text" maxlength="120" placeholder="رقم العملية إن وجد">
-        <div class="muted">ارفع صورة واضحة. الحد الأعلى 5 ميغابايت. سيبقى الطلب قيد المراجعة إلى أن يتحقق المسؤول من الدفع.</div>
-      </div>
-      <button type="submit" id="submitOrderBtn">إرسال الطلب</button>
-      <button type="button" class="secondary" id="cancelPurchase">إلغاء</button>
-    </form>
-    <div id="orderMsg" class="msg" aria-live="polite"></div>
-  </section>
-
-  <section class="panel" id="adminPanel" hidden>
-    <h2>لوحة إدارة الطلبات</h2>
-    <div class="adminAlert" id="adminNotificationSummary" aria-live="polite">🔔 إشعارات الطلبات الجديدة تظهر هنا أثناء فتح الموقع.</div>
-    <button type="button" class="secondary" id="clearAdminNotifications">مسح إشعارات الواجهة</button>
-    <div class="muted">تأكد من استلام المبلغ قبل قبول طلب التحويل. الموافقة لا تعني أن الشحن اكتمل.</div>
-    <button type="button" id="refreshOrders">تحديث الطلبات</button>
-    <div id="adminMsg" class="msg" aria-live="polite"></div>
-    <div id="adminOrders"></div>
-
-    <hr style="border:0;border-top:1px solid #304562;margin:22px 0">
-    <h2>طلبات إضافة رصيد المحفظة</h2>
-    <div class="muted">راجع إثبات الدفع قبل الموافقة. الموافقة تستخدم دالة الخادم approve_deposit ولا يستطيع الزبون اعتماد طلبه بنفسه.</div>
-    <button type="button" class="secondary" id="refreshAdminDeposits">تحديث طلبات الإيداع</button>
-    <div id="adminDepositsMsg" class="msg" aria-live="polite"></div>
-    <div id="adminDepositsList"></div>
-
-    <hr style="border:0;border-top:1px solid #304562;margin:22px 0">
-    <h2>إدارة أرصدة المحافظ</h2>
-    <div class="muted">ابحث عن حساب الزبون بالبريد الإلكتروني، ثم أضف أو اخصم رصيداً. كل عملية تُسجّل في سجل المحفظة.</div>
-    <form id="walletSearchForm">
-      <label for="walletSearchEmail">البريد الإلكتروني للزبون</label>
-      <input id="walletSearchEmail" type="email" placeholder="customer@example.com" required>
-      <button type="submit" id="walletSearchBtn">البحث عن الحساب</button>
-    </form>
-    <div id="walletSearchMsg" class="msg" aria-live="polite"></div>
-    <div id="walletManageBox" class="notice" hidden>
-      <h3>الحساب المحدد</h3>
-      <div id="walletUserInfo" class="muted"></div>
-      <div class="price" id="walletCurrentBalance">الرصيد: —</div>
-      <form id="walletAdjustForm">
-        <label for="walletAction">نوع العملية</label>
-        <select id="walletAction" required>
-          <option value="add">إضافة رصيد</option>
-          <option value="deduct">خصم رصيد</option>
-        </select>
-        <label for="walletAmount">المبلغ بالدينار العراقي</label>
-        <input id="walletAmount" type="number" min="1" step="1" inputmode="numeric" placeholder="مثال: 5000" required>
-        <label for="walletReason">سبب العملية</label>
-        <input id="walletReason" type="text" maxlength="250" placeholder="مثال: إضافة رصيد للزبون" required>
-        <button type="submit" id="walletAdjustBtn">تنفيذ العملية</button>
-      </form>
-      <div id="walletAdjustMsg" class="msg" aria-live="polite"></div>
-    </div>
-  </section>
-
-  <section class="panel" id="contactPanel">
-    <h2>تواصل معنا</h2>
-    <p>إنستغرام: @zenith.mlbb1</p>
-    <p>تيليغرام: @zenithmlb</p>
-    <p class="muted">إرسال الطلب لا يعني أن الشحن اكتمل؛ الطلب يحتاج إلى المعالجة والتحقق حسب طريقة الدفع.</p>
-  </section>
-</main>
-<div id="orderToast" class="toastNotice" role="status" aria-live="assertive" hidden></div>
-<footer>© ZenithStore — متجر زينيث</footer>
-
-<script>
-const SUPABASE_URL = "https://jffcrqxpvaeteovcaetr.supabase.co";
-const SUPABASE_KEY = "sb_publishable_q-I_qTrXfPNs7IUIXwDy_g_rSpi2C4B";
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-// بيانات التحويل المعتمدة من إدارة ZenithStore
-const PAYMENT_DETAILS = {
-  mastercard: {label: "ماستركارد", number: "910172198525"},
-  asiacell: {label: "آسياسيل", number: "07766214212"}
-};
-
-let productsCache = [];
-let selectedProduct = null;
-let selectedProvider = null;
-let adminLoadInProgress = false;
-let myOrdersLoadInProgress = false;
-let knownOrderIds = null;
-let adminNotifications = [];
-let notificationPollBusy = false;
-let selectedWalletUser = null;
-let currentUserIsAdmin = false;
-let customerWalletLoadBusy = false;
-
-function applyRoleUI(isAdmin) {
-  currentUserIsAdmin = isAdmin === true;
-  el("productsPanel").hidden = currentUserIsAdmin;
-  el("purchasePanel").hidden = currentUserIsAdmin;
-  el("myOrdersPanel").hidden = true;
-  if (currentUserIsAdmin) {
-  el("customerWalletPanel").hidden = true;
-  }
-  el("menuWallet").hidden = currentUserIsAdmin;
-  el("menuProducts").hidden = currentUserIsAdmin;
-  el("menuMyOrders").hidden = currentUserIsAdmin;
-  if (currentUserIsAdmin) {
-    el("selectedProductInfo").textContent = "";
-    selectedProduct = null;
-    selectedProvider = null;
-  }
-}
-
-const money = n => Number(n).toLocaleString("en-US") + " د.ع";
-const el = id => document.getElementById(id);
-// Buttons provide a clear, direct user gesture to open the device's file picker.
-function openProofPicker(inputId) {
-  const input = el(inputId);
-  if (!input) return;
-  try { input.click(); } catch (error) { console.error("تعذر فتح اختيار الصورة", error); }
-}
-el("chooseDepositProof").addEventListener("click", () => openProofPicker("depositProof"));
-el("chooseOrderProof").addEventListener("click", () => openProofPicker("proofFile"));
-function setMessage(id, message, type="") {
-  const node = el(id);
-  node.textContent = message || "";
-  node.className = "msg" + (type ? " " + type : "");
-}
-function productTitle(p) {
-  return p.name || (p.product_type === "weekly" ? "الاشتراك الأسبوعي" : ${p.diamonds || ""} جوهرة);
-}
-function getPrice(p, provider) {
-  return provider === "mastercard" ? p.price_mastercard_iqd : p.price_asiacell_iqd;
-}
-
-async function loadProducts() {
-  const box = el("products");
-  box.innerHTML = '<p class="msg">جارٍ تحميل المنتجات...</p>';
-  const {data, error} = await db.from("products")
-    .select("id,name,diamonds,product_type,price_mastercard_iqd,price_asiacell_iqd,active")
-    .eq("active", true).order("id");
-  if (error) {
-    box.innerHTML = "";
-    setMessage("productsMsg", "تعذر تحميل المنتجات: " + error.message, "error");
-    return;
-  }
-  productsCache = data || [];
-  renderProducts();
-  if (el("myOrdersPanel") && !el("myOrdersPanel").hidden) loadMyOrders();
-}
-
-function renderProducts() {
-  const box = el("products");
-  const provider = el("provider").value;
-  box.replaceChildren();
-  const list = productsCache.filter(p => getPrice(p, provider) != null);
-  if (!list.length) {
-    box.textContent = "لا توجد منتجات متاحة لهذه الطريقة حالياً.";
-    setMessage("productsMsg", "");
-    return;
-  }
-  list.forEach(p => {
-    const price = getPrice(p, provider);
-    const card = document.createElement("article");
-    card.className = "product";
-    const h = document.createElement("h3");
-    h.textContent = productTitle(p);
-    const priceEl = document.createElement("div");
-    priceEl.className = "price";
-    priceEl.textContent = money(price);
-    const note = document.createElement("div");
-    note.className = "muted";
-    note.textContent = provider === "mastercard" ? "سعر ماستركارد" : "سعر آسياسيل";
-    const buy = document.createElement("button");
-    buy.type = "button";
-    buy.textContent = "شراء";
-    buy.addEventListener("click", () => openPurchase(p, provider));
-    card.append(h, priceEl, note, buy);
-    box.appendChild(card);
-  });
-  setMessage("productsMsg", "عدد المنتجات المتاحة: " + list.length);
-}
-
-function openPurchase(product, provider) {
-  selectedProduct = product;
-  selectedProvider = provider;
-  const price = getPrice(product, provider);
-  el("selectedProductInfo").textContent =
-    ${productTitle(product)} — ${money(price)} (${provider === "mastercard" ? "تسعير ماستركارد" : "تسعير آسياسيل"});
-  el("purchasePanel").hidden = false;
-  setMessage("orderMsg", "");
-  el("purchasePanel").scrollIntoView({behavior:"smooth", block:"start"});
-}
-function updatePaymentFields() {
-  const direct = el("paymentMethod").value === "direct";
-  el("directFields").hidden = !direct;
-  el("walletInfo").hidden = direct;
-  el("proofFile").required = direct;
-  if (direct) renderPaymentInfo("directPaymentInfo", selectedProvider || el("provider").value);
-}
-el("paymentMethod").addEventListener("change", updatePaymentFields);
-el("cancelPurchase").addEventListener("click", () => {
-  el("purchasePanel").hidden = true;
-  el("purchaseForm").reset();
-  updatePaymentFields();
-  selectedProduct = null;
-  selectedProvider = null;
-  setMessage("orderMsg", "");
-});
-
-function renderPaymentInfo(targetId, provider) {
-  const target = el(targetId);
-  if (!target) return;
-  const detail = PAYMENT_DETAILS[provider] || PAYMENT_DETAILS.mastercard;
-  target.replaceChildren();
-  const title = document.createElement("div"); title.className = "muted"; title.textContent = "حوّل المبلغ إلى بيانات الدفع التالية:";
-  const method = document.createElement("div"); method.style.fontWeight = "bold"; method.textContent = detail.label;
-  const number = document.createElement("div"); number.className = "price"; number.textContent = detail.number;
-  const note = document.createElement("div"); note.className = "muted"; note.textContent = "الرجاء تأكد من اضافة المعلومات بشكل صحيح قبل الدفع !";
-  const copy = document.createElement("button"); copy.type = "button"; copy.className = "secondary"; copy.textContent = "نسخ رقم الدفع";
-  copy.addEventListener("click", async () => { try { await navigator.clipboard.writeText(detail.number); copy.textContent = "تم نسخ الرقم"; } catch (_) { copy.textContent = "انسخ الرقم يدوياً"; } });
-  target.append(title, method, number, note, copy);
-}
-
-function depositStatusLabel(status) {
-  const labels = {pending:"قيد المراجعة", processing:"قيد المعالجة", approved:"مقبول", completed:"مكتمل", rejected:"مرفوض", cancelled:"ملغي"};
-  return labels[String(status  "pending").toLowerCase()]  String(status || "قيد المراجعة");
-}
-
-async function loadCustomerDeposits() {
-  const box = el("depositsList");
-  const {data: authData} = await db.auth.getUser();
-  const user = authData?.user;
-  if (!user) { box.textContent = "سجّل الدخول لعرض طلباتك."; return; }
-  box.textContent = "جارٍ تحميل طلبات إضافة الرصيد...";
-  // RLS يجب أن يسمح للمستخدم بقراءة طلبات الإيداع الخاصة به فقط.
-  const {data, error} = await db.from("deposits")
-    .select("id,created_at,amount_iqd,status,payment_method,transaction_ref")
-    .eq("user_id", user.id).order("created_at", {ascending:false}).limit(50);
-  if (error) { box.textContent = "تعذر تحميل سجل الإيداعات: " + error.message; return; }
-  box.replaceChildren();
-  if (!data || !data.length) { box.textContent = "ما عندك طلبات إضافة رصيد حالياً."; return; }
-  data.forEach(row => {
-    const card = document.createElement("div"); card.className = "product"; card.style.marginTop = "9px";
-    const title = document.createElement("strong"); title.textContent = طلب إيداع #${row.id};
-    const amount = document.createElement("div"); amount.className = "price"; amount.textContent = money(row.amount_iqd);
-    const details = document.createElement("div"); details.className = "muted";
-    const provider = row.payment_method || "غير محدد";
-    const date = row.created_at ? new Date(row.created_at).toLocaleString("ar-IQ") : "—";
-    details.textContent = الطريقة: ${provider} · الحالة: ${depositStatusLabel(row.status)} · التاريخ: ${date}${row.transaction_ref ? " · رقم العملية: " + row.transaction_ref : ""};
-    card.append(title, amount, details); box.append(card);
-  });
-}
-
-async function submitDepositRequest(e) {
-  e.preventDefault();
-  const {data: authData, error: authError} = await db.auth.getUser();
-  const user = authData?.user;
-  if (authError || !user) { setMessage("depositMsg", "سجّل الدخول أولاً لإرسال طلب الإيداع.", "error"); return; }
-  const amount = Number(el("depositAmount").value);
-  const provider = el("depositProvider").value;
-  const file = el("depositProof").files[0];
-  if (!Number.isSafeInteger(amount)  amount < 1000  amount > 10000000) { setMessage("depositMsg", "أدخل مبلغاً صحيحاً بين 1,000 و10,000,000 دينار.", "error"); return; }
-  if (!file  !file.type  !file.type.startsWith("image/")) { setMessage("depositMsg", "ارفع صورة إثبات الدفع أولاً.", "error"); return; }
-  if (file.size > 5 * 1024 * 1024) { setMessage("depositMsg", "حجم الصورة يجب ألا يتجاوز 5 ميغابايت.", "error"); return; }
-  const btn = el("submitDepositBtn"); btn.disabled = true; btn.textContent = "جارٍ إرسال الطلب...";
-  let proofPath = null;
-  try {
-    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(-90) || "deposit-proof";
-    proofPath = ${user.id}/deposit-${Date.now()}-${safeName};
-    const {error: uploadError} = await db.storage.from("payment-proofs").upload(proofPath, file, {contentType:file.type, upsert:false});
-    if (uploadError) throw new Error("تعذر رفع الإثبات: " + uploadError.message);
-    // الطلب يُنشأ بحالة pending فقط؛ اعتماد الإيداع وإضافة الرصيد من صلاحية الإدارة.
-    const {data, error} = await db.from("deposits").insert({
-      user_id: user.id,
-      amount_iqd: amount,
-      payment_method: provider,
-      proof_path: proofPath,
-      transaction_ref: el("depositTransactionRef").value.trim() || null,
-      status: "pending"
-    }).select("id").single();
-    if (error) throw new Error("تم رفع الصورة لكن تعذر تسجيل طلب الإيداع في جدول deposits: " + error.message);
-    setMessage("depositMsg", تم إرسال طلب إضافة الرصيد رقم #${data.id}. سيبقى قيد المراجعة ولن يُضاف الرصيد إلا بعد موافقة الإدارة., "success");
-    el("depositForm").reset();
-    renderPaymentInfo("depositPaymentInfo", el("depositProvider").value);
-    await loadCustomerDeposits();
-  } catch (err) {
-    setMessage("depositMsg", err?.message || "حدث خطأ أثناء إرسال الطلب.", "error");
-  } finally { btn.disabled = false; btn.textContent = "إرسال طلب إضافة الرصيد"; }
-}
-
-async function loadCustomerWallet() {
-  if (customerWalletLoadBusy) return;
-  customerWalletLoadBusy = true;
-  try {
-    const {data: authData, error: authError} = await db.auth.getUser();
-    const user = authData?.user;
-    if (authError || !user) {
-      el("customerWalletPanel").hidden = true;
-      el("menuWallet").hidden = true;
-      return;
-    }
-    const {data: isAdmin, error: adminError} = await db.rpc("is_admin");
-    if (!adminError && isAdmin === true) {
-      el("customerWalletPanel").hidden = true;
-      el("menuWallet").hidden = true;
-      return;
-    }
-    el("menuWallet").hidden = false;
-    el("customerWalletBalance").textContent = "جارٍ تحميل الرصيد...";
-    const {data, error} = await db.from("wallet_transactions")
-      .select("amount_iqd")
-      .eq("user_id", user.id);
-    if (error) {
-      el("customerWalletBalance").textContent = "تعذر تحميل الرصيد";
-      setMessage("customerWalletMsg", "تعذر قراءة رصيد المحفظة: " + error.message, "error");
-      return;
-    }
-    const balance = (data  []).reduce((sum, row) => sum + Number(row.amount_iqd  0), 0);
-    el("customerWalletBalance").textContent = money(balance);
-    setMessage("customerWalletMsg", "تم تحديث رصيد محفظتك.", "success");
-    await loadCustomerDeposits();
-  } finally {
-    customerWalletLoadBusy = false;
-  }
-}
-
-async function refreshSession() {
-  const {data, error} = await db.auth.getSession();
-  const user = data?.session?.user;
-  el("accountStatus").textContent = user
-    ? "تم تسجيل الدخول: " + user.email
-    : "أنت تتصفح المتجر كزائر. سجّل الدخول حتى تتمكن من إرسال طلب.";
-  el("logout").hidden = !user;
-  el("loginBtn").hidden = !!user;
-  el("signup").hidden = !!user;
-  el("email").hidden = !!user;
-  el("password").hidden = !!user;
-  el("email").disabled = !!user;
-  el("password").disabled = !!user;
-  if (user) {
-    el("mainMenu").hidden = true;
-    el("menuToggle").setAttribute("aria-expanded", "false");
-  }
-  if (error) setMessage("authMsg", error.message, "error");
-  await loadMyOrders();
-  await loadCustomerWallet();
-}
-
-el("loginForm").addEventListener("submit", async e => {
-  e.preventDefault();
-  const email = el("email").value.trim();
-  const password = el("password").value;
-  setMessage("authMsg", "جارٍ تسجيل الدخول...");
-  const {error} = await db.auth.signInWithPassword({email, password});
-  setMessage("authMsg", error ? error.message : "تم تسجيل الدخول بنجاح.", error ? "error" : "success");
-  await refreshSession();
-  el("mainMenu").hidden = true;
-  el("menuToggle").setAttribute("aria-expanded", "false");
-  await loadAdminOrders();
-    await loadAdminDeposits();
-});
-
-el("signup").addEventListener("click", async () => {
-  const email = el("email").value.trim();
-  const password = el("password").value;
-  if (!email || password.length < 6) {
-    setMessage("authMsg", "أدخل البريد الإلكتروني وكلمة مرور من 6 أحرف على الأقل.", "error");
-    return;
-  }
-  setMessage("authMsg", "جارٍ إنشاء الحساب...");
-  const {error} = await db.auth.signUp({
-    email,
-    password,
-    options: {data: {username: email.split("@")[0]}}
-  });
-  setMessage("authMsg", error ? error.message : "تم إنشاء الحساب. إذا كان تأكيد البريد مفعّلاً فقد تحتاج إلى تأكيده قبل الدخول.", error ? "error" : "success");
-  if (!error) {
-    await refreshSession();
-    const {data: sessionData} = await db.auth.getSession();
-    if (sessionData?.session?.user) {
-      el("mainMenu").hidden = true;
-      el("menuToggle").setAttribute("aria-expanded", "false");
-      await loadAdminOrders();
-      await loadAdminDeposits();
-    }
-  }
-});
-
-el("logout").addEventListener("click", async () => {
-  const {error} = await db.auth.signOut();
-  setMessage("authMsg", error ? error.message : "تم تسجيل الخروج.", error ? "error" : "success");
-  el("adminPanel").hidden = true;
-  applyRoleUI(false);
-  await refreshSession();
-  el("mainMenu").hidden = false;
-  el("menuToggle").setAttribute("aria-expanded", "true");
-});
-
-el("purchaseForm").addEventListener("submit", async e => {
-  e.preventDefault();
-  setMessage("orderMsg", "");
-  const {data: sessionData} = await db.auth.getSession();
-  const user = sessionData?.session?.user;
-  if (!user) {
-    setMessage("orderMsg", "لازم تسجّل الدخول أولاً حتى تشتري.", "error");
-    return;
-  }
-  if (!selectedProduct || !selectedProvider) {
-    setMessage("orderMsg", "اختَر المنتج من جديد وحاول مرة ثانية.", "error");
-    return;
-  }
-  const playerId = el("playerId").value.trim();
-  const zoneId = el("zoneId").value.trim();
-  if (!playerId || !zoneId) {
-    setMessage("orderMsg", "أدخل Player ID وZone ID.", "error");
-    return;
-  }
-
-  const submitBtn = el("submitOrderBtn");
-  submitBtn.disabled = true;
-  submitBtn.textContent = "جارٍ إرسال الطلب...";
-  try {
-    let result;
-    if (el("paymentMethod").value === "wallet") {
-      result = await db.rpc("create_wallet_order", {
-        p_product_id: selectedProduct.id,
-        p_player_id: playerId,
-        p_zone_id: zoneId,
-        p_payment_provider: selectedProvider
-      });
-    } else {
-      const file = el("proofFile").files[0];
-      if (!file) {
-        setMessage("orderMsg", "ارفع صورة إثبات التحويل أولاً.", "error");
-        return;
-      }
-      if (!file.type || !file.type.startsWith("image/")) {
-        setMessage("orderMsg", "الملف لازم يكون صورة.", "error");
-        return;
-      }
-      if (file.size > 5 * 1024 * 1024) {
-        setMessage("orderMsg", "حجم الصورة أكبر من 5 ميغابايت. اختَر صورة أصغر.", "error");
-        return;
-      }
-      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(-90) || "proof-image";
-      const proofPath = ${user.id}/${Date.now()}-${safeName};
-      const {error: uploadError} = await db.storage.from("payment-proofs").upload(
-        proofPath, file, {contentType: file.type, upsert: false}
-      );
-      if (uploadError) throw new Error("تعذر رفع صورة الإثبات: " + uploadError.message);
-      result = await db.rpc("create_direct_order", {
-        p_product_id: selectedProduct.id,
-        p_player_id: playerId,
-        p_zone_id: zoneId,
-        p_payment_provider: selectedProvider,
-        p_proof_path: proofPath,
-        p_transaction_ref: el("transactionRef").value.trim() || null
-      });
-    }
-
-    if (result.error) throw result.error;
-    const orderId = result.data;
-    setMessage("orderMsg",
-      تم استلام طلبك${orderId != null ? " رقم #" + orderId : ""}. حالة الطلب: قيد الانتظار، ولن يُعتبر الشحن مكتملاً إلا بعد معالجته.,
-      "success");
-    el("purchaseForm").reset();
-    updatePaymentFields();
-    await loadMyOrders();
-  } catch (error) {
-    setMessage("orderMsg", "ما تم إرسال الطلب: " + (error?.message || "حدث خطأ غير معروف."), "error");
-  } finally {
-    submitBtn.disabled = false;
-    submitBtn.textContent = "إرسال الطلب";
-  }
-});
-
-function orderStatusArabic(status) {
-  const statuses = {
-    pending: "قيد الانتظار",
-    processing: "قيد المعالجة",
-    completed: "اكتمل الشحن",
-    rejected: "مرفوض"
-  };
-  return statuses[status]  status  "غير معروف";
-}
-
-async function loadMyOrders() {
-  if (myOrdersLoadInProgress) return;
-  myOrdersLoadInProgress = true;
-  try {
-    const {data: sessionData, error: sessionError} = await db.auth.getSession();
-    const user = sessionData?.session?.user;
-    if (!user) {
-      el("myOrdersPanel").hidden = false;
-    }
-    if (sessionError) {
-      setMessage("myOrdersMsg", "تعذر التحقق من الحساب: " + sessionError.message, "error");
-      return;
-    }
-    if (!user) {
-      el("myOrdersList").replaceChildren();
-      setMessage("myOrdersMsg", "");
-      return;
-    }
-
-    const box = el("myOrdersList");
-    box.replaceChildren();
-    setMessage("myOrdersMsg", "جارٍ تحميل طلباتك...");
-
-    const {data: orders, error} = await db.from("orders")
-      .select("id, created_at, status, price_iqd, player_id, zone_id, product_id")
-      .eq("user_id", user.id)
-      .order("created_at", {ascending:false})
-      .limit(100);
-
-    if (error) {
-      setMessage("myOrdersMsg", "تعذر تحميل الطلبات: " + error.message, "error");
-      return;
-    }
-    if (!orders || !orders.length) {
-      setMessage("myOrdersMsg", "ما عندك طلبات حالياً.");
-      return;
-    }
-
-    setMessage("myOrdersMsg", عدد طلباتك: ${orders.length});
-    for (const order of orders) {
-      const card = document.createElement("article");
-      card.className = "product";
-      card.style.marginTop = "12px";
-
-      const title = document.createElement("h3");
-      title.textContent = طلب #${order.id};
-
-      const productInfo = document.createElement("p");
-      productInfo.className = "muted";
-      const product = productsCache.find(p => String(p.id) === String(order.product_id));
-      productInfo.textContent = "المنتج: " + (product ? productTitle(product) : رقم ${order.product_id});
-
-      const price = document.createElement("p");
-      price.className = "muted";
-      price.textContent = "السعر: " + money(order.price_iqd);
-
-      const status = document.createElement("p");
-      status.className = "msg";
-      status.textContent = "الحالة: " + orderStatusArabic(order.status);
-
-      const player = document.createElement("p");
-      player.className = "muted";
-      player.textContent = Player ID: ${order.player_id} | Zone ID: ${order.zone_id};
-
-      const date = document.createElement("p");
-      date.className = "muted";
-      date.textContent = "تاريخ الطلب: " +
-        (order.created_at ? new Date(order.created_at).toLocaleString("ar-IQ") : "-");
-
-      card.append(title, productInfo, price, status, player, date);
-      box.appendChild(card);
-    }
-  } finally {
-    myOrdersLoadInProgress = false;
-  }
-}
-
-function showAdminOrderNotification(order) {
-  const notice = {id: String(order.id), created_at: order.created_at, price_iqd: order.price_iqd, player_id: order.player_id, product_id: order.product_id};
-  adminNotifications.unshift(notice);
-  adminNotifications = adminNotifications.slice(0, 20);
-  const summary = el("adminNotificationSummary");
-  summary.textContent = 🔔 طلب جديد وصل! رقم الطلب #${order.id} — ${money(order.price_iqd)} — Player ID: ${order.player_id || "-"};
-  const toast = el("orderToast");
-  toast.replaceChildren();
-  const message = document.createElement("div");
-  message.textContent = 🔔 وصل طلب جواهر جديد! الطلب #${order.id} | المبلغ: ${money(order.price_iqd)} | Player ID: ${order.player_id || "-"};
-  const button = document.createElement("button");
-  button.type = "button";
-  button.textContent = "عرض الطلبات";
-  button.addEventListener("click", () => {
-    toast.hidden = true;
-    el("adminPanel").hidden = false;
-    el("adminPanel").scrollIntoView({behavior:"smooth", block:"start"});
-    loadAdminOrders();
-  });
-  toast.append(message, button);
-  toast.hidden = false;
-  // Automatically hide the popup after 12 seconds; the notification summary remains visible.
-  window.setTimeout(() => { toast.hidden = true; }, 12000);
-}
-
-async function checkForNewAdminOrders() {
-  if (notificationPollBusy) return;
-  notificationPollBusy = true;
-  try {
-    const {data: authData, error: authError} = await db.auth.getUser();
-    if (authError || !authData?.user) { knownOrderIds = null; return; }
-    const {data: isAdmin, error: adminError} = await db.rpc("is_admin");
-    if (adminError || isAdmin !== true) { knownOrderIds = null; return; }
-    const {data: latestOrders, error} = await db.from("orders")
-      .select("id,created_at,status,price_iqd,player_id,product_id")
-      .order("created_at", {ascending:false}).limit(20);
-    if (error || !latestOrders) return;
-    const currentIds = new Set(latestOrders.map(order => String(order.id)));
-    // First successful check establishes a baseline and avoids notifying for old orders.
-    if (knownOrderIds === null) { knownOrderIds = currentIds; return; }
-    const newOrders = latestOrders.filter(order => !knownOrderIds.has(String(order.id)));
-    knownOrderIds = currentIds;
-    for (const order of newOrders.reverse()) showAdminOrderNotification(order);
-    if (newOrders.length) await loadAdminOrders();
-  } catch (error) {
-    console.error("Admin notification check failed:", error);
-  } finally {
-    notificationPollBusy = false;
-  }
-}
-
-async function loadAdminOrders() {
-  if (adminLoadInProgress) return;
-  adminLoadInProgress = true;
-  try {
-    const {data: authData, error: authError} = await db.auth.getUser();
-    const user = authData?.user;
-    if (authError || !user) {
-      el("adminPanel").hidden = true;
-      applyRoleUI(false);
-      return;
-    }
-    const {data: isAdmin, error: adminError} = await db.rpc("is_admin");
-    if (adminError || isAdmin !== true) {
-      el("adminPanel").hidden = true;
-      selectedWalletUser = null;
-      el("walletManageBox").hidden = true;
-      applyRoleUI(false);
-      return;
-    }
-
-    applyRoleUI(true);
-    el("adminPanel").hidden = false;
-    setMessage("adminMsg", "جارٍ تحميل الطلبات...");
-    el("adminOrders").replaceChildren();
-
-    const {data: orders, error} = await db.from("orders")
-      .select("id, created_at, status, price_iqd, zone_id, player_id, product_id, user_id, payment_method, payment_provider, transaction_ref, proof_path")
-      .order("created_at", {ascending:false})
-      .limit(100);
-
-    if (error) {
-      setMessage("adminMsg", "تعذر تحميل الطلبات: " + error.message, "error");
-      return;
-    }
-    setMessage("adminMsg", عدد الطلبات المعروضة: ${(orders || []).length});
-    if (!orders || !orders.length) {
-      el("adminOrders").textContent = "لا توجد طلبات حالياً.";
-      return;
-    }
-
-    for (const order of orders) {
-      const card = document.createElement("article");
-      card.className = "product";
-      card.style.marginTop = "12px";
-      const title = document.createElement("h3");
-      title.textContent = طلب #${order.id};
-      const details = document.createElement("p");
-      details.className = "muted";
-      details.textContent = المنتج رقم: ${order.product_id} | السعر: ${money(order.price_iqd)} | الحالة: ${orderStatusArabic(order.status)};
-      const player = document.createElement("p");
-      player.className = "muted";
-      player.textContent = Player ID: ${order.player_id} | Zone ID: ${order.zone_id};
-      const payment = document.createElement("p");
-      payment.className = "muted";
-      payment.textContent = طريقة الدفع: ${order.payment_method || "-"} | المزود: ${order.payment_provider || "-"} | رقم العملية: ${order.transaction_ref || "-"};
-      const created = document.createElement("p");
-      created.className = "muted";
-      created.textContent = تاريخ الطلب: ${order.created_at ? new Date(order.created_at).toLocaleString("ar-IQ") : "-"};
-      card.append(title, details, player, payment, created);
-
-      if (order.proof_path) {
-        const proofBtn = document.createElement("button");
-        proofBtn.type = "button";
-        proofBtn.className = "secondary";
-        proofBtn.textContent = "عرض إثبات التحويل";
-        proofBtn.addEventListener("click", async () => {
-          proofBtn.disabled = true;
-          const {data, error: proofError} = await db.storage.from("payment-proofs").createSignedUrl(order.proof_path, 60);
-          proofBtn.disabled = false;
-          if (proofError) {
-            setMessage("adminMsg", "تعذر فتح الإثبات: " + proofError.message, "error");
-            return;
-          }
-          window.open(data.signedUrl, "_blank", "noopener,noreferrer");
-        });
-        card.appendChild(proofBtn);
-      }
-
-      if (order.status === "pending" || order.status === "processing") {
-        const actions = document.createElement("div");
-        actions.className = "actions";
-        const availableActions = order.status === "pending"
-          ? [["processing", "قبول الطلب", ""], ["rejected", "رفض الطلب", "danger"]]
-          : [["completed", "اكتمل الشحن", ""]];
-        for (const [status, label, css] of availableActions) {
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.textContent = label;
-          if (css) btn.className = css;
-          btn.addEventListener("click", async () => {
-            const confirmText = status === "processing"
-              ? "تأكدت من استلام المبلغ؟ الموافقة لا تعني أن الشحن اكتمل."
-              : status === "completed"
-                ? "هل أكملت شحن اللاعب فعلياً؟ سيتم وضع الطلب كمكتمل."
-                : "هل تريد رفض هذا الطلب؟";
-            if (!window.confirm(confirmText)) return;
-            btn.disabled = true;
-            const {error: updateError} = await db.rpc("admin_update_order_status", {
-              p_order_id: order.id,
-              p_new_status: status
-            });
-            if (updateError) {
-              setMessage("adminMsg", "فشل تحديث الطلب: " + updateError.message, "error");
-              btn.disabled = false;
-              return;
-            }
-            setMessage("adminMsg", تم تحديث حالة الطلب #${order.id}., "success");
-            await loadAdminOrders();
-            await loadMyOrders();
-          });
-          actions.appendChild(btn);
-        }
-        card.appendChild(actions);
-      }
-      el("adminOrders").appendChild(card);
-    }
-  } finally {
-    adminLoadInProgress = false;
-  }
-}
-
-async function loadAdminDeposits() {
-  if (!currentUserIsAdmin) return;
-  const box = el("adminDepositsList");
-  box.textContent = "جارٍ تحميل طلبات الإيداع...";
-  const {data, error} = await db.from("deposits")
-    .select("id,user_id,created_at,amount_iqd,status,payment_method,proof_path,transaction_ref")
-    .order("created_at", {ascending:false}).limit(100);
-  if (error) { box.textContent = "تعذر تحميل طلبات الإيداع: " + error.message; return; }
-  box.replaceChildren();
-  const pending = (data  []).filter(row => String(row.status  "pending").toLowerCase() === "pending");
-  if (!pending.length) { box.textContent = "لا توجد طلبات إيداع قيد المراجعة حالياً."; return; }
-  pending.forEach(row => {
-    const card = document.createElement("div"); card.className = "product"; card.style.marginTop = "9px";
-    const title = document.createElement("strong"); title.textContent = طلب إيداع #${row.id};
-    const amount = document.createElement("div"); amount.className = "price"; amount.textContent = money(row.amount_iqd);
-    const details = document.createElement("div"); details.className = "muted";
-    details.textContent = المستخدم: ${row.user_id} · الطريقة: ${row.payment_method || "—"} · التاريخ: ${row.created_at ? new Date(row.created_at).toLocaleString("ar-IQ") : "—"}${row.transaction_ref ? " · رقم العملية: " + row.transaction_ref : ""};
-    card.append(title, amount, details);
-    if (row.proof_path) {
-      const proof = document.createElement("button"); proof.type = "button"; proof.className = "secondary"; proof.textContent = "عرض إثبات الدفع";
-      proof.addEventListener("click", async () => {
-        const {data: signed, error: signError} = await db.storage.from("payment-proofs").createSignedUrl(row.proof_path, 60);
-        if (signError) { setMessage("adminDepositsMsg", "تعذر فتح الإثبات: " + signError.message, "error"); return; }
-        window.open(signed.signedUrl, "_blank", "noopener");
-      }); card.append(proof);
-    }
-    const approve = document.createElement("button"); approve.type = "button"; approve.textContent = "تأكيد الدفع وإضافة الرصيد";
-    approve.addEventListener("click", async () => {
-      if (!confirm(تأكدت من استلام ${money(row.amount_iqd)} لهذا الطلب؟ سيتم إضافة الرصيد لحساب الزبون.)) return;
-      approve.disabled = true;
-      const {error: approveError} = await db.rpc("approve_deposit", {p_deposit_id: row.id});
-      if (approveError) { setMessage("adminDepositsMsg", "تعذرت الموافقة: " + approveError.message, "error"); approve.disabled = false; return; }
-      setMessage("adminDepositsMsg", تم اعتماد طلب الإيداع #${row.id} وإضافة الرصيد., "success");
-      await loadAdminDeposits();
-    }); card.append(approve); box.append(card);
-  });
-}
-
-el("walletSearchForm").addEventListener("submit", async e => {
-  e.preventDefault();
-  const email = el("walletSearchEmail").value.trim();
-  const btn = el("walletSearchBtn");
-  btn.disabled = true;
-  setMessage("walletSearchMsg", "جارٍ البحث عن الحساب...");
-  setMessage("walletAdjustMsg", "");
-  el("walletManageBox").hidden = true;
-  selectedWalletUser = null;
-  try {
-    const {data: authData, error: authError} = await db.auth.getUser();
-    if (authError || !authData?.user) throw new Error("سجّل الدخول بحساب المشرف أولاً.");
-    const {data: isAdmin, error: adminError} = await db.rpc("is_admin");
-    if (adminError || isAdmin !== true) throw new Error("هذه العملية متاحة للمشرف فقط.");
-    const {data, error} = await db.rpc("admin_find_wallet_user", {p_email: email});
-    if (error) throw error;
-    if (!data || !data.length) {
-      setMessage("walletSearchMsg", "ما لكيت حساب بهذا البريد الإلكتروني.", "error");
-      return;
-    }
-    selectedWalletUser = data[0];
-    el("walletUserInfo").textContent = البريد: ${selectedWalletUser.user_email || email} | اسم المستخدم: ${selectedWalletUser.username || "غير محدد"} | رقم الحساب: ${selectedWalletUser.user_id};
-    el("walletCurrentBalance").textContent = "الرصيد الحالي: " + money(selectedWalletUser.balance_iqd);
-    el("walletManageBox").hidden = false;
-    setMessage("walletSearchMsg", "تم العثور على الحساب. تأكد من البريد قبل تنفيذ أي عملية.", "success");
-  } catch (error) {
-    setMessage("walletSearchMsg", "تعذر البحث: " + (error?.message || "حدث خطأ غير معروف."), "error");
-  } finally {
-    btn.disabled = false;
-  }
-});
-
-el("walletAdjustForm").addEventListener("submit", async e => {
-  e.preventDefault();
-  if (!selectedWalletUser?.user_id) {
-    setMessage("walletAdjustMsg", "ابحث عن حساب الزبون أولاً.", "error");
-    return;
-  }
-  const amount = Number(el("walletAmount").value);
-  const action = el("walletAction").value;
-  const reason = el("walletReason").value.trim();
-  if (!Number.isSafeInteger(amount) || amount <= 0) {
-    setMessage("walletAdjustMsg", "أدخل مبلغاً صحيحاً بالدينار، أكبر من صفر.", "error");
-    return;
-  }
-  if (!reason) {
-    setMessage("walletAdjustMsg", "اكتب سبب العملية.", "error");
-    return;
-  }
-  const signedAmount = action === "deduct" ? -amount : amount;
-  const actionText = action === "deduct" ? "خصم" : "إضافة";
-  if (!window.confirm(تأكيد ${actionText} مبلغ ${money(amount)} للحساب ${selectedWalletUser.user_email || selectedWalletUser.user_id}؟\nالسبب: ${reason})) return;
-  const btn = el("walletAdjustBtn");
-  btn.disabled = true;
-  setMessage("walletAdjustMsg", "جارٍ تنفيذ العملية...");
-  try {
-    const {data: authData, error: authError} = await db.auth.getUser();
-    if (authError || !authData?.user) throw new Error("انتهت الجلسة. سجّل الدخول مجدداً.");
-    const {data: isAdmin, error: adminError} = await db.rpc("is_admin");
-    if (adminError || isAdmin !== true) throw new Error("هذه العملية متاحة للمشرف فقط.");
-          p_user_id: selectedWalletUser.user_id,
-      p_amount_iqd: signedAmount,
-      p_reason: reason
-    });
-    if (error) throw error;
-    selectedWalletUser.balance_iqd = data;
-    el("walletCurrentBalance").textContent = "الرصيد الحالي: " + money(data);
-    el("walletAmount").value = "";
-    el("walletReason").value = "";
-    setMessage("walletAdjustMsg", `نجحت العملية. الرصيد الجديد: ${money(data)}. تم تسجيل العملية في سجل المحفظة.`, "success");
-  } catch (error) {
-    setMessage("walletAdjustMsg", "فشلت العملية: " + (error?.message || "حدث خطأ غير معروف."), "error");
-  } finally {
-    btn.disabled = false;
-  }
-});
-
-el("depositProvider").addEventListener("change", () => renderPaymentInfo("depositPaymentInfo", el("depositProvider").value));
-el("depositForm").addEventListener("submit", submitDepositRequest);
-el("refreshDeposits").addEventListener("click", loadCustomerDeposits);
-renderPaymentInfo("depositPaymentInfo", "mastercard");
-
-el("menuToggle").addEventListener("click", () => {
-  const menu = el("mainMenu");
-  menu.hidden = !menu.hidden;
-  el("menuToggle").setAttribute("aria-expanded", String(!menu.hidden));
-});
-
-el("menuWallet").addEventListener("click", async () => {
-  const {data} = await db.auth.getSession();
-
-  if (!data?.session?.user) {
-    el("mainMenu").hidden = false;
-    el("menuToggle").setAttribute("aria-expanded", "true");
-    setMessage("authMsg", "سجّل الدخول أولاً حتى تشوف محفظتك.", "error");
-    return;
-  }
-
-  el("productsPanel").hidden = true;
-  el("customerWalletPanel").hidden = false;
-  el("myOrdersPanel").hidden = true;
-  el("purchasePanel").hidden = true;
-  el("contactPanel").hidden = true;
-
-  el("mainMenu").hidden = true;
-  el("menuToggle").setAttribute("aria-expanded", "false");
-
-  await loadCustomerWallet();
-  el("customerWalletPanel").scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-  });
-});
-
-el("refreshCustomerWallet").addEventListener("click", loadCustomerWallet);
+<!DOCTYPE html>  <html lang="ar" dir="rtl">  
+<head>  
+<meta charset="UTF-8">  
+<meta name="viewport" content="width=device-width, initial-scale=1">  
+<meta name="theme-color" content="#080d18">  
+<title>ZenithStore | متجر زينيث</title>  
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>  
+<style>  
+*{box-sizing:border-box}  
+[hidden]{display:none!important}  
+body{margin:0;background:#080d18;color:#f5f7ff;font-family:Arial,sans-serif}  
+header{padding:18px 16px;background:#0d1525;border-bottom:1px solid #234166;position:relative}  
+.headerTop{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:850px;margin:auto}  
+.menuBtn{width:48px;min-width:48px;margin:0;padding:10px;font-size:24px;line-height:1;background:#233650}  
+.menuBox{max-width:850px;margin:12px auto 0;padding:10px;background:#101a2b;border:1px solid #304562;border-radius:12px}  
+.menuBox button{text-align:right;margin:3px 0}.menuAccountArea{padding:8px 6px 12px;border-bottom:1px solid #304562;margin-bottom:8px}.menuAccountArea h3{margin:0 0 8px}.menuAccountArea input{width:100%}  
+.brand{font-size:26px;font-weight:900;color:#69baff}  
+.brand span{color:#fff}  
+.sub{color:#9eafc9;margin-top:8px;font-size:13px}  
+main{max-width:850px;margin:auto;padding:18px 14px}  
+.panel{background:#101a2b;border:1px solid #203452;border-radius:16px;padding:17px;margin-bottom:18px}  
+h2{font-size:19px;margin:0 0 14px}  
+h3{font-size:16px;margin:0 0 10px}  
+input,select,button{width:100%;padding:13px;margin:6px 0;border-radius:9px;font-size:15px}  
+input,select{background:#080f1d;color:white;border:1px solid #304562}  
+input[type=file]{padding:10px;position:relative;z-index:2;pointer-events:auto;cursor:pointer;touch-action:manipulation}  
+.filePickBtn{display:block;width:100%;margin:6px 0 10px;background:#233650;border:1px solid #4a6b93;touch-action:manipulation}  
+button{border:0;background:#318bff;color:white;font-weight:bold;cursor:pointer}  
+button:disabled{opacity:.55;cursor:not-allowed}  
+.secondary{background:#233650}  
+.danger{background:#8d3141}  
+.msg{font-size:14px;color:#8dc9ff;line-height:1.8;overflow-wrap:anywhere}  
+.error{color:#ff9da8}  
+.success{color:#9af0c2}  
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}  
+.product{padding:14px;background:#111e32;border:1px solid #263e60;border-radius:13px}  
+.product h3{font-size:16px;margin:0 0 10px}  
+.price{font-size:18px;font-weight:bold;color:#72bdff;margin:9px 0}  
+.muted{font-size:12px;color:#a8b7cc;line-height:1.7;overflow-wrap:anywhere}  
+label{display:block;font-size:14px;color:#dbe8ff;margin-top:9px}  
+.toastNotice{position:fixed;z-index:9999;top:14px;left:14px;right:14px;max-width:520px;margin:auto;padding:14px;background:#102b20;border:1px solid #38b879;border-radius:12px;box-shadow:0 10px 35px #0009;color:#eafff2;line-height:1.8}.toastNotice button{margin-top:8px}.adminAlert{padding:12px;margin:10px 0;border:1px solid #347bff;border-radius:10px;background:#0b1c35;line-height:1.8}.notice{padding:11px;border:1px solid #304562;border-radius:10px;background:#0b1423;margin:10px 0}  
+.actions{display:flex;gap:8px;flex-wrap:wrap}  
+.actions button{flex:1;min-width:120px}  
+footer{text-align:center;padding:25px;color:#9eafc9;font-size:13px}  
+@media(max-width:420px){.brand{font-size:23px}.panel{padding:14px}}  
+</style>  
+</head>  
+<body>  
+<header>  
+  <div class="headerTop">  
+    <div>  
+      <div class="brand">316 <span>ZENITH STORE</span></div>  
+      <div class="sub">متجر زينيث لشحن الجواهر والاشتراكات</div>  
+    </div>  
+    <button type="button" class="menuBtn" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false">☰</button>  
+  </div>  
+  <nav class="menuBox" id="mainMenu" hidden>  
+    <div class="menuAccountArea">  
+      <h3>حسابك</h3>  
+      <div id="accountStatus" class="msg">أنت تتصفح المتجر كزائر.</div>  
+      <form id="loginForm">  
+        <input id="email" type="email" placeholder="البريد الإلكتروني" autocomplete="email" required>  
+        <input id="password" type="password" placeholder="كلمة المرور (6 أحرف على الأقل)" minlength="6" autocomplete="current-password" required>  
+        <button type="submit" id="loginBtn">تسجيل الدخول</button>  
+        <button type="button" class="secondary" id="signup">إنشاء حساب جديد</button>  
+        <button type="button" class="secondary" id="logout" hidden>تسجيل الخروج</button>  
+      </form>  
+      <div id="authMsg" class="msg" aria-live="polite"></div>  
+    </div>  
+    <button type="button" class="secondary" id="menuWallet" hidden>محفظتي</button>  
+    <button type="button" class="secondary" id="menuMyOrders">طلباتي</button>  
+    <button type="button" class="secondary" id="menuProducts">منتجات المتجر</button>  
+  </nav>  
+</header>  
+<main>    <section class="panel" id="productsPanel">  
+    <h2>منتجات المتجر</h2>  
+    <label for="provider">طريقة التسعير</label>  
+    <select id="provider">  
+      <option value="mastercard">ماستركارد</option>  
+      <option value="asiacell">آسياسيل</option>  
+    </select>  
+    <div class="muted">اختيار ماستركارد أو آسياسيل يحدد السعر فقط. عند الشراء تختار طريقة الدفع بشكل منفصل.</div>  
+    <div id="products" class="grid">  
+      <p class="msg">جارٍ تحميل المنتجات...</p>  
+    </div>  
+    <div id="productsMsg" class="msg"></div>  
+  </section>    <section class="panel" id="customerWalletPanel" hidden>  
+    <h2>محفظتي</h2>  
+<button type="button" class="secondary backBtn" data-back>← رجوع</button>  
+    <div class="muted">هذا رصيدك الداخلي في متجر زينيث، وتكدر تستخدمه للدفع عند شراء المنتجات.</div>  
+    <div class="notice">  
+      <div class="muted">الرصيد الحالي</div>  
+      <div class="price" id="customerWalletBalance">جارٍ تحميل الرصيد...</div>  
+      <button type="button" class="secondary" id="refreshCustomerWallet">تحديث الرصيد</button>  
+    </div>  
+    <div id="customerWalletMsg" class="msg" aria-live="polite"></div>  
+    <section class="notice" aria-labelledby="depositHeading">  
+      <h3 id="depositHeading">إضافة رصيد للمحفظة</h3>  
+      <div class="muted">حدد المبلغ، ثم اختر طريقة التحويل واتبع المعلومات المعروضة. لا يتم إضافة الرصيد إلا بعد مراجعة الإدارة.</div>  
+      <form id="depositForm">  
+        <label for="depositAmount">المبلغ المراد إضافته (دينار عراقي)</label>  
+        <input id="depositAmount" type="number" min="1000" max="10000000" step="250" inputmode="numeric" placeholder="مثال: 5000" required>  
+        <label for="depositProvider">طريقة الدفع</label>  
+        <select id="depositProvider" required>  
+          <option value="mastercard">ماستركارد</option>  
+          <option value="asiacell">آسياسيل</option>  
+        </select>  
+        <div class="notice" id="depositPaymentInfo" aria-live="polite"></div>  
+        <label for="depositProof">إثبات الدفع (صورة مطلوبة)</label>  
+        <input id="depositProof" type="file" accept="image/*" required>  
+        <button type="button" class="filePickBtn" id="chooseDepositProof">اختيار صورة الإثبات من الجهاز</button>  
+        <label for="depositTransactionRef">رقم العملية / ملاحظة (اختياري)</label>  
+        <input id="depositTransactionRef" type="text" maxlength="120" placeholder="اكتب رقم العملية إن وجد">  
+        <div class="muted">ملاحظة المتجر: الرجاء تأكد من اضافة المعلومات بشكل صحيح قبل الدفع !</div>  
+        <button type="submit" id="submitDepositBtn">إرسال طلب إضافة الرصيد</button>  
+      </form>  
+      <div id="depositMsg" class="msg" aria-live="polite"></div>  
+    </section>  
+    <section class="notice">  
+      <div class="actions" style="align-items:center;justify-content:space-between"><h3>سجل طلبات إضافة الرصيد</h3><button type="button" class="secondary" id="refreshDeposits" style="width:auto">تحديث السجل</button></div>  
+      <div id="depositsList" class="muted">سجّل الدخول لعرض طلباتك.</div>  
+    </section>  
+  </section>    <section class="panel" id="myOrdersPanel" hidden>  
+    <h2>طلباتي</h2>  
+<button type="button" class="secondary backBtn" data-back>← رجوع</button>  
+    <div class="muted">تابع حالة طلباتك وتاريخها من هنا.</div>  
+    <button type="button" class="secondary" id="refreshMyOrders">تحديث طلباتي</button>  
+    <div id="myOrdersMsg" class="msg" aria-live="polite"></div>  
+    <div id="myOrdersList"></div>  
+  </section>    <section class="panel" id="purchasePanel" hidden>  
+    <h2>إتمام الطلب</h2>  
+<button type="button" class="secondary backBtn" data-back>← رجوع</button>  
+    <div id="selectedProductInfo" class="notice"></div>  
+    <form id="purchaseForm">  
+      <label for="playerId">Player ID</label>  
+      <input id="playerId" inputmode="numeric" autocomplete="off" placeholder="أدخل Player ID" required>  
+      <label for="zoneId">Zone ID</label>  
+      <input id="zoneId" inputmode="numeric" autocomplete="off" placeholder="أدخل Zone ID" required>  
+      <label for="paymentMethod">طريقة الدفع</label>  
+      <select id="paymentMethod" required>  
+        <option value="wallet">الدفع من رصيد المحفظة</option>  
+        <option value="direct">تحويل يدوي وإرفاق إثبات الدفع</option>  
+      </select>  
+      <div id="walletInfo" class="notice">  
+        <div>سيتم خصم سعر المنتج من رصيد محفظتك عند إرسال الطلب.</div>  
+        <div class="muted">إذا كان الرصيد غير كافٍ، سيرفض النظام الطلب.</div>  
+      </div>  
+      <div id="directFields" hidden>  
+        <div class="notice" id="directPaymentInfo"></div>  
+        <label for="proofFile">صورة إثبات التحويل (مطلوبة)</label>  
+        <input id="proofFile" type="file" accept="image/*">  
+        <button type="button" class="filePickBtn" id="chooseOrderProof">اختيار صورة الإثبات من الجهاز</button>  
+        <label for="transactionRef">رقم العملية أو ملاحظة (اختياري)</label>  
+        <input id="transactionRef" type="text" maxlength="120" placeholder="رقم العملية إن وجد">  
+        <div class="muted">ارفع صورة واضحة. الحد الأعلى 5 ميغابايت. سيبقى الطلب قيد المراجعة إلى أن يتحقق المسؤول من الدفع.</div>  
+      </div>  
+      <button type="submit" id="submitOrderBtn">إرسال الطلب</button>  
+      <button type="button" class="secondary" id="cancelPurchase">إلغاء</button>  
+    </form>  
+    <div id="orderMsg" class="msg" aria-live="polite"></div>  
+  </section>    <section class="panel" id="adminPanel" hidden>  
+    <h2>لوحة إدارة الطلبات</h2>  
+    <div class="adminAlert" id="adminNotificationSummary" aria-live="polite">🔔 إشعارات الطلبات الجديدة تظهر هنا أثناء فتح الموقع.</div>  
+    <button type="button" class="secondary" id="clearAdminNotifications">مسح إشعارات الواجهة</button>  
+    <div class="muted">تأكد من استلام المبلغ قبل قبول طلب التحويل. الموافقة لا تعني أن الشحن اكتمل.</div>  
+    <button type="button" id="refreshOrders">تحديث الطلبات</button>  
+    <div id="adminMsg" class="msg" aria-live="polite"></div>  
+    <div id="adminOrders"></div>  <hr style="border:0;border-top:1px solid #304562;margin:22px 0">  
+<h2>طلبات إضافة رصيد المحفظة</h2>  
+<div class="muted">راجع إثبات الدفع قبل الموافقة. الموافقة تستخدم دالة الخادم approve_deposit ولا يستطيع الزبون اعتماد طلبه بنفسه.</div>  
+<button type="button" class="secondary" id="refreshAdminDeposits">تحديث طلبات الإيداع</button>  
+<div id="adminDepositsMsg" class="msg" aria-live="polite"></div>  
+<div id="adminDepositsList"></div>  
+
+<hr style="border:0;border-top:1px solid #304562;margin:22px 0">  
+<h2>إدارة أرصدة المحافظ</h2>  
+<div class="muted">ابحث عن حساب الزبون بالبريد الإلكتروني، ثم أضف أو اخصم رصيداً. كل عملية تُسجّل في سجل المحفظة.</div>  
+<form id="walletSearchForm">  
+  <label for="walletSearchEmail">البريد الإلكتروني للزبون</label>  
+  <input id="walletSearchEmail" type="email" placeholder="customer@example.com" required>  
+  <button type="submit" id="walletSearchBtn">البحث عن الحساب</button>  
+</form>  
+<div id="walletSearchMsg" class="msg" aria-live="polite"></div>  
+<div id="walletManageBox" class="notice" hidden>  
+  <h3>الحساب المحدد</h3>  
+  <div id="walletUserInfo" class="muted"></div>  
+  <div class="price" id="walletCurrentBalance">الرصيد: —</div>  
+  <form id="walletAdjustForm">  
+    <label for="walletAction">نوع العملية</label>  
+    <select id="walletAction" required>  
+      <option value="add">إضافة رصيد</option>  
+      <option value="deduct">خصم رصيد</option>  
+    </select>  
+    <label for="walletAmount">المبلغ بالدينار العراقي</label>  
+    <input id="walletAmount" type="number" min="1" step="1" inputmode="numeric" placeholder="مثال: 5000" required>  
+    <label for="walletReason">سبب العملية</label>  
+    <input id="walletReason" type="text" maxlength="250" placeholder="مثال: إضافة رصيد للزبون" required>  
+    <button type="submit" id="walletAdjustBtn">تنفيذ العملية</button>  
+  </form>  
+  <div id="walletAdjustMsg" class="msg" aria-live="polite"></div>  
+</div>
+
+  </section>    <section class="panel" id="contactPanel">  
+    <h2>تواصل معنا</h2>  
+    <p>إنستغرام: @zenith.mlbb1</p>  
+    <p>تيليغرام: @zenithmlb</p>  
+    <p class="muted">إرسال الطلب لا يعني أن الشحن اكتمل؛ الطلب يحتاج إلى المعالجة والتحقق حسب طريقة الدفع.</p>  
+  </section>  
+</main>  
+<div id="orderToast" class="toastNotice" role="status" aria-live="assertive" hidden></div>  
+<footer>© ZenithStore — متجر زينيث</footer>  <script>  
+const SUPABASE_URL = "https://jffcrqxpvaeteovcaetr.supabase.co";  
+const SUPABASE_KEY = "sb_publishable_q-I_qTrXfPNs7IUIXwDy_g_rSpi2C4B";  
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);  
+// بيانات التحويل المعتمدة من إدارة ZenithStore  
+const PAYMENT_DETAILS = {  
+  mastercard: {label: "ماستركارد", number: "910172198525"},  
+  asiacell: {label: "آسياسيل", number: "07766214212"}  
+};  
   
-el("customerWalletPanel").querySelector("[data-back]").addEventListener("click", () => {
-  el("customerWalletPanel").hidden = true;
-  el("productsPanel").hidden = false;
-  el("contactPanel").hidden = false;
-  el("myOrdersPanel").hidden = true;
-  el("purchasePanel").hidden = true;
-
-  el("productsPanel").scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-  });
-});
-
-
-el("menuMyOrders").addEventListener("click", async () => {
-  const {data} = await db.auth.getSession();
-
-  if (!data?.session?.user) {
-    el("mainMenu").hidden = false;
-    el("menuToggle").setAttribute("aria-expanded", "true");
-    setMessage("authMsg", "سجّل الدخول أولاً حتى تشوف طلباتك.", "error");
-    el("loginForm").scrollIntoView({behavior:"smooth", block:"start"});
-    return;
-  }
-
-  el("productsPanel").hidden = true;
-  el("customerWalletPanel").hidden = true;
-  el("myOrdersPanel").hidden = false;
-  el("purchasePanel").hidden = true;
-  el("contactPanel").hidden = true;
-
-  el("mainMenu").hidden = true;
-  el("menuToggle").setAttribute("aria-expanded", "false");
-
-  await loadMyOrders();
-
-  el("myOrdersPanel").scrollIntoView({behavior:"smooth", block:"start"});
-});
-
-el("menuProducts").addEventListener("click", () => {
-  el("productsPanel").hidden = false;
-  el("customerWalletPanel").hidden = true;
-  el("myOrdersPanel").hidden = true;
-  el("purchasePanel").hidden = true;
-  el("contactPanel").hidden = false;
-
-  el("mainMenu").hidden = true;
-  el("menuToggle").setAttribute("aria-expanded", "false");
-
-  el("productsPanel").scrollIntoView({behavior:"smooth", block:"start"});
-});
-
-el("refreshOrders").addEventListener("click", loadAdminOrders);
-el("refreshAdminDeposits").addEventListener("click", loadAdminDeposits);
-
-el("clearAdminNotifications").addEventListener("click", () => {
-  adminNotifications = [];
-  el("adminNotificationSummary").textContent = "تم مسح إشعارات الواجهة. ستظهر هنا الطلبات الجديدة القادمة.";
-  el("orderToast").hidden = true;
-});
-
-el("refreshMyOrders").addEventListener("click", loadMyOrders);
-  el("myOrdersPanel").querySelector("[data-back]").addEventListener("click", () => {
-  el("myOrdersPanel").hidden = true;
-  el("productsPanel").hidden = false;
-  el("contactPanel").hidden = false;
-  el("customerWalletPanel").hidden = true;
-  el("purchasePanel").hidden = true;
-  el("productsPanel").scrollIntoView({behavior:"smooth", block:"start"});
-});
-el("provider").addEventListener("change", renderProducts);
-
-db.auth.onAuthStateChange(() => {
-  setTimeout(async () => {
-    await refreshSession();
-    await loadAdminOrders();
-  }, 0);
-});
-
-updatePaymentFields();
-refreshSession();
-loadProducts();
-loadAdminOrders();
-loadAdminDeposits();
-checkForNewAdminOrders();
-window.setInterval(checkForNewAdminOrders, 15000);
-</script>
-</body>
-  </html>
+let productsCache = [];  
+let selectedProduct = null;  
+let selectedProvider = null;  
+let adminLoadInProgress = false;  
+let myOrdersLoadInProgress = false;  
+let knownOrderIds = null;  
+let adminNotifications = [];  
+let notificationPollBusy = false;  
+let selectedWalletUser = null;  
+let currentUserIsAdmin = false;  
+let customerWalletLoadBusy = false;  
+  
+function applyRoleUI(isAdmin) {  
+  currentUserIsAdmin = isAdmin === true;  
+  el("productsPanel").hidden = currentUserIsAdmin;  
+  el("purchasePanel").hidden = currentUserIsAdmin;  
+  el("myOrdersPanel").hidden = true;  
+  if (currentUserIsAdmin) {  
+  el("customerWalletPanel").hidden = true;  
+  }  
+  el("menuWallet").hidden = currentUserIsAdmin;  
+  el("menuProducts").hidden = currentUserIsAdmin;  
+  el("menuMyOrders").hidden = currentUserIsAdmin;  
+  if (currentUserIsAdmin) {  
+    el("selectedProductInfo").textContent = "";  
+    selectedProduct = null;  
+    selectedProvider = null;  
+  }  
+}  
+  
+const money = n => Number(n).toLocaleString("en-US") + " د.ع";  
+const el = id => document.getElementById(id);  
+// Buttons provide a clear, direct user gesture to open the device's file picker.  
+function openProofPicker(inputId) {  
+  const input = el(inputId);  
+  if (!input) return;  
+  try { input.click(); } catch (error) { console.error("تعذر فتح اختيار الصورة", error); }  
+}  
+el("chooseDepositProof").addEventListener("click", () => openProofPicker("depositProof"));  
+el("chooseOrderProof").addEventListener("click", () => openProofPicker("proofFile"));  
+function setMessage(id, message, type="") {  
+  const node = el(id);  
+  node.textContent = message || "";  
+  node.className = "msg" + (type ? " " + type : "");  
+}  
+function productTitle(p) {  
+  return p.name || (p.product_type === "weekly" ? "الاشتراك الأسبوعي" : `${p.diamonds || ""} جوهرة`);  
+}  
+function getPrice(p, provider) {  
+  return provider === "mastercard" ? p.price_mastercard_iqd : p.price_asiacell_iqd;  
+}  
+  
+async function loadProducts() {  
+  const box = el("products");  
+  box.innerHTML = '<p class="msg">جارٍ تحميل المنتجات...</p>';  
+  const {data, error} = await db.from("products")  
+    .select("id,name,diamonds,product_type,price_mastercard_iqd,price_asiacell_iqd,active")  
+    .eq("active", true).order("id");  
+  if (error) {  
+    box.innerHTML = "";  
+    setMessage("productsMsg", "تعذر تحميل المنتجات: " + error.message, "error");  
+    return;  
+  }  
+  productsCache = data || [];  
+  renderProducts();  
+  if (el("myOrdersPanel") && !el("myOrdersPanel").hidden) loadMyOrders();  
+}  
+  
+function renderProducts() {  
+  const box = el("products");  
+  const provider = el("provider").value;  
+  box.replaceChildren();  
+  const list = productsCache.filter(p => getPrice(p, provider) != null);  
+  if (!list.length) {  
+    box.textContent = "لا توجد منتجات متاحة لهذه الطريقة حالياً.";  
+    setMessage("productsMsg", "");  
+    return;  
+  }  
+  list.forEach(p => {  
+    const price = getPrice(p, provider);  
+    const card = document.createElement("article");  
+    card.className = "product";  
+    const h = document.createElement("h3");  
+    h.textContent = productTitle(p);  
+    const priceEl = document.createElement("div");  
+    priceEl.className = "price";  
+    priceEl.textContent = money(price);  
+    const note = document.createElement("div");  
+    note.className = "muted";  
+    note.textContent = provider === "mastercard" ? "سعر ماستركارد" : "سعر آسياسيل";  
+    const buy = document.createElement("button");  
+    buy.type = "button";  
+    buy.textContent = "شراء";  
+    buy.addEventListener("click", () => openPurchase(p, provider));  
+    card.append(h, priceEl, note, buy);  
+    box.appendChild(card);  
+  });  
+  setMessage("productsMsg", "عدد المنتجات المتاحة: " + list.length);  
+}  
+  
+function openPurchase(product, provider) {  
+  selectedProduct = product;  
+  selectedProvider = provider;  
+  const price = getPrice(product, provider);  
+  el("selectedProductInfo").textContent =  
+    `${productTitle(product)} — ${money(price)} (${provider === "mastercard" ? "تسعير ماستركارد" : "تسعير آسياسيل"})`;  
+  el("purchasePanel").hidden = false;  
+  setMessage("orderMsg", "");  
+  el("purchasePanel").scrollIntoView({behavior:"smooth", block:"start"});  
+}  
+function updatePaymentFields() {  
+  const direct = el("paymentMethod").value === "direct";  
+  el("directFields").hidden = !direct;  
+  el("walletInfo").hidden = direct;  
+  el("proofFile").required = direct;  
+  if (direct) renderPaymentInfo("directPaymentInfo", selectedProvider || el("provider").value);  
+}  
+el("paymentMethod").addEventListener("change", updatePaymentFields);  
+el("cancelPurchase").addEventListener("click", () => {  
+  el("purchasePanel").hidden = true;  
+  el("purchaseForm").reset();  
+  updatePaymentFields();  
+  selectedProduct = null;  
+  selectedProvider = null;  
+  setMessage("orderMsg", "");  
+});  
+  
+function renderPaymentInfo(targetId, provider) {  
+  const target = el(targetId);  
+  if (!target) return;  
+  const detail = PAYMENT_DETAILS[provider] || PAYMENT_DETAILS.mastercard;  
+  target.replaceChildren();  
+  const title = document.createElement("div"); title.className = "muted"; title.textContent = "حوّل المبلغ إلى بيانات الدفع التالية:";  
+  const method = document.createElement("div"); method.style.fontWeight = "bold"; method.textContent = detail.label;  
+  const number = document.createElement("div"); number.className = "price"; number.textContent = detail.number;  
+  const note = document.createElement("div"); note.className = "muted"; note.textContent = "الرجاء تأكد من اضافة المعلومات بشكل صحيح قبل الدفع !";  
+  const copy = document.createElement("button"); copy.type = "button"; copy.className = "secondary"; copy.textContent = "نسخ رقم الدفع";  
+  copy.addEventListener("click", async () => { try { await navigator.clipboard.writeText(detail.number); copy.textContent = "تم نسخ الرقم"; } catch (_) { copy.textContent = "انسخ الرقم يدوياً"; } });  
+  target.append(title, method, number, note, copy);  
+}  
+  
+function depositStatusLabel(status) {  
+  const labels = {pending:"قيد المراجعة", processing:"قيد المعالجة", approved:"مقبول", completed:"مكتمل", rejected:"مرفوض", cancelled:"ملغي"};  
+  return labels[String(status || "pending").toLowerCase()] || String(status || "قيد المراجعة");  
+}  
+  
+async function loadCustomerDeposits() {  
+  const box = el("depositsList");  
+  const {data: authData} = await db.auth.getUser();  
+  const user = authData?.user;  
+  if (!user) { box.textContent = "سجّل الدخول لعرض طلباتك."; return; }  
+  box.textContent = "جارٍ تحميل طلبات إضافة الرصيد...";  
+  // RLS يجب أن يسمح للمستخدم بقراءة طلبات الإيداع الخاصة به فقط.  
+  const {data, error} = await db.from("deposits")  
+    .select("id,created_at,amount_iqd,status,payment_method,transaction_ref")  
+    .eq("user_id", user.id).order("created_at", {ascending:false}).limit(50);  
+  if (error) { box.textContent = "تعذر تحميل سجل الإيداعات: " + error.message; return; }  
+  box.replaceChildren();  
+  if (!data || !data.length) { box.textContent = "ما عندك طلبات إضافة رصيد حالياً."; return; }  
+  data.forEach(row => {  
+    const card = document.createElement("div"); card.className = "product"; card.style.marginTop = "9px";  
+    const title = document.createElement("strong"); title.textContent = `طلب إيداع #${row.id}`;  
+    const amount = document.createElement("div"); amount.className = "price"; amount.textContent = money(row.amount_iqd);  
+    const details = document.createElement("div"); details.className = "muted";  
+    const provider = row.payment_method || "غير محدد";  
+    const date = row.created_at ? new Date(row.created_at).toLocaleString("ar-IQ") : "—";  
+    details.textContent = `الطريقة: ${provider} · الحالة: ${depositStatusLabel(row.status)} · التاريخ: ${date}${row.transaction_ref ? " · رقم العملية: " + row.transaction_ref : ""}`;  
+    card.append(title, amount, details); box.append(card);  
+  });  
+}  
+  
+async function submitDepositRequest(e) {  
+  e.preventDefault();  
+  const {data: authData, error: authError} = await db.auth.getUser();  
+  const user = authData?.user;  
+  if (authError || !user) { setMessage("depositMsg", "سجّل الدخول أولاً لإرسال طلب الإيداع.", "error"); return; }  
+  const amount = Number(el("depositAmount").value);  
+  const provider = el("depositProvider").value;  
+  const file = el("depositProof").files[0];  
+  if (!Number.isSafeInteger(amount) || amount < 1000 || amount > 10000000) { setMessage("depositMsg", "أدخل مبلغاً صحيحاً بين 1,000 و10,000,000 دينار.", "error"); return; }  
+  if (!file || !file.type || !file.type.startsWith("image/")) { setMessage("depositMsg", "ارفع صورة إثبات الدفع أولاً.", "error"); return; }  
+  if (file.size > 5 * 1024 * 1024) { setMessage("depositMsg", "حجم الصورة يجب ألا يتجاوز 5 ميغابايت.", "error"); return; }  
+  const btn = el("submitDepositBtn"); btn.disabled = true; btn.textContent = "جارٍ إرسال الطلب...";  
+  let proofPath = null;  
+  try {  
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(-90) || "deposit-proof";  
+    proofPath = `${user.id}/deposit-${Date.now()}-${safeName}`;  
+    const {error: uploadError} = await db.storage.from("payment-proofs").upload(proofPath, file, {contentType:file.type, upsert:false});  
+    if (uploadError) throw new Error("تعذر رفع الإثبات: " + uploadError.message);  
+    // الطلب يُنشأ بحالة pending فقط؛ اعتماد الإيداع وإضافة الرصيد من صلاحية الإدارة.  
+    const {data, error} = await db.from("deposits").insert({  
+      user_id: user.id,  
+      amount_iqd: amount,  
+      payment_method: provider,  
+      proof_path: proofPath,  
+      transaction_ref: el("depositTransactionRef").value.trim() || null,  
+      status: "pending"  
+    }).select("id").single();  
+    if (error) throw new Error("تم رفع الصورة لكن تعذر تسجيل طلب الإيداع في جدول deposits: " + error.message);  
+    setMessage("depositMsg", `تم إرسال طلب إضافة الرصيد رقم #${data.id}. سيبقى قيد المراجعة ولن يُضاف الرصيد إلا بعد موافقة الإدارة.`, "success");  
+    el("depositForm").reset();  
+    renderPaymentInfo("depositPaymentInfo", el("depositProvider").value);  
+    await loadCustomerDeposits();  
+  } catch (err) {  
+    setMessage("depositMsg", err?.message || "حدث خطأ أثناء إرسال الطلب.", "error");  
+  } finally { btn.disabled = false; btn.textContent = "إرسال طلب إضافة الرصيد"; }  
+}  
+  
+async function loadCustomerWallet() {  
+  if (customerWalletLoadBusy) return;  
+  customerWalletLoadBusy = true;  
+  try {  
+    const {data: authData, error: authError} = await db.auth.getUser();  
+    const user = authData?.user;  
+    if (authError || !user) {  
+      el("customerWalletPanel").hidden = true;  
+      el("menuWallet").hidden = true;  
+      return;  
+    }  
+    const {data: isAdmin, error: adminError} = await db.rpc("is_admin");  
+    if (!adminError && isAdmin === true) {  
+      el("customerWalletPanel").hidden = true;  
+      el("menuWallet").hidden = true;  
+      return;  
+    }  
+    el("menuWallet").hidden = false;  
+    el("customerWalletBalance").textContent = "جارٍ تحميل الرصيد...";  
+    const {data, error} = await db.from("wallet_transactions")  
+      .select("amount_iqd")  
+      .eq("user_id", user.id);  
+    if (error) {  
+      el("customerWalletBalance").textContent = "تعذر تحميل الرصيد";  
+      setMessage("customerWalletMsg", "تعذر قراءة رصيد المحفظة: " + error.message, "error");  
+      return;  
+    }  
+    const balance = (data || []).reduce((sum, row) => sum + Number(row.amount_iqd || 0), 0);  
+    el("customerWalletBalance").textContent = money(balance);  
+    setMessage("customerWalletMsg", "تم تحديث رصيد محفظتك.", "success");  
+    await loadCustomerDeposits();  
+  } finally {  
+    customerWalletLoadBusy = false;  
+  }  
+}  
+  
+async function refreshSession() {  
+  const {data, error} = await db.auth.getSession();  
+  const user = data?.session?.user;  
+  el("accountStatus").textContent = user  
+    ? "تم تسجيل الدخول: " + user.email  
+    : "أنت تتصفح المتجر كزائر. سجّل الدخول حتى تتمكن من إرسال طلب.";  
+  el("logout").hidden = !user;  
+  el("loginBtn").hidden = !!user;  
+  el("signup").hidden = !!user;  
+  el("email").hidden = !!user;  
+  el("password").hidden = !!user;  
+  el("email").disabled = !!user;  
+  el("password").disabled = !!user;  
+  if (user) {  
+    el("mainMenu").hidden = true;  
+    el("menuToggle").setAttribute("aria-expanded", "false");  
+  }  
+  if (error) setMessage("authMsg", error.message, "error");  
+  await loadMyOrders();  
+  await loadCustomerWallet();  
+}  
+  
+el("loginForm").addEventListener("submit", async e => {  
+  e.preventDefault();  
+  const email = el("email").value.trim();  
+  const password = el("password").value;  
+  setMessage("authMsg", "جارٍ تسجيل الدخول...");  
+  const {error} = await db.auth.signInWithPassword({email, password});  
+  setMessage("authMsg", error ? error.message : "تم تسجيل الدخول بنجاح.", error ? "error" : "success");  
+  await refreshSession();  
+  el("mainMenu").hidden = true;  
+  el("menuToggle").setAttribute("aria-expanded", "false");  
+  await loadAdminOrders();  
+    await loadAdminDeposits();  
+});  
+  
+el("signup").addEventListener("click", async () => {  
+  const email = el("email").value.trim();  
+  const password = el("password").value;  
+  if (!email || password.length < 6) {  
+    setMessage("authMsg", "أدخل البريد الإلكتروني وكلمة مرور من 6 أحرف على الأقل.", "error");  
+    return;  
+  }  
+  setMessage("authMsg", "جارٍ إنشاء الحساب...");  
+  const {error} = await db.auth.signUp({  
+    email,  
+    password,  
+    options: {data: {username: email.split("@")[0]}}  
+  });  
+  setMessage("authMsg", error ? error.message : "تم إنشاء الحساب. إذا كان تأكيد البريد مفعّلاً فقد تحتاج إلى تأكيده قبل الدخول.", error ? "error" : "success");  
+  if (!error) {  
+    await refreshSession();  
+    const {data: sessionData} = await db.auth.getSession();  
+    if (sessionData?.session?.user) {  
+      el("mainMenu").hidden = true;  
+      el("menuToggle").setAttribute("aria-expanded", "false");  
+      await loadAdminOrders();  
+      await loadAdminDeposits();  
+    }  
+  }  
+});  
+  
+el("logout").addEventListener("click", async () => {  
+  const {error} = await db.auth.signOut();  
+  setMessage("authMsg", error ? error.message : "تم تسجيل الخروج.", error ? "error" : "success");  
+  el("adminPanel").hidden = true;  
+  applyRoleUI(false);  
+  await refreshSession();  
+  el("mainMenu").hidden = false;  
+  el("menuToggle").setAttribute("aria-expanded", "true");  
+});  
+  
+el("purchaseForm").addEventListener("submit", async e => {  
+  e.preventDefault();  
+  setMessage("orderMsg", "");  
+  const {data: sessionData} = await db.auth.getSession();  
+  const user = sessionData?.session?.user;  
+  if (!user) {  
+    setMessage("orderMsg", "لازم تسجّل الدخول أولاً حتى تشتري.", "error");  
+    return;  
+  }  
+  if (!selectedProduct || !selectedProvider) {  
+    setMessage("orderMsg", "اختَر المنتج من جديد وحاول مرة ثانية.", "error");  
+    return;  
+  }  
+  const playerId = el("playerId").value.trim();  
+  const zoneId = el("zoneId").value.trim();  
+  if (!playerId || !zoneId) {  
+    setMessage("orderMsg", "أدخل Player ID وZone ID.", "error");  
+    return;  
+  }  
+  
+  const submitBtn = el("submitOrderBtn");  
+  submitBtn.disabled = true;  
+  submitBtn.textContent = "جارٍ إرسال الطلب...";  
+  try {  
+    let result;  
+    if (el("paymentMethod").value === "wallet") {  
+      result = await db.rpc("create_wallet_order", {  
+        p_product_id: selectedProduct.id,  
+        p_player_id: playerId,  
+        p_zone_id: zoneId,  
+        p_payment_provider: selectedProvider  
+      });  
+    } else {  
+      const file = el("proofFile").files[0];  
+      if (!file) {  
+        setMessage("orderMsg", "ارفع صورة إثبات التحويل أولاً.", "error");  
+        return;  
+      }  
+      if (!file.type || !file.type.startsWith("image/")) {  
+        setMessage("orderMsg", "الملف لازم يكون صورة.", "error");  
+        return;  
+      }  
+      if (file.size > 5 * 1024 * 1024) {  
+        setMessage("orderMsg", "حجم الصورة أكبر من 5 ميغابايت. اختَر صورة أصغر.", "error");  
+        return;  
+      }  
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(-90) || "proof-image";  
+      const proofPath = `${user.id}/${Date.now()}-${safeName}`;  
+      const {error: uploadError} = await db.storage.from("payment-proofs").upload(  
+        proofPath, file, {contentType: file.type, upsert: false}  
+      );  
+      if (uploadError) throw new Error("تعذر رفع صورة الإثبات: " + uploadError.message);  
+      result = await db.rpc("create_direct_order", {  
+        p_product_id: selectedProduct.id,  
+        p_player_id: playerId,  
+        p_zone_id: zoneId,  
+        p_payment_provider: selectedProvider,  
+        p_proof_path: proofPath,  
+        p_transaction_ref: el("transactionRef").value.trim() || null  
+      });  
+    }  
+  
+    if (result.error) throw result.error;  
+    const orderId = result.data;  
+    setMessage("orderMsg",  
+      `تم استلام طلبك${orderId != null ? " رقم #" + orderId : ""}. حالة الطلب: قيد الانتظار، ولن يُعتبر الشحن مكتملاً إلا بعد معالجته.`,  
+      "success");  
+    el("purchaseForm").reset();  
+    updatePaymentFields();  
+    await loadMyOrders();  
+  } catch (error) {  
+    setMessage("orderMsg", "ما تم إرسال الطلب: " + (error?.message || "حدث خطأ غير معروف."), "error");  
+  } finally {  
+    submitBtn.disabled = false;  
+    submitBtn.textContent = "إرسال الطلب";  
+  }  
+});  
+  
+function orderStatusArabic(status) {  
+  const statuses = {  
+    pending: "قيد الانتظار",  
+    processing: "قيد المعالجة",  
+    completed: "اكتمل الشحن",  
+    rejected: "مرفوض"  
+  };  
+  return statuses[status] || status || "غير معروف";  
+}  
+  
+async function loadMyOrders() {  
+  if (myOrdersLoadInProgress) return;  
+  myOrdersLoadInProgress = true;  
+  try {  
+    const {data: sessionData, error: sessionError} = await db.auth.getSession();  
+    const user = sessionData?.session?.user;  
+    if (!user) {  
+      el("myOrdersPanel").hidden = false;  
+    }  
+    if (sessionError) {  
+      setMessage("myOrdersMsg", "تعذر التحقق من الحساب: " + sessionError.message, "error");  
+      return;  
+    }  
+    if (!user) {  
+      el("myOrdersList").replaceChildren();  
+      setMessage("myOrdersMsg", "");  
+      return;  
+    }  
+  
+    const box = el("myOrdersList");  
+    box.replaceChildren();  
+    setMessage("myOrdersMsg", "جارٍ تحميل طلباتك...");  
+  
+    const {data: orders, error} = await db.from("orders")  
+      .select("id, created_at, status, price_iqd, player_id, zone_id, product_id")  
+      .eq("user_id", user.id)  
+      .order("created_at", {ascending:false})  
+      .limit(100);  
+  
+    if (error) {  
+      setMessage("myOrdersMsg", "تعذر تحميل الطلبات: " + error.message, "error");  
+      return;  
+    }  
+    if (!orders || !orders.length) {  
+      setMessage("myOrdersMsg", "ما عندك طلبات حالياً.");  
+      return;  
+    }  
+  
+    setMessage("myOrdersMsg", `عدد طلباتك: ${orders.length}`);  
+    for (const order of orders) {  
+      const card = document.createElement("article");  
+      card.className = "product";  
+      card.style.marginTop = "12px";  
+  
+      const title = document.createElement("h3");  
+      title.textContent = `طلب #${order.id}`;  
+  
+      const productInfo = document.createElement("p");  
+      productInfo.className = "muted";  
+      const product = productsCache.find(p => String(p.id) === String(order.product_id));  
+      productInfo.textContent = "المنتج: " + (product ? productTitle(product) : `رقم ${order.product_id}`);  
+  
+      const price = document.createElement("p");  
+      price.className = "muted";  
+      price.textContent = "السعر: " + money(order.price_iqd);  
+  
+      const status = document.createElement("p");  
+      status.className = "msg";  
+      status.textContent = "الحالة: " + orderStatusArabic(order.status);  
+  
+      const player = document.createElement("p");  
+      player.className = "muted";  
+      player.textContent = `Player ID: ${order.player_id} | Zone ID: ${order.zone_id}`;  
+  
+      const date = document.createElement("p");  
+      date.className = "muted";  
+      date.textContent = "تاريخ الطلب: " +  
+        (order.created_at ? new Date(order.created_at).toLocaleString("ar-IQ") : "-");  
+  
+      card.append(title, productInfo, price, status, player, date);  
+      box.appendChild(card);  
+    }  
+  } finally {  
+    myOrdersLoadInProgress = false;  
+  }  
+}  
+  
+function showAdminOrderNotification(order) {  
+  const notice = {id: String(order.id), created_at: order.created_at, price_iqd: order.price_iqd, player_id: order.player_id, product_id: order.product_id};  
+  adminNotifications.unshift(notice);  
+  adminNotifications = adminNotifications.slice(0, 20);  
+  const summary = el("adminNotificationSummary");  
+  summary.textContent = `🔔 طلب جديد وصل! رقم الطلب #${order.id} — ${money(order.price_iqd)} — Player ID: ${order.player_id || "-"}`;  
+  const toast = el("orderToast");  
+  toast.replaceChildren();  
+  const message = document.createElement("div");  
+  message.textContent = `🔔 وصل طلب جواهر جديد! الطلب #${order.id} | المبلغ: ${money(order.price_iqd)} | Player ID: ${order.player_id || "-"}`;  
+  const button = document.createElement("button");  
+  button.type = "button";  
+  button.textContent = "عرض الطلبات";  
+  button.addEventListener("click", () => {  
+    toast.hidden = true;  
+    el("adminPanel").hidden = false;  
+    el("adminPanel").scrollIntoView({behavior:"smooth", block:"start"});  
+    loadAdminOrders();  
+  });  
+  toast.append(message, button);  
+  toast.hidden = false;  
+  // Automatically hide the popup after 12 seconds; the notification summary remains visible.  
+  window.setTimeout(() => { toast.hidden = true; }, 12000);  
+}  
+  
+async function checkForNewAdminOrders() {  
+  if (notificationPollBusy) return;  
+  notificationPollBusy = true;  
+  try {  
+    const {data: authData, error: authError} = await db.auth.getUser();  
+    if (authError || !authData?.user) { knownOrderIds = null; return; }  
+    const {data: isAdmin, error: adminError} = await db.rpc("is_admin");  
+    if (adminError || isAdmin !== true) { knownOrderIds = null; return; }  
+    const {data: latestOrders, error} = await db.from("orders")  
+      .select("id,created_at,status,price_iqd,player_id,product_id")  
+      .order("created_at", {ascending:false}).limit(20);  
+    if (error || !latestOrders) return;  
+    const currentIds = new Set(latestOrders.map(order => String(order.id)));  
+    // First successful check establishes a baseline and avoids notifying for old orders.  
+    if (knownOrderIds === null) { knownOrderIds = currentIds; return; }  
+    const newOrders = latestOrders.filter(order => !knownOrderIds.has(String(order.id)));  
+    knownOrderIds = currentIds;  
+    for (const order of newOrders.reverse()) showAdminOrderNotification(order);  
+    if (newOrders.length) await loadAdminOrders();  
+  } catch (error) {  
+    console.error("Admin notification check failed:", error);  
+  } finally {  
+    notificationPollBusy = false;  
+  }  
+}  
+  
+async function loadAdminOrders() {  
+  if (adminLoadInProgress) return;  
+  adminLoadInProgress = true;  
+  try {  
+    const {data: authData, error: authError} = await db.auth.getUser();  
+    const user = authData?.user;  
+    if (authError || !user) {  
+      el("adminPanel").hidden = true;  
+      applyRoleUI(false);  
+      return;  
+    }  
+    const {data: isAdmin, error: adminError} = await db.rpc("is_admin");  
+    if (adminError || isAdmin !== true) {  
+      el("adminPanel").hidden = true;  
+      selectedWalletUser = null;  
+      el("walletManageBox").hidden = true;  
+      applyRoleUI(false);  
+      return;  
+    }  
+  
+    applyRoleUI(true);  
+    el("adminPanel").hidden = false;  
+    setMessage("adminMsg", "جارٍ تحميل الطلبات...");  
+    el("adminOrders").replaceChildren();  
+  
+    const {data: orders, error} = await db.from("orders")  
+      .select("id, created_at, status, price_iqd, zone_id, player_id, product_id, user_id, payment_method, payment_provider, transaction_ref, proof_path")  
+      .order("created_at", {ascending:false})  
+      .limit(100);  
+  
+    if (error) {  
+      setMessage("adminMsg", "تعذر تحميل الطلبات: " + error.message, "error");  
+      return;  
+    }  
+    setMessage("adminMsg", `عدد الطلبات المعروضة: ${(orders || []).length}`);  
+    if (!orders || !orders.length) {  
+      el("adminOrders").textContent = "لا توجد طلبات حالياً.";  
+      return;  
+    }  
+  
+    for (const order of orders) {  
+      const card = document.createElement("article");  
+      card.className = "product";  
+      card.style.marginTop = "12px";  
+      const title = document.createElement("h3");  
+      title.textContent = `طلب #${order.id}`;  
+      const details = document.createElement("p");  
+      details.className = "muted";  
+      details.textContent = `المنتج رقم: ${order.product_id} | السعر: ${money(order.price_iqd)} | الحالة: ${orderStatusArabic(order.status)}`;  
+      const player = document.createElement("p");  
+      player.className = "muted";  
+      player.textContent = `Player ID: ${order.player_id} | Zone ID: ${order.zone_id}`;  
+      const payment = document.createElement("p");  
+      payment.className = "muted";  
+      payment.textContent = `طريقة الدفع: ${order.payment_method || "-"} | المزود: ${order.payment_provider || "-"} | رقم العملية: ${order.transaction_ref || "-"}`;  
+      const created = document.createElement("p");  
+      created.className = "muted";  
+      created.textContent = `تاريخ الطلب: ${order.created_at ? new Date(order.created_at).toLocaleString("ar-IQ") : "-"}`;  
+      card.append(title, details, player, payment, created);  
+  
+      if (order.proof_path) {  
+        const proofBtn = document.createElement("button");  
+        proofBtn.type = "button";  
+        proofBtn.className = "secondary";  
+        proofBtn.textContent = "عرض إثبات التحويل";  
+        proofBtn.addEventListener("click", async () => {  
+          proofBtn.disabled = true;  
+          const {data, error: proofError} = await db.storage.from("payment-proofs").createSignedUrl(order.proof_path, 60);  
+          proofBtn.disabled = false;  
+          if (proofError) {  
+            setMessage("adminMsg", "تعذر فتح الإثبات: " + proofError.message, "error");  
+            return;  
+          }  
+          window.open(data.signedUrl, "_blank", "noopener,noreferrer");  
+        });  
+        card.appendChild(proofBtn);  
+      }  
+  
+      if (order.status === "pending" || order.status === "processing") {  
+        const actions = document.createElement("div");  
+        actions.className = "actions";  
+        const availableActions = order.status === "pending"  
+          ? [["processing", "قبول الطلب", ""], ["rejected", "رفض الطلب", "danger"]]  
+          : [["completed", "اكتمل الشحن", ""]];  
+        for (const [status, label, css] of availableActions) {  
+          const btn = document.createElement("button");  
+          btn.type = "button";  
+          btn.textContent = label;  
+          if (css) btn.className = css;  
+          btn.addEventListener("click", async () => {  
+            const confirmText = status === "processing"  
+              ? "تأكدت من استلام المبلغ؟ الموافقة لا تعني أن الشحن اكتمل."  
+              : status === "completed"  
+                ? "هل أكملت شحن اللاعب فعلياً؟ سيتم وضع الطلب كمكتمل."  
+                : "هل تريد رفض هذا الطلب؟";  
+            if (!window.confirm(confirmText)) return;  
+            btn.disabled = true;  
+            const {error: updateError} = await db.rpc("admin_update_order_status", {  
+              p_order_id: order.id,  
+              p_new_status: status  
+            });  
+            if (updateError) {  
+              setMessage("adminMsg", "فشل تحديث الطلب: " + updateError.message, "error");  
+              btn.disabled = false;  
+              return;  
+            }  
+            setMessage("adminMsg", `تم تحديث حالة الطلب #${order.id}.`, "success");  
+            await loadAdminOrders();  
+            await loadMyOrders();  
+          });  
+          actions.appendChild(btn);  
+        }  
+        card.appendChild(actions);  
+      }  
+      el("adminOrders").appendChild(card);  
+    }  
+  } finally {  
+    adminLoadInProgress = false;  
+  }  
+}  
+  
+async function loadAdminDeposits() {  
+  if (!currentUserIsAdmin) return;  
+  const box = el("adminDepositsList");  
+  box.textContent = "جارٍ تحميل طلبات الإيداع...";  
+  const {data, error} = await db.from("deposits")  
+    .select("id,user_id,created_at,amount_iqd,status,payment_method,proof_path,transaction_ref")  
+    .order("created_at", {ascending:false}).limit(100);  
+  if (error) { box.textContent = "تعذر تحميل طلبات الإيداع: " + error.message; return; }  
+  box.replaceChildren();  
+  const pending = (data || []).filter(row => String(row.status || "pending").toLowerCase() === "pending");  
+  if (!pending.length) { box.textContent = "لا توجد طلبات إيداع قيد المراجعة حالياً."; return; }  
+  pending.forEach(row => {  
+    const card = document.createElement("div"); card.className = "product"; card.style.marginTop = "9px";  
+    const title = document.createElement("strong"); title.textContent = `طلب إيداع #${row.id}`;  
+    const amount = document.createElement("div"); amount.className = "price"; amount.textContent = money(row.amount_iqd);  
+    const details = document.createElement("div"); details.className = "muted";  
+    details.textContent = `المستخدم: ${row.user_id} · الطريقة: ${row.payment_method || "—"} · التاريخ: ${row.created_at ? new Date(row.created_at).toLocaleString("ar-IQ") : "—"}${row.transaction_ref ? " · رقم العملية: " + row.transaction_ref : ""}`;  
+    card.append(title, amount, details);  
+    if (row.proof_path) {  
+      const proof = document.createElement("button"); proof.type = "button"; proof.className = "secondary"; proof.textContent = "عرض إثبات الدفع";  
+      proof.addEventListener("click", async () => {  
+        const {data: signed, error: signError} = await db.storage.from("payment-proofs").createSignedUrl(row.proof_path, 60);  
+        if (signError) { setMessage("adminDepositsMsg", "تعذر فتح الإثبات: " + signError.message, "error"); return; }  
+        window.open(signed.signedUrl, "_blank", "noopener");  
+      }); card.append(proof);  
+    }  
+    const approve = document.createElement("button"); approve.type = "button"; approve.textContent = "تأكيد الدفع وإضافة الرصيد";  
+    approve.addEventListener("click", async () => {  
+      if (!confirm(`تأكدت من استلام ${money(row.amount_iqd)} لهذا الطلب؟ سيتم إضافة الرصيد لحساب الزبون.`)) return;  
+      approve.disabled = true;  
+      const {error: approveError} = await db.rpc("approve_deposit", {p_deposit_id: row.id});  
+      if (approveError) { setMessage("adminDepositsMsg", "تعذرت الموافقة: " + approveError.message, "error"); approve.disabled = false; return; }  
+      setMessage("adminDepositsMsg", `تم اعتماد طلب الإيداع #${row.id} وإضافة الرصيد.`, "success");  
+      await loadAdminDeposits();  
+    }); card.append(approve); box.append(card);  
+  });  
+}  
+  
+el("walletSearchForm").addEventListener("submit", async e => {  
+  e.preventDefault();  
+  const email = el("walletSearchEmail").value.trim();  
+  const btn = el("walletSearchBtn");  
+  btn.disabled = true;  
+  setMessage("walletSearchMsg", "جارٍ البحث عن الحساب...");  
+  setMessage("walletAdjustMsg", "");  
+  el("walletManageBox").hidden = true;  
+  selectedWalletUser = null;  
+  try {  
+    const {data: authData, error: authError} = await db.auth.getUser();  
+    if (authError || !authData?.user) throw new Error("سجّل الدخول بحساب المشرف أولاً.");  
+    const {data: isAdmin, error: adminError} = await db.rpc("is_admin");  
+    if (adminError || isAdmin !== true) throw new Error("هذه العملية متاحة للمشرف فقط.");  
+    const {data, error} = await db.rpc("admin_find_wallet_user", {p_email: email});  
+    if (error) throw error;  
+    if (!data || !data.length) {  
+      setMessage("walletSearchMsg", "ما لكيت حساب بهذا البريد الإلكتروني.", "error");  
+      return;  
+    }  
+    selectedWalletUser = data[0];  
+    el("walletUserInfo").textContent = `البريد: ${selectedWalletUser.user_email || email} | اسم المستخدم: ${selectedWalletUser.username || "غير محدد"} | رقم الحساب: ${selectedWalletUser.user_id}`;  
+    el("walletCurrentBalance").textContent = "الرصيد الحالي: " + money(selectedWalletUser.balance_iqd);  
+    el("walletManageBox").hidden = false;  
+    setMessage("walletSearchMsg", "تم العثور على الحساب. تأكد من البريد قبل تنفيذ أي عملية.", "success");  
+  } catch (error) {  
+    setMessage("walletSearchMsg", "تعذر البحث: " + (error?.message || "حدث خطأ غير معروف."), "error");  
+  } finally {  
+    btn.disabled = false;  
+  }  
+});  
+  
+el("walletAdjustForm").addEventListener("submit", async e => {  
+  e.preventDefault();  
+  if (!selectedWalletUser?.user_id) {  
+    setMessage("walletAdjustMsg", "ابحث عن حساب الزبون أولاً.", "error");  
+    return;  
+  }  
+  const amount = Number(el("walletAmount").value);  
+  const action = el("walletAction").value;  
+  const reason = el("walletReason").value.trim();  
+  if (!Number.isSafeInteger(amount) || amount <= 0) {  
+    setMessage("walletAdjustMsg", "أدخل مبلغاً صحيحاً بالدينار، أكبر من صفر.", "error");  
+    return;  
+  }  
+  if (!reason) {  
+    setMessage("walletAdjustMsg", "اكتب سبب العملية.", "error");  
+    return;  
+  }  
+  const signedAmount = action === "deduct" ? -amount : amount;  
+  const actionText = action === "deduct" ? "خصم" : "إضافة";  
+  if (!window.confirm(`تأكيد ${actionText} مبلغ ${money(amount)} للحساب ${selectedWalletUser.user_email || selectedWalletUser.user_id}؟\nالسبب: ${reason}`)) return;  
+  const btn = el("walletAdjustBtn");  
+  btn.disabled = true;  
+  setMessage("walletAdjustMsg", "جارٍ تنفيذ العملية...");  
+  try {  
+    const {data: authData, error: authError} = await db.auth.getUser();  
+    if (authError || !authData?.user) throw new Error("انتهت الجلسة. سجّل الدخول مجدداً.");  
+    const {data: isAdmin, error: adminError} = await db.rpc("is_admin");  
+    if (adminError || isAdmin !== true) throw new Error("هذه العملية متاحة للمشرف فقط.");  
+    const {data, error} = await db.rpc("admin_adjust_wallet", {  
+      p_user_id: selectedWalletUser.user_id,  
+      p_amount_iqd: signedAmount,  
+      p_reason: reason  
+    });  
+    if (error) throw error;  
+    selectedWalletUser.balance_iqd = data;  
+    el("walletCurrentBalance").textContent = "الرصيد الحالي: " + money(data);  
+    el("walletAmount").value = "";  
+    el("walletReason").value = "";  
+    setMessage("walletAdjustMsg", `نجحت العملية. الرصيد الجديد: ${money(data)}. تم تسجيل العملية في سجل المحفظة.`, "success");  
+  } catch (error) {  
+    setMessage("walletAdjustMsg", "فشلت العملية: " + (error?.message || "حدث خطأ غير معروف."), "error");  
+  } finally {  
+    btn.disabled = false;  
+  }  
+});  
+  
+el("depositProvider").addEventListener("change", () => renderPaymentInfo("depositPaymentInfo", el("depositProvider").value));  
+el("depositForm").addEventListener("submit", submitDepositRequest);  
+el("refreshDeposits").addEventListener("click", loadCustomerDeposits);  
+renderPaymentInfo("depositPaymentInfo", "mastercard");  
+  
+el("menuToggle").addEventListener("click", () => {  
+  const menu = el("mainMenu");  
+  menu.hidden = !menu.hidden;  
+  el("menuToggle").setAttribute("aria-expanded", String(!menu.hidden));  
+});  
+  
+el("menuWallet").addEventListener("click", async () => {  
+  const {data} = await db.auth.getSession();  
+  
+  if (!data?.session?.user) {  
+    el("mainMenu").hidden = false;  
+    el("menuToggle").setAttribute("aria-expanded", "true");  
+    setMessage("authMsg", "سجّل الدخول أولاً حتى تشوف محفظتك.", "error");  
+    return;  
+  }  
+  
+  el("productsPanel").hidden = true;  
+  el("customerWalletPanel").hidden = false;  
+  el("myOrdersPanel").hidden = true;  
+  el("purchasePanel").hidden = true;  
+  el("contactPanel").hidden = true;  
+  
+  el("mainMenu").hidden = true;  
+  el("menuToggle").setAttribute("aria-expanded", "false");  
+  
+  await loadCustomerWallet();  
+  el("customerWalletPanel").scrollIntoView({  
+    behavior: "smooth",  
+    block: "start"  
+  })
