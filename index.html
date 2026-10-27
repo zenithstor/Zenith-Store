@@ -3,50 +3,456 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#f4f7fc">
+<meta name="theme-color" content="#080d18">
 <title>ZenithStore | متجر زينيث</title>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+* {
+  box-sizing: border-box;
+}
 
-*{box-sizing:border-box}
-[hidden]{display:none!important}
-:root{color-scheme:light;--blue:#1769e8;--blue2:#3b82f6;--ink:#172b4d;--muted:#6b7b93;--line:#dce7f5;--surface:#fff;--soft:#f3f7fd;--pale:#eaf2ff}
-html{scroll-behavior:smooth;scroll-padding-top:16px}
-body{margin:0;background:#f4f7fc;color:var(--ink);font-family:Arial,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
-header{padding:18px 16px;background:rgba(255,255,255,.96);border-bottom:1px solid #e1eaf6;box-shadow:0 4px 18px rgba(25,70,130,.05);position:relative}
-.headerTop{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:980px;margin:auto}
-.menuBtn{width:46px;min-width:46px;margin:0;padding:10px;font-size:23px;line-height:1;background:#eaf2ff;color:#1757b8;border:1px solid #d7e5fb}
-.menuBox{max-width:980px;margin:12px auto 0;padding:14px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 35px rgba(24,67,125,.08)}
-.menuBox button{text-align:right;margin:3px 0}.menuAccountArea{padding:8px 6px 12px;border-bottom:1px solid var(--line);margin-bottom:8px}.menuAccountArea h3{margin:0 0 8px}.menuAccountArea input{width:100%}
-.brand{font-size:26px;font-weight:900;letter-spacing:.2px;color:#1769e8}.brand span{color:#172b4d}
-.sub{color:#73839a;margin-top:7px;font-size:13px}
-main{max-width:980px;margin:auto;padding:22px 15px}
-.panel{background:var(--surface);border:1px solid #e0e8f3;border-radius:20px;padding:20px;margin-bottom:18px;box-shadow:0 8px 26px rgba(26,65,120,.045)}
-h2{font-size:19px;margin:0 0 14px;color:#18365f}h3{font-size:16px;margin:0 0 10px;color:#203a60}
-input,select,button{width:100%;padding:12px 13px;margin:6px 0;border-radius:11px;font-size:15px;font-family:inherit;transition:background-color .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease}
-input,select{background:#fff;color:#20334f;border:1px solid #d5e0ef;outline:none}
-input::placeholder{color:#9aa8bb}input:focus,select:focus{border-color:#6da5f7;box-shadow:0 0 0 3px rgba(59,130,246,.12)}
-input[type=file]{padding:10px;position:relative;z-index:2;pointer-events:auto;cursor:pointer;touch-action:manipulation;background:#f8fbff}
-.filePickBtn{display:block;width:100%;margin:6px 0 10px;background:#edf4ff;border:1px solid #d0e1fb;color:#205bb5;touch-action:manipulation}
-button{border:1px solid transparent;background:linear-gradient(135deg,#2878ed,#1760d5);color:#fff;font-weight:bold;cursor:pointer;box-shadow:0 3px 8px rgba(23,96,213,.10)}
-button:focus-visible{outline:3px solid rgba(59,130,246,.3);outline-offset:2px}button:disabled{opacity:.55;cursor:not-allowed;box-shadow:none}
-@media(hover:hover){button:not(:disabled):hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(23,96,213,.15)}}
-.secondary{background:#edf4ff;color:#205bb5;border-color:#d8e6fb;box-shadow:none}.danger{background:#fff0f1;color:#bd3445;border-color:#ffd5da;box-shadow:none}
-.msg{font-size:14px;color:#2869bf;line-height:1.8;overflow-wrap:anywhere}.error{color:#c92e43}.success{color:#168453}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.product{min-width:0;padding:13px;background:linear-gradient(180deg,#fff,#fafdff);border:1px solid #dfe9f7;border-radius:15px;box-shadow:0 4px 13px rgba(28,75,140,.035);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;overflow-wrap:anywhere}
-@media(hover:hover){.product:hover{transform:translateY(-2px);border-color:#b9d3fa;box-shadow:0 9px 20px rgba(28,75,140,.08)}}
-.productImage{width:100%;aspect-ratio:1.45;object-fit:contain;background:#eef4fc;border-radius:11px;margin-bottom:10px;display:block}.adminProductRow{display:grid;grid-template-columns:64px minmax(0,1fr);gap:10px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:12px;margin:8px 0;background:#fff}.adminProductRow img{width:64px;height:64px;object-fit:contain;background:#f1f6fd;border-radius:9px}.adminProductRow .actions{grid-column:1/-1}.adminProductRow .actions button{min-width:0}.formGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.formGrid label{margin-top:4px}.formGrid .full{grid-column:1/-1}@media(max-width:420px){.formGrid{grid-template-columns:1fr}.formGrid .full{grid-column:auto}}
-.product h3{font-size:15px;line-height:1.45;margin:0 0 9px;color:#203a60}.price{font-size:17px;font-weight:800;color:#1769e8;margin:9px 0;overflow-wrap:anywhere}
-.muted{font-size:12px;color:#71819a;line-height:1.75;overflow-wrap:anywhere}label{display:block;font-size:14px;color:#425875;margin-top:9px}
-.toastNotice{position:fixed;z-index:9999;top:14px;left:14px;right:14px;max-width:520px;margin:auto;padding:14px;background:#fff;border:1px solid #a8d7bf;border-radius:14px;box-shadow:0 12px 35px rgba(20,50,90,.18);color:#174d36;line-height:1.8}.toastNotice button{margin-top:8px}
-.adminAlert{padding:12px;margin:10px 0;border:1px solid #c8dcff;border-radius:12px;background:#eff5ff;color:#244c88;line-height:1.8}.notice{padding:12px;border:1px solid #e0e9f5;border-radius:13px;background:#f8fbff;margin:10px 0}
-.actions{display:flex;gap:8px;flex-wrap:wrap}.actions button{flex:1;min-width:120px}
-hr{border-color:#e0e9f5!important}footer{text-align:center;padding:25px;color:#8290a5;font-size:13px}
-.backBtn{margin:0 0 12px}
-@media(max-width:420px){.brand{font-size:22px}.sub{font-size:12px}.panel{padding:14px;border-radius:16px}main{padding:15px 10px}.grid{gap:9px}.product{padding:11px}.product h3{font-size:14px}.price{font-size:15px}.grid .product button{padding:10px 7px;font-size:14px}}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+[hidden] {
+  display: none !important;
+}
 
+:root {
+  color-scheme: light;
+  --blue: #2878f0;
+  --blue-dark: #1659c9;
+  --blue-light: #eaf3ff;
+  --ink: #17243a;
+  --muted: #718096;
+  --border: #e2eaf5;
+  --surface: #ffffff;
+  --page: #f4f7fc;
+  --shadow: 0 8px 24px rgba(36, 79, 140, .07);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 18px;
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: Arial, sans-serif;
+  line-height: 1.65;
+}
+
+header {
+  position: relative;
+  z-index: 20;
+  padding: 20px 16px;
+  background: rgba(255, 255, 255, .96);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 3px 15px rgba(28, 63, 110, .035);
+}
+
+.headerTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.brand {
+  color: var(--blue);
+  font-size: clamp(21px, 5vw, 30px);
+  font-weight: 900;
+  letter-spacing: -.7px;
+}
+
+.brand span {
+  color: var(--ink);
+}
+
+.sub {
+  color: var(--muted);
+  margin-top: 5px;
+  font-size: 13px;
+}
+
+.menuBtn {
+  width: 48px;
+  min-width: 48px;
+  height: 46px;
+  margin: 0;
+  padding: 8px;
+  border-radius: 14px;
+  font-size: 23px;
+  background: var(--blue-light);
+  color: var(--blue);
+  border: 1px solid #d8e8ff;
+}
+
+.menuBox {
+  max-width: 1000px;
+  margin: 15px auto 0;
+  padding: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  animation: menuAppear .18s ease-out;
+}
+
+.menuBox button {
+  text-align: right;
+  margin: 4px 0;
+}
+
+.menuAccountArea {
+  padding: 8px 6px 14px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 10px;
+}
+
+.menuAccountArea h3 {
+  margin: 0 0 8px;
+}
+
+.menuAccountArea input {
+  width: 100%;
+}
+
+main {
+  width: 100%;
+  max-width: 1000px;
+  margin: auto;
+  padding: 22px 14px;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  animation: panelAppear .3s ease-out;
+}
+
+h2 {
+  font-size: 21px;
+  font-weight: 800;
+  margin: 0 0 18px;
+  letter-spacing: -.3px;
+}
+
+h3 {
+  font-size: 16px;
+  margin: 0 0 10px;
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: #455875;
+  margin-top: 12px;
+}
+
+input,
+select,
+button {
+  width: 100%;
+  padding: 13px;
+  margin: 6px 0;
+  border-radius: 12px;
+  font-size: 15px;
+  font-family: inherit;
+}
+
+input,
+select {
+  background: #fbfdff;
+  color: var(--ink);
+  border: 1px solid #dce5f1;
+  outline: none;
+  transition: border-color .18s, box-shadow .18s;
+}
+
+input:focus,
+select:focus {
+  border-color: #6aa4ff;
+  box-shadow: 0 0 0 3px rgba(40, 120, 240, .10);
+}
+
+input[type="file"] {
+  padding: 10px;
+  position: relative;
+  z-index: 2;
+  pointer-events: auto;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+button {
+  border: 1px solid transparent;
+  background: var(--blue);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .18s, transform .18s, box-shadow .18s;
+  box-shadow: 0 3px 8px rgba(40, 120, 240, .12);
+}
+
+button:hover {
+  background: var(--blue-dark);
+  box-shadow: 0 5px 13px rgba(40, 120, 240, .18);
+}
+
+button:active {
+  transform: scale(.985);
+}
+
+button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.secondary,
+.filePickBtn {
+  background: #edf4ff;
+  color: #2466cb;
+  border: 1px solid #d9e8ff;
+  box-shadow: none;
+}
+
+.secondary:hover,
+.filePickBtn:hover {
+  background: #dfebff;
+}
+
+.danger {
+  background: #fff0f1;
+  color: #c33e50;
+  border: 1px solid #ffd9de;
+  box-shadow: none;
+}
+
+.danger:hover {
+  background: #ffe2e6;
+}
+
+.filePickBtn {
+  display: block;
+  width: 100%;
+  margin: 6px 0 10px;
+  touch-action: manipulation;
+}
+
+.msg {
+  font-size: 14px;
+  color: #286bc7;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.error {
+  color: #d63f50;
+}
+
+.success {
+  color: #138456;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-items: stretch;
+  margin-top: 18px;
+}
+
+.product {
+  min-width: 0;
+  padding: 15px;
+  background: linear-gradient(155deg, #ffffff 0%, #f9fbff 100%);
+  border: 1px solid #e1eaf6;
+  border-radius: 18px;
+  box-shadow: 0 4px 13px rgba(40, 72, 120, .045);
+  transition: transform .2s, border-color .2s, box-shadow .2s;
+}
+
+.product:hover {
+  transform: translateY(-2px);
+  border-color: #c4dcff;
+  box-shadow: 0 9px 22px rgba(40, 100, 190, .09);
+}
+
+.product h3 {
+  color: #23334d;
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.price {
+  font-size: clamp(16px, 4vw, 21px);
+  font-weight: 800;
+  color: var(--blue);
+  margin: 12px 0;
+  overflow-wrap: anywhere;
+}
+
+.muted {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.product button {
+  margin-top: 12px;
+  min-height: 44px;
+  border-radius: 11px;
+}
+
+.notice {
+  padding: 14px;
+  border: 1px solid #e0eaf8;
+  border-radius: 15px;
+  background: #f7faff;
+  margin: 12px 0;
+}
+
+.adminAlert {
+  padding: 13px;
+  margin: 10px 0;
+  border: 1px solid #c9dfff;
+  border-radius: 14px;
+  background: #eff6ff;
+  color: #2459a5;
+  line-height: 1.8;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.actions button {
+  flex: 1;
+  min-width: 110px;
+}
+
+.toastNotice {
+  position: fixed;
+  z-index: 9999;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  max-width: 520px;
+  margin: auto;
+  padding: 15px;
+  background: #ffffff;
+  border: 1px solid #b7e8d0;
+  border-radius: 16px;
+  box-shadow: 0 12px 35px rgba(20, 45, 80, .16);
+  color: #176b49;
+  line-height: 1.8;
+}
+
+.toastNotice button {
+  margin-top: 8px;
+}
+
+hr {
+  border-color: var(--border) !important;
+}
+
+footer {
+  text-align: center;
+  padding: 28px 16px;
+  color: #7d8ca2;
+  font-size: 13px;
+}
+
+@keyframes panelAppear {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes menuAppear {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 700px) {
+  main {
+    padding: 30px 22px;
+  }
+
+  .panel {
+    padding: 26px;
+  }
+
+  .grid {
+    gap: 16px;
+  }
+
+  .product {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 360px) {
+  main {
+    padding: 14px 9px;
+  }
+
+  .panel {
+    padding: 12px;
+    border-radius: 17px;
+  }
+
+  .grid {
+    gap: 8px;
+  }
+
+  .product {
+    padding: 11px;
+    border-radius: 14px;
+  }
+
+  .product h3 {
+    font-size: 14px;
+  }
+
+  .product button {
+    padding: 11px 7px;
+    font-size: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -95,11 +501,8 @@ hr{border-color:#e0e9f5!important}footer{text-align:center;padding:25px;color:#8
   </section>
 
   <section class="panel" id="customerWalletPanel" hidden>
-    <div class="actions" style="align-items:center;justify-content:space-between;margin-bottom:12px">
-      <h2 style="margin:0">محفظتي</h2>
-      <button type="button" class="secondary" id="walletBackToStore" style="width:auto">← العودة للمتجر</button>
-    </div>
-    <div class="muted" style="margin-bottom:12px">صفحة المحفظة الخاصة بك — إدارة الرصيد وطلبات الإيداع من هنا فقط.</div>
+    <h2>محفظتي</h2>
+<button type="button" class="secondary backBtn" data-back>← رجوع</button>
     <div class="muted">هذا رصيدك الداخلي في متجر زينيث، وتكدر تستخدمه للدفع عند شراء المنتجات.</div>
     <div class="notice">
       <div class="muted">الرصيد الحالي</div>
@@ -121,6 +524,7 @@ hr{border-color:#e0e9f5!important}footer{text-align:center;padding:25px;color:#8
         <div class="notice" id="depositPaymentInfo" aria-live="polite"></div>
         <label for="depositProof">إثبات الدفع (صورة مطلوبة)</label>
         <input id="depositProof" type="file" accept="image/*" required>
+        <button type="button" class="filePickBtn" id="chooseDepositProof">اختيار صورة الإثبات من الجهاز</button>
         <label for="depositTransactionRef">رقم العملية / ملاحظة (اختياري)</label>
         <input id="depositTransactionRef" type="text" maxlength="120" placeholder="اكتب رقم العملية إن وجد">
         <div class="muted">ملاحظة المتجر: الرجاء تأكد من اضافة المعلومات بشكل صحيح قبل الدفع !</div>
@@ -136,6 +540,7 @@ hr{border-color:#e0e9f5!important}footer{text-align:center;padding:25px;color:#8
 
   <section class="panel" id="myOrdersPanel" hidden>
     <h2>طلباتي</h2>
+<button type="button" class="secondary backBtn" data-back>← رجوع</button>
     <div class="muted">تابع حالة طلباتك وتاريخها من هنا.</div>
     <button type="button" class="secondary" id="refreshMyOrders">تحديث طلباتي</button>
     <div id="myOrdersMsg" class="msg" aria-live="polite"></div>
@@ -144,6 +549,7 @@ hr{border-color:#e0e9f5!important}footer{text-align:center;padding:25px;color:#8
 
   <section class="panel" id="purchasePanel" hidden>
     <h2>إتمام الطلب</h2>
+<button type="button" class="secondary backBtn" data-back>← رجوع</button>
     <div id="selectedProductInfo" class="notice"></div>
     <form id="purchaseForm">
       <label for="playerId">Player ID</label>
@@ -163,6 +569,7 @@ hr{border-color:#e0e9f5!important}footer{text-align:center;padding:25px;color:#8
         <div class="notice" id="directPaymentInfo"></div>
         <label for="proofFile">صورة إثبات التحويل (مطلوبة)</label>
         <input id="proofFile" type="file" accept="image/*">
+        <button type="button" class="filePickBtn" id="chooseOrderProof">اختيار صورة الإثبات من الجهاز</button>
         <label for="transactionRef">رقم العملية أو ملاحظة (اختياري)</label>
         <input id="transactionRef" type="text" maxlength="120" placeholder="رقم العملية إن وجد">
         <div class="muted">ارفع صورة واضحة. الحد الأعلى 5 ميغابايت. سيبقى الطلب قيد المراجعة إلى أن يتحقق المسؤول من الدفع.</div>
@@ -177,29 +584,6 @@ hr{border-color:#e0e9f5!important}footer{text-align:center;padding:25px;color:#8
     <h2>لوحة إدارة الطلبات</h2>
     <div class="adminAlert" id="adminNotificationSummary" aria-live="polite">🔔 إشعارات الطلبات الجديدة تظهر هنا أثناء فتح الموقع.</div>
     <button type="button" class="secondary" id="clearAdminNotifications">مسح إشعارات الواجهة</button>
-
-    <hr style="border:0;border-top:1px solid #e0e9f5;margin:22px 0">
-    <h2>إدارة المنتجات والصور</h2>
-    <p class="muted">أضف منتجاً أو عدّل اسمه وأسعاره وصورته وقسمه. التغييرات تظهر للزبائن بعد الحفظ.</p>
-    <form id="productManageForm">
-      <input type="hidden" id="manageProductId"><input type="hidden" id="manageCurrentImageUrl">
-      <div class="formGrid">
-        <div class="full"><label for="manageProductName">اسم المنتج</label><input id="manageProductName" maxlength="120" placeholder="مثال: 55 جوهرة" required></div>
-        <div><label for="manageProductCategory">القسم</label><select id="manageProductCategory" required><option value="diamonds">شحن الجواهر</option><option value="membership">العضوية المميزة</option><option value="weekly">الاشتراكات الأسبوعية</option><option value="accounts">الحسابات</option><option value="other">خدمات أخرى</option></select></div>
-        <div><label for="manageProductType">نوع المنتج</label><select id="manageProductType"><option value="diamonds">جواهر</option><option value="weekly">اشتراك أسبوعي</option></select></div>
-        <div><label for="manageDiamonds">عدد الجواهر (إن وجد)</label><input id="manageDiamonds" type="number" min="0" step="1" placeholder="مثال: 55"></div>
-        <div><label for="manageMastercardPrice">سعر ماستركارد (د.ع)</label><input id="manageMastercardPrice" type="number" min="0" step="1" required></div>
-        <div><label for="manageAsiacellPrice">سعر آسياسيل (د.ع)</label><input id="manageAsiacellPrice" type="number" min="0" step="1" placeholder="اتركه فارغاً إذا غير متوفر"></div>
-        <div><label for="manageProductImage">صورة المنتج</label><input id="manageProductImage" type="file" accept="image/png,image/jpeg,image/webp"></div>
-        <div><label for="manageProductActive">حالة المنتج</label><select id="manageProductActive"><option value="true">متوفر للبيع</option><option value="false">موقوف مؤقتاً</option></select></div>
-        <div class="full"><label for="manageProductDescription">وصف قصير (اختياري)</label><input id="manageProductDescription" maxlength="250" placeholder="تفاصيل تظهر مع المنتج"></div>
-      </div>
-      <div id="manageImagePreview" class="muted"></div>
-      <div class="actions"><button type="submit" id="saveManagedProduct">حفظ المنتج</button><button type="button" class="secondary" id="cancelManagedProduct">إلغاء التعديل</button></div>
-    </form>
-    <div id="productManageMsg" class="msg" aria-live="polite"></div>
-    <div class="actions"><button type="button" class="secondary" id="refreshManagedProducts">تحديث قائمة المنتجات</button></div>
-    <div id="managedProductsList"></div>
     <div class="muted">تأكد من استلام المبلغ قبل قبول طلب التحويل. الموافقة لا تعني أن الشحن اكتمل.</div>
     <button type="button" id="refreshOrders">تحديث الطلبات</button>
     <div id="adminMsg" class="msg" aria-live="polite"></div>
@@ -241,7 +625,7 @@ hr{border-color:#e0e9f5!important}footer{text-align:center;padding:25px;color:#8
     </div>
   </section>
 
-  <section class="panel">
+  <section class="panel" id="contactPanel">
     <h2>تواصل معنا</h2>
     <p>إنستغرام: @zenith.mlbb1</p>
     <p>تيليغرام: @zenithmlb</p>
@@ -252,34 +636,6 @@ hr{border-color:#e0e9f5!important}footer{text-align:center;padding:25px;color:#8
 <footer>© ZenithStore — متجر زينيث</footer>
 
 <script>
-(async function startZenithStore() {
-  async function ensureSupabaseSdk() {
-    if (window.supabase && typeof window.supabase.createClient === "function") return true;
-    const urls = [
-      "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2",
-      "https://unpkg.com/@supabase/supabase-js@2"
-    ];
-    for (const src of urls) {
-      try {
-        await new Promise((resolve, reject) => {
-          const script = document.createElement("script");
-          script.src = src;
-          script.async = true;
-          script.onload = resolve;
-          script.onerror = () => reject(new Error("تعذر تحميل مكتبة الاتصال"));
-          document.head.appendChild(script);
-        });
-        if (window.supabase && typeof window.supabase.createClient === "function") return true;
-      } catch (e) { /* جرّب المصدر البديل */ }
-    }
-    const box = document.getElementById("products");
-    const msg = document.getElementById("productsMsg");
-    if (box) box.innerHTML = '<p class="msg error">تعذر تشغيل الاتصال بقاعدة البيانات.</p>';
-    if (msg) msg.textContent = "تعذر تحميل مكتبة Supabase من مصادرها. تحقق من الاتصال بالإنترنت أو جرّب لاحقاً.";
-    return false;
-  }
-  if (!(await ensureSupabaseSdk())) return;
-
 const SUPABASE_URL = "https://jffcrqxpvaeteovcaetr.supabase.co";
 const SUPABASE_KEY = "sb_publishable_q-I_qTrXfPNs7IUIXwDy_g_rSpi2C4B";
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -305,8 +661,10 @@ function applyRoleUI(isAdmin) {
   currentUserIsAdmin = isAdmin === true;
   el("productsPanel").hidden = currentUserIsAdmin;
   el("purchasePanel").hidden = currentUserIsAdmin;
-  el("myOrdersPanel").hidden = currentUserIsAdmin;
-  el("customerWalletPanel").hidden = currentUserIsAdmin;
+  el("myOrdersPanel").hidden = true;
+  if (currentUserIsAdmin) {
+  el("customerWalletPanel").hidden = true;
+  }
   el("menuWallet").hidden = currentUserIsAdmin;
   el("menuProducts").hidden = currentUserIsAdmin;
   el("menuMyOrders").hidden = currentUserIsAdmin;
@@ -319,6 +677,14 @@ function applyRoleUI(isAdmin) {
 
 const money = n => Number(n).toLocaleString("en-US") + " د.ع";
 const el = id => document.getElementById(id);
+// Buttons provide a clear, direct user gesture to open the device's file picker.
+function openProofPicker(inputId) {
+  const input = el(inputId);
+  if (!input) return;
+  try { input.click(); } catch (error) { console.error("تعذر فتح اختيار الصورة", error); }
+}
+el("chooseDepositProof").addEventListener("click", () => openProofPicker("depositProof"));
+el("chooseOrderProof").addEventListener("click", () => openProofPicker("proofFile"));
 function setMessage(id, message, type="") {
   const node = el(id);
   node.textContent = message || "";
@@ -333,36 +699,18 @@ function getPrice(p, provider) {
 
 async function loadProducts() {
   const box = el("products");
-  const msg = el("productsMsg");
   box.innerHTML = '<p class="msg">جارٍ تحميل المنتجات...</p>';
-  msg.textContent = "";
-  try {
-    // لا نترك الواجهة معلّقة إلى الأبد إذا تعذّر اتصال الشبكة أو Supabase.
-    const request = db.from("products")
-      .select("id,name,diamonds,product_type,price_mastercard_iqd,price_asiacell_iqd,active,category,image_url,description")
-      .eq("active", true).order("id");
-    const timeout = new Promise((_, reject) =>
-      window.setTimeout(() => reject(new Error("انتهت مهلة الاتصال بعد 15 ثانية. تحقق من الإنترنت أو حالة Supabase ثم أعد المحاولة.")), 15000)
-    );
-    const {data, error} = await Promise.race([request, timeout]);
-    if (error) throw error;
-    productsCache = Array.isArray(data) ? data : [];
-    renderProducts();
-    if (el("myOrdersPanel") && !el("myOrdersPanel").hidden) loadMyOrders();
-  } catch (error) {
-    box.innerHTML = '<p class="msg error">تعذّر تحميل المنتجات.</p>';
-    setMessage("productsMsg", "السبب: " + (error?.message || "خطأ غير معروف") + " — اضغط زر إعادة المحاولة.", "error");
-    let retry = document.getElementById("retryProductsButton");
-    if (!retry) {
-      retry = document.createElement("button");
-      retry.id = "retryProductsButton";
-      retry.type = "button";
-      retry.className = "secondary";
-      retry.textContent = "إعادة تحميل المنتجات";
-      retry.addEventListener("click", loadProducts);
-      box.appendChild(retry);
-    }
+  const {data, error} = await db.from("products")
+    .select("id,name,diamonds,product_type,price_mastercard_iqd,price_asiacell_iqd,active")
+    .eq("active", true).order("id");
+  if (error) {
+    box.innerHTML = "";
+    setMessage("productsMsg", "تعذر تحميل المنتجات: " + error.message, "error");
+    return;
   }
+  productsCache = data || [];
+  renderProducts();
+  if (el("myOrdersPanel") && !el("myOrdersPanel").hidden) loadMyOrders();
 }
 
 function renderProducts() {
@@ -379,7 +727,6 @@ function renderProducts() {
     const price = getPrice(p, provider);
     const card = document.createElement("article");
     card.className = "product";
-    if (p.image_url) { const img = document.createElement("img"); img.className = "productImage"; img.src = p.image_url; img.alt = productTitle(p); img.loading = "lazy"; card.appendChild(img); }
     const h = document.createElement("h3");
     h.textContent = productTitle(p);
     const priceEl = document.createElement("div");
@@ -485,10 +832,8 @@ async function submitDepositRequest(e) {
   try {
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(-90) || "deposit-proof";
     proofPath = `${user.id}/deposit-${Date.now()}-${safeName}`;
-    const uploadRequest = db.storage.from("payment-proofs").upload(proofPath, file, {contentType:file.type, upsert:false});
-    const uploadTimeout = new Promise((_, reject) => window.setTimeout(() => reject(new Error("انتهت مهلة رفع الصورة. تحقق من الإنترنت وإعدادات Storage ثم أعد المحاولة.")), 20000));
-    const {error: uploadError} = await Promise.race([uploadRequest, uploadTimeout]);
-    if (uploadError) throw new Error("تعذر رفع الإثبات إلى التخزين: " + uploadError.message + " — تحقق من وجود bucket باسم payment-proofs وصلاحية INSERT للمستخدم المسجل.");
+    const {error: uploadError} = await db.storage.from("payment-proofs").upload(proofPath, file, {contentType:file.type, upsert:false});
+    if (uploadError) throw new Error("تعذر رفع الإثبات: " + uploadError.message);
     // الطلب يُنشأ بحالة pending فقط؛ اعتماد الإيداع وإضافة الرصيد من صلاحية الإدارة.
     const {data, error} = await db.from("deposits").insert({
       user_id: user.id,
@@ -543,80 +888,6 @@ async function loadCustomerWallet() {
     customerWalletLoadBusy = false;
   }
 }
-
-const PRODUCT_IMAGE_BUCKET = "product-images";
-const categoryNames = {diamonds:"شحن الجواهر",membership:"العضوية المميزة",weekly:"الاشتراكات الأسبوعية",accounts:"الحسابات",other:"خدمات أخرى"};
-function resetManagedProductForm() {
-  el("productManageForm").reset(); el("manageProductId").value=""; el("manageCurrentImageUrl").value=""; el("manageProductType").value="diamonds";
-  el("manageProductActive").value="true"; el("manageImagePreview").textContent=""; el("saveManagedProduct").textContent="حفظ المنتج";
-  const f=el("manageProductImage"); if(f) f.value="";
-}
-async function uploadManagedProductImage(file) {
-  if (!file) return null;
-  if (!/^image\/(png|jpeg|webp)$/.test(file.type)) throw new Error("اختر صورة PNG أو JPG أو WEBP.");
-  if (file.size > 5*1024*1024) throw new Error("حجم الصورة يجب ألا يتجاوز 5 ميغابايت.");
-  const ext = file.type === "image/jpeg" ? "jpg" : file.type.split("/")[1];
-  const path = `${Date.now()}-${crypto.randomUUID()}.${ext}`;
-  const {error} = await db.storage.from(PRODUCT_IMAGE_BUCKET).upload(path,file,{upsert:false,contentType:file.type});
-  if (error) throw error;
-  const {data} = db.storage.from(PRODUCT_IMAGE_BUCKET).getPublicUrl(path);
-  return data.publicUrl;
-}
-async function loadManagedProducts() {
-  const box=el("managedProductsList"); box.textContent="جارٍ تحميل المنتجات...";
-  try {
-    const {data:admin,error:adminErr}=await db.rpc("is_admin");
-    if(adminErr || admin!==true) throw new Error("هذه الصفحة متاحة للمشرف فقط.");
-    const {data,error}=await db.from("products").select("id,name,diamonds,product_type,price_mastercard_iqd,price_asiacell_iqd,active,category,image_url,description").order("id");
-    if(error) throw error;
-    box.replaceChildren();
-    if(!data?.length){box.textContent="لا توجد منتجات بعد.";return;}
-    data.forEach(p=>{
-      const row=document.createElement("article"); row.className="adminProductRow";
-      const img=document.createElement("img"); img.alt="صورة المنتج"; img.src=p.image_url||"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect width='100%25' height='100%25' fill='%23edf4ff'/%3E%3Ctext x='50%25' y='54%25' text-anchor='middle' fill='%233b82f6' font-size='12'%3E316%3C/text%3E%3C/svg%3E";
-      const info=document.createElement("div");
-      const title=document.createElement("strong"); title.textContent=p.name||productTitle(p);
-      const meta=document.createElement("div"); meta.className="muted"; meta.textContent=`${categoryNames[p.category]||"بدون قسم"} · ${money(p.price_mastercard_iqd)} · ${p.active?"متوفر":"موقوف"}`;
-      info.append(title,meta);
-      const actions=document.createElement("div"); actions.className="actions";
-      const edit=document.createElement("button"); edit.type="button"; edit.className="secondary"; edit.textContent="تعديل"; edit.addEventListener("click",()=>{
-        el("manageProductId").value=p.id; el("manageCurrentImageUrl").value=p.image_url||""; el("manageProductName").value=p.name||productTitle(p); el("manageProductCategory").value=p.category||"diamonds";
-        el("manageProductType").value=p.product_type||"diamonds"; el("manageDiamonds").value=p.diamonds??"";
-        el("manageMastercardPrice").value=p.price_mastercard_iqd??""; el("manageAsiacellPrice").value=p.price_asiacell_iqd??"";
-        el("manageProductActive").value=String(p.active!==false); el("manageProductDescription").value=p.description||"";
-        el("manageImagePreview").textContent=p.image_url?"الصورة الحالية محفوظة؛ ارفع صورة جديدة فقط إذا تريد تبديلها.":"لا توجد صورة محفوظة لهذا المنتج.";
-        el("saveManagedProduct").textContent="حفظ التعديلات"; el("productManageForm").scrollIntoView({behavior:"smooth",block:"start"});
-      });
-      const del=document.createElement("button"); del.type="button"; del.className="danger"; del.textContent="حذف"; del.addEventListener("click",async()=>{
-        if(!confirm(`متأكد تريد حذف المنتج «${p.name||productTitle(p)}»؟`)) return;
-        del.disabled=true;
-        try { const {data:admin,error:ae}=await db.rpc("is_admin"); if(ae||admin!==true) throw new Error("المشرف فقط يستطيع الحذف.");
-          const {error}=await db.from("products").delete().eq("id",p.id); if(error) throw error;
-          setMessage("productManageMsg","تم حذف المنتج.","success"); await loadProducts(); await loadManagedProducts();
-        } catch(e){setMessage("productManageMsg","تعذر حذف المنتج: "+e.message,"error");del.disabled=false;}
-      });
-      actions.append(edit,del); row.append(img,info,actions); box.appendChild(row);
-    });
-  } catch(e){box.textContent="تعذر تحميل القائمة: "+(e.message||"خطأ غير معروف");}
-}
-el("productManageForm").addEventListener("submit",async ev=>{
-  ev.preventDefault(); const btn=el("saveManagedProduct"); btn.disabled=true; setMessage("productManageMsg","جارٍ حفظ المنتج...");
-  try {
-    const {data:admin,error:ae}=await db.rpc("is_admin"); if(ae||admin!==true) throw new Error("هذه العملية متاحة للمشرف فقط.");
-    const id=el("manageProductId").value; const old=productsCache.find(x=>String(x.id)===String(id));
-    let imageUrl=el("manageCurrentImageUrl").value||old?.image_url||null; const file=el("manageProductImage").files?.[0]; if(file) imageUrl=await uploadManagedProductImage(file);
-    const asiaVal=el("manageAsiacellPrice").value;
-    const row={name:el("manageProductName").value.trim(),category:el("manageProductCategory").value,product_type:el("manageProductType").value,
-      diamonds:el("manageDiamonds").value===""?0:Number(el("manageDiamonds").value),price_mastercard_iqd:Number(el("manageMastercardPrice").value),
-      price_asiacell_iqd:asiaVal===""?null:Number(asiaVal),active:el("manageProductActive").value==="true",image_url:imageUrl,description:el("manageProductDescription").value.trim()||null};
-    const result=id?await db.from("products").update(row).eq("id",id):await db.from("products").insert(row);
-    if(result.error) throw result.error;
-    setMessage("productManageMsg",id?"تم تحديث المنتج بنجاح.":"تمت إضافة المنتج بنجاح.","success"); resetManagedProductForm(); await loadProducts(); await loadManagedProducts();
-  } catch(e){setMessage("productManageMsg","تعذر حفظ المنتج: "+(e.message||"خطأ غير معروف"),"error");}
-  finally{btn.disabled=false;}
-});
-el("cancelManagedProduct").addEventListener("click",resetManagedProductForm);
-el("refreshManagedProducts").addEventListener("click",loadManagedProducts);
 
 async function refreshSession() {
   const {data, error} = await db.auth.getSession();
@@ -738,12 +1009,10 @@ el("purchaseForm").addEventListener("submit", async e => {
       }
       const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(-90) || "proof-image";
       const proofPath = `${user.id}/${Date.now()}-${safeName}`;
-      const uploadRequest = db.storage.from("payment-proofs").upload(
+      const {error: uploadError} = await db.storage.from("payment-proofs").upload(
         proofPath, file, {contentType: file.type, upsert: false}
       );
-      const uploadTimeout = new Promise((_, reject) => window.setTimeout(() => reject(new Error("انتهت مهلة رفع الصورة. تحقق من الإنترنت وإعدادات Storage ثم أعد المحاولة.")), 20000));
-      const {error: uploadError} = await Promise.race([uploadRequest, uploadTimeout]);
-      if (uploadError) throw new Error("تعذر رفع صورة الإثبات إلى التخزين: " + uploadError.message + " — تحقق من bucket باسم payment-proofs وسياسة INSERT للمستخدم المسجل داخل مجلده.");
+      if (uploadError) throw new Error("تعذر رفع صورة الإثبات: " + uploadError.message);
       result = await db.rpc("create_direct_order", {
         p_product_id: selectedProduct.id,
         p_player_id: playerId,
@@ -787,7 +1056,7 @@ async function loadMyOrders() {
     const {data: sessionData, error: sessionError} = await db.auth.getSession();
     const user = sessionData?.session?.user;
     if (!user) {
-      el("myOrdersPanel").hidden = true;
+      el("myOrdersPanel").hidden = false;
     }
     if (sessionError) {
       setMessage("myOrdersMsg", "تعذر التحقق من الحساب: " + sessionError.message, "error");
@@ -930,7 +1199,6 @@ async function loadAdminOrders() {
 
     applyRoleUI(true);
     el("adminPanel").hidden = false;
-    loadManagedProducts();
     setMessage("adminMsg", "جارٍ تحميل الطلبات...");
     el("adminOrders").replaceChildren();
 
@@ -1128,119 +1396,4 @@ el("walletAdjustForm").addEventListener("submit", async e => {
     if (authError || !authData?.user) throw new Error("انتهت الجلسة. سجّل الدخول مجدداً.");
     const {data: isAdmin, error: adminError} = await db.rpc("is_admin");
     if (adminError || isAdmin !== true) throw new Error("هذه العملية متاحة للمشرف فقط.");
-    const {data, error} = await db.rpc("admin_adjust_wallet", {
-      p_user_id: selectedWalletUser.user_id,
-      p_amount_iqd: signedAmount,
-      p_reason: reason
-    });
-    if (error) throw error;
-    selectedWalletUser.balance_iqd = data;
-    el("walletCurrentBalance").textContent = "الرصيد الحالي: " + money(data);
-    el("walletAmount").value = "";
-    el("walletReason").value = "";
-    setMessage("walletAdjustMsg", `نجحت العملية. الرصيد الجديد: ${money(data)}. تم تسجيل العملية في سجل المحفظة.`, "success");
-  } catch (error) {
-    setMessage("walletAdjustMsg", "فشلت العملية: " + (error?.message || "حدث خطأ غير معروف."), "error");
-  } finally {
-    btn.disabled = false;
-  }
-});
-
-el("depositProvider").addEventListener("change", () => renderPaymentInfo("depositPaymentInfo", el("depositProvider").value));
-el("depositForm").addEventListener("submit", submitDepositRequest);
-el("refreshDeposits").addEventListener("click", loadCustomerDeposits);
-renderPaymentInfo("depositPaymentInfo", "mastercard");
-
-function showCustomerPage(page) {
-  // اخفِ جميع صفحات المحتوى أولاً، ثم أظهر الصفحة المطلوبة فقط.
-  ["productsPanel", "customerWalletPanel", "myOrdersPanel", "purchasePanel", "adminPanel"].forEach(id => {
-    const panel = el(id);
-    if (panel) panel.hidden = true;
-  });
-  if (page === "productsPanel") el("productsPanel").hidden = currentUserIsAdmin;
-  else if (page && el(page)) el(page).hidden = false;
-  el("mainMenu").hidden = true;
-  el("menuToggle").setAttribute("aria-expanded", "false");
-  window.scrollTo({top: 0, behavior: "smooth"});
-}
-
-el("menuToggle").addEventListener("click", () => {
-  const menu = el("mainMenu");
-  menu.hidden = !menu.hidden;
-  el("menuToggle").setAttribute("aria-expanded", String(!menu.hidden));
-});
-el("menuWallet").addEventListener("click", async () => {
-  const {data} = await db.auth.getSession();
-  if (!data?.session?.user) {
-    el("mainMenu").hidden = false;
-    el("menuToggle").setAttribute("aria-expanded", "true");
-    setMessage("authMsg", "سجّل الدخول أولاً حتى تشوف محفظتك.", "error");
-    return;
-  }
-  // المحفظة صفحة مستقلة: إخفاء كل الصفحات الأخرى.
-  showCustomerPage("customerWalletPanel");
-  history.replaceState(null, "", "#wallet");
-  await loadCustomerWallet();
-  window.scrollTo({top:0, behavior:"smooth"});
-});
-el("refreshCustomerWallet").addEventListener("click", loadCustomerWallet);
-
-el("walletBackToStore").addEventListener("click", () => {
-  showCustomerPage("productsPanel");
-  history.replaceState(null, "", location.pathname + location.search);
-});
-
-el("menuMyOrders").addEventListener("click", async () => {
-  const {data} = await db.auth.getSession();
-  if (!data?.session?.user) {
-    el("mainMenu").hidden = true;
-    el("menuToggle").setAttribute("aria-expanded", "false");
-    setMessage("authMsg", "سجّل الدخول أولاً حتى تشوف طلباتك.", "error");
-    el("loginForm").scrollIntoView({behavior:"smooth", block:"start"});
-    return;
-  }
-  showCustomerPage("myOrdersPanel");
-  await loadMyOrders();
-  el("myOrdersPanel").scrollIntoView({behavior:"smooth", block:"start"});
-});
-el("menuProducts").addEventListener("click", () => {
-  showCustomerPage("productsPanel");
-  history.replaceState(null, "", location.pathname + location.search);
-});
-el("refreshOrders").addEventListener("click", loadAdminOrders);
-el("refreshAdminDeposits").addEventListener("click", loadAdminDeposits);
-el("clearAdminNotifications").addEventListener("click", () => {
-  adminNotifications = [];
-  el("adminNotificationSummary").textContent = "تم مسح إشعارات الواجهة. ستظهر هنا الطلبات الجديدة القادمة.";
-  el("orderToast").hidden = true;
-});
-el("refreshMyOrders").addEventListener("click", loadMyOrders);
-el("provider").addEventListener("change", renderProducts);
-db.auth.onAuthStateChange(() => {
-  setTimeout(async () => {
-    await refreshSession();
-    await loadAdminOrders();
-  }, 0);
-});
-// تهيئة العرض عند أول فتح: لا تعرض إلا المنتجات، حتى لو كان المستخدم مسجلاً سابقاً.
-function initializePageVisibility() {
-  ["customerWalletPanel", "myOrdersPanel", "purchasePanel", "adminPanel"].forEach(id => {
-    const panel = el(id);
-    if (panel) panel.hidden = true;
-  });
-  el("productsPanel").hidden = false;
-  el("mainMenu").hidden = true;
-  el("menuToggle").setAttribute("aria-expanded", "false");
-}
-initializePageVisibility();
-updatePaymentFields();
-refreshSession();
-loadProducts();
-loadAdminOrders();
-loadAdminDeposits();
-checkForNewAdminOrders();
-window.setInterval(checkForNewAdminOrders, 15000);
-})();
-</script>
-</body>
-</html>
+    const {data
