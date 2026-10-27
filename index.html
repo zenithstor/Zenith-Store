@@ -1396,4 +1396,149 @@ el("walletAdjustForm").addEventListener("submit", async e => {
     if (authError || !authData?.user) throw new Error("انتهت الجلسة. سجّل الدخول مجدداً.");
     const {data: isAdmin, error: adminError} = await db.rpc("is_admin");
     if (adminError || isAdmin !== true) throw new Error("هذه العملية متاحة للمشرف فقط.");
-    const {data
+    const {data, error} = await db.rpc("admin_adjust_wallet", {
+      p_user_id: selectedWalletUser.user_id,
+      p_amount_iqd: signedAmount,
+      p_reason: reason
+    });
+    if (error) throw error;
+    selectedWalletUser.balance_iqd = data;
+    el("walletCurrentBalance").textContent = "الرصيد الحالي: " + money(data);
+    el("walletAmount").value = "";
+    el("walletReason").value = "";
+    setMessage("walletAdjustMsg", `نجحت العملية. الرصيد الجديد: ${money(data)}. تم تسجيل العملية في سجل المحفظة.`, "success");
+  } catch (error) {
+    setMessage("walletAdjustMsg", "فشلت العملية: " + (error?.message || "حدث خطأ غير معروف."), "error");
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+el("depositProvider").addEventListener("change", () => renderPaymentInfo("depositPaymentInfo", el("depositProvider").value));
+el("depositForm").addEventListener("submit", submitDepositRequest);
+el("refreshDeposits").addEventListener("click", loadCustomerDeposits);
+renderPaymentInfo("depositPaymentInfo", "mastercard");
+
+el("menuToggle").addEventListener("click", () => {
+  const menu = el("mainMenu");
+  menu.hidden = !menu.hidden;
+  el("menuToggle").setAttribute("aria-expanded", String(!menu.hidden));
+});
+
+el("menuWallet").addEventListener("click", async () => {
+  const {data} = await db.auth.getSession();
+
+  if (!data?.session?.user) {
+    el("mainMenu").hidden = false;
+    el("menuToggle").setAttribute("aria-expanded", "true");
+    setMessage("authMsg", "سجّل الدخول أولاً حتى تشوف محفظتك.", "error");
+    return;
+  }
+
+  el("productsPanel").hidden = true;
+  el("customerWalletPanel").hidden = false;
+  el("myOrdersPanel").hidden = true;
+  el("purchasePanel").hidden = true;
+  el("contactPanel").hidden = true;
+
+  el("mainMenu").hidden = true;
+  el("menuToggle").setAttribute("aria-expanded", "false");
+
+  await loadCustomerWallet();
+  el("customerWalletPanel").scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+});
+
+el("refreshCustomerWallet").addEventListener("click", loadCustomerWallet);
+  
+el("customerWalletPanel").querySelector("[data-back]").addEventListener("click", () => {
+  el("customerWalletPanel").hidden = true;
+  el("productsPanel").hidden = false;
+  el("contactPanel").hidden = false;
+  el("myOrdersPanel").hidden = true;
+  el("purchasePanel").hidden = true;
+
+  el("productsPanel").scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+});
+
+
+el("menuMyOrders").addEventListener("click", async () => {
+  const {data} = await db.auth.getSession();
+
+  if (!data?.session?.user) {
+    el("mainMenu").hidden = false;
+    el("menuToggle").setAttribute("aria-expanded", "true");
+    setMessage("authMsg", "سجّل الدخول أولاً حتى تشوف طلباتك.", "error");
+    el("loginForm").scrollIntoView({behavior:"smooth", block:"start"});
+    return;
+  }
+
+  el("productsPanel").hidden = true;
+  el("customerWalletPanel").hidden = true;
+  el("myOrdersPanel").hidden = false;
+  el("purchasePanel").hidden = true;
+  el("contactPanel").hidden = true;
+
+  el("mainMenu").hidden = true;
+  el("menuToggle").setAttribute("aria-expanded", "false");
+
+  await loadMyOrders();
+
+  el("myOrdersPanel").scrollIntoView({behavior:"smooth", block:"start"});
+});
+
+el("menuProducts").addEventListener("click", () => {
+  el("productsPanel").hidden = false;
+  el("customerWalletPanel").hidden = true;
+  el("myOrdersPanel").hidden = true;
+  el("purchasePanel").hidden = true;
+  el("contactPanel").hidden = false;
+
+  el("mainMenu").hidden = true;
+  el("menuToggle").setAttribute("aria-expanded", "false");
+
+  el("productsPanel").scrollIntoView({behavior:"smooth", block:"start"});
+});
+
+el("refreshOrders").addEventListener("click", loadAdminOrders);
+el("refreshAdminDeposits").addEventListener("click", loadAdminDeposits);
+
+el("clearAdminNotifications").addEventListener("click", () => {
+  adminNotifications = [];
+  el("adminNotificationSummary").textContent = "تم مسح إشعارات الواجهة. ستظهر هنا الطلبات الجديدة القادمة.";
+  el("orderToast").hidden = true;
+});
+
+el("refreshMyOrders").addEventListener("click", loadMyOrders);
+  el("myOrdersPanel").querySelector("[data-back]").addEventListener("click", () => {
+  el("myOrdersPanel").hidden = true;
+  el("productsPanel").hidden = false;
+  el("contactPanel").hidden = false;
+  el("customerWalletPanel").hidden = true;
+  el("purchasePanel").hidden = true;
+  el("productsPanel").scrollIntoView({behavior:"smooth", block:"start"});
+});
+el("provider").addEventListener("change", renderProducts);
+
+db.auth.onAuthStateChange(() => {
+  setTimeout(async () => {
+    await refreshSession();
+    await loadAdminOrders();
+  }, 0);
+});
+
+updatePaymentFields();
+refreshSession();
+loadProducts();
+loadAdminOrders();
+loadAdminDeposits();
+checkForNewAdminOrders();
+window.setInterval(checkForNewAdminOrders, 15000);
+</script>
+</body>
+  </html>
