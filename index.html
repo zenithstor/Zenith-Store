@@ -6,43 +6,454 @@
 <title>ZenithStore | متجر زينيث</title>  
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>  
 <style>  
-*{box-sizing:border-box}  
-[hidden]{display:none!important}  
-body{margin:0;background:#080d18;color:#f5f7ff;font-family:Arial,sans-serif}  
-header{padding:18px 16px;background:#0d1525;border-bottom:1px solid #234166;position:relative}  
-.headerTop{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:850px;margin:auto}  
-.menuBtn{width:48px;min-width:48px;margin:0;padding:10px;font-size:24px;line-height:1;background:#233650}  
-.menuBox{max-width:850px;margin:12px auto 0;padding:10px;background:#101a2b;border:1px solid #304562;border-radius:12px}  
-.menuBox button{text-align:right;margin:3px 0}.menuAccountArea{padding:8px 6px 12px;border-bottom:1px solid #304562;margin-bottom:8px}.menuAccountArea h3{margin:0 0 8px}.menuAccountArea input{width:100%}  
-.brand{font-size:26px;font-weight:900;color:#69baff}  
-.brand span{color:#fff}  
-.sub{color:#9eafc9;margin-top:8px;font-size:13px}  
-main{max-width:850px;margin:auto;padding:18px 14px}  
-.panel{background:#101a2b;border:1px solid #203452;border-radius:16px;padding:17px;margin-bottom:18px}  
-h2{font-size:19px;margin:0 0 14px}  
-h3{font-size:16px;margin:0 0 10px}  
-input,select,button{width:100%;padding:13px;margin:6px 0;border-radius:9px;font-size:15px}  
-input,select{background:#080f1d;color:white;border:1px solid #304562}  
-input[type=file]{padding:10px;position:relative;z-index:2;pointer-events:auto;cursor:pointer;touch-action:manipulation}  
-.filePickBtn{display:block;width:100%;margin:6px 0 10px;background:#233650;border:1px solid #4a6b93;touch-action:manipulation}  
-button{border:0;background:#318bff;color:white;font-weight:bold;cursor:pointer}  
-button:disabled{opacity:.55;cursor:not-allowed}  
-.secondary{background:#233650}  
-.danger{background:#8d3141}  
-.msg{font-size:14px;color:#8dc9ff;line-height:1.8;overflow-wrap:anywhere}  
-.error{color:#ff9da8}  
-.success{color:#9af0c2}  
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}  
-.product{padding:14px;background:#111e32;border:1px solid #263e60;border-radius:13px}  
-.product h3{font-size:16px;margin:0 0 10px}  
-.price{font-size:18px;font-weight:bold;color:#72bdff;margin:9px 0}  
-.muted{font-size:12px;color:#a8b7cc;line-height:1.7;overflow-wrap:anywhere}  
-label{display:block;font-size:14px;color:#dbe8ff;margin-top:9px}  
-.toastNotice{position:fixed;z-index:9999;top:14px;left:14px;right:14px;max-width:520px;margin:auto;padding:14px;background:#102b20;border:1px solid #38b879;border-radius:12px;box-shadow:0 10px 35px #0009;color:#eafff2;line-height:1.8}.toastNotice button{margin-top:8px}.adminAlert{padding:12px;margin:10px 0;border:1px solid #347bff;border-radius:10px;background:#0b1c35;line-height:1.8}.notice{padding:11px;border:1px solid #304562;border-radius:10px;background:#0b1423;margin:10px 0}  
-.actions{display:flex;gap:8px;flex-wrap:wrap}  
-.actions button{flex:1;min-width:120px}  
-footer{text-align:center;padding:25px;color:#9eafc9;font-size:13px}  
-@media(max-width:420px){.brand{font-size:23px}.panel{padding:14px}}  
+
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+:root {
+  color-scheme: light;
+  --blue: #2878f0;
+  --blue-dark: #1659c9;
+  --blue-light: #eaf3ff;
+  --ink: #17243a;
+  --muted: #718096;
+  --border: #e2eaf5;
+  --surface: #ffffff;
+  --page: #f4f7fc;
+  --shadow: 0 8px 24px rgba(36, 79, 140, .07);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 18px;
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: Arial, sans-serif;
+  line-height: 1.65;
+}
+
+header {
+  position: relative;
+  z-index: 20;
+  padding: 20px 16px;
+  background: rgba(255, 255, 255, .96);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 3px 15px rgba(28, 63, 110, .035);
+}
+
+.headerTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.brand {
+  color: var(--blue);
+  font-size: clamp(21px, 5vw, 30px);
+  font-weight: 900;
+  letter-spacing: -.7px;
+}
+
+.brand span {
+  color: var(--ink);
+}
+
+.sub {
+  color: var(--muted);
+  margin-top: 5px;
+  font-size: 13px;
+}
+
+.menuBtn {
+  width: 48px;
+  min-width: 48px;
+  height: 46px;
+  margin: 0;
+  padding: 8px;
+  border-radius: 14px;
+  font-size: 23px;
+  background: var(--blue-light);
+  color: var(--blue);
+  border: 1px solid #d8e8ff;
+}
+
+.menuBox {
+  max-width: 1000px;
+  margin: 15px auto 0;
+  padding: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  animation: menuAppear .18s ease-out;
+}
+
+.menuBox button {
+  text-align: right;
+  margin: 4px 0;
+}
+
+.menuAccountArea {
+  padding: 8px 6px 14px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 10px;
+}
+
+.menuAccountArea h3 {
+  margin: 0 0 8px;
+}
+
+.menuAccountArea input {
+  width: 100%;
+}
+
+main {
+  width: 100%;
+  max-width: 1000px;
+  margin: auto;
+  padding: 22px 14px;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  animation: panelAppear .3s ease-out;
+}
+
+h2 {
+  font-size: 21px;
+  font-weight: 800;
+  margin: 0 0 18px;
+  letter-spacing: -.3px;
+}
+
+h3 {
+  font-size: 16px;
+  margin: 0 0 10px;
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: #455875;
+  margin-top: 12px;
+}
+
+input,
+select,
+button {
+  width: 100%;
+  padding: 13px;
+  margin: 6px 0;
+  border-radius: 12px;
+  font-size: 15px;
+  font-family: inherit;
+}
+
+input,
+select {
+  background: #fbfdff;
+  color: var(--ink);
+  border: 1px solid #dce5f1;
+  outline: none;
+  transition: border-color .18s, box-shadow .18s;
+}
+
+input:focus,
+select:focus {
+  border-color: #6aa4ff;
+  box-shadow: 0 0 0 3px rgba(40, 120, 240, .10);
+}
+
+input[type="file"] {
+  padding: 10px;
+  position: relative;
+  z-index: 2;
+  pointer-events: auto;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+button {
+  border: 1px solid transparent;
+  background: var(--blue);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .18s, transform .18s, box-shadow .18s;
+  box-shadow: 0 3px 8px rgba(40, 120, 240, .12);
+}
+
+button:hover {
+  background: var(--blue-dark);
+  box-shadow: 0 5px 13px rgba(40, 120, 240, .18);
+}
+
+button:active {
+  transform: scale(.985);
+}
+
+button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.secondary,
+.filePickBtn {
+  background: #edf4ff;
+  color: #2466cb;
+  border: 1px solid #d9e8ff;
+  box-shadow: none;
+}
+
+.secondary:hover,
+.filePickBtn:hover {
+  background: #dfebff;
+}
+
+.danger {
+  background: #fff0f1;
+  color: #c33e50;
+  border: 1px solid #ffd9de;
+  box-shadow: none;
+}
+
+.danger:hover {
+  background: #ffe2e6;
+}
+
+.filePickBtn {
+  display: block;
+  width: 100%;
+  margin: 6px 0 10px;
+  touch-action: manipulation;
+}
+
+.msg {
+  font-size: 14px;
+  color: #286bc7;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.error {
+  color: #d63f50;
+}
+
+.success {
+  color: #138456;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-items: stretch;
+  margin-top: 18px;
+}
+
+.product {
+  min-width: 0;
+  padding: 15px;
+  background: linear-gradient(155deg, #ffffff 0%, #f9fbff 100%);
+  border: 1px solid #e1eaf6;
+  border-radius: 18px;
+  box-shadow: 0 4px 13px rgba(40, 72, 120, .045);
+  transition: transform .2s, border-color .2s, box-shadow .2s;
+}
+
+.product:hover {
+  transform: translateY(-2px);
+  border-color: #c4dcff;
+  box-shadow: 0 9px 22px rgba(40, 100, 190, .09);
+}
+
+.product h3 {
+  color: #23334d;
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.price {
+  font-size: clamp(16px, 4vw, 21px);
+  font-weight: 800;
+  color: var(--blue);
+  margin: 12px 0;
+  overflow-wrap: anywhere;
+}
+
+.muted {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.product button {
+  margin-top: 12px;
+  min-height: 44px;
+  border-radius: 11px;
+}
+
+.notice {
+  padding: 14px;
+  border: 1px solid #e0eaf8;
+  border-radius: 15px;
+  background: #f7faff;
+  margin: 12px 0;
+}
+
+.adminAlert {
+  padding: 13px;
+  margin: 10px 0;
+  border: 1px solid #c9dfff;
+  border-radius: 14px;
+  background: #eff6ff;
+  color: #2459a5;
+  line-height: 1.8;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.actions button {
+  flex: 1;
+  min-width: 110px;
+}
+
+.toastNotice {
+  position: fixed;
+  z-index: 9999;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  max-width: 520px;
+  margin: auto;
+  padding: 15px;
+  background: #ffffff;
+  border: 1px solid #b7e8d0;
+  border-radius: 16px;
+  box-shadow: 0 12px 35px rgba(20, 45, 80, .16);
+  color: #176b49;
+  line-height: 1.8;
+}
+
+.toastNotice button {
+  margin-top: 8px;
+}
+
+hr {
+  border-color: var(--border) !important;
+}
+
+footer {
+  text-align: center;
+  padding: 28px 16px;
+  color: #7d8ca2;
+  font-size: 13px;
+}
+
+@keyframes panelAppear {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes menuAppear {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 700px) {
+  main {
+    padding: 30px 22px;
+  }
+
+  .panel {
+    padding: 26px;
+  }
+
+  .grid {
+    gap: 16px;
+  }
+
+  .product {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 360px) {
+  main {
+    padding: 14px 9px;
+  }
+
+  .panel {
+    padding: 12px;
+    border-radius: 17px;
+  }
+
+  .grid {
+    gap: 8px;
+  }
+
+  .product {
+    padding: 11px;
+    border-radius: 14px;
+  }
+
+  .product h3 {
+    font-size: 14px;
+  }
+
+  .product button {
+    padding: 11px 7px;
+    font-size: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+
 </style>  
 </head>  
 <body>  
@@ -67,54 +478,7 @@ footer{text-align:center;padding:25px;color:#9eafc9;font-size:13px}
       </form>  
       <div id="authMsg" class="msg" aria-live="polite"></div>  
     </div>  
-    <button type="button" class="secondary" id="menuWallet" hidden>محفظتي</button>  
-    <button type="button" class="secondary" id="menuMyOrders">طلباتي</button>  
-    <button type="button" class="secondary" id="menuProducts">منتجات المتجر</button>  
-  </nav>  
-</header>  
-<main>    <section class="panel" id="productsPanel">  
-    <h2>منتجات المتجر</h2>  
-    <label for="provider">طريقة التسعير</label>  
-    <select id="provider">  
-      <option value="mastercard">ماستركارد</option>  
-      <option value="asiacell">آسياسيل</option>  
-    </select>  
-    <div class="muted">اختيار ماستركارد أو آسياسيل يحدد السعر فقط. عند الشراء تختار طريقة الدفع بشكل منفصل.</div>  
-    <div id="products" class="grid">  
-      <p class="msg">جارٍ تحميل المنتجات...</p>  
-    </div>  
-    <div id="productsMsg" class="msg"></div>  
-  </section>    <section class="panel" id="customerWalletPanel" hidden>  
-    <h2>محفظتي</h2>  
-<button type="button" class="secondary backBtn" data-back>← رجوع</button>  
-    <div class="muted">هذا رصيدك الداخلي في متجر زينيث، وتكدر تستخدمه للدفع عند شراء المنتجات.</div>  
-    <div class="notice">  
-      <div class="muted">الرصيد الحالي</div>  
-      <div class="price" id="customerWalletBalance">جارٍ تحميل الرصيد...</div>  
-      <button type="button" class="secondary" id="refreshCustomerWallet">تحديث الرصيد</button>  
-    </div>  
-    <div id="customerWalletMsg" class="msg" aria-live="polite"></div>  
-    <section class="notice" aria-labelledby="depositHeading">  
-      <h3 id="depositHeading">إضافة رصيد للمحفظة</h3>  
-      <div class="muted">حدد المبلغ، ثم اختر طريقة التحويل واتبع المعلومات المعروضة. لا يتم إضافة الرصيد إلا بعد مراجعة الإدارة.</div>  
-      <form id="depositForm">  
-        <label for="depositAmount">المبلغ المراد إضافته (دينار عراقي)</label>  
-        <input id="depositAmount" type="number" min="1000" max="10000000" step="250" inputmode="numeric" placeholder="مثال: 5000" required>  
-        <label for="depositProvider">طريقة الدفع</label>  
-        <select id="depositProvider" required>  
-          <option value="mastercard">ماستركارد</option>  
-          <option value="asiacell">آسياسيل</option>  
-        </select>  
-        <div class="notice" id="depositPaymentInfo" aria-live="polite"></div>  
-        <label for="depositProof">إثبات الدفع (صورة مطلوبة)</label>  
-        <input id="depositProof" type="file" accept="image/*" required>  
-        <button type="button" class="filePickBtn" id="chooseDepositProof">اختيار صورة الإثبات من الجهاز</button>  
-        <label for="depositTransactionRef">رقم العملية / ملاحظة (اختياري)</label>  
-        <input id="depositTransactionRef" type="text" maxlength="120" placeholder="اكتب رقم العملية إن وجد">  
-        <div class="muted">ملاحظة المتجر: الرجاء تأكد من اضافة المعلومات بشكل صحيح قبل الدفع !</div>  
-        <button type="submit" id="submitDepositBtn">إرسال طلب إضافة الرصيد</button>  
-      </form>  
-      <div id="depositMsg" class="msg" aria-live="polite"></div>  
+    <button type="button" class="secondary" id="menuWallet" hidden      <div id="depositMsg" class="msg" aria-live="polite"></div>  
     </section>  
     <section class="notice">  
       <div class="actions" style="align-items:center;justify-content:space-between"><h3>سجل طلبات إضافة الرصيد</h3><button type="button" class="secondary" id="refreshDeposits" style="width:auto">تحديث السجل</button></div>  
