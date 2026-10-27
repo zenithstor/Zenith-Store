@@ -453,7 +453,7 @@ footer {
     transition-duration: .01ms !important;
   }
 }
-<style>
+</style>
 </head>
 <body>
 <header>
@@ -1396,4 +1396,4 @@ el("walletAdjustForm").addEventListener("submit", async e => {
     if (authError || !authData?.user) throw new Error("انتهت الجلسة. سجّل الدخول مجدداً.");
     const {data: isAdmin, error: adminError} = await db.rpc("is_admin");
     if (adminError || isAdmin !== true) throw new Error("هذه العملية متاحة للمشرف فقط.");
-    const {data,
+    const {data
