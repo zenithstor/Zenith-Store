@@ -16,19 +16,20 @@
 }
 
 :root {
-  color-scheme: light;
-  --blue: #2878f0;
-  --blue-dark: #1659c9;
-  --blue-light: #eaf3ff;
-  --ink: #17243a;
-  --muted: #718096;
-  --border: #e2eaf5;
-  --surface: #ffffff;
-  --page: #f4f7fc;
-  --shadow: 0 8px 24px rgba(36, 79, 140, .07);
+  color-scheme: dark;
+  --blue: #168cff;
+  --blue-dark: #0869d4;
+  --blue-light: #102c55;
+  --ink: #edf4ff;
+  --muted: #aabbd8;
+  --border: #20365b;
+  --surface: #0c1730;
+  --page: #040b1b;
+  --shadow: 0 8px 24px rgba(0, 90, 220, .13);
 }
 
 html {
+  overflow-x: clip;
   scroll-behavior: smooth;
   scroll-padding-top: 18px;
 }
@@ -45,7 +46,7 @@ header {
   position: relative;
   z-index: 20;
   padding: 20px 16px;
-  background: rgba(255, 255, 255, .96);
+  background: rgba(4, 11, 27, .97);
   border-bottom: 1px solid var(--border);
   box-shadow: 0 3px 15px rgba(28, 63, 110, .035);
 }
@@ -169,9 +170,9 @@ button {
 
 input,
 select {
-  background: #fbfdff;
+  background: #08142b;
   color: var(--ink);
-  border: 1px solid #dce5f1;
+  border: 1px solid #29436c;
   outline: none;
   transition: border-color .18s, box-shadow .18s;
 }
@@ -218,9 +219,9 @@ button:disabled {
 
 .secondary,
 .filePickBtn {
-  background: #edf4ff;
-  color: #2466cb;
-  border: 1px solid #d9e8ff;
+  background: #102a50;
+  color: #b8d8ff;
+  border: 1px solid #2c5488;
   box-shadow: none;
 }
 
@@ -273,8 +274,8 @@ button:disabled {
 .product {
   min-width: 0;
   padding: 15px;
-  background: linear-gradient(155deg, #ffffff 0%, #f9fbff 100%);
-  border: 1px solid #e1eaf6;
+  background: linear-gradient(155deg, #102247 0%, #09162f 100%);
+  border: 1px solid #244576;
   border-radius: 18px;
   box-shadow: 0 4px 13px rgba(40, 72, 120, .045);
   transition: transform .2s, border-color .2s, box-shadow .2s;
@@ -287,7 +288,7 @@ button:disabled {
 }
 
 .product h3 {
-  color: #23334d;
+  color: #f0f6ff;
   font-size: 15px;
   line-height: 1.6;
   overflow-wrap: anywhere;
@@ -316,9 +317,9 @@ button:disabled {
 
 .notice {
   padding: 14px;
-  border: 1px solid #e0eaf8;
+  border: 1px solid #244576;
   border-radius: 15px;
-  background: #f7faff;
+  background: #0a1934;
   margin: 12px 0;
 }
 
@@ -374,6 +375,48 @@ footer {
   color: #7d8ca2;
   font-size: 13px;
 }
+
+/* واجهة رئيسية جديدة، مع إبقاء وظائف المتجر الحالية */
+.homePanel { padding: 0; overflow: visible; background: transparent; border: 0; box-shadow: none; }
+.homeSubtitle { text-align: center; color: #c1d0eb; margin: 2px 0 12px; }
+.homeHero { position: relative; left: auto; right: auto; transform: none; width: 100vw; max-width: 100vw; margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); box-sizing: border-box; min-height: 360px; display: flex; align-items: center; gap: 12px; padding: 24px max(18px, calc((100vw - 960px) / 2)); border: 0; border-top: 1px solid #2367bd; border-bottom: 1px solid #2367bd; border-radius: 14px; background: radial-gradient(circle at 20% 40%, rgba(0,116,255,.34), transparent 45%), linear-gradient(130deg,#102e67,#07142e 72%); overflow: hidden; }
+.heroGem { flex: 0 0 35%; text-align: center; font-size: clamp(65px, 18vw, 115px); filter: drop-shadow(0 0 20px rgba(0,132,255,.8)); }
+.heroCopy { flex: 1; min-width: 0; text-align: right; }
+.gameName { color: #f7d477; font-size: 12px; font-weight: 900; letter-spacing: .8px; }
+.heroCopy h1 { margin: 8px 0 0; color: #ffda75; font-size: clamp(24px, 6vw, 36px); line-height: 1.35; }
+.heroCopy p { color: #edf4ff; margin: 3px 0 12px; font-size: 14px; }
+.heroButton { display: flex; align-items: center; justify-content: center; gap: 7px; width: max-content; margin: 8px 0 0 auto; padding: 6px 10px; border-radius: 999px; background: linear-gradient(90deg,#0877ef,#209cff); font-size: 12px; }
+.heroButton span { display: inline-block; animation: arrowNudge 1s ease-in-out infinite; }
+@keyframes arrowNudge { 0%,100% { transform: translateX(0); } 50% { transform: translateX(-5px); } }
+.homeCategoryGrid { margin-top: 14px; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+.homeCategory { display: flex; align-items: center; gap: 8px; width: 100%; min-width: 0; min-height: 104px; padding: 11px 9px; text-align: right; border-radius: 18px; border: 1px solid #168cff; background: radial-gradient(circle at 15% 50%,rgba(0,126,255,.28),transparent 42%),linear-gradient(120deg,#0b2c59,#0b1730); box-shadow: 0 0 18px rgba(0,126,255,.12); }
+.homeCategory.membershipPlaceholder { border-color: #9b62ff; background: radial-gradient(circle at 15% 50%,rgba(147,51,234,.3),transparent 42%),linear-gradient(120deg,#28144d,#0b1730); box-shadow: 0 0 18px rgba(147,51,234,.12); }
+.homeCategory.membershipPlaceholder .categoryIcon { filter: drop-shadow(0 0 12px rgba(173,115,255,.7)); }
+.homeCategory.membershipPlaceholder .categoryArrow { border-color: #b38aff; }
+.categoryIcon { font-size: 36px; filter: drop-shadow(0 0 12px rgba(0,139,255,.65)); }
+.categoryText { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+.categoryText strong { font-size: 17px; color: #f3f7ff; }
+.categoryText small { font-size: 12px; color: #b9cbe8; }
+.categoryArrow { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid #5ea9ff; border-radius: 50%; font-size: 22px; }
+.homeTrust { display: flex; justify-content: space-between; gap: 7px; margin-top: 16px; padding: 14px 8px; border: 1px solid #20365b; border-radius: 15px; background: #09152d; color: #d6e5ff; font-size: 12px; text-align: center; }
+.homeTrust span { flex: 1; }
+@media (max-width: 420px) { .homeHero { width: 100vw; max-width: 100vw; margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); padding: 20px 12px; gap: 7px; min-height: 390px; } .heroGem { flex-basis: 30%; font-size: 65px; } .heroCopy h1 { font-size: 24px; } .heroButton { padding: 6px 9px; font-size: 11px; } .homeCategoryGrid { gap: 8px; } .homeCategory { padding: 10px 7px; gap: 6px; } .categoryIcon { font-size: 30px; } .categoryText strong { font-size: 15px; } .categoryText small { font-size: 10px; } .categoryArrow { width: 26px; height: 26px; font-size: 18px; } .homeTrust { font-size: 10px; } }
+.bottomNav { position: fixed; z-index: 30; bottom: 0; left: 0; right: 0; display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; padding: 8px 5px calc(8px + env(safe-area-inset-bottom)); background: rgba(5,13,31,.97); border-top: 1px solid #1e3762; backdrop-filter: blur(12px); }
+.bottomNav button { margin: 0; padding: 6px 2px; background: transparent; border: 0; box-shadow: none; color: #aabbd8; font-size: 11px; line-height: 1.5; }
+.bottomNav button span { display:block; font-size: 19px; }
+.bottomNav button.active { color: #168cff; }
+.bottomNav button .navPhoneIcon svg { width: 15px; height: 15px; display: inline-block; vertical-align: middle; }
+.contactPage .socialContact { display:flex; align-items:center; gap:14px; padding:15px; margin:14px 0; border-radius:16px; text-decoration:none; color:#eef5ff; border:1px solid #25466f; background:linear-gradient(110deg,#0d2141,#09152c); }
+.contactPage .socialLogo { width:48px; height:48px; display:grid; place-items:center; flex:0 0 48px; border-radius:14px; }
+.contactPage .socialLogo svg { width:28px; height:28px; }
+.instagramContact .socialLogo { color:#ff79b7; background:rgba(225,48,108,.14); }
+.telegramContact .socialLogo { color:#35b8f5; background:rgba(42,171,238,.14); }
+.contactPage .socialDetails { display:flex; flex:1; flex-direction:column; gap:5px; }
+.contactPage .socialDetails strong { font-size:16px; }
+.contactPage .socialDetails small { color:#b8cbe8; direction:ltr; text-align:right; }
+.contactPage .socialArrow { color:#7ebcff; font-size:22px; }
+body { padding-bottom: 76px; }
+@media (min-width: 700px) { .bottomNav { left: 50%; right: auto; width: min(100%, 700px); transform: translateX(-50%); border: 1px solid #1e3762; border-radius: 18px 18px 0 0; } }
 
 @keyframes panelAppear {
   from {
@@ -460,7 +503,6 @@ footer {
   <div class="headerTop">
     <div>
       <div class="brand">316 <span>ZENITH STORE</span></div>
-      <div class="sub">متجر زينيث لشحن الجواهر والاشتراكات</div>
     </div>
     <button type="button" class="menuBtn" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false">☰</button>
   </div>
@@ -483,11 +525,30 @@ footer {
   </nav>
 </header>
 <main>
+  <section class="panel homePanel" id="homePanel">
+    <div class="homeHero">
+      <div class="heroGem" aria-hidden="true">💎</div>
+      <div class="heroCopy">
+        <div class="gameName">MOBILE LEGENDS</div>
+        <h1>شحن الجواهر</h1>
+        <p>بأسرع وقت وأفضل الأسعار</p>
+        <button type="button" id="openGems" class="heroButton">تصفح الباقات <span>←</span></button>
+      </div>
+    </div>
+    <div class="homeCategoryGrid">
+      <button type="button" class="homeCategory activeCategory" id="gemsCategory">
+        <span class="categoryIcon">💎</span><span class="categoryText"><strong>شحن الجواهر</strong><small>باقات الجواهر</small></span><span class="categoryArrow">←</span>
+      </button>
+      <button type="button" class="homeCategory membershipPlaceholder" id="membershipPlaceholder" aria-label="العضويات المميزة - نموذج تجريبي">
+        <span class="categoryText"><strong>العضويات</strong><small>قريباً</small></span><span class="categoryArrow">←</span>
+      </button>
+    </div>
+    <div class="homeTrust"><span>🛡️ دفع آمن</span><span>⚡ إرسال سريع وفوري</span><span>🎧 دعم فني</span></div>
+  </section>
 
-
-
-  <section class="panel" id="productsPanel">
-    <h2>منتجات المتجر</h2>
+  <section class="panel" id="productsPanel" hidden>
+    <button type="button" class="secondary" id="backHome">← الرئيسية</button>
+    <h2>باقات شحن الجواهر</h2>
     <label for="provider">طريقة التسعير</label>
     <select id="provider">
       <option value="mastercard">ماستركارد</option>
@@ -625,13 +686,32 @@ footer {
     </div>
   </section>
 
-  <section class="panel" id="contactPanel">
+  <section class="panel contactPage" id="contactPanel" hidden>
+    <button type="button" class="secondary" id="contactBackHome">← الرئيسية</button>
     <h2>تواصل معنا</h2>
-    <p>إنستغرام: @zenith.mlbb1</p>
-    <p>تيليغرام: @zenithmlb</p>
-    <p class="muted">إرسال الطلب لا يعني أن الشحن اكتمل؛ الطلب يحتاج إلى المعالجة والتحقق حسب طريقة الدفع.</p>
+    <p class="muted">تابع حسابات ZenithStore الرسمية أو راسلنا مباشرة.</p>
+    <a class="socialContact instagramContact" href="https://www.instagram.com/zenith.mlbb1/" target="_blank" rel="noopener noreferrer">
+      <span class="socialLogo" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg>
+      </span>
+      <span class="socialDetails"><strong>Instagram</strong><small>@zenith.mlbb1</small></span>
+      <span class="socialArrow">↗</span>
+    </a>
+    <a class="socialContact telegramContact" href="https://t.me/zenithmlb" target="_blank" rel="noopener noreferrer">
+      <span class="socialLogo" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M21.5 4.5 18.3 20c-.2 1.1-.9 1.3-1.8.8l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L5.7 13.5.8 12c-1.1-.3-1.1-1.1.2-1.6L20 3.1c.9-.3 1.8.2 1.5 1.4Z" fill="currentColor"/></svg>
+      </span>
+      <span class="socialDetails"><strong>Telegram</strong><small>@zenithmlb</small></span>
+      <span class="socialArrow">↗</span>
+    </a>
   </section>
 </main>
+<nav class="bottomNav" aria-label="التنقل الرئيسي">
+  <button type="button" id="navHome" class="active"><span>⌂</span>الرئيسية</button>
+  <button type="button" id="navContact"><span class="navPhoneIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 11.2 18a19.4 19.4 0 0 1-6-6A19.8 19.8 0 0 1 2.1 3.2 2 2 0 0 1 4.1 1h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8 9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.7 2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>تواصل معنا</button>
+  <button type="button" id="navWallet"><span>▣</span>محفظتي</button>
+  <button type="button" id="navOrders"><span>▤</span>طلباتي</button>
+</nav>
 <div id="orderToast" class="toastNotice" role="status" aria-live="assertive" hidden></div>
 <footer>© ZenithStore — متجر زينيث</footer>
 
@@ -659,8 +739,11 @@ let customerWalletLoadBusy = false;
 
 function applyRoleUI(isAdmin) {
   currentUserIsAdmin = isAdmin === true;
-  el("productsPanel").hidden = currentUserIsAdmin;
-  el("purchasePanel").hidden = currentUserIsAdmin;
+  el("productsPanel").hidden = true;
+  el("homePanel").hidden = currentUserIsAdmin;
+  el("contactPanel").hidden = true;
+  // Keep checkout hidden until the customer explicitly selects a product.
+  el("purchasePanel").hidden = true;
   el("myOrdersPanel").hidden = true;
   if (currentUserIsAdmin) {
   el("customerWalletPanel").hidden = true;
@@ -1419,6 +1502,43 @@ el("depositForm").addEventListener("submit", submitDepositRequest);
 el("refreshDeposits").addEventListener("click", loadCustomerDeposits);
 renderPaymentInfo("depositPaymentInfo", "mastercard");
 
+function showGemProducts() {
+  document.querySelectorAll(".bottomNav button").forEach(b => b.classList.remove("active"));
+  el("homePanel").hidden = true;
+  el("productsPanel").hidden = false;
+  el("customerWalletPanel").hidden = true;
+  el("myOrdersPanel").hidden = true;
+  el("purchasePanel").hidden = true;
+  el("contactPanel").hidden = true;
+  el("productsPanel").scrollIntoView({behavior:"smooth", block:"start"});
+}
+el("navHome").addEventListener("click", () => {
+  el("homePanel").hidden = false; el("productsPanel").hidden = true;
+  el("customerWalletPanel").hidden = true; el("myOrdersPanel").hidden = true;
+  el("purchasePanel").hidden = true; el("contactPanel").hidden = true;
+  document.querySelectorAll(".bottomNav button").forEach(b => b.classList.remove("active"));
+  el("navHome").classList.add("active");
+  window.scrollTo({top:0, behavior:"smooth"});
+});
+el("navContact").addEventListener("click", () => {
+  ["homePanel","productsPanel","customerWalletPanel","myOrdersPanel","purchasePanel"].forEach(id => el(id).hidden = true);
+  el("contactPanel").hidden = false;
+  document.querySelectorAll(".bottomNav button").forEach(b => b.classList.remove("active"));
+  el("navContact").classList.add("active");
+  el("contactPanel").scrollIntoView({behavior:"smooth", block:"start"});
+});
+el("contactBackHome").addEventListener("click", () => el("navHome").click());
+el("navWallet").addEventListener("click", () => el("menuWallet").click());
+el("navOrders").addEventListener("click", () => el("menuMyOrders").click());
+el("openGems").addEventListener("click", showGemProducts);
+el("gemsCategory").addEventListener("click", showGemProducts);
+el("backHome").addEventListener("click", () => {
+  el("productsPanel").hidden = true;
+  el("homePanel").hidden = false;
+  el("contactPanel").hidden = true;
+  el("homePanel").scrollIntoView({behavior:"smooth", block:"start"});
+});
+
 el("menuToggle").addEventListener("click", () => {
   const menu = el("mainMenu");
   menu.hidden = !menu.hidden;
@@ -1435,6 +1555,7 @@ el("menuWallet").addEventListener("click", async () => {
     return;
   }
 
+  el("homePanel").hidden = true;
   el("productsPanel").hidden = true;
   el("customerWalletPanel").hidden = false;
   el("myOrdersPanel").hidden = true;
@@ -1478,6 +1599,7 @@ el("menuMyOrders").addEventListener("click", async () => {
     return;
   }
 
+  el("homePanel").hidden = true;
   el("productsPanel").hidden = true;
   el("customerWalletPanel").hidden = true;
   el("myOrdersPanel").hidden = false;
@@ -1493,6 +1615,7 @@ el("menuMyOrders").addEventListener("click", async () => {
 });
 
 el("menuProducts").addEventListener("click", () => {
+  el("homePanel").hidden = true;
   el("productsPanel").hidden = false;
   el("customerWalletPanel").hidden = true;
   el("myOrdersPanel").hidden = true;
@@ -1541,4 +1664,4 @@ checkForNewAdminOrders();
 window.setInterval(checkForNewAdminOrders, 15000);
 </script>
 </body>
-  </html>
+</html>
