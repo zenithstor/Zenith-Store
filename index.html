@@ -496,6 +496,31 @@ body { padding-bottom: 76px; }
     transition-duration: .01ms !important;
   }
 }
+
+/* ZenithStore product-card redesign */
+#products.grid{gap:9px;margin-top:14px}
+#products .product{position:relative;min-width:0;padding:9px 7px 11px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;text-align:center;cursor:pointer;background:linear-gradient(155deg,#151a25 0%,#0b111d 100%);border:1px solid #273347;border-radius:16px;box-shadow:0 4px 13px rgba(0,0,0,.18);transition:transform .2s,border-color .2s,background .2s,box-shadow .2s;isolation:isolate}
+#products .product:hover{transform:translateY(-1px);border-color:#526782}
+#products .product.selected{border:1.5px solid #f04470;background:linear-gradient(145deg,#2b1a24,#121720);animation:zenithGlowPulse 1.8s ease-in-out infinite}
+#products .product.selected::before{content:"";position:absolute;inset:-4px;border-radius:20px;z-index:-1;background:conic-gradient(from 0deg,transparent 0deg,#ff4777 70deg,transparent 130deg,#69baff 210deg,transparent 270deg,#ff4777 340deg);filter:blur(11px);opacity:.68;animation:zenithSpinGlow 3.2s linear infinite}
+#products .product.selected::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;background:radial-gradient(ellipse at center,#f0447020,transparent 72%)}
+#products .product .selected-mark{position:absolute;top:6px;left:6px;width:19px;height:19px;display:none;align-items:center;justify-content:center;border-radius:50%;background:#f04470;color:#fff;font-size:12px;font-weight:900;z-index:2}
+#products .product.selected .selected-mark{display:flex}
+#products .product .product-gem-image{width:100%;height:66px;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:2px}
+#products .product .product-gem-image img{display:block;width:100%;height:100%;object-fit:contain}
+#products .product h3{margin:0;color:#f5f7fc;font-size:14px;font-weight:850;line-height:1.4;overflow-wrap:anywhere}
+#products .product .price{font-size:15px;font-weight:900;color:#f04470;margin:3px 0 0;line-height:1.4}
+#products .product .muted{font-size:10px;line-height:1.3;color:#8f9aae;margin-top:1px}
+#products .product button{display:none!important}
+#continueOrderBtn{display:block;width:100%;min-height:45px;margin-top:14px;border:1px solid #f04470;border-radius:12px;background:linear-gradient(100deg,#e83365,#f04470);color:white;font-weight:800;box-shadow:0 0 18px #f0447030}
+#continueOrderBtn[hidden]{display:none!important}
+#continueOrderBtn:disabled{opacity:.45;box-shadow:none}
+@keyframes zenithSpinGlow{to{transform:rotate(360deg)}}
+@keyframes zenithGlowPulse{0%,100%{box-shadow:0 0 5px #f0447030,0 0 13px #f0447020}50%{box-shadow:0 0 11px #f0447070,0 0 24px #f0447040}}
+@media(min-width:700px){#products.grid{gap:12px}#products .product{padding:12px 9px 13px}#products .product .product-gem-image{height:82px}#products .product h3{font-size:15px}#products .product .price{font-size:17px}}
+@media(max-width:360px){#products.grid{gap:7px}#products .product{padding:7px 5px 9px;border-radius:13px}#products .product .product-gem-image{height:58px}#products .product h3{font-size:13px}#products .product .price{font-size:14px}}
+@media(prefers-reduced-motion:reduce){#products .product.selected,#products .product.selected::before{animation:none}}
+
 </style>
 </head>
 <body>
@@ -556,6 +581,7 @@ body { padding-bottom: 76px; }
       <p class="msg">جارٍ تحميل المنتجات...</p>
     </div>
     <div id="productsMsg" class="msg"></div>
+    <button type="button" id="continueOrderBtn" class="continueOrderBtn" hidden disabled>متابعة لإتمام الطلب</button>
   </section>
 
   <section class="panel" id="customerWalletPanel" hidden>
@@ -793,10 +819,31 @@ async function loadProducts() {
   if (el("myOrdersPanel") && !el("myOrdersPanel").hidden) loadMyOrders();
 }
 
+const ZENITH_PRODUCT_IMAGES = {
+  weekly: "images/weekly-subscription.png",
+  single: "images/gem-single.png",
+  double: "images/gem-double.png",
+  group: "images/gem-group.png",
+  chest: "images/gem-chest.png"
+};
+function productImageData(p) {
+  if (p.product_type === "weekly" || /أسبوعي|اسبوعي|weekly/i.test(p.name || "")) return ZENITH_PRODUCT_IMAGES.weekly;
+  const amount = Number(p.diamonds || 0);
+  if ([22,55,86].includes(amount)) return ZENITH_PRODUCT_IMAGES.single;
+  if ([172,257,343].includes(amount)) return ZENITH_PRODUCT_IMAGES.double;
+  if ([429,514,600,706].includes(amount)) return ZENITH_PRODUCT_IMAGES.group;
+  if ([1050,1135,1412,2195].includes(amount)) return ZENITH_PRODUCT_IMAGES.chest;
+  return ZENITH_PRODUCT_IMAGES.group;
+}
+
 function renderProducts() {
   const box = el("products");
   const provider = el("provider").value;
+  const continueBtn = el("continueOrderBtn");
   box.replaceChildren();
+  selectedProduct = null;
+  selectedProvider = provider;
+  if (continueBtn) { continueBtn.hidden = true; continueBtn.disabled = true; }
   const list = productsCache.filter(p => getPrice(p, provider) != null);
   if (!list.length) {
     box.textContent = "لا توجد منتجات متاحة لهذه الطريقة حالياً.";
@@ -807,6 +854,21 @@ function renderProducts() {
     const price = getPrice(p, provider);
     const card = document.createElement("article");
     card.className = "product";
+    card.tabIndex = 0;
+    card.setAttribute("role", "button");
+    card.setAttribute("aria-pressed", "false");
+    card.setAttribute("aria-label", "اختيار " + productTitle(p));
+    const mark = document.createElement("span");
+    mark.className = "selected-mark";
+    mark.textContent = "✓";
+    mark.setAttribute("aria-hidden", "true");
+    const imageWrap = document.createElement("div");
+    imageWrap.className = "product-gem-image";
+    const image = document.createElement("img");
+    image.src = productImageData(p);
+    image.alt = productTitle(p);
+    image.loading = "lazy";
+    imageWrap.appendChild(image);
     const h = document.createElement("h3");
     h.textContent = productTitle(p);
     const priceEl = document.createElement("div");
@@ -814,17 +876,28 @@ function renderProducts() {
     priceEl.textContent = money(price);
     const note = document.createElement("div");
     note.className = "muted";
-    note.textContent = provider === "mastercard" ? "سعر ماستركارد" : "سعر آسياسيل";
-    const buy = document.createElement("button");
-    buy.type = "button";
-    buy.textContent = "شراء";
-    buy.addEventListener("click", () => openPurchase(p, provider));
-    card.append(h, priceEl, note, buy);
+    note.textContent = provider === "mastercard" ? "ماستركارد" : "آسياسيل";
+    const choose = () => {
+      box.querySelectorAll(".product").forEach(c => {
+        c.classList.remove("selected");
+        c.setAttribute("aria-pressed", "false");
+      });
+      card.classList.add("selected");
+      card.setAttribute("aria-pressed", "true");
+      selectedProduct = p;
+      selectedProvider = provider;
+      if (continueBtn) { continueBtn.hidden = false; continueBtn.disabled = false; }
+      setMessage("productsMsg", "تم اختيار " + productTitle(p) + " — " + money(price), "success");
+    };
+    card.addEventListener("click", choose);
+    card.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") { event.preventDefault(); choose(); }
+    });
+    card.append(mark, imageWrap, h, priceEl, note);
     box.appendChild(card);
   });
-  setMessage("productsMsg", "عدد المنتجات المتاحة: " + list.length);
+  setMessage("productsMsg", "اضغط على البطاقة لاختيار الباقة، ثم اضغط متابعة لإتمام الطلب.");
 }
-
 function openPurchase(product, provider) {
   selectedProduct = product;
   selectedProvider = provider;
@@ -1644,6 +1717,13 @@ el("refreshMyOrders").addEventListener("click", loadMyOrders);
   el("productsPanel").scrollIntoView({behavior:"smooth", block:"start"});
 });
 el("provider").addEventListener("change", renderProducts);
+el("continueOrderBtn").addEventListener("click", () => {
+  if (!selectedProduct) {
+    setMessage("productsMsg", "اختَر باقة أولاً.", "error");
+    return;
+  }
+  openPurchase(selectedProduct, selectedProvider);
+});
 
 db.auth.onAuthStateChange(() => {
   setTimeout(async () => {
