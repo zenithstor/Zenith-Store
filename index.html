@@ -17,14 +17,14 @@
 
 :root {
   color-scheme: dark;
-  --blue: #168cff;
-  --blue-dark: #0869d4;
-  --blue-light: #102c55;
+  --blue: #69baff;
+  --blue-dark: #3e9ce8;
+  --blue-light: #12263e;
   --ink: #edf4ff;
-  --muted: #aabbd8;
-  --border: #20365b;
-  --surface: #0c1730;
-  --page: #040b1b;
+  --muted: #9aa9bf;
+  --border: #1e2b40;
+  --surface: #0c1321;
+  --page: #070b13;
   --shadow: 0 8px 24px rgba(0, 90, 220, .13);
 }
 
@@ -36,7 +36,7 @@ html {
 
 body {
   margin: 0;
-  background: var(--page);
+  background: radial-gradient(ellipse at 50% -20%, #132039 0%, var(--page) 58%);
   color: var(--ink);
   font-family: Arial, sans-serif;
   line-height: 1.65;
@@ -46,7 +46,7 @@ header {
   position: relative;
   z-index: 20;
   padding: 20px 16px;
-  background: rgba(4, 11, 27, .97);
+  background: rgba(7, 11, 19, .97);
   border-bottom: 1px solid var(--border);
   box-shadow: 0 3px 15px rgba(28, 63, 110, .035);
 }
@@ -521,6 +521,34 @@ body { padding-bottom: 76px; }
 @media(max-width:360px){#products.grid{gap:7px}#products .product{padding:7px 5px 9px;border-radius:13px}#products .product .product-gem-image{height:58px}#products .product h3{font-size:13px}#products .product .price{font-size:14px}}
 @media(prefers-reduced-motion:reduce){#products .product.selected,#products .product.selected::before{animation:none}}
 
+
+/* Unified soft-motion theme based on the supplied reference */
+.panel:not(.homePanel){position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(145deg,#0d1524,#090f1b);border-color:#1c2a3e;border-radius:16px;box-shadow:0 14px 35px #0005}
+.panel:not(.homePanel)::before{content:"";position:absolute;inset:-40%;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 30% 45%,#236dbb22 0%,transparent 42%),radial-gradient(ellipse at 75% 60%,#ff4fa310 0%,transparent 38%);animation:zenithSoftLight 13s ease-in-out infinite alternate}
+@keyframes zenithSoftLight{0%{transform:translate(-2%,-1%) scale(.98);opacity:.55}100%{transform:translate(2%,1%) scale(1.04);opacity:1}}
+header{background:rgba(7,11,19,.97);border-bottom-color:#1e2b40}
+.brand{color:#69baff}
+input,select{background:#0a111d;border-color:#2b3b53}
+.secondary,.filePickBtn{background:#101a2b;color:#c9d8ee;border-color:#30415a}
+#products .product{overflow:hidden;isolation:isolate;background:linear-gradient(150deg,#111c2d,#0b1220);border-color:#23334a;border-radius:13px;box-shadow:0 4px 13px #0003}
+#products .product::before{content:"";position:absolute;z-index:-1;inset:-60%;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,#4c9dff25,transparent 45%);opacity:.65;transform:translateX(-15%);animation:zenithCardGlow 10s ease-in-out infinite alternate}
+#products .product:nth-child(2n)::before{background-image:radial-gradient(ellipse at 15% 45%,#ff4fa318,transparent 52%),radial-gradient(ellipse at 85% 55%,#69baff10,transparent 45%)}
+@keyframes zenithCardGlow{from{transform:translate(-4%,-2%)}to{transform:translate(5%,3%)}}
+#products .product.selected{border:1px solid #ff62b0;background:linear-gradient(145deg,#1a1928,#0d1522);box-shadow:0 0 0 1px #ff4fa322,0 0 8px #ff4fa322,0 0 14px #4c9dff12;animation:zenithRefPulse 4.8s ease-in-out infinite}
+#products .product.selected::before{inset:-35%;background:radial-gradient(ellipse at 15% 45%,#ff4fa36b,transparent 42%),radial-gradient(ellipse at 80% 60%,#4c9dff66,transparent 48%),radial-gradient(ellipse at 45% 5%,#ff8acb40,transparent 40%);background-size:180% 180%;animation:zenithRefLight 1.6s ease-in-out infinite alternate;opacity:.95}
+#products .product.selected::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;border-radius:inherit;background:linear-gradient(110deg,transparent 0%,transparent 35%,#ffffff08 43%,#ffffff28 48%,#ff8bd722 53%,transparent 62%,transparent 100%);background-size:230% 100%;animation:zenithRefStreak 3.8s ease-in-out infinite}
+@keyframes zenithRefStreak{0%{background-position:150% 0;opacity:0}18%{opacity:.6}55%{opacity:.75}82%{opacity:.35}100%{background-position:-120% 0;opacity:0}}
+@keyframes zenithRefLight{from{background-position:0% 30%;filter:hue-rotate(0deg)}to{background-position:100% 70%;filter:hue-rotate(35deg)}}
+@keyframes zenithRefPulse{0%,100%{box-shadow:0 0 0 1px #ff4fa322,0 0 7px #ff4fa322,0 0 12px #4c9dff12}50%{box-shadow:0 0 0 1px #ff4fa355,0 0 11px #ff4fa333,0 0 18px #4c9dff22}}
+#products .product .selected-mark{background:#ff4fa3;color:#fff;box-shadow:0 0 9px #ff4fa355}
+#products .product .price{background:#14253a;border:1px solid #263d59;border-radius:8px;padding:5px 9px;color:#8ecbff}
+#backHome,.backBtn{width:auto;min-width:92px;padding:7px 11px;margin:0 0 14px;border:1px solid #30415a;border-radius:9px;background:#101a2b;color:#c9d8ee;font-size:12px;box-shadow:0 3px 12px #0006}
+#backHome:hover,.backBtn:hover{background:#17263b;color:#fff;border-color:#42658a}
+#continueOrderBtn{border-color:#2a527a;background:linear-gradient(100deg,#193653,#21496d);color:#d7ecff;box-shadow:0 0 14px #69baff18}
+.bottomNav{background:rgba(7,11,19,.97);border-top-color:#1e2b40}
+.bottomNav button.active{color:#69baff}
+@media(prefers-reduced-motion:reduce){#products .product::before,#products .product.selected,#products .product.selected::before,#products .product.selected::after,.panel:not(.homePanel)::before{animation:none!important}}
+
 </style>
 </head>
 <body>
@@ -893,7 +921,10 @@ function renderProducts() {
     card.addEventListener("keydown", event => {
       if (event.key === "Enter" || event.key === " ") { event.preventDefault(); choose(); }
     });
-    card.append(mark, imageWrap, h, priceEl, note);
+    const streak = document.createElement("span");
+    streak.className = "light-streak";
+    streak.setAttribute("aria-hidden", "true");
+    card.append(streak, mark, imageWrap, h, priceEl, note);
     box.appendChild(card);
   });
   setMessage("productsMsg", "اضغط على البطاقة لاختيار الباقة، ثم اضغط متابعة لإتمام الطلب.");
