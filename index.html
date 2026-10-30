@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#080d18">
+<script>
+// Prevent the home panel flashing briefly before the saved section is restored.
+try {
+  const savedPage = sessionStorage.getItem("zenithstore:activePage:" + location.pathname) || "home";
+  if (savedPage !== "home") document.documentElement.classList.add("zenith-restore-pending");
+} catch (_) {}
+</script>
 <title>ZenithStore | متجر زينيث</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -14,6 +21,8 @@
 [hidden] {
   display: none !important;
 }
+/* Keep the home panel from flashing while restoring the last section after refresh. */
+html.zenith-restore-pending #homePanel { visibility: hidden !important; }
 
 :root {
   color-scheme: dark;
@@ -502,7 +511,7 @@ body { padding-bottom: 76px; }
 #products .product{position:relative;min-width:0;padding:9px 7px 11px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;text-align:center;cursor:pointer;background:linear-gradient(155deg,#151a25 0%,#0b111d 100%);border:1px solid #273347;border-radius:16px;box-shadow:0 4px 13px rgba(0,0,0,.18);transition:transform .2s,border-color .2s,background .2s,box-shadow .2s;isolation:isolate}
 #products .product:hover{transform:translateY(-1px);border-color:#526782}
 #products .product.selected{border:1.5px solid #f04470;background:linear-gradient(145deg,#2b1a24,#121720);animation:zenithGlowPulse 1.8s ease-in-out infinite}
-#products .product.selected::before{content:"";position:absolute;inset:-4px;border-radius:20px;z-index:-1;background:conic-gradient(from 0deg,transparent 0deg,#ff4777 70deg,transparent 130deg,#69baff 210deg,transparent 270deg,#ff4777 340deg);filter:blur(11px);opacity:.68;animation:zenithSpinGlow 3.2s linear infinite}
+#products .product.selected::before{content:"";position:absolute;inset:-4px;border-radius:20px;z-index:-1;background:conic-gradient(from 0deg,transparent 0deg,#ff4777 70deg,transparent 130deg,#69baff 210deg,transparent 270deg,#ff4777 340deg);filter:blur(7px);opacity:.68;animation:zenithSpinGlow 3.2s linear infinite}
 #products .product.selected::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;background:radial-gradient(ellipse at center,#f0447020,transparent 72%)}
 #products .product .selected-mark{position:absolute;top:6px;left:6px;width:19px;height:19px;display:none;align-items:center;justify-content:center;border-radius:50%;background:#f04470;color:#fff;font-size:12px;font-weight:900;z-index:2}
 #products .product.selected .selected-mark{display:flex}
@@ -524,18 +533,18 @@ body { padding-bottom: 76px; }
 
 /* Unified soft-motion theme based on the supplied reference */
 .panel:not(.homePanel){position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(145deg,#0d1524,#090f1b);border-color:#1c2a3e;border-radius:16px;box-shadow:0 14px 35px #0005}
-.panel:not(.homePanel)::before{content:"";position:absolute;inset:-40%;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 30% 45%,#236dbb22 0%,transparent 42%),radial-gradient(ellipse at 75% 60%,#ff4fa310 0%,transparent 38%);animation:zenithSoftLight 13s ease-in-out infinite alternate}
+.panel:not(.homePanel)::before{content:"";position:absolute;inset:-40%;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 30% 45%,#236dbb22 0%,transparent 42%),radial-gradient(ellipse at 75% 60%,#ff4fa310 0%,transparent 38%);animation:zenithSoftLight 22s ease-in-out infinite alternate}
 @keyframes zenithSoftLight{0%{transform:translate(-2%,-1%) scale(.98);opacity:.55}100%{transform:translate(2%,1%) scale(1.04);opacity:1}}
 header{background:rgba(7,11,19,.97);border-bottom-color:#1e2b40}
 .brand{color:#69baff}
 input,select{background:#0a111d;border-color:#2b3b53}
 .secondary,.filePickBtn{background:#101a2b;color:#c9d8ee;border-color:#30415a}
 #products .product{overflow:hidden;isolation:isolate;background:linear-gradient(150deg,#111c2d,#0b1220);border-color:#23334a;border-radius:13px;box-shadow:0 4px 13px #0003}
-#products .product::before{content:"";position:absolute;z-index:-1;inset:-60%;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,#4c9dff25,transparent 45%);opacity:.65;transform:translateX(-15%);animation:zenithCardGlow 10s ease-in-out infinite alternate}
+#products .product::before{content:"";position:absolute;z-index:-1;inset:-60%;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,#4c9dff25,transparent 45%);opacity:.65;transform:translateX(-15%);animation:zenithCardGlow 18s ease-in-out infinite alternate}
 #products .product:nth-child(2n)::before{background-image:radial-gradient(ellipse at 15% 45%,#ff4fa318,transparent 52%),radial-gradient(ellipse at 85% 55%,#69baff10,transparent 45%)}
 @keyframes zenithCardGlow{from{transform:translate(-4%,-2%)}to{transform:translate(5%,3%)}}
 #products .product.selected{border:1px solid #ff62b0;background:linear-gradient(145deg,#1a1928,#0d1522);box-shadow:0 0 0 1px #ff4fa322,0 0 8px #ff4fa322,0 0 14px #4c9dff12;animation:zenithRefPulse 4.8s ease-in-out infinite}
-#products .product.selected::before{inset:-35%;background:radial-gradient(ellipse at 15% 45%,#ff4fa36b,transparent 42%),radial-gradient(ellipse at 80% 60%,#4c9dff66,transparent 48%),radial-gradient(ellipse at 45% 5%,#ff8acb40,transparent 40%);background-size:180% 180%;animation:zenithRefLight 1.6s ease-in-out infinite alternate;opacity:.95}
+#products .product.selected::before{inset:-35%;background:radial-gradient(ellipse at 15% 45%,#ff4fa36b,transparent 42%),radial-gradient(ellipse at 80% 60%,#4c9dff66,transparent 48%),radial-gradient(ellipse at 45% 5%,#ff8acb40,transparent 40%);background-size:180% 180%;animation:zenithRefLight 3.2s ease-in-out infinite alternate;opacity:.88}
 #products .product.selected::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;border-radius:inherit;background:linear-gradient(110deg,transparent 0%,transparent 35%,#ffffff08 43%,#ffffff28 48%,#ff8bd722 53%,transparent 62%,transparent 100%);background-size:230% 100%;animation:zenithRefStreak 3.8s ease-in-out infinite}
 @keyframes zenithRefStreak{0%{background-position:150% 0;opacity:0}18%{opacity:.6}55%{opacity:.75}82%{opacity:.35}100%{background-position:-120% 0;opacity:0}}
 @keyframes zenithRefLight{from{background-position:0% 30%;filter:hue-rotate(0deg)}to{background-position:100% 70%;filter:hue-rotate(35deg)}}
@@ -548,6 +557,83 @@ input,select{background:#0a111d;border-color:#2b3b53}
 .bottomNav{background:rgba(7,11,19,.97);border-top-color:#1e2b40}
 .bottomNav button.active{color:#69baff}
 @media(prefers-reduced-motion:reduce){#products .product::before,#products .product.selected,#products .product.selected::before,#products .product.selected::after,.panel:not(.homePanel)::before{animation:none!important}}
+
+/* Performance refinements: preserve the animated lighting while reducing other rendering work. */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding-top: max(10px, env(safe-area-inset-top));
+  padding-bottom: 10px;
+  background: rgba(7, 11, 19, .97);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+html { scroll-padding-top: 92px; }
+#products .product { contain: layout paint; }
+#products .product::before { opacity: .42; }
+#products .product.selected::before { filter: blur(6px); opacity: .88; }
+#products .product.selected::after { will-change: background-position, opacity; }
+.panel:not(.homePanel)::before { will-change: transform, opacity; }
+@media (hover: hover) and (pointer: fine) {
+  #products .product { transition: border-color .12s ease, box-shadow .12s ease; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+}
+
+
+
+/* Extra performance tuning: keep the moving light, but avoid repainting every card. */
+header {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+.bottomNav {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+/* Unselected gem cards stay still; the animated light remains on the selected card. */
+#products .product:not(.selected)::before {
+  animation: none !important;
+  transform: none !important;
+}
+#products .product:not(.selected) {
+  transition: border-color .12s ease, background-color .12s ease !important;
+  box-shadow: 0 2px 7px #0002 !important;
+}
+/* Keep the selected card's moving glow, using transforms instead of animated filters/shadows. */
+#products .product.selected {
+  animation: none !important;
+  box-shadow: 0 0 0 1px #ff4fa333, 0 0 8px #ff4fa322 !important;
+}
+#products .product.selected::before {
+  filter: none !important;
+  background-size: 150% 150% !important;
+  animation: zenithOptimizedGlow 5.5s ease-in-out infinite alternate !important;
+  will-change: transform, opacity;
+}
+#products .product.selected::after {
+  inset: 0 !important;
+  background: linear-gradient(110deg, transparent 0%, transparent 38%, #ffffff08 44%, #ffffff24 50%, #ff8bd71c 54%, transparent 62%, transparent 100%) !important;
+  background-size: 100% 100% !important;
+  animation: zenithOptimizedShine 4.8s ease-in-out infinite !important;
+  will-change: transform, opacity;
+}
+@keyframes zenithOptimizedGlow {
+  from { transform: translate3d(-2%, -1%, 0) scale(.98); opacity: .58; }
+  to { transform: translate3d(2%, 1%, 0) scale(1.02); opacity: .88; }
+}
+@keyframes zenithOptimizedShine {
+  0% { transform: translate3d(-105%, 0, 0); opacity: 0; }
+  18% { opacity: .5; }
+  70% { opacity: .45; }
+  100% { transform: translate3d(105%, 0, 0); opacity: 0; }
+}
+/* Avoid smooth-scroll animation work on lower-powered mobile devices. */
+@media (max-width: 700px) {
+  html { scroll-behavior: auto !important; }
+}
 
 </style>
 </head>
@@ -790,23 +876,22 @@ let customerWalletLoadBusy = false;
 
 function applyRoleUI(isAdmin) {
   currentUserIsAdmin = isAdmin === true;
-  el("productsPanel").hidden = true;
-  el("homePanel").hidden = currentUserIsAdmin;
-  el("contactPanel").hidden = true;
-  // Keep checkout hidden until the customer explicitly selects a product.
-  el("purchasePanel").hidden = true;
-  el("myOrdersPanel").hidden = true;
+  // A background role check must not send a customer back to Home while browsing.
+  // Only force the admin layout when the account is actually an administrator.
   if (currentUserIsAdmin) {
-  el("customerWalletPanel").hidden = true;
-  }
-  el("menuWallet").hidden = currentUserIsAdmin;
-  el("menuProducts").hidden = currentUserIsAdmin;
-  el("menuMyOrders").hidden = currentUserIsAdmin;
-  if (currentUserIsAdmin) {
+    el("productsPanel").hidden = true;
+    el("homePanel").hidden = true;
+    el("contactPanel").hidden = true;
+    el("purchasePanel").hidden = true;
+    el("myOrdersPanel").hidden = true;
+    el("customerWalletPanel").hidden = true;
     el("selectedProductInfo").textContent = "";
     selectedProduct = null;
     selectedProvider = null;
   }
+  el("menuWallet").hidden = currentUserIsAdmin;
+  el("menuProducts").hidden = currentUserIsAdmin;
+  el("menuMyOrders").hidden = currentUserIsAdmin;
 }
 
 const money = n => Number(n).toLocaleString("en-US") + " د.ع";
@@ -896,6 +981,7 @@ function renderProducts() {
     image.src = productImageData(p);
     image.alt = productTitle(p);
     image.loading = "lazy";
+    image.decoding = "async";
     imageWrap.appendChild(image);
     const h = document.createElement("h3");
     h.textContent = productTitle(p);
@@ -932,6 +1018,11 @@ function renderProducts() {
 function openPurchase(product, provider) {
   selectedProduct = product;
   selectedProvider = provider;
+  saveActivePage("purchase");
+  try {
+    sessionStorage.setItem(selectedProductStorageKey, String(product.id));
+    sessionStorage.setItem(selectedProviderStorageKey, String(provider || "mastercard"));
+  } catch (_) {}
   const price = getPrice(product, provider);
   el("selectedProductInfo").textContent =
     `${productTitle(product)} — ${money(price)} (${provider === "mastercard" ? "تسعير ماستركارد" : "تسعير آسياسيل"})`;
@@ -948,12 +1039,37 @@ function updatePaymentFields() {
 }
 el("paymentMethod").addEventListener("change", updatePaymentFields);
 el("cancelPurchase").addEventListener("click", () => {
+  saveActivePage("products");
   el("purchasePanel").hidden = true;
   el("purchaseForm").reset();
   updatePaymentFields();
   selectedProduct = null;
   selectedProvider = null;
   setMessage("orderMsg", "");
+});
+
+// The checkout Back button returns to the product list without clearing the selected pack.
+const purchaseBackButton = el("purchasePanel").querySelector("[data-back]");
+if (purchaseBackButton) purchaseBackButton.addEventListener("click", () => {
+  saveActivePage("products");
+  el("purchasePanel").hidden = true;
+  el("homePanel").hidden = true;
+  el("productsPanel").hidden = false;
+  el("customerWalletPanel").hidden = true;
+  el("myOrdersPanel").hidden = true;
+  el("contactPanel").hidden = true;
+  document.querySelectorAll(".bottomNav button").forEach(b => b.classList.remove("active"));
+  if (selectedProduct) {
+    const selectedCard = [...el("products").querySelectorAll(".product")].find(card => card.getAttribute("aria-label") === "اختيار " + productTitle(selectedProduct));
+    if (selectedCard) {
+      el("products").querySelectorAll(".product").forEach(card => { card.classList.remove("selected"); card.setAttribute("aria-pressed", "false"); });
+      selectedCard.classList.add("selected");
+      selectedCard.setAttribute("aria-pressed", "true");
+    }
+    el("continueOrderBtn").hidden = false;
+    el("continueOrderBtn").disabled = false;
+  }
+  el("productsPanel").scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
 function renderPaymentInfo(targetId, provider) {
@@ -1603,7 +1719,22 @@ el("depositForm").addEventListener("submit", submitDepositRequest);
 el("refreshDeposits").addEventListener("click", loadCustomerDeposits);
 renderPaymentInfo("depositPaymentInfo", "mastercard");
 
+const activePageStorageKey = "zenithstore:activePage:" + location.pathname;
+const selectedProductStorageKey = "zenithstore:selectedProduct:" + location.pathname;
+const selectedProviderStorageKey = "zenithstore:selectedProvider:" + location.pathname;
+function saveActivePage(page) {
+  try { sessionStorage.setItem(activePageStorageKey, page); } catch (_) {}
+}
+function hideCustomerPanels() {
+  ["homePanel", "productsPanel", "customerWalletPanel", "myOrdersPanel", "purchasePanel", "contactPanel"].forEach(id => {
+    const node = el(id); if (node) node.hidden = true;
+  });
+}
+function setActiveNav(id) {
+  document.querySelectorAll(".bottomNav button").forEach(b => b.classList.toggle("active", b.id === id));
+}
 function showGemProducts() {
+  saveActivePage("products");
   document.querySelectorAll(".bottomNav button").forEach(b => b.classList.remove("active"));
   el("homePanel").hidden = true;
   el("productsPanel").hidden = false;
@@ -1614,6 +1745,7 @@ function showGemProducts() {
   el("productsPanel").scrollIntoView({behavior:"smooth", block:"start"});
 }
 el("navHome").addEventListener("click", () => {
+  saveActivePage("home");
   el("homePanel").hidden = false; el("productsPanel").hidden = true;
   el("customerWalletPanel").hidden = true; el("myOrdersPanel").hidden = true;
   el("purchasePanel").hidden = true; el("contactPanel").hidden = true;
@@ -1622,6 +1754,7 @@ el("navHome").addEventListener("click", () => {
   window.scrollTo({top:0, behavior:"smooth"});
 });
 el("navContact").addEventListener("click", () => {
+  saveActivePage("contact");
   ["homePanel","productsPanel","customerWalletPanel","myOrdersPanel","purchasePanel"].forEach(id => el(id).hidden = true);
   el("contactPanel").hidden = false;
   document.querySelectorAll(".bottomNav button").forEach(b => b.classList.remove("active"));
@@ -1634,6 +1767,7 @@ el("navOrders").addEventListener("click", () => el("menuMyOrders").click());
 el("openGems").addEventListener("click", showGemProducts);
 el("gemsCategory").addEventListener("click", showGemProducts);
 el("backHome").addEventListener("click", () => {
+  saveActivePage("home");
   el("productsPanel").hidden = true;
   el("homePanel").hidden = false;
   el("contactPanel").hidden = true;
@@ -1656,6 +1790,7 @@ el("menuWallet").addEventListener("click", async () => {
     return;
   }
 
+  saveActivePage("wallet");
   el("homePanel").hidden = true;
   el("productsPanel").hidden = true;
   el("customerWalletPanel").hidden = false;
@@ -1676,6 +1811,7 @@ el("menuWallet").addEventListener("click", async () => {
 el("refreshCustomerWallet").addEventListener("click", loadCustomerWallet);
   
 el("customerWalletPanel").querySelector("[data-back]").addEventListener("click", () => {
+  saveActivePage("products");
   el("customerWalletPanel").hidden = true;
   el("productsPanel").hidden = false;
   el("contactPanel").hidden = false;
@@ -1700,6 +1836,7 @@ el("menuMyOrders").addEventListener("click", async () => {
     return;
   }
 
+  saveActivePage("orders");
   el("homePanel").hidden = true;
   el("productsPanel").hidden = true;
   el("customerWalletPanel").hidden = true;
@@ -1716,6 +1853,7 @@ el("menuMyOrders").addEventListener("click", async () => {
 });
 
 el("menuProducts").addEventListener("click", () => {
+  saveActivePage("products");
   el("homePanel").hidden = true;
   el("productsPanel").hidden = false;
   el("customerWalletPanel").hidden = true;
@@ -1740,6 +1878,7 @@ el("clearAdminNotifications").addEventListener("click", () => {
 
 el("refreshMyOrders").addEventListener("click", loadMyOrders);
   el("myOrdersPanel").querySelector("[data-back]").addEventListener("click", () => {
+  saveActivePage("products");
   el("myOrdersPanel").hidden = true;
   el("productsPanel").hidden = false;
   el("contactPanel").hidden = false;
@@ -1763,9 +1902,91 @@ db.auth.onAuthStateChange(() => {
   }, 0);
 });
 
+// Remember the current scroll position across reloads / leaving and returning to this tab.
+// Session-scoped storage avoids persisting sensitive form contents or account data.
+(function installScrollRestoration() {
+  const storageKey = "zenithstore:scrollY:" + location.pathname;
+  let saveTimer = 0;
+  const savePosition = () => {
+    try { sessionStorage.setItem(storageKey, String(Math.max(0, window.scrollY || 0))); } catch (_) {}
+  };
+  window.addEventListener("scroll", () => {
+    if (saveTimer) return;
+    saveTimer = window.setTimeout(() => { saveTimer = 0; savePosition(); }, 120);
+  }, { passive: true });
+  window.addEventListener("pagehide", savePosition);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") savePosition();
+  });
+  window.addEventListener("pageshow", () => {
+    let saved = 0;
+    try { saved = Number(sessionStorage.getItem(storageKey) || 0); } catch (_) {}
+    if (Number.isFinite(saved) && saved > 0) {
+      requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo({ top: saved, behavior: "auto" })));
+    }
+  });
+})();
+
+// Restore the last section after refresh (same tab), not only the gems section.
+async function restoreActivePage() {
+  let page = "home";
+  let savedProductId = "";
+  let savedProvider = "mastercard";
+  try {
+    page = sessionStorage.getItem(activePageStorageKey) || "home";
+    savedProductId = sessionStorage.getItem(selectedProductStorageKey) || "";
+    savedProvider = sessionStorage.getItem(selectedProviderStorageKey) || "mastercard";
+  } catch (_) {}
+
+  // Wallet and orders are private sections; only restore them for a signed-in customer.
+  if (page === "wallet" || page === "orders") {
+    const {data} = await db.auth.getSession();
+    if (!data?.session?.user) page = "home";
+  }
+  hideCustomerPanels();
+  if (page === "products") {
+    el("productsPanel").hidden = false;
+    setActiveNav("");
+  } else if (page === "contact") {
+    el("contactPanel").hidden = false;
+    setActiveNav("navContact");
+  } else if (page === "wallet") {
+    el("customerWalletPanel").hidden = false;
+    setActiveNav("navWallet");
+    await loadCustomerWallet();
+  } else if (page === "orders") {
+    el("myOrdersPanel").hidden = false;
+    setActiveNav("navOrders");
+    await loadMyOrders();
+  } else if (page === "purchase") {
+    const product = productsCache.find(p => String(p.id) === savedProductId);
+    if (product) {
+      el("productsPanel").hidden = false;
+      openPurchase(product, savedProvider);
+      document.documentElement.classList.remove("zenith-restore-pending");
+      return;
+    }
+    page = "products";
+    el("productsPanel").hidden = false;
+  } else {
+    page = "home";
+    el("homePanel").hidden = false;
+    setActiveNav("navHome");
+  }
+  saveActivePage(page);
+  // Reveal the selected section only after restoration, avoiding a brief flash of Home.
+  document.documentElement.classList.remove("zenith-restore-pending");
+  // Restore scroll only after the correct panel is visible, so refresh works in every section.
+  const scrollKey = "zenithstore:scrollY:" + location.pathname;
+  let savedY = 0;
+  try { savedY = Number(sessionStorage.getItem(scrollKey) || 0); } catch (_) {}
+  if (Number.isFinite(savedY) && savedY > 0) {
+    requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo({ top: savedY, behavior: "auto" })));
+  }
+}
+
 updatePaymentFields();
-refreshSession();
-loadProducts();
+Promise.all([refreshSession(), loadProducts()]).then(restoreActivePage).catch(error => console.error("تعذر استعادة القسم السابق", error));
 loadAdminOrders();
 loadAdminDeposits();
 checkForNewAdminOrders();
