@@ -1814,7 +1814,7 @@ el("customerWalletPanel").querySelector("[data-back]").addEventListener("click",
   saveActivePage("products");
   el("customerWalletPanel").hidden = true;
   el("productsPanel").hidden = false;
-  el("contactPanel").hidden = false;
+  el("contactPanel").hidden = true;
   el("myOrdersPanel").hidden = true;
   el("purchasePanel").hidden = true;
 
@@ -1859,7 +1859,7 @@ el("menuProducts").addEventListener("click", () => {
   el("customerWalletPanel").hidden = true;
   el("myOrdersPanel").hidden = true;
   el("purchasePanel").hidden = true;
-  el("contactPanel").hidden = false;
+  el("contactPanel").hidden = true;
 
   el("mainMenu").hidden = true;
   el("menuToggle").setAttribute("aria-expanded", "false");
@@ -1881,7 +1881,7 @@ el("refreshMyOrders").addEventListener("click", loadMyOrders);
   saveActivePage("products");
   el("myOrdersPanel").hidden = true;
   el("productsPanel").hidden = false;
-  el("contactPanel").hidden = false;
+  el("contactPanel").hidden = true;
   el("customerWalletPanel").hidden = true;
   el("purchasePanel").hidden = true;
   el("productsPanel").scrollIntoView({behavior:"smooth", block:"start"});
