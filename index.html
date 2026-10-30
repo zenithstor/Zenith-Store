@@ -1356,9 +1356,7 @@ async function loadMyOrders() {
   try {
     const {data: sessionData, error: sessionError} = await db.auth.getSession();
     const user = sessionData?.session?.user;
-    if (!user) {
-      el("myOrdersPanel").hidden = false;
-    }
+    // Loading order data must never change which page/section is visible.
     if (sessionError) {
       setMessage("myOrdersMsg", "تعذر التحقق من الحساب: " + sessionError.message, "error");
       return;
@@ -1814,7 +1812,7 @@ el("customerWalletPanel").querySelector("[data-back]").addEventListener("click",
   saveActivePage("products");
   el("customerWalletPanel").hidden = true;
   el("productsPanel").hidden = false;
-  el("contactPanel").hidden = true;
+  el("contactPanel").hidden = false;
   el("myOrdersPanel").hidden = true;
   el("purchasePanel").hidden = true;
 
@@ -1944,6 +1942,8 @@ async function restoreActivePage() {
     if (!data?.session?.user) page = "home";
   }
   hideCustomerPanels();
+  // A section restore must reveal exactly one customer panel. Background data loaders
+  // (including loadMyOrders) are deliberately not allowed to toggle panel visibility.
   if (page === "products") {
     el("productsPanel").hidden = false;
     setActiveNav("");
