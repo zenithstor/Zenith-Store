@@ -23,6 +23,8 @@ try {
 }
 /* Keep the home panel from flashing while restoring the last section after refresh. */
 html.zenith-restore-pending #homePanel { visibility: hidden !important; }
+/* Orders must never appear below the home categories; show them only in the Orders view. */
+#homePanel:not([hidden]) ~ #myOrdersPanel { display: none !important; }
 
 :root {
   color-scheme: dark;
