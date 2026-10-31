@@ -637,6 +637,13 @@ header {
   html { scroll-behavior: auto !important; }
 }
 
+
+.adminStats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:14px 0}
+.adminStat{background:#101d30;border:1px solid #263d59;border-radius:12px;padding:12px;min-width:0}
+.adminStat span{display:block;color:#a9bad0;font-size:12px;margin-bottom:6px}
+.adminStat strong{display:block;color:#8ecbff;font-size:20px;font-weight:900;overflow-wrap:anywhere}
+.adminStatWide{grid-column:1/-1}
+.adminStatsNote{grid-column:1/-1;margin:0;font-size:11px}
 </style>
 </head>
 <body>
@@ -787,6 +794,14 @@ header {
     <div class="muted">تأكد من استلام المبلغ قبل قبول طلب التحويل. الموافقة لا تعني أن الشحن اكتمل.</div>
     <button type="button" id="refreshOrders">تحديث الطلبات</button>
     <div id="adminMsg" class="msg" aria-live="polite"></div>
+    <div id="adminStats" class="adminStats" aria-live="polite">
+      <div class="adminStat"><span>الطلبات المعروضة</span><strong id="adminStatCount">—</strong></div>
+      <div class="adminStat"><span>بانتظار المراجعة</span><strong id="adminStatPending">—</strong></div>
+      <div class="adminStat"><span>قيد المعالجة</span><strong id="adminStatProcessing">—</strong></div>
+      <div class="adminStat"><span>مكتملة الشحن</span><strong id="adminStatCompleted">—</strong></div>
+      <div class="adminStat adminStatWide"><span>قيمة الطلبات المكتملة المعروضة</span><strong id="adminStatRevenue">—</strong></div>
+      <p class="muted adminStatsNote">الإحصائيات محسوبة من آخر 100 طلب محمّل، وليست إجمالي مبيعات المتجر التاريخية.</p>
+    </div>
     <div id="adminOrders"></div>
 
     <hr style="border:0;border-top:1px solid #304562;margin:22px 0">
@@ -1510,7 +1525,17 @@ async function loadAdminOrders() {
       setMessage("adminMsg", "تعذر تحميل الطلبات: " + error.message, "error");
       return;
     }
-    setMessage("adminMsg", `عدد الطلبات المعروضة: ${(orders || []).length}`);
+    const statsOrders = orders || [];
+    const countStatus = status => statsOrders.filter(order => String(order.status || "").toLowerCase() === status).length;
+    const completedRevenue = statsOrders
+      .filter(order => String(order.status || "").toLowerCase() === "completed")
+      .reduce((sum, order) => sum + (Number(order.price_iqd) || 0), 0);
+    el("adminStatCount").textContent = String(statsOrders.length);
+    el("adminStatPending").textContent = String(countStatus("pending"));
+    el("adminStatProcessing").textContent = String(countStatus("processing"));
+    el("adminStatCompleted").textContent = String(countStatus("completed"));
+    el("adminStatRevenue").textContent = money(completedRevenue);
+    setMessage("adminMsg", `عدد الطلبات المعروضة: ${statsOrders.length}`);
     if (!orders || !orders.length) {
       el("adminOrders").textContent = "لا توجد طلبات حالياً.";
       return;
