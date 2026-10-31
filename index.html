@@ -644,6 +644,136 @@ header {
 .adminStat strong{display:block;color:#8ecbff;font-size:20px;font-weight:900;overflow-wrap:anywhere}
 .adminStatWide{grid-column:1/-1}
 .adminStatsNote{grid-column:1/-1;margin:0;font-size:11px}
+
+
+/* ZenithStore visual polish pass — presentation only; no business logic changes */
+:root{
+  --blue:#79c5ff;--blue-dark:#399be8;--blue-light:#11243a;
+  --ink:#f1f6ff;--muted:#a6b5ca;--border:#24344b;
+  --surface:#0c1422;--page:#070c15;
+  --shadow:0 12px 30px rgba(0,0,0,.22);
+  --pink:#f36aab;--pink-soft:#ff9bc9;
+}
+body{background:radial-gradient(ellipse at 50% -18%,#172b46 0%,#090f1b 48%,#070b13 100%);color:var(--ink)}
+header{border-bottom:1px solid #263b55;box-shadow:0 8px 24px #0005}
+.brand{letter-spacing:.15px;text-shadow:0 0 22px #69baff22}
+.sub,label{color:#b6c6dc}
+.menuBtn{border:1px solid #345273;background:linear-gradient(145deg,#173452,#0d1b2d);color:#9bd5ff;box-shadow:0 5px 16px #0003}
+.menuBox{background:linear-gradient(145deg,#101c2e,#0a1220);border-color:#2a405d}
+main{padding-top:24px}
+.panel:not(.homePanel){border:1px solid #263951;background:linear-gradient(150deg,rgba(16,29,47,.98),rgba(9,16,27,.98));box-shadow:0 15px 36px #0004}
+h2{color:#f4f8ff;text-wrap:balance}
+h3{color:#e8f1ff}
+label{font-weight:700;letter-spacing:.05px}
+input,select{background:#080f1b!important;color:#edf5ff!important;border:1px solid #30445f!important;border-radius:13px!important}
+input::placeholder{color:#8192aa;opacity:1}
+input:focus,select:focus{border-color:#78c7ff!important;box-shadow:0 0 0 3px #69baff20!important}
+button{border-radius:13px;background:linear-gradient(110deg,#318fd7,#63baff);color:#061321;box-shadow:0 5px 14px #258bd522}
+button:hover{background:linear-gradient(110deg,#4aa7ed,#8bd0ff);color:#061321}
+button:focus-visible,a:focus-visible{outline:2px solid #ff8fc4;outline-offset:3px}
+.secondary,.filePickBtn{background:linear-gradient(145deg,#14253a,#0d1929)!important;color:#cce4ff!important;border:1px solid #34506f!important}
+.secondary:hover,.filePickBtn:hover{background:#1b3049!important;color:#fff!important}
+.danger{background:linear-gradient(110deg,#7d263b,#b43b55)!important;color:#fff!important;border-color:#d45a73!important}
+.msg{color:#9dccf4}.error{color:#ff8799}.success{color:#69d6a4}
+.notice{background:linear-gradient(145deg,#10223a,#0b1728);border-color:#2a4667;color:#d9eaff}
+.adminAlert{background:#251a27;border-color:#704054;color:#ffd7e5}
+.toastNotice{background:#10271f;border-color:#347b5d;color:#baf3d7}
+.product{border-color:#2b405b}
+.product h3{color:#f2f7ff}
+.price{color:#8fd0ff}
+#products .product{border-color:#2a3d55;background:linear-gradient(150deg,#121e2e,#0b1320)}
+#products .product.selected{border-color:#ff79b9;background:linear-gradient(145deg,#251a2a,#101a29)}
+#products .product .price{background:#14273b;border-color:#34516f;color:#a4d9ff}
+#continueOrderBtn{background:linear-gradient(100deg,#bd3d79,#ed6ca9);border-color:#f38bbb;color:#fff;box-shadow:0 7px 20px #e34c8a2b}
+.homeHero{border:1px solid #294765;border-radius:18px;box-shadow:0 16px 34px #0005}
+.homeCategory{border-color:#327fbd;background:radial-gradient(circle at 15% 50%,#168cff30,transparent 42%),linear-gradient(120deg,#12385f,#0c1a30);box-shadow:0 8px 22px #0003}
+.homeCategory.membershipPlaceholder{border-color:#8059bd;background:radial-gradient(circle at 15% 50%,#9333ea30,transparent 42%),linear-gradient(120deg,#2b1a4b,#0c1a30)}
+.homeTrust{background:linear-gradient(110deg,#0e1d30,#0a1422);border-color:#2a405b;color:#dceaff}
+.bottomNav{background:rgba(7,13,23,.985);border-top:1px solid #2a405b;box-shadow:0 -8px 25px #0004}
+.bottomNav button{color:#9aabc2;border-radius:10px}
+.bottomNav button.active{color:#8bd0ff;background:#14273a}
+.contactPage .socialContact{background:linear-gradient(110deg,#122943,#0b1728);border-color:#2e4d6d;transition:transform .18s,border-color .18s}
+.contactPage .socialContact:hover{transform:translateY(-2px);border-color:#75bfff}
+.adminStats{gap:10px}
+.adminStat{background:linear-gradient(145deg,#14253a,#0c1726);border-color:#2b4563;box-shadow:inset 0 1px #ffffff08}
+.adminStat strong{color:#91d2ff}
+.adminStatsNote{color:#9eafc6}
+footer{color:#91a2ba}
+/* Make all interactive elements comfortable on touch screens. */
+button,.filePickBtn{min-height:44px;touch-action:manipulation}
+@media(max-width:420px){
+  main{padding:16px 10px 24px}
+  .panel:not(.homePanel){padding:15px;border-radius:17px}
+  h2{font-size:19px;margin-bottom:14px}
+  .homeCategory{min-height:96px}
+  .bottomNav{padding-left:8px;padding-right:8px}
+}
+@media(min-width:700px){
+  .panel:not(.homePanel){border-radius:20px}
+  .homeCategory{min-height:116px}
+}
+@media(prefers-reduced-motion:reduce){
+  .homeCategory,.contactPage .socialContact,button{transition:none!important}
+}
+
+
+/* Popular picks and store information pages */
+.popularSection{margin:22px 0 8px;padding:17px;border:1px solid #29415e;border-radius:18px;background:linear-gradient(145deg,#101f32,#0b1422);box-shadow:0 10px 26px #0003}
+.popularHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.popularHead h2{margin:0;font-size:18px}
+.popularHead span{font-size:11px;color:#9eb5ce}
+.popularGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.popularItem{display:flex;align-items:center;gap:9px;min-width:0;padding:10px;border-radius:13px;border:1px solid #2a405a;background:#0b1523;color:#f3f7ff;text-align:right}
+.popularItem img{width:48px;height:48px;object-fit:contain;flex:0 0 48px}
+.popularItem strong{display:block;font-size:13px}
+.popularItem small{display:block;color:#8fcaff;font-size:11px;margin-top:4px}
+.popularItem:active{transform:scale(.98)}
+.infoPage h2{margin:0 0 14px}
+.infoPage h3{color:#a8d9ff;font-size:16px;margin:20px 0 7px}
+.infoPage p,.infoPage li{color:#c3cede;line-height:1.9;font-size:14px}
+.infoPage .infoIntro{padding:13px;border-radius:13px;background:#13243a;border:1px solid #294461;color:#d9eaff}
+.infoPage ul{padding-right:22px}
+.infoPage .updatedNote{font-size:11px;color:#8ea2bc;margin-top:18px}
+.storeFooter{margin-top:24px;padding:24px 18px 100px;border-top:1px solid #242832;background:#090a0e;color:#f5f5f7}
+.footerGroup{margin:0 0 22px;text-align:right}
+.footerGroup h3{font-size:16px;margin:0 0 12px;color:#f4f4f6}
+.footerLinks{display:flex;align-items:center;gap:22px;flex-wrap:wrap;padding:0}
+.footerLinks a,.footerLinks button{display:inline-flex;align-items:center;min-height:34px;background:none;border:0;padding:0;color:#9999a3;text-decoration:none;font:inherit;font-size:13px;cursor:pointer}
+.footerLinks a:active,.footerLinks button:active{color:#ff4775}
+.footerCopyright{border-top:1px solid #242832;padding-top:16px;text-align:center;color:#777985;font-size:11px}
+@media(max-width:420px){.popularSection{padding:13px}.popularGrid{gap:7px}.popularItem{padding:8px}.popularItem img{width:40px;height:40px;flex-basis:40px}}
+
+
+/* Requested compact legal links, corner back control and pricing toggle */
+.footerGroup:last-of-type .footerLinks{gap:8px}
+.footerGroup:last-of-type .footerLinks button{
+  min-height:30px;padding:5px 12px;border:1px solid #30313a;border-radius:999px;
+  background:#17181f;color:#b9bac4;font-size:11px;line-height:1.2
+}
+.footerGroup:last-of-type .footerLinks button:active{border-color:#ff4775;color:#ff6b91}
+.infoPage{position:relative;padding-top:52px!important}
+.infoPage .infoBack{
+  position:absolute;top:10px;left:12px;min-height:28px;height:28px;
+  padding:3px 10px!important;border-radius:999px!important;font-size:11px!important;
+  line-height:1;background:#171d29!important;border:1px solid #33445c!important;
+  color:#bcdcff!important;box-shadow:none!important
+}
+.pricingTopRow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0 7px}
+.pricingCaption{font-size:12px;color:#9eacc0}
+.pricingToggle{display:flex;align-items:center;gap:6px}
+.pricingChoice{
+  min-height:30px;padding:5px 11px;border-radius:999px;border:1px solid #35445a;
+  background:#111a28;color:#aebbd0;font-size:11px;font-weight:700;cursor:pointer;
+  transition:background .18s,border-color .18s,color .18s
+}
+.pricingChoice.active{background:#263c57;border-color:#69baff;color:#eaf6ff;box-shadow:0 0 12px #69baff22}
+.providerNative{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;overflow:hidden!important}
+@media(max-width:420px){
+  .pricingChoice{min-height:28px;padding:4px 9px;font-size:10px}
+  .pricingCaption{font-size:11px}
+  .infoPage .infoBack{top:9px;left:10px}
+}
+
 </style>
 </head>
 <body>
@@ -693,13 +823,25 @@ header {
 
   <section class="panel" id="productsPanel" hidden>
     <button type="button" class="secondary" id="backHome">← الرئيسية</button>
+    <section class="popularSection" aria-labelledby="popularTitle">
+      <div class="popularHead"><h2 id="popularTitle">🔥 الباقات الأكثر طلباً</h2><span>باقات مقترحة من زينيث</span></div>
+      <div class="popularGrid" id="popularProducts">
+        <p class="muted">جارٍ تحميل الباقات...</p>
+      </div>
+    </section>
     <h2>باقات شحن الجواهر</h2>
-    <label for="provider">طريقة التسعير</label>
-    <select id="provider">
+    <div class="pricingTopRow">
+      <div class="pricingToggle" role="group" aria-label="اختيار طريقة التسعير">
+        <button type="button" class="pricingChoice active" data-provider="mastercard" aria-pressed="true">ماستركارد</button>
+        <button type="button" class="pricingChoice" data-provider="asiacell" aria-pressed="false">آسياسيل</button>
+      </div>
+      <span class="pricingCaption">طريقة التسعير</span>
+    </div>
+    <select id="provider" class="providerNative" aria-hidden="true" tabindex="-1">
       <option value="mastercard">ماستركارد</option>
       <option value="asiacell">آسياسيل</option>
     </select>
-    <div class="muted">اختيار ماستركارد أو آسياسيل يحدد السعر فقط. عند الشراء تختار طريقة الدفع بشكل منفصل.</div>
+    <div class="muted">اختر طريقة التسعير؛ طريقة الدفع تُحدد بشكل منفصل عند الشراء.</div>
     <div id="products" class="grid">
       <p class="msg">جارٍ تحميل المنتجات...</p>
     </div>
@@ -859,6 +1001,67 @@ header {
       <span class="socialArrow">↗</span>
     </a>
   </section>
+
+  <section class="panel infoPage" id="termsPanel" hidden>
+    <button type="button" class="secondary infoBack">← رجوع</button>
+    <h2>شروط الاستخدام</h2>
+    <div class="infoIntro">باستخدامك متجر زينيث أو إتمامك لأي طلب، فأنت توافق على الشروط الموضحة أدناه. يرجى قراءتها قبل الشراء.</div>
+    <h3>1. الحساب ومسؤولية البيانات</h3>
+    <ul>
+      <li>أنت مسؤول عن صحة البريد الإلكتروني وبيانات حسابك والمحافظة على كلمة المرور.</li>
+      <li>عند طلب شحن الجواهر، تأكد من إدخال Player ID وZone ID بشكل صحيح قبل الإرسال.</li>
+      <li>قد نطلب معلومات إضافية للتحقق من الطلب أو عملية الدفع عند الحاجة.</li>
+    </ul>
+    <h3>2. الأسعار والطلبات</h3>
+    <ul>
+      <li>الأسعار المعروضة بالدينار العراقي، وقد تختلف حسب طريقة التسعير المختارة داخل المتجر.</li>
+      <li>يُعتمد السعر الظاهر وقت تأكيد الطلب، وقد تتغير الأسعار أو تتوفر/تتوقف بعض الباقات دون إشعار مسبق.</li>
+      <li>إرسال الطلب لا يعني اكتمال الشحن؛ يُعد الطلب مكتملاً بعد تنفيذ الخدمة وتحديث حالته.</li>
+    </ul>
+    <h3>3. الدفع والتحويلات</h3>
+    <ul>
+      <li>في التحويل اليدوي، يجب رفع إثبات واضح وصحيح، وتبقى العملية قيد المراجعة حتى تتحقق الإدارة من وصول المبلغ.</li>
+      <li>لا ترسل إثبات دفع مزيفاً أو معدلاً، ولا تكرر إرسال الطلب نفسه بقصد مضاعفته.</li>
+      <li>الدفع من المحفظة يخضع لتوفر رصيد كافٍ، وتُسجل عمليات الخصم والإضافة في سجل الحساب.</li>
+    </ul>
+    <h3>4. تنفيذ الطلب والتأخير</h3>
+    <ul>
+      <li>تتم معالجة الطلبات حسب توفر الخدمة وترتيبها، وقد يحدث تأخير بسبب مزود الخدمة أو ظروف خارجة عن إرادة المتجر.</li>
+      <li>إذا واجهت مشكلة، تواصل مع الدعم وأرفق رقم الطلب دون مشاركة كلمة مرور حسابك.</li>
+    </ul>
+    <h3>5. إساءة الاستخدام</h3>
+    <p>يحق للمتجر تعليق أو رفض الطلبات التي تتضمن بيانات غير صحيحة أو محاولات احتيال أو إساءة استخدام، مع مراجعة الحالة وفق تفاصيلها.</p>
+    <p class="updatedNote">هذه الشروط نص تنظيمي عام للمتجر، ويجب مراجعتها وتحديثها بما يتوافق مع القوانين المعمول بها.</p>
+  </section>
+
+  <section class="panel infoPage" id="policyPanel" hidden>
+    <button type="button" class="secondary infoBack">← رجوع</button>
+    <h2>سياسة المتجر والاسترجاع</h2>
+    <div class="infoIntro">هدفنا تقديم تجربة شراء واضحة وآمنة. اقرأ السياسة التالية قبل إتمام الدفع.</div>
+    <h3>1. مراجعة الدفع</h3>
+    <ul>
+      <li>التحويل اليدوي لا يُعد مدفوعاً نهائياً بمجرد رفع الصورة؛ تتم مراجعة الإثبات والتأكد من وصول المبلغ أولاً.</li>
+      <li>إذا كان الإثبات غير واضح أو البيانات غير متطابقة، قد نطلب توضيحاً أو نرفض طلب الدفع مع بيان السبب.</li>
+    </ul>
+    <h3>2. تنفيذ الشحن</h3>
+    <ul>
+      <li>يرجى التأكد من Player ID وZone ID قبل تأكيد الطلب.</li>
+      <li>إذا اكتمل الشحن إلى بيانات أدخلها العميل بشكل خاطئ، فقد يتعذر استرجاع العملية؛ لذلك تحقق من البيانات جيداً.</li>
+      <li>احتفظ برقم الطلب حتى انتهاء المعالجة.</li>
+    </ul>
+    <h3>3. الإلغاء والاسترجاع</h3>
+    <ul>
+      <li>يمكن طلب إلغاء الطلب قبل بدء تنفيذه، وتخضع الموافقة للتحقق من حالة الطلب وإمكانية إيقافه.</li>
+      <li>بعد تنفيذ الشحن أو تسليم الخدمة، قد لا يكون الإلغاء أو الاسترجاع ممكناً إذا كانت الخدمة قد استُهلكت أو اكتملت.</li>
+      <li>إذا تم خصم مبلغ ولم يُنفذ الطلب بسبب خطأ من المتجر أو تعذر الخدمة، تتم مراجعة الحالة لتحديد إعادة المبلغ إلى المحفظة أو وسيلة الدفع المناسبة.</li>
+      <li>طلبات الإيداع المكررة أو المبالغ غير المطابقة تُراجع بشكل منفصل قبل إضافة أي رصيد.</li>
+    </ul>
+    <h3>4. التواصل والشكاوى</h3>
+    <p>للاستفسار أو تقديم شكوى، تواصل معنا عبر حسابات المتجر الرسمية، وأرسل رقم الطلب ووصف المشكلة. لا تشارك كلمة المرور أو رموز OTP مع أي شخص.</p>
+    <h3>5. تحديث السياسة</h3>
+    <p>قد يتم تحديث هذه السياسة عند تطوير الخدمات أو آليات الدفع. تسري النسخة المنشورة في المتجر من وقت عرضها.</p>
+    <p class="updatedNote">يرجى التواصل مع الدعم إذا كانت لديك حالة خاصة قبل إرسال طلب جديد.</p>
+  </section>
 </main>
 <nav class="bottomNav" aria-label="التنقل الرئيسي">
   <button type="button" id="navHome" class="active"><span>⌂</span>الرئيسية</button>
@@ -866,7 +1069,23 @@ header {
   <button type="button" id="navWallet"><span>▣</span>محفظتي</button>
 </nav>
 <div id="orderToast" class="toastNotice" role="status" aria-live="assertive" hidden></div>
-<footer>© ZenithStore — متجر زينيث</footer>
+<footer class="storeFooter">
+  <div class="footerGroup">
+    <h3>ابقَ على تواصل معنا</h3>
+    <div class="footerLinks">
+      <a href="https://www.instagram.com/zenith.mlbb1/" target="_blank" rel="noopener">إنستغرام</a>
+      <a href="https://t.me/zenithmlb" target="_blank" rel="noopener">تيليجرام</a>
+    </div>
+  </div>
+  <div class="footerGroup">
+    <h3>القانوني</h3>
+    <div class="footerLinks">
+      <button type="button" id="openTerms">الشروط والأحكام</button>
+      <button type="button" id="openPolicy">سياسة المتجر والاسترجاع</button>
+    </div>
+  </div>
+  <div class="footerCopyright">© ZenithStore — متجر زينيث</div>
+</footer>
 
 <script>
 const SUPABASE_URL = "https://jffcrqxpvaeteovcaetr.supabase.co";
@@ -945,6 +1164,7 @@ async function loadProducts() {
   }
   productsCache = data || [];
   renderProducts();
+  renderPopularProducts();
   if (el("myOrdersPanel") && !el("myOrdersPanel").hidden) loadMyOrders();
 }
 
@@ -1031,6 +1251,37 @@ function renderProducts() {
   });
   setMessage("productsMsg", "اضغط على البطاقة لاختيار الباقة، ثم اضغط متابعة لإتمام الطلب.");
 }
+function renderPopularProducts() {
+  const box = el("popularProducts");
+  if (!box) return;
+  box.replaceChildren();
+  const provider = el("provider").value;
+  const weekly = productsCache.find(p => (p.product_type === "weekly" || /weekly|أسبوعي|اسبوعي/i.test(String(p.name || ""))) && getPrice(p, provider) != null);
+  const preferred = [22, 257, 514];
+  const gemPicks = preferred.map(amount => productsCache.find(p => Number(p.diamonds) === amount && getPrice(p, provider) != null)).filter(Boolean);
+  const chosen = [weekly, ...gemPicks].filter(Boolean);
+  if (!chosen.length) { box.textContent = "الباقات غير متاحة حالياً."; return; }
+  chosen.forEach(product => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "popularItem";
+    const img = document.createElement("img");
+    img.src = productImageData(product); img.alt = ""; img.loading = "lazy";
+    const info = document.createElement("span");
+    const title = document.createElement("strong"); title.textContent = productTitle(product);
+    const price = document.createElement("small"); price.textContent = money(getPrice(product, el("provider").value));
+    info.append(title, price); button.append(img, info);
+    button.addEventListener("click", () => {
+      showGemProducts();
+      requestAnimationFrame(() => {
+        const card = [...el("products").querySelectorAll(".product")].find(node => node.getAttribute("aria-label") === "اختيار " + productTitle(product));
+        if (card) card.click();
+      });
+    });
+    box.appendChild(button);
+  });
+}
+
 function openPurchase(product, provider) {
   selectedProduct = product;
   selectedProvider = provider;
@@ -1750,15 +2001,27 @@ function saveActivePage(page) {
   try { sessionStorage.setItem(activePageStorageKey, page); } catch (_) {}
 }
 function hideCustomerPanels() {
-  ["homePanel", "productsPanel", "customerWalletPanel", "myOrdersPanel", "purchasePanel", "contactPanel"].forEach(id => {
+  ["homePanel", "productsPanel", "customerWalletPanel", "myOrdersPanel", "purchasePanel", "contactPanel", "termsPanel", "policyPanel"].forEach(id => {
     const node = el(id); if (node) node.hidden = true;
   });
 }
 function setActiveNav(id) {
   document.querySelectorAll(".bottomNav button").forEach(b => b.classList.toggle("active", b.id === id));
 }
+function showInfoPage(page) {
+  hideCustomerPanels();
+  const target = page === "terms" ? "termsPanel" : "policyPanel";
+  el(target).hidden = false;
+  saveActivePage(page);
+  setActiveNav("");
+  el(target).scrollIntoView({behavior:"smooth", block:"start"});
+}
+el("openTerms").addEventListener("click", () => showInfoPage("terms"));
+el("openPolicy").addEventListener("click", () => showInfoPage("policy"));
+document.querySelectorAll(".infoBack").forEach(btn => btn.addEventListener("click", () => el("navHome").click()));
 function showGemProducts() {
   saveActivePage("products");
+  el("termsPanel").hidden = true; el("policyPanel").hidden = true;
   document.querySelectorAll(".bottomNav button").forEach(b => b.classList.remove("active"));
   el("homePanel").hidden = true;
   el("productsPanel").hidden = false;
@@ -1770,6 +2033,7 @@ function showGemProducts() {
 }
 el("navHome").addEventListener("click", () => {
   saveActivePage("home");
+  el("termsPanel").hidden = true; el("policyPanel").hidden = true;
   el("homePanel").hidden = false; el("productsPanel").hidden = true;
   el("customerWalletPanel").hidden = true; el("myOrdersPanel").hidden = true;
   el("purchasePanel").hidden = true; el("contactPanel").hidden = true;
@@ -1779,6 +2043,7 @@ el("navHome").addEventListener("click", () => {
 });
 el("navContact").addEventListener("click", () => {
   saveActivePage("contact");
+  el("termsPanel").hidden = true; el("policyPanel").hidden = true;
   ["homePanel","productsPanel","customerWalletPanel","myOrdersPanel","purchasePanel"].forEach(id => el(id).hidden = true);
   el("contactPanel").hidden = false;
   document.querySelectorAll(".bottomNav button").forEach(b => b.classList.remove("active"));
@@ -1804,6 +2069,7 @@ el("menuToggle").addEventListener("click", () => {
 });
 
 el("menuWallet").addEventListener("click", async () => {
+  el("termsPanel").hidden = true; el("policyPanel").hidden = true;
   const {data} = await db.auth.getSession();
 
   if (!data?.session?.user) {
@@ -1849,6 +2115,7 @@ el("customerWalletPanel").querySelector("[data-back]").addEventListener("click",
 
 
 el("menuMyOrders").addEventListener("click", async () => {
+  el("termsPanel").hidden = true; el("policyPanel").hidden = true;
   const {data} = await db.auth.getSession();
 
   if (!data?.session?.user) {
@@ -1877,6 +2144,7 @@ el("menuMyOrders").addEventListener("click", async () => {
 
 el("menuProducts").addEventListener("click", () => {
   saveActivePage("products");
+  el("termsPanel").hidden = true; el("policyPanel").hidden = true;
   el("homePanel").hidden = true;
   el("productsPanel").hidden = false;
   el("customerWalletPanel").hidden = true;
@@ -1909,7 +2177,28 @@ el("refreshMyOrders").addEventListener("click", loadMyOrders);
   el("purchasePanel").hidden = true;
   el("productsPanel").scrollIntoView({behavior:"smooth", block:"start"});
 });
-el("provider").addEventListener("change", renderProducts);
+el("provider").addEventListener("change", () => { renderProducts(); renderPopularProducts(); if (typeof syncPricingButtons === "function") syncPricingButtons(); });
+document.querySelectorAll(".pricingChoice").forEach(button => {
+  button.addEventListener("click", () => {
+    const providerSelect = el("provider");
+    if (providerSelect.value === button.dataset.provider) return;
+    providerSelect.value = button.dataset.provider;
+    providerSelect.dispatchEvent(new Event("change"));
+    document.querySelectorAll(".pricingChoice").forEach(choice => {
+      const active = choice.dataset.provider === providerSelect.value;
+      choice.classList.toggle("active", active);
+      choice.setAttribute("aria-pressed", active ? "true" : "false");
+    });
+  });
+});
+function syncPricingButtons() {
+  document.querySelectorAll(".pricingChoice").forEach(choice => {
+    const active = choice.dataset.provider === el("provider").value;
+    choice.classList.toggle("active", active);
+    choice.setAttribute("aria-pressed", active ? "true" : "false");
+  });
+}
+syncPricingButtons();
 el("continueOrderBtn").addEventListener("click", () => {
   if (!selectedProduct) {
     setMessage("productsMsg", "اختَر باقة أولاً.", "error");
@@ -1983,6 +2272,12 @@ async function restoreActivePage() {
     el("myOrdersPanel").hidden = false;
     setActiveNav("navOrders");
     await loadMyOrders();
+  } else if (page === "terms") {
+    el("termsPanel").hidden = false;
+    setActiveNav("");
+  } else if (page === "policy") {
+    el("policyPanel").hidden = false;
+    setActiveNav("");
   } else if (page === "purchase") {
     const product = productsCache.find(p => String(p.id) === savedProductId);
     if (product) {
