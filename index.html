@@ -412,7 +412,7 @@ footer {
 .homeTrust { display: flex; justify-content: space-between; gap: 7px; margin-top: 16px; padding: 14px 8px; border: 1px solid #20365b; border-radius: 15px; background: #09152d; color: #d6e5ff; font-size: 12px; text-align: center; }
 .homeTrust span { flex: 1; }
 @media (max-width: 420px) { .homeHero { width: 100%; max-width: 100%; margin: 0; padding: 0; min-height: 0; } .heroCopy { right: 10px; bottom: 10px; } .heroButton { padding: 6px 9px; font-size: 11px; } .homeCategoryGrid { gap: 8px; } .homeCategory { padding: 10px 7px; gap: 6px; } .categoryIcon { font-size: 30px; } .categoryText strong { font-size: 15px; } .categoryText small { font-size: 10px; } .categoryArrow { width: 26px; height: 26px; font-size: 18px; } .homeTrust { font-size: 10px; } }
-.bottomNav { position: fixed; z-index: 30; bottom: 0; left: 0; right: 0; display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; padding: 8px 5px calc(8px + env(safe-area-inset-bottom)); background: rgba(5,13,31,.97); border-top: 1px solid #1e3762; backdrop-filter: blur(12px); }
+.bottomNav { position: fixed; z-index: 30; bottom: 0; left: 0; right: 0; display: grid; grid-template-columns: repeat(2,1fr); gap: 2px; padding: 8px 5px calc(8px + env(safe-area-inset-bottom)); background: rgba(5,13,31,.97); border-top: 1px solid #1e3762; backdrop-filter: blur(12px); }
 .bottomNav button { margin: 0; padding: 6px 2px; background: transparent; border: 0; box-shadow: none; color: #aabbd8; font-size: 11px; line-height: 1.5; }
 .bottomNav button span { display:block; font-size: 19px; }
 .bottomNav button.active { color: #168cff; }
@@ -981,29 +981,8 @@ button,.filePickBtn{min-height:44px;touch-action:manipulation}
       <div id="walletAdjustMsg" class="msg" aria-live="polite"></div>
     </div>
   </section>
-
-  <section class="panel contactPage" id="contactPanel" hidden>
-    <button type="button" class="secondary" id="contactBackHome">← الرئيسية</button>
-    <h2>تواصل معنا</h2>
-    <p class="muted">تابع حسابات ZenithStore الرسمية أو راسلنا مباشرة.</p>
-    <a class="socialContact instagramContact" href="https://www.instagram.com/zenith.mlbb1/" target="_blank" rel="noopener noreferrer">
-      <span class="socialLogo" aria-hidden="true">
-        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg>
-      </span>
-      <span class="socialDetails"><strong>Instagram</strong><small>@zenith.mlbb1</small></span>
-      <span class="socialArrow">↗</span>
-    </a>
-    <a class="socialContact telegramContact" href="https://t.me/zenithmlb" target="_blank" rel="noopener noreferrer">
-      <span class="socialLogo" aria-hidden="true">
-        <svg viewBox="0 0 24 24"><path d="M21.5 4.5 18.3 20c-.2 1.1-.9 1.3-1.8.8l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L5.7 13.5.8 12c-1.1-.3-1.1-1.1.2-1.6L20 3.1c.9-.3 1.8.2 1.5 1.4Z" fill="currentColor"/></svg>
-      </span>
-      <span class="socialDetails"><strong>Telegram</strong><small>@zenithmlb</small></span>
-      <span class="socialArrow">↗</span>
-    </a>
-  </section>
-
-  <section class="panel infoPage" id="termsPanel" hidden>
-    <button type="button" class="secondary infoBack">← رجوع</button>
+<section class="panel infoPage" id="termsPanel" hidden>
+    <button type="button" class="secondary infoBack">الرئيسية</button>
     <h2>شروط الاستخدام</h2>
     <div class="infoIntro">باستخدامك متجر زينيث أو إتمامك لأي طلب، فأنت توافق على الشروط الموضحة أدناه. يرجى قراءتها قبل الشراء.</div>
     <h3>1. الحساب ومسؤولية البيانات</h3>
@@ -1035,7 +1014,7 @@ button,.filePickBtn{min-height:44px;touch-action:manipulation}
   </section>
 
   <section class="panel infoPage" id="policyPanel" hidden>
-    <button type="button" class="secondary infoBack">← رجوع</button>
+    <button type="button" class="secondary infoBack">الرئيسية</button>
     <h2>سياسة المتجر والاسترجاع</h2>
     <div class="infoIntro">هدفنا تقديم تجربة شراء واضحة وآمنة. اقرأ السياسة التالية قبل إتمام الدفع.</div>
     <h3>1. مراجعة الدفع</h3>
@@ -1065,8 +1044,7 @@ button,.filePickBtn{min-height:44px;touch-action:manipulation}
 </main>
 <nav class="bottomNav" aria-label="التنقل الرئيسي">
   <button type="button" id="navHome" class="active"><span>⌂</span>الرئيسية</button>
-  <button type="button" id="navContact"><span class="navPhoneIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 11.2 18a19.4 19.4 0 0 1-6-6A19.8 19.8 0 0 1 2.1 3.2 2 2 0 0 1 4.1 1h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8 9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.7 2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>تواصل معنا</button>
-  <button type="button" id="navWallet"><span>▣</span>محفظتي</button>
+<button type="button" id="navWallet"><span>▣</span>محفظتي</button>
 </nav>
 <div id="orderToast" class="toastNotice" role="status" aria-live="assertive" hidden></div>
 <footer class="storeFooter">
@@ -1116,7 +1094,7 @@ function applyRoleUI(isAdmin) {
   if (currentUserIsAdmin) {
     el("productsPanel").hidden = true;
     el("homePanel").hidden = true;
-    el("contactPanel").hidden = true;
+    
     el("purchasePanel").hidden = true;
     el("myOrdersPanel").hidden = true;
     el("customerWalletPanel").hidden = true;
@@ -1317,26 +1295,13 @@ el("cancelPurchase").addEventListener("click", () => {
 
 // The checkout Back button returns to the product list without clearing the selected pack.
 const purchaseBackButton = el("purchasePanel").querySelector("[data-back]");
-if (purchaseBackButton) purchaseBackButton.addEventListener("click", () => {
-  saveActivePage("products");
-  el("purchasePanel").hidden = true;
-  el("homePanel").hidden = true;
+if (purchaseBackButton) purchaseBackButton.addEventListener("click", (event) => {
+  event.preventDefault();
+  hideCustomerPanels();
   el("productsPanel").hidden = false;
-  el("customerWalletPanel").hidden = true;
-  el("myOrdersPanel").hidden = true;
-  el("contactPanel").hidden = true;
-  document.querySelectorAll(".bottomNav button").forEach(b => b.classList.remove("active"));
-  if (selectedProduct) {
-    const selectedCard = [...el("products").querySelectorAll(".product")].find(card => card.getAttribute("aria-label") === "اختيار " + productTitle(selectedProduct));
-    if (selectedCard) {
-      el("products").querySelectorAll(".product").forEach(card => { card.classList.remove("selected"); card.setAttribute("aria-pressed", "false"); });
-      selectedCard.classList.add("selected");
-      selectedCard.setAttribute("aria-pressed", "true");
-    }
-    el("continueOrderBtn").hidden = false;
-    el("continueOrderBtn").disabled = false;
-  }
-  el("productsPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+  saveActivePage("products");
+  setActiveNav("");
+  el("productsPanel").scrollIntoView({behavior:"smooth", block:"start"});
 });
 
 function renderPaymentInfo(targetId, provider) {
@@ -2001,7 +1966,7 @@ function saveActivePage(page) {
   try { sessionStorage.setItem(activePageStorageKey, page); } catch (_) {}
 }
 function hideCustomerPanels() {
-  ["homePanel", "productsPanel", "customerWalletPanel", "myOrdersPanel", "purchasePanel", "contactPanel", "termsPanel", "policyPanel"].forEach(id => {
+  ["homePanel", "productsPanel", "customerWalletPanel", "myOrdersPanel", "purchasePanel", "termsPanel", "policyPanel"].forEach(id => {
     const node = el(id); if (node) node.hidden = true;
   });
 }
@@ -2028,38 +1993,25 @@ function showGemProducts() {
   el("customerWalletPanel").hidden = true;
   el("myOrdersPanel").hidden = true;
   el("purchasePanel").hidden = true;
-  el("contactPanel").hidden = true;
+  
   el("productsPanel").scrollIntoView({behavior:"smooth", block:"start"});
 }
 el("navHome").addEventListener("click", () => {
+  hideCustomerPanels();
+  el("homePanel").hidden = false;
   saveActivePage("home");
-  el("termsPanel").hidden = true; el("policyPanel").hidden = true;
-  el("homePanel").hidden = false; el("productsPanel").hidden = true;
-  el("customerWalletPanel").hidden = true; el("myOrdersPanel").hidden = true;
-  el("purchasePanel").hidden = true; el("contactPanel").hidden = true;
-  document.querySelectorAll(".bottomNav button").forEach(b => b.classList.remove("active"));
-  el("navHome").classList.add("active");
+  setActiveNav("navHome");
   window.scrollTo({top:0, behavior:"smooth"});
 });
-el("navContact").addEventListener("click", () => {
-  saveActivePage("contact");
-  el("termsPanel").hidden = true; el("policyPanel").hidden = true;
-  ["homePanel","productsPanel","customerWalletPanel","myOrdersPanel","purchasePanel"].forEach(id => el(id).hidden = true);
-  el("contactPanel").hidden = false;
-  document.querySelectorAll(".bottomNav button").forEach(b => b.classList.remove("active"));
-  el("navContact").classList.add("active");
-  el("contactPanel").scrollIntoView({behavior:"smooth", block:"start"});
-});
-el("contactBackHome").addEventListener("click", () => el("navHome").click());
 el("navWallet").addEventListener("click", () => el("menuWallet").click());
 el("openGems").addEventListener("click", showGemProducts);
 el("gemsCategory").addEventListener("click", showGemProducts);
 el("backHome").addEventListener("click", () => {
-  saveActivePage("home");
-  el("productsPanel").hidden = true;
+  hideCustomerPanels();
   el("homePanel").hidden = false;
-  el("contactPanel").hidden = true;
-  el("homePanel").scrollIntoView({behavior:"smooth", block:"start"});
+  saveActivePage("home");
+  setActiveNav("navHome");
+  window.scrollTo({top:0, behavior:"smooth"});
 });
 
 el("menuToggle").addEventListener("click", () => {
@@ -2085,7 +2037,7 @@ el("menuWallet").addEventListener("click", async () => {
   el("customerWalletPanel").hidden = false;
   el("myOrdersPanel").hidden = true;
   el("purchasePanel").hidden = true;
-  el("contactPanel").hidden = true;
+  
 
   el("mainMenu").hidden = true;
   el("menuToggle").setAttribute("aria-expanded", "false");
@@ -2103,7 +2055,7 @@ el("customerWalletPanel").querySelector("[data-back]").addEventListener("click",
   saveActivePage("products");
   el("customerWalletPanel").hidden = true;
   el("productsPanel").hidden = false;
-  el("contactPanel").hidden = false;
+  
   el("myOrdersPanel").hidden = true;
   el("purchasePanel").hidden = true;
 
@@ -2132,7 +2084,7 @@ el("menuMyOrders").addEventListener("click", async () => {
   el("customerWalletPanel").hidden = true;
   el("myOrdersPanel").hidden = false;
   el("purchasePanel").hidden = true;
-  el("contactPanel").hidden = true;
+  
 
   el("mainMenu").hidden = true;
   el("menuToggle").setAttribute("aria-expanded", "false");
@@ -2150,7 +2102,7 @@ el("menuProducts").addEventListener("click", () => {
   el("customerWalletPanel").hidden = true;
   el("myOrdersPanel").hidden = true;
   el("purchasePanel").hidden = true;
-  el("contactPanel").hidden = true;
+  
 
   el("mainMenu").hidden = true;
   el("menuToggle").setAttribute("aria-expanded", "false");
@@ -2172,7 +2124,7 @@ el("refreshMyOrders").addEventListener("click", loadMyOrders);
   saveActivePage("products");
   el("myOrdersPanel").hidden = true;
   el("productsPanel").hidden = false;
-  el("contactPanel").hidden = true;
+  
   el("customerWalletPanel").hidden = true;
   el("purchasePanel").hidden = true;
   el("productsPanel").scrollIntoView({behavior:"smooth", block:"start"});
@@ -2261,9 +2213,6 @@ async function restoreActivePage() {
   if (page === "products") {
     el("productsPanel").hidden = false;
     setActiveNav("");
-  } else if (page === "contact") {
-    el("contactPanel").hidden = false;
-    setActiveNav("navContact");
   } else if (page === "wallet") {
     el("customerWalletPanel").hidden = false;
     setActiveNav("navWallet");
@@ -2314,3 +2263,82 @@ window.setInterval(checkForNewAdminOrders, 15000);
 </script>
 </body>
 </html>
+<style id="zenith-legal-visual-fix">
+/* Legal footer actions: plain words only, matching Instagram and Telegram links. */
+.storeFooter .footerGroup .footerLinks #openTerms,
+.storeFooter .footerGroup .footerLinks #openPolicy {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  display: inline !important;
+  flex: 0 0 auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  color: #9999a3 !important;
+  font-family: inherit !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  text-decoration: none !important;
+  text-align: start !important;
+}
+.storeFooter .footerGroup .footerLinks #openTerms:focus,
+.storeFooter .footerGroup .footerLinks #openPolicy:focus,
+.storeFooter .footerGroup .footerLinks #openTerms:active,
+.storeFooter .footerGroup .footerLinks #openPolicy:active {
+  outline: none !important;
+  border: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  color: #ff6b91 !important;
+}
+.storeFooter .footerGroup .footerLinks {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 22px !important;
+}
+
+/* The "الرئيسية" control inside each legal page is a clear compact square button. */
+.infoPage .infoBack {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  position: absolute !important;
+  top: 12px !important;
+  right: 12px !important;
+  left: auto !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 78px !important;
+  min-width: 78px !important;
+  max-width: 78px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  margin: 0 !important;
+  padding: 0 8px !important;
+  border: 1px solid #34445b !important;
+  border-radius: 7px !important;
+  background: #171d29 !important;
+  box-shadow: none !important;
+  color: #d5e5ff !important;
+  font-family: inherit !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+}
+.infoPage .infoBack::before { content: none !important; }
+.infoPage { position: relative !important; padding-top: 60px !important; }
+@media (max-width: 420px) {
+  .infoPage .infoBack { top: 10px !important; right: 10px !important; }
+}
+</style>
