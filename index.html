@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -1131,8 +1132,6 @@ let customerWalletLoadBusy = false;
 
 function applyRoleUI(isAdmin) {
   currentUserIsAdmin = isAdmin === true;
-  // A background role check must not send a customer back to Home while browsing.
-  // Only force the admin layout when the account is actually an administrator.
   if (currentUserIsAdmin) {
     el("productsPanel").hidden = true;
     el("homePanel").hidden = true;
@@ -1207,7 +1206,6 @@ el("cartCheckoutBtn").addEventListener("click", () => {
   el("selectedProductInfo").textContent = `طلب السلة (${cartItems.reduce((n,x)=>n+Number(x.qty||1),0)} باقة): ${lines.join("، ")} — سيتم احتساب المجموع عند تأكيد الطلب.`;
 });
 
-// Buttons provide a clear, direct user gesture to open the device's file picker.
 function openProofPicker(inputId) {
   const input = el(inputId);
   if (!input) return;
@@ -1265,7 +1263,6 @@ function getProductCategory(p) {
   const name = String(p.name || "").trim().toLowerCase();
   const type = String(p.product_type || "").trim().toLowerCase();
   const text = (name + " " + type).replace(/[ـ\s]+/g, " ");
-  // تصنيف العضويات والإطارات أولاً حتى لا تدخل ضمن الجواهر مهما كانت قيمة diamonds.
   if (type === "membership" || /membership|العضوية المميزة|عضوية مميزة/.test(text)) return "membership";
   if (["fanframe", "frame", "fan_frame"].includes(type) || /fanframe|fan.frame|إطار كبير المعجبين|اطار كبير المعجبين/.test(text)) return "fanframe";
   if (/twilight|توايلايت|توايلايت باس|الباس القمري/.test(text)) return "twilight";
@@ -1285,7 +1282,6 @@ function setProductCategory(category) {
   if (heading) heading.textContent = titles[category] || "باقات المتجر";
   const popular = el("productsPanel").querySelector(".popularSection");
   if (popular) popular.hidden = category !== "gems";
-  // التصنيفات الأربعة تظهر في صفحة الجواهر فقط، ولا تظهر عند فتح العضوية أو الإطار.
   const categoryTabs = el("productsPanel").querySelector(".productCategoryTabs");
   if (categoryTabs) categoryTabs.hidden = category === "membership" || category === "fanframe";
   renderProducts();
@@ -1373,6 +1369,7 @@ function renderProducts() {
   });
   setMessage("productsMsg", "اضغط على البطاقة لاختيار الباقة، ثم اضغط متابعة لإتمام الطلب.");
 }
+
 function renderPopularProducts() {
   const box = el("popularProducts");
   if (!box) return;
@@ -1420,6 +1417,7 @@ function openPurchase(product, provider) {
   setMessage("orderMsg", "");
   el("purchasePanel").scrollIntoView({behavior:"smooth", block:"start"});
 }
+
 function updatePaymentFields() {
   const direct = el("paymentMethod").value === "direct";
   el("directFields").hidden = !direct;
@@ -1439,7 +1437,6 @@ el("cancelPurchase").addEventListener("click", () => {
   else { saveActivePage("products"); el("productsPanel").hidden = false; }
 });
 
-// The checkout Back button returns to the product list without clearing the selected pack.
 const purchaseBackButton = el("purchasePanel").querySelector("[data-back]");
 if (purchaseBackButton) purchaseBackButton.addEventListener("click", (event) => {
   event.preventDefault();
@@ -1476,7 +1473,6 @@ async function loadCustomerDeposits() {
   const user = authData?.user;
   if (!user) { box.textContent = "سجّل الدخول لعرض طلباتك."; return; }
   box.textContent = "جارٍ تحميل طلبات إضافة الرصيد...";
-  // RLS يجب أن يسمح للمستخدم بقراءة طلبات الإيداع الخاصة به فقط.
   const {data, error} = await db.from("deposits")
     .select("id,created_at,amount_iqd,status,payment_method,transaction_ref")
     .eq("user_id", user.id).order("created_at", {ascending:false}).limit(50);
@@ -1513,7 +1509,6 @@ async function submitDepositRequest(e) {
     proofPath = `${user.id}/deposit-${Date.now()}-${safeName}`;
     const {error: uploadError} = await db.storage.from("payment-proofs").upload(proofPath, file, {contentType:file.type, upsert:false});
     if (uploadError) throw new Error("تعذر رفع الإثبات: " + uploadError.message);
-    // الطلب يُنشأ بحالة pending فقط؛ اعتماد الإيداع وإضافة الرصيد من صلاحية الإدارة.
     const {data, error} = await db.from("deposits").insert({
       user_id: user.id,
       amount_iqd: amount,
@@ -1601,7 +1596,7 @@ el("loginForm").addEventListener("submit", async e => {
   el("mainMenu").hidden = true;
   el("menuToggle").setAttribute("aria-expanded", "false");
   await loadAdminOrders();
-    await loadAdminDeposits();
+  await loadAdminDeposits();
 });
 
 el("signup").addEventListener("click", async () => {
@@ -1760,7 +1755,6 @@ async function loadMyOrders() {
   try {
     const {data: sessionData, error: sessionError} = await db.auth.getSession();
     const user = sessionData?.session?.user;
-    // Loading order data must never change which page/section is visible.
     if (sessionError) {
       setMessage("myOrdersMsg", "تعذر التحقق من الحساب: " + sessionError.message, "error");
       return;
@@ -1854,7 +1848,6 @@ function showAdminOrderNotification(order) {
   });
   toast.append(message, button);
   toast.hidden = false;
-  // Automatically hide the popup after 12 seconds; the notification summary remains visible.
   window.setTimeout(() => { toast.hidden = true; }, 12000);
 }
 
@@ -1871,7 +1864,6 @@ async function checkForNewAdminOrders() {
       .order("created_at", {ascending:false}).limit(20);
     if (error || !latestOrders) return;
     const currentIds = new Set(latestOrders.map(order => String(order.id)));
-    // First successful check establishes a baseline and avoids notifying for old orders.
     if (knownOrderIds === null) { knownOrderIds = currentIds; return; }
     const newOrders = latestOrders.filter(order => !knownOrderIds.has(String(order.id)));
     knownOrderIds = currentIds;
@@ -2211,7 +2203,6 @@ function showHomeProductCategory(category) {
 }
 el("membershipPlaceholder").addEventListener("click", () => showHomeProductCategory("membership"));
 el("fanFrameCategory").addEventListener("click", () => showHomeProductCategory("fanframe"));
-// The verified squad category will be activated when its products are added.
 el("verifiedSquadCategory").addEventListener("click", () => {
   setMessage("productsMsg", "منتجات الفرقة الموثقة ستُضاف لاحقاً.");
   showGemProducts();
@@ -2247,7 +2238,6 @@ el("menuWallet").addEventListener("click", async () => {
   el("customerWalletPanel").hidden = false;
   el("myOrdersPanel").hidden = true;
   el("purchasePanel").hidden = true;
-  
 
   el("mainMenu").hidden = true;
   el("menuToggle").setAttribute("aria-expanded", "false");
@@ -2275,7 +2265,6 @@ el("customerWalletPanel").querySelector("[data-back]").addEventListener("click",
   });
 });
 
-
 el("menuMyOrders").addEventListener("click", async () => {
   hideCustomerPanels();
   const {data} = await db.auth.getSession();
@@ -2294,7 +2283,6 @@ el("menuMyOrders").addEventListener("click", async () => {
   el("customerWalletPanel").hidden = true;
   el("myOrdersPanel").hidden = false;
   el("purchasePanel").hidden = true;
-  
 
   el("mainMenu").hidden = true;
   el("menuToggle").setAttribute("aria-expanded", "false");
@@ -2308,7 +2296,6 @@ el("menuProducts").addEventListener("click", () => {
   saveActivePage("products");
   hideCustomerPanels();
   el("productsPanel").hidden = false;
-  
 
   el("mainMenu").hidden = true;
   el("menuToggle").setAttribute("aria-expanded", "false");
@@ -2372,8 +2359,6 @@ db.auth.onAuthStateChange(() => {
   }, 0);
 });
 
-// Remember the current scroll position across reloads / leaving and returning to this tab.
-// Session-scoped storage avoids persisting sensitive form contents or account data.
 (function installScrollRestoration() {
   const storageKey = "zenithstore:scrollY:" + location.pathname;
   let saveTimer = 0;
@@ -2397,7 +2382,6 @@ db.auth.onAuthStateChange(() => {
   });
 })();
 
-// Restore the last section after refresh (same tab), not only the gems section.
 async function restoreActivePage() {
   let page = "home";
   let savedProductId = "";
@@ -2408,14 +2392,11 @@ async function restoreActivePage() {
     savedProvider = sessionStorage.getItem(selectedProviderStorageKey) || "mastercard";
   } catch (_) {}
 
-  // Wallet and orders are private sections; only restore them for a signed-in customer.
   if (page === "wallet" || page === "orders") {
     const {data} = await db.auth.getSession();
     if (!data?.session?.user) page = "home";
   }
   hideCustomerPanels();
-  // A section restore must reveal exactly one customer panel. Background data loaders
-  // (including loadMyOrders) are deliberately not allowed to toggle panel visibility.
   if (page === "cart") { showCart(); return; }
   if (page === "products") {
     el("productsPanel").hidden = false;
@@ -2450,9 +2431,7 @@ async function restoreActivePage() {
     setActiveNav("navHome");
   }
   saveActivePage(page);
-  // Reveal the selected section only after restoration, avoiding a brief flash of Home.
   document.documentElement.classList.remove("zenith-restore-pending");
-  // Restore scroll only after the correct panel is visible, so refresh works in every section.
   const scrollKey = "zenithstore:scrollY:" + location.pathname;
   let savedY = 0;
   try { savedY = Number(sessionStorage.getItem(scrollKey) || 0); } catch (_) {}
@@ -2471,7 +2450,6 @@ window.setInterval(checkForNewAdminOrders, 15000);
 </body>
 </html>
 <style id="zenith-legal-visual-fix">
-/* Legal footer actions: plain words only, matching Instagram and Telegram links. */
 .storeFooter .footerGroup .footerLinks #openTerms,
 .storeFooter .footerGroup .footerLinks #openPolicy {
   appearance: none !important;
@@ -2515,7 +2493,6 @@ window.setInterval(checkForNewAdminOrders, 15000);
   gap: 22px !important;
 }
 
-/* The "الرئيسية" control inside each legal page is a clear compact square button. */
 .infoPage .infoBack {
   appearance: none !important;
   -webkit-appearance: none !important;
@@ -2549,7 +2526,6 @@ window.setInterval(checkForNewAdminOrders, 15000);
   .infoPage .infoBack { top: 10px !important; right: 10px !important; }
 }
 
-/* Product category tabs and bottom shortcuts */
 .productCategoryTabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0 14px}
 .productCategoryTab{min-width:0;padding:11px 7px;border:1px solid #29415f;border-radius:12px;background:linear-gradient(145deg,#101d30,#0a1321);color:#c7d7ed;font-size:12px;font-weight:800;line-height:1.5}
 .productCategoryTab.active{border-color:#ff62b0;background:linear-gradient(135deg,#302039,#11243a);color:#fff;box-shadow:0 0 13px #ff4fa322}
@@ -2560,8 +2536,6 @@ window.setInterval(checkForNewAdminOrders, 15000);
 .bottomNav button span{font-size:18px}
 @media(min-width:700px){.productCategoryTabs{grid-template-columns:repeat(4,minmax(0,1fr))}}
 
-
-/* Shopping cart */
 .navCartIcon{display:flex!important;align-items:center;justify-content:center;height:22px}
 .navCartIcon svg{width:20px;height:20px}
 .cartItems{display:grid;gap:10px;margin-top:16px}
@@ -2579,11 +2553,9 @@ window.setInterval(checkForNewAdminOrders, 15000);
 .cartSummary>div{display:flex;justify-content:space-between;gap:12px;padding:7px 0}
 .cartSummary strong{color:#fff}
 #addToCartBtn{background:linear-gradient(100deg,#175b78,#217ca0);border-color:#48a9d2;color:#fff;margin-top:12px}
-
 </style>
 
 <style>
-/* إطار كبير المعجبين والتوايلايت باس: بطاقة عريضة بحجم أربع وحدات عرض */
 #products .product.fanframe-large-card {
   grid-column: 1 / -1 !important;
   min-height: 260px;
