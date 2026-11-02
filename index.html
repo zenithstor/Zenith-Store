@@ -1323,6 +1323,7 @@ function renderProducts() {
     const card = document.createElement("article");
     card.className = "product";
     if (activeProductCategory === "fanframe") card.classList.add("fanframe-large-card");
+    if (activeProductCategory === "twilight") card.classList.add("twilight-large-card");
     card.tabIndex = 0;
     card.setAttribute("role", "button");
     card.setAttribute("aria-pressed", "false");
@@ -2582,7 +2583,7 @@ window.setInterval(checkForNewAdminOrders, 15000);
 </style>
 
 <style>
-/* إطار كبير المعجبين: بطاقة عريضة بحجم أربع وحدات عرض */
+/* إطار كبير المعجبين والتوايلايت باس: بطاقة عريضة بحجم أربع وحدات عرض */
 #products .product.fanframe-large-card {
   grid-column: 1 / -1 !important;
   min-height: 260px;
@@ -2597,4 +2598,17 @@ window.setInterval(checkForNewAdminOrders, 15000);
 #products .product.fanframe-large-card h3 { font-size: 21px !important; }
 #products .product.fanframe-large-card .price { font-size: 22px !important; padding: 8px 18px !important; }
 #products .productCategoryTabs[hidden] { display: none !important; }
+</style>
+
+<style>
+#products .product.twilight-large-card {
+  grid-column: 1 / -1 !important;
+  min-height: 260px;
+  padding: 22px 18px 24px !important;
+  gap: 12px !important;
+  border-radius: 20px !important;
+}
+#products .product.twilight-large-card .product-gem-image { height: 150px !important; max-width: 100%; }
+#products .product.twilight-large-card h3 { font-size: 21px !important; }
+#products .product.twilight-large-card .price { font-size: 22px !important; padding: 8px 18px !important; }
 </style>
