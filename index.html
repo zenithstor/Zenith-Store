@@ -1245,7 +1245,8 @@ async function loadProducts() {
 }
 
 const ZENITH_PRODUCT_IMAGES = {
-  weekly: "images/weekly-subscription.png",
+  weekly: "images/weekly.png",
+  weeklySubscription: "images/weekly-subscription.png",
   monthly: "images/monthly.png",
   twilight: "images/twilight-pass.png",
   membership: "images/membership.png",
@@ -1265,7 +1266,8 @@ function productImageData(p) {
   if (/advanced|متقدمة|متقدم/.test(text)) return ZENITH_PRODUCT_IMAGES.advancedMembership;
   if (type === "membership" || /membership|العضوية المميزة|عضوية مميزة/.test(text)) return ZENITH_PRODUCT_IMAGES.membership;
   if (/twilight|توايلايت|الباس القمري/.test(text)) return ZENITH_PRODUCT_IMAGES.twilight;
-  if (type === "weekly" || /أسبوعي|اسبوعي|weekly subscription/.test(text)) return ZENITH_PRODUCT_IMAGES.weekly;
+  if (/الباقة الأسبوعية|الباقة الاسبوعية|weekly pack|weekly bundle/.test(text)) return ZENITH_PRODUCT_IMAGES.weekly;
+  if (type === "weekly" || /الاشتراك الأسبوعي|الاشتراك الاسبوعي|weekly subscription/.test(text)) return ZENITH_PRODUCT_IMAGES.weeklySubscription;
   if (type === "monthly" || /شهري|monthly/.test(text)) return ZENITH_PRODUCT_IMAGES.monthly;
 
   // هذه الكميات لها صور الجواهر الأصلية حتى لو وردت كلمة مضاعفة في الاسم.
@@ -1286,8 +1288,10 @@ function getProductCategory(p) {
   if (type === "membership" || /membership|العضوية المميزة|عضوية مميزة|عضوية متقدمة/.test(text)) return "membership";
   if (["fanframe", "frame", "fan_frame"].includes(type) || /fanframe|fan.frame|إطار كبير المعجبين|اطار كبير المعجبين/.test(text)) return "fanframe";
   if (/twilight|توايلايت|الباس القمري/.test(text)) return "twilight";
-  // الاشتراك الأسبوعي والشهري ضمن الباقات الخاصة، مع الاحتفاظ بصورة كل منتج.
-  if (type === "weekly" || type === "monthly" || /أسبوعي|اسبوعي|weekly|شهري|monthly/.test(text)) return "special";
+  // الاشتراك الأسبوعي يظهر ضمن الجواهر، أما الباقة الأسبوعية فتبقى ضمن الباقات الخاصة.
+  if (/الباقة الأسبوعية|الباقة الاسبوعية|weekly pack|weekly bundle/.test(text)) return "special";
+  if (type === "weekly" || /الاشتراك الأسبوعي|الاشتراك الاسبوعي|weekly subscription/.test(text)) return "gems";
+  if (type === "monthly" || /شهري|monthly/.test(text)) return "special";
   if (/double|doubled|2x|مضاعف|مضاعفة|ضعف الجواهر/.test(text) || type === "double") return "double";
   if (/special|limited|bundle|باقة خاصة|باقات خاصة|خاص|حزمة/.test(text) || type === "special") return "special";
   return "gems";
