@@ -1298,6 +1298,7 @@ function getProductCategory(p) {
 }
 function setProductCategory(category) {
   activeProductCategory = category;
+  try { sessionStorage.setItem(activeProductCategoryStorageKey, category); } catch (_) {}
   document.querySelectorAll(".productCategoryTab").forEach(button => {
     const active = button.dataset.category === category;
     button.classList.toggle("active", active);
@@ -2165,6 +2166,7 @@ el("refreshDeposits").addEventListener("click", loadCustomerDeposits);
 renderPaymentInfo("depositPaymentInfo", "mastercard");
 
 const activePageStorageKey = "zenithstore:activePage:" + location.pathname;
+const activeProductCategoryStorageKey = "zenithstore:activeProductCategory:" + location.pathname;
 const selectedProductStorageKey = "zenithstore:selectedProduct:" + location.pathname;
 const selectedProviderStorageKey = "zenithstore:selectedProvider:" + location.pathname;
 function saveActivePage(page) {
@@ -2425,10 +2427,12 @@ async function restoreActivePage() {
   let page = "home";
   let savedProductId = "";
   let savedProvider = "mastercard";
+  let savedCategory = "gems";
   try {
     page = sessionStorage.getItem(activePageStorageKey) || "home";
     savedProductId = sessionStorage.getItem(selectedProductStorageKey) || "";
     savedProvider = sessionStorage.getItem(selectedProviderStorageKey) || "mastercard";
+    savedCategory = sessionStorage.getItem(activeProductCategoryStorageKey) || "gems";
   } catch (_) {}
 
   // Wallet and orders are private sections; only restore them for a signed-in customer.
@@ -2436,6 +2440,8 @@ async function restoreActivePage() {
     const {data} = await db.auth.getSession();
     if (!data?.session?.user) page = "home";
   }
+  const validCategories = ["gems", "double", "special", "twilight", "membership", "fanframe"];
+  activeProductCategory = validCategories.includes(savedCategory) ? savedCategory : "gems";
   hideCustomerPanels();
   // A section restore must reveal exactly one customer panel. Background data loaders
   // (including loadMyOrders) are deliberately not allowed to toggle panel visibility.
@@ -2443,6 +2449,7 @@ async function restoreActivePage() {
   if (page === "products") {
     el("productsPanel").hidden = false;
     setActiveNav("");
+    renderProducts();
   } else if (page === "wallet") {
     el("customerWalletPanel").hidden = false;
     setActiveNav("navWallet");
