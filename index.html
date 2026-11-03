@@ -1298,7 +1298,9 @@ function getProductCategory(p) {
 }
 function setProductCategory(category) {
   activeProductCategory = category;
+  // Persist the selected category across refreshes and tab restores.
   try { sessionStorage.setItem(activeProductCategoryStorageKey, category); } catch (_) {}
+  try { localStorage.setItem(activeProductCategoryStorageKey, category); } catch (_) {}
   document.querySelectorAll(".productCategoryTab").forEach(button => {
     const active = button.dataset.category === category;
     button.classList.toggle("active", active);
@@ -1664,6 +1666,15 @@ el("logout").addEventListener("click", async () => {
   el("menuToggle").setAttribute("aria-expanded", "true");
 });
 
+function explainOrderFailure(error) {
+  const raw = [error?.message, error?.details, error?.hint, error?.code]
+    .filter(Boolean).join(" ");
+  if (/insufficient|not enough|wallet.{0,20}balance|balance.{0,20}low|رصيد.{0,20}(غير كاف|لا يكفي)|غير كاف.{0,20}رصيد/i.test(raw)) {
+    return "لم يتم إرسال الطلب لأن رصيد محفظتك غير كافٍ. اشحن رصيدك أولاً ثم أعد المحاولة.";
+  }
+  return "لم يتم إرسال الطلب. السبب: " + (error?.message || error?.details || "حدث خطأ غير معروف، حاول مرة أخرى.");
+}
+
 el("purchaseForm").addEventListener("submit", async e => {
   e.preventDefault();
   setMessage("orderMsg", "");
@@ -1761,7 +1772,7 @@ el("purchaseForm").addEventListener("submit", async e => {
       setTimeout(() => showCart(), 900);
     }
   } catch (error) {
-    setMessage("orderMsg", "ما تم إرسال الطلب: " + (error?.message || "حدث خطأ غير معروف."), "error");
+    setMessage("orderMsg", explainOrderFailure(error), "error");
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = "إرسال الطلب";
@@ -2171,6 +2182,7 @@ const selectedProductStorageKey = "zenithstore:selectedProduct:" + location.path
 const selectedProviderStorageKey = "zenithstore:selectedProvider:" + location.pathname;
 function saveActivePage(page) {
   try { sessionStorage.setItem(activePageStorageKey, page); } catch (_) {}
+  try { localStorage.setItem(activePageStorageKey, page); } catch (_) {}
 }
 function hideCustomerPanels() {
   ["homePanel", "productsPanel", "cartPanel", "customerWalletPanel", "myOrdersPanel", "purchasePanel", "termsPanel", "policyPanel"].forEach(id => {
@@ -2409,7 +2421,20 @@ db.auth.onAuthStateChange(() => {
     if (saveTimer) return;
     saveTimer = window.setTimeout(() => { saveTimer = 0; savePosition(); }, 120);
   }, { passive: true });
-  window.addEventListener("pagehide", savePosition);
+  window.addEventListener("pagehide", () => {
+    savePosition();
+    // Capture the actual visible customer section before the browser refreshes.
+    try {
+      if (!el("productsPanel").hidden) {
+        localStorage.setItem(activePageStorageKey, "products");
+        localStorage.setItem(activeProductCategoryStorageKey, activeProductCategory || "gems");
+      } else if (!el("homePanel").hidden) {
+        localStorage.setItem(activePageStorageKey, "home");
+      } else if (!el("purchasePanel").hidden) {
+        localStorage.setItem(activePageStorageKey, "purchase");
+      }
+    } catch (_) {}
+  });
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "hidden") savePosition();
   });
@@ -2429,10 +2454,10 @@ async function restoreActivePage() {
   let savedProvider = "mastercard";
   let savedCategory = "gems";
   try {
-    page = sessionStorage.getItem(activePageStorageKey) || "home";
+    page = localStorage.getItem(activePageStorageKey) || sessionStorage.getItem(activePageStorageKey) || "home";
     savedProductId = sessionStorage.getItem(selectedProductStorageKey) || "";
     savedProvider = sessionStorage.getItem(selectedProviderStorageKey) || "mastercard";
-    savedCategory = sessionStorage.getItem(activeProductCategoryStorageKey) || "gems";
+    savedCategory = localStorage.getItem(activeProductCategoryStorageKey) || sessionStorage.getItem(activeProductCategoryStorageKey) || "gems";
   } catch (_) {}
 
   // Wallet and orders are private sections; only restore them for a signed-in customer.
@@ -2449,7 +2474,9 @@ async function restoreActivePage() {
   if (page === "products") {
     el("productsPanel").hidden = false;
     setActiveNav("");
-    renderProducts();
+    // Re-apply the saved category through the normal UI path so the heading,
+    // active tab and filtered products all match after a refresh.
+    setProductCategory(activeProductCategory);
   } else if (page === "wallet") {
     el("customerWalletPanel").hidden = false;
     setActiveNav("navWallet");
