@@ -390,7 +390,7 @@ footer {
 /* واجهة رئيسية جديدة، مع إبقاء وظائف المتجر الحالية */
 .homePanel { padding: 0; overflow: visible; background: transparent; border: 0; box-shadow: none; }
 .homeSubtitle { text-align: center; color: #c1d0eb; margin: 2px 0 12px; }
-.homeHero { position: relative; width: 100%; max-width: 100%; margin: 0; padding: 0; border: 0; border-radius: 14px; overflow: hidden; background: #07142e; line-height: 0; }
+.homeHero { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: 100%; max-width: 100%; margin: 0; padding: 0; border: 0; border-radius: 14px; overflow: hidden; background: #07142e; line-height: 0; }
 .heroPoster { display: block; width: 100%; height: auto; object-fit: contain; }
 .heroCopy { position: absolute; right: 14px; bottom: 14px; min-width: 0; text-align: right; line-height: normal; }
 .gameName { color: #f7d477; font-size: 12px; font-weight: 900; letter-spacing: .8px; }
@@ -806,6 +806,7 @@ button,.filePickBtn{min-height:44px;touch-action:manipulation}
   <section class="panel homePanel" id="homePanel">
     <div class="homeHero">
       <img class="heroPoster" src="main-poster.png" alt="إعلان متجر زينيث لشحن الجواهر في موبايل ليجندز">
+      <img class="heroPoster" src="images/second-poster.png" alt="إعلان إضافي من متجر زينيث">
       <div class="heroCopy">
         <button type="button" id="openGems" class="heroButton">تصفح الباقات <span>←</span></button>
       </div>
