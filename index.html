@@ -791,26 +791,43 @@ button,.filePickBtn{min-height:44px;touch-action:manipulation}
 
 
 <style id="zenith-fanframe-images-style">
-  .fanFrameHomeCategory { gap: 8px; position: relative; overflow: hidden; }
+  /* اجعل صورة إطار كبير المعجبين خلفية تغطي بطاقة التصنيف بالكامل */
+  .fanFrameHomeCategory {
+    position: relative !important;
+    overflow: hidden !important;
+    isolation: isolate;
+    background: #241b45 !important;
+  }
   .fanFrameHomeCategory .fanFrameHomeImage {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
-    width: 72px !important;
-    height: 82px !important;
-    min-width: 72px;
-    flex: 0 0 72px !important;
-    object-fit: contain;
-    border-radius: 9px;
-    position: relative;
-    z-index: 1;
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    flex: none !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+    border-radius: inherit !important;
+    z-index: -2 !important;
+    pointer-events: none;
+  }
+  .fanFrameHomeCategory::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(15,12,32,.16), rgba(15,12,32,.56));
+    z-index: -1;
+    pointer-events: none;
   }
   .fanFrameHomeCategory .categoryText,
-  .fanFrameHomeCategory .categoryArrow { position: relative; z-index: 1; }
-  @media (max-width: 420px) {
-    .fanFrameHomeCategory .fanFrameHomeImage {
-      width: 58px !important; height: 68px !important; min-width: 58px; flex-basis: 58px !important;
-    }
+  .fanFrameHomeCategory .categoryArrow {
+    position: relative !important;
+    z-index: 1 !important;
+    text-shadow: 0 1px 5px rgba(0,0,0,.9);
   }
 </style>
 
