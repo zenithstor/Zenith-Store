@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+here<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -840,6 +840,7 @@ button,.filePickBtn{min-height:44px;touch-action:manipulation}
       <button type="button" class="productCategoryTab active" data-category="gems" role="tab" aria-selected="true">💎 الجواهر</button>
       <button type="button" class="productCategoryTab" data-category="double" role="tab" aria-selected="false">✨ الجواهر المضاعفة</button>
       <button type="button" class="productCategoryTab" data-category="special" role="tab" aria-selected="false">🎁 الباقات الخاصة</button>
+      <button type="button" class="productCategoryTab" data-category="twilight" role="tab" aria-selected="false">🌙 التوايلايت باس</button>
     </div>
     <div class="productSearchWrap" id="productSearchWrap" hidden>
       <input id="productSearch" type="search" placeholder="ابحث عن باقة..." aria-label="ابحث عن باقة">
@@ -1268,7 +1269,8 @@ function productImageData(p) {
   if (/أسبوعي|اسبوعي|weekly/i.test(text)) return ZENITH_PRODUCT_IMAGES.weekly;
   if (/شهري|الشهرية|monthly/i.test(text)) return ZENITH_PRODUCT_IMAGES.monthly;
   if (isTwilightProduct(p)) return ZENITH_PRODUCT_IMAGES.twilight;
-  if (getProductCategory(p) === "double") return ZENITH_PRODUCT_IMAGES.double;
+  // لا نربط صورة المضاعفة بتصنيف المنتج العام؛ فقط المنتجات المعرّفة صراحة كمضاعفة.
+  if (/double|doubled|2x|مضاعف|مضاعفة|ضعف الجواهر/i.test(text) || type.toLowerCase() === "double") return ZENITH_PRODUCT_IMAGES.double;
   const amount = Number(p.diamonds || 0);
   if ([22,55,86].includes(amount)) return ZENITH_PRODUCT_IMAGES.single;
   if ([172,257,343].includes(amount)) return ZENITH_PRODUCT_IMAGES.double;
@@ -1281,22 +1283,15 @@ function getProductCategory(p) {
   const name = String(p.name || "").trim().toLowerCase();
   const type = String(p.product_type || "").trim().toLowerCase();
   const text = (name + " " + type).replace(/[ـ\s]+/g, " ");
-  // تصنيف العضويات أولاً حتى لا تدخل ضمن الجواهر أو الباقات الخاصة.
-  if (/membership|عضوية|العضوية/.test(text)) return "membership";
+  if (type === "membership" || /membership|عضوية|العضوية المميزة|عضوية مميزة/.test(text)) return "membership";
   if (["fanframe", "frame", "fan_frame"].includes(type) || /fanframe|fan.frame|إطار كبير المعجبين|اطار كبير المعجبين/.test(text)) return "fanframe";
-  // التوايلايت باس يظهر داخل قسم الجواهر، لكنه يحتفظ ببطاقته العريضة وصورته الخاصة.
-  if (/twilight|توايلايت|الباس القمري/.test(text)) return "gems";
-  // الأسبوعية والشهرية ضمن الباقات الخاصة.
+  if (/twilight|توايلايت|توايلايت باس|الباس القمري/.test(text)) return "twilight";
   if (/weekly|أسبوعي|اسبوعي|monthly|شهري|الشهرية/.test(text) || ["weekly", "monthly"].includes(type)) return "special";
-  // هذه هي باقات المضاعفة الأربع المحددة في المتجر حتى لو كان اسم النوع عاماً.
-  if ([100, 300, 500, 1000].includes(Number(p.diamonds || 0))) return "double";
   if (/double|doubled|2x|مضاعف|مضاعفة|ضعف الجواهر/.test(text) || type === "double") return "double";
   if (/special|limited|bundle|باقة خاصة|باقات خاصة|خاص|حزمة/.test(text) || type === "special") return "special";
   return "gems";
 }
 function setProductCategory(category) {
-  // توافق مع أي رابط/حالة محفوظة قديمة كانت تفتح التوايلايت كتصفية مستقلة.
-  if (category === "twilight") category = "gems";
   activeProductCategory = category;
   document.querySelectorAll(".productCategoryTab").forEach(button => {
     const active = button.dataset.category === category;
