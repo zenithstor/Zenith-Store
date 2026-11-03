@@ -1,4 +1,4 @@
-here<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -1246,16 +1246,33 @@ async function loadProducts() {
 
 const ZENITH_PRODUCT_IMAGES = {
   weekly: "images/weekly-subscription.png",
+  monthly: "images/monthly.png",
+  twilight: "images/twilight-pass.png",
+  membership: "images/membership.png",
+  advancedMembership: "images/advanced-membership.png",
+  doubleProduct: "images/double-diamonds.png",
   single: "images/gem-single.png",
   double: "images/gem-double.png",
   group: "images/gem-group.png",
   chest: "images/gem-chest.png"
 };
 function productImageData(p) {
-  if (p.product_type === "weekly" || /أسبوعي|اسبوعي|weekly/i.test(p.name || "")) return ZENITH_PRODUCT_IMAGES.weekly;
+  const name = String(p.name || "").trim().toLowerCase();
+  const type = String(p.product_type || "").trim().toLowerCase();
+  const text = (name + " " + type).replace(/[ـ\s]+/g, " ");
+
+  // صور المنتجات الخاصة تُحدّد من نوع المنتج/اسمه قبل فحص عدد الجواهر.
+  if (/advanced|متقدمة|متقدم/.test(text)) return ZENITH_PRODUCT_IMAGES.advancedMembership;
+  if (type === "membership" || /membership|العضوية المميزة|عضوية مميزة/.test(text)) return ZENITH_PRODUCT_IMAGES.membership;
+  if (/twilight|توايلايت|الباس القمري/.test(text)) return ZENITH_PRODUCT_IMAGES.twilight;
+  if (type === "weekly" || /أسبوعي|اسبوعي|weekly subscription/.test(text)) return ZENITH_PRODUCT_IMAGES.weekly;
+  if (type === "monthly" || /شهري|monthly/.test(text)) return ZENITH_PRODUCT_IMAGES.monthly;
+
+  // هذه الكميات لها صور الجواهر الأصلية حتى لو وردت كلمة مضاعفة في الاسم.
   const amount = Number(p.diamonds || 0);
-  if ([22,55,86].includes(amount)) return ZENITH_PRODUCT_IMAGES.single;
   if ([172,257,343].includes(amount)) return ZENITH_PRODUCT_IMAGES.double;
+  if (/double|doubled|2x|مضاعف|مضاعفة|ضعف الجواهر/.test(text) || type === "double") return ZENITH_PRODUCT_IMAGES.doubleProduct;
+  if ([22,55,86].includes(amount)) return ZENITH_PRODUCT_IMAGES.single;
   if ([429,514,600,706].includes(amount)) return ZENITH_PRODUCT_IMAGES.group;
   if ([1050,1135,1412,2195].includes(amount)) return ZENITH_PRODUCT_IMAGES.chest;
   return ZENITH_PRODUCT_IMAGES.group;
@@ -1265,10 +1282,12 @@ function getProductCategory(p) {
   const name = String(p.name || "").trim().toLowerCase();
   const type = String(p.product_type || "").trim().toLowerCase();
   const text = (name + " " + type).replace(/[ـ\s]+/g, " ");
-  // تصنيف العضويات والإطارات أولاً حتى لا تدخل ضمن الجواهر مهما كانت قيمة diamonds.
-  if (type === "membership" || /membership|العضوية المميزة|عضوية مميزة/.test(text)) return "membership";
+  // التصنيف حسب نوع المنتج أولاً حتى لا تختلط المنتجات مع الجواهر.
+  if (type === "membership" || /membership|العضوية المميزة|عضوية مميزة|عضوية متقدمة/.test(text)) return "membership";
   if (["fanframe", "frame", "fan_frame"].includes(type) || /fanframe|fan.frame|إطار كبير المعجبين|اطار كبير المعجبين/.test(text)) return "fanframe";
-  if (/twilight|توايلايت|توايلايت باس|الباس القمري/.test(text)) return "twilight";
+  if (/twilight|توايلايت|الباس القمري/.test(text)) return "twilight";
+  // الاشتراك الأسبوعي والشهري ضمن الباقات الخاصة، مع الاحتفاظ بصورة كل منتج.
+  if (type === "weekly" || type === "monthly" || /أسبوعي|اسبوعي|weekly|شهري|monthly/.test(text)) return "special";
   if (/double|doubled|2x|مضاعف|مضاعفة|ضعف الجواهر/.test(text) || type === "double") return "double";
   if (/special|limited|bundle|باقة خاصة|باقات خاصة|خاص|حزمة/.test(text) || type === "special") return "special";
   return "gems";
