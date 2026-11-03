@@ -775,6 +775,19 @@ button,.filePickBtn{min-height:44px;touch-action:manipulation}
 }
 
 </style>
+
+<style id="zenith-poster-slider-style">
+  .homeHero.posterSlider { display:block !important; position:relative; width:100%; max-width:100%; overflow:hidden; line-height:0; }
+  .posterSlider .posterSlide { display:block; width:100%; height:auto; object-fit:contain; opacity:0; transition:opacity 1s ease-in-out; }
+  .posterSlider .posterSlide:first-child { position:relative; }
+  .posterSlider .posterSlide + .posterSlide { position:absolute; inset:0; width:100%; height:100%; }
+  .posterSlider .posterSlide.isActive { opacity:1; }
+  .posterDots { display:flex; justify-content:center; align-items:center; gap:7px; width:100%; margin:8px 0 0; direction:ltr; }
+  .posterDots .posterDot { appearance:none; -webkit-appearance:none; display:block; width:7px; min-width:7px; height:7px; min-height:7px; margin:0; padding:0; border:0; border-radius:50%; background:#777f8d; box-shadow:none; opacity:.65; cursor:pointer; transition:background .25s ease,opacity .25s ease,transform .25s ease; }
+  .posterDots .posterDot.isActive { background:#d8dce3; opacity:1; transform:scale(1.18); }
+  @media (prefers-reduced-motion: reduce) { .posterSlider .posterSlide, .posterDots .posterDot { transition:none; } }
+</style>
+
 </head>
 <body>
 <header>
@@ -804,12 +817,16 @@ button,.filePickBtn{min-height:44px;touch-action:manipulation}
 </header>
 <main>
   <section class="panel homePanel" id="homePanel">
-    <div class="homeHero">
-      <img class="heroPoster" src="main-poster.png" alt="إعلان متجر زينيث لشحن الجواهر في موبايل ليجندز">
-      <img class="heroPoster" src="images/second-poster.png" alt="إعلان إضافي من متجر زينيث">
+    <div class="homeHero posterSlider" id="homePosterSlider">
+      <img class="heroPoster posterSlide isActive" src="images/second-poster.png" alt="إعلان متجر زينيث">
+      <img class="heroPoster posterSlide" src="main-poster.png" alt="إعلان متجر زينيث لشحن الجواهر في موبايل ليجندز">
       <div class="heroCopy">
         <button type="button" id="openGems" class="heroButton">تصفح الباقات <span>←</span></button>
       </div>
+    </div>
+    <div class="posterDots" id="homePosterDots" aria-label="التنقل بين الإعلانات">
+      <button type="button" class="posterDot isActive" aria-label="الصورة الأولى" aria-current="true"></button>
+      <button type="button" class="posterDot" aria-label="الصورة الثانية" aria-current="false"></button>
     </div>
     <div class="homeCategoryGrid">
       <button type="button" class="homeCategory activeCategory" id="gemsCategory">
@@ -2526,6 +2543,35 @@ loadAdminDeposits();
 checkForNewAdminOrders();
 window.setInterval(checkForNewAdminOrders, 15000);
 </script>
+
+<script id="zenith-poster-slider-script">
+(function () {
+  const slider = document.getElementById('homePosterSlider');
+  const dotsWrap = document.getElementById('homePosterDots');
+  if (!slider || !dotsWrap) return;
+  const slides = Array.from(slider.querySelectorAll('.posterSlide'));
+  const dots = Array.from(dotsWrap.querySelectorAll('.posterDot'));
+  if (slides.length < 2 || dots.length !== slides.length) return;
+  let current = 0;
+  let timer = null;
+  function showSlide(index) {
+    current = (index + slides.length) % slides.length;
+    slides.forEach((slide, i) => slide.classList.toggle('isActive', i === current));
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('isActive', i === current);
+      dot.setAttribute('aria-current', i === current ? 'true' : 'false');
+    });
+  }
+  function restartTimer() {
+    if (timer) clearInterval(timer);
+    timer = setInterval(() => showSlide(current + 1), 4000);
+  }
+  dots.forEach((dot, i) => dot.addEventListener('click', () => { showSlide(i); restartTimer(); }));
+  showSlide(0);
+  restartTimer();
+})();
+</script>
+
 </body>
 </html>
 <style id="zenith-legal-visual-fix">
