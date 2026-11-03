@@ -2564,9 +2564,27 @@ window.setInterval(checkForNewAdminOrders, 15000);
   }
   function restartTimer() {
     if (timer) clearInterval(timer);
-    timer = setInterval(() => showSlide(current + 1), 4000);
+    timer = setInterval(() => showSlide(current + 1), 5000);
   }
   dots.forEach((dot, i) => dot.addEventListener('click', () => { showSlide(i); restartTimer(); }));
+
+  // Allow visitors to switch banners with a horizontal swipe on touch screens.
+  let touchStartX = 0;
+  let touchStartY = 0;
+  slider.addEventListener('touchstart', (event) => {
+    if (!event.changedTouches || !event.changedTouches.length) return;
+    touchStartX = event.changedTouches[0].clientX;
+    touchStartY = event.changedTouches[0].clientY;
+  }, { passive: true });
+  slider.addEventListener('touchend', (event) => {
+    if (!event.changedTouches || !event.changedTouches.length) return;
+    const deltaX = event.changedTouches[0].clientX - touchStartX;
+    const deltaY = event.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(deltaX) < 45 || Math.abs(deltaX) < Math.abs(deltaY) * 1.2) return;
+    showSlide(current + (deltaX < 0 ? 1 : -1));
+    restartTimer();
+  }, { passive: true });
+
   showSlide(0);
   restartTimer();
 })();
