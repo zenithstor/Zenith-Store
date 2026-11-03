@@ -791,31 +791,26 @@ button,.filePickBtn{min-height:44px;touch-action:manipulation}
 
 
 <style id="zenith-fanframe-images-style">
-  .fanFrameHomeCategory { gap: 8px; }
-  .fanFrameHomeImage {
-    display: block;
-    width: 66px;
-    height: 76px;
-    flex: 0 0 66px;
+  .fanFrameHomeCategory { gap: 8px; position: relative; overflow: hidden; }
+  .fanFrameHomeCategory .fanFrameHomeImage {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 72px !important;
+    height: 82px !important;
+    min-width: 72px;
+    flex: 0 0 72px !important;
     object-fit: contain;
     border-radius: 9px;
+    position: relative;
+    z-index: 1;
   }
-  .fanFrameIntro {
-    width: 100%;
-    margin: 0 0 16px;
-    overflow: hidden;
-    border: 1px solid #8059bd;
-    border-radius: 16px;
-    background: #0b1422;
-  }
-  .fanFrameIntro img {
-    display: block;
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-  }
+  .fanFrameHomeCategory .categoryText,
+  .fanFrameHomeCategory .categoryArrow { position: relative; z-index: 1; }
   @media (max-width: 420px) {
-    .fanFrameHomeImage { width: 54px; height: 64px; flex-basis: 54px; }
+    .fanFrameHomeCategory .fanFrameHomeImage {
+      width: 58px !important; height: 68px !important; min-width: 58px; flex-basis: 58px !important;
+    }
   }
 </style>
 
@@ -886,9 +881,6 @@ button,.filePickBtn{min-height:44px;touch-action:manipulation}
       </div>
     </section>
     <h2>باقات المتجر</h2>
-    <div id="fanFrameIntro" class="fanFrameIntro" hidden>
-      <img src="images/big-fans.png" alt="تفاصيل إطار كبير المعجبين" loading="lazy" decoding="async">
-    </div>
     <div class="productCategoryTabs" role="tablist" aria-label="تصنيفات الباقات">
       <button type="button" class="productCategoryTab active" data-category="gems" role="tab" aria-selected="true">💎 الجواهر</button>
       <button type="button" class="productCategoryTab" data-category="double" role="tab" aria-selected="false">✨ الجواهر المضاعفة</button>
@@ -1364,8 +1356,6 @@ function setProductCategory(category) {
   if (heading) heading.textContent = titles[category] || "باقات المتجر";
   const popular = el("productsPanel").querySelector(".popularSection");
   if (popular) popular.hidden = category !== "gems";
-  const fanFrameIntro = el("fanFrameIntro");
-  if (fanFrameIntro) fanFrameIntro.hidden = category !== "fanframe";
   // التصنيفات الأربعة تظهر في صفحة الجواهر فقط، ولا تظهر عند فتح العضوية أو الإطار.
   const categoryTabs = el("productsPanel").querySelector(".productCategoryTabs");
   if (categoryTabs) categoryTabs.hidden = category === "membership" || category === "fanframe";
@@ -1416,7 +1406,7 @@ function renderProducts() {
     const imageWrap = document.createElement("div");
     imageWrap.className = "product-gem-image";
     const image = document.createElement("img");
-    image.src = productImageData(p);
+    image.src = activeProductCategory === "fanframe" ? "images/big-fans.png" : productImageData(p);
     image.alt = productTitle(p);
     image.loading = "lazy";
     image.decoding = "async";
