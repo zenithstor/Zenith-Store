@@ -412,7 +412,7 @@ footer {
 .homeTrust { display: flex; justify-content: space-between; gap: 7px; margin-top: 16px; padding: 14px 8px; border: 1px solid #20365b; border-radius: 15px; background: #09152d; color: #d6e5ff; font-size: 12px; text-align: center; }
 .homeTrust span { flex: 1; }
 @media (max-width: 420px) { .homeHero { width: 100%; max-width: 100%; margin: 0; padding: 0; min-height: 0; } .heroCopy { right: 10px; bottom: 10px; } .heroButton { padding: 6px 9px; font-size: 11px; } .homeCategoryGrid { gap: 8px; } .homeCategory { padding: 10px 7px; gap: 6px; } .categoryIcon { font-size: 30px; } .categoryText strong { font-size: 15px; } .categoryText small { font-size: 10px; } .categoryArrow { width: 26px; height: 26px; font-size: 18px; } .homeTrust { font-size: 10px; } }
-.bottomNav { position: fixed; z-index: 30; bottom: 0; left: 0; right: 0; display: grid; grid-template-columns: repeat(2,1fr); gap: 2px; padding: 8px 5px calc(8px + env(safe-area-inset-bottom)); background: rgba(5,13,31,.97); border-top: 1px solid #1e3762; backdrop-filter: blur(12px); }
+.bottomNav { position: fixed; z-index: 30; bottom: 0; left: 0; right: 0; display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 2px; padding: 8px 5px calc(8px + env(safe-area-inset-bottom)); background: rgba(5,13,31,.97); border-top: 1px solid #1e3762; backdrop-filter: blur(12px); }
 .bottomNav button { margin: 0; padding: 6px 2px; background: transparent; border: 0; box-shadow: none; color: #aabbd8; font-size: 11px; line-height: 1.5; }
 .bottomNav button span { display:block; font-size: 19px; }
 .bottomNav button.active { color: #168cff; }
@@ -774,6 +774,110 @@ button,.filePickBtn{min-height:44px;touch-action:manipulation}
   .infoPage .infoBack{top:9px;left:10px}
 }
 
+
+/* Zenith Store 2026 redesign: dual light/dark palette and lightweight UI */
+.headerActions{display:flex;align-items:center;gap:8px}
+.themeToggle{width:44px;min-width:44px;height:44px;padding:0;border-radius:13px;background:var(--surface);color:var(--blue);border:1px solid var(--border);font-size:20px;box-shadow:none}
+.gameCategoryGrid{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}
+.gameGroupCard{grid-column:auto;min-width:0;border:1px solid var(--border);border-radius:18px;padding:9px;background:var(--surface);box-shadow:var(--shadow)}
+.gameMainCategory{width:100%;min-height:150px!important;margin:0!important;flex-direction:column;justify-content:center;text-align:center;gap:10px;padding:14px 8px!important}.gameMainCategory .categoryText{text-align:center}.gameMainCategory .categoryArrow{margin-top:2px;transition:transform .25s ease}.gameMainCategory[aria-expanded="true"] .categoryArrow{transform:rotate(180deg)}
+.gameBadge{display:flex;align-items:center;justify-content:center;flex:0 0 48px;width:48px;height:48px;border-radius:14px;background:#1e75b7;color:#fff;font-size:15px;font-weight:900;direction:ltr}
+.mlbbSubcategories[hidden]{display:none!important}.mlbbSubcategories{display:grid;grid-template-columns:1fr;gap:9px;margin-top:9px;padding-top:9px;border-top:1px solid var(--border)}
+.mlbbSubcategories .homeCategory{min-height:76px;padding:8px;min-width:0}
+.comingSoonGame{opacity:1!important;filter:none!important;cursor:not-allowed!important;background:linear-gradient(145deg,#e7e9ed,#c9cdd4)!important;border:1px solid #aeb4bd!important;color:#555d68!important;box-shadow:none!important}
+.comingSoonGame .categoryText strong,.comingSoonGame .categoryText small{color:#555d68!important;text-shadow:none!important}
+.comingSoonGame .gameBadge{background:#aeb4bd;color:#f8f9fa}
+.soonLock{font-size:18px;filter:grayscale(1)}
+.bottomNav{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+.bottomNav button{font-size:10px!important;min-width:0;padding:5px 1px!important}
+.bottomNav button span{font-size:18px!important}
+.orderTrackCard{margin:13px 0;padding:18px;border:1px solid var(--border);border-radius:18px;background:var(--surface);box-shadow:var(--shadow);overflow:hidden}
+.orderTrackTitle{margin:0 0 14px;color:var(--ink);font-size:17px}
+ .brandHeader{display:flex;align-items:center;gap:10px;direction:rtl}
+.brandStack{display:flex;flex-direction:column;align-items:flex-start;gap:0;line-height:.92;direction:ltr;font-weight:900}
+.brandStack .brandZenith{font-size:22px;letter-spacing:1px;color:var(--ink)}
+.brandStack .brandStore{font-size:14px;letter-spacing:2px;color:var(--blue);text-transform:lowercase;margin-top:4px}
+.brandImagePlaceholder{width:46px;height:46px;flex:0 0 46px;border:1px dashed var(--muted);border-radius:12px;background:var(--page);opacity:.75}
+.orderTimeline{display:flex;flex-direction:column;position:relative;gap:0;margin:10px 0 18px;padding:0 4px;direction:rtl}
+.orderStep{display:grid;grid-template-columns:54px minmax(0,1fr);grid-template-rows:auto;align-items:center;column-gap:12px;position:relative;min-height:72px;text-align:right;color:var(--muted);font-size:13px;z-index:1}
+.orderStep:not(:last-child)::after{content:"";position:absolute;right:25px;top:54px;width:3px;height:calc(100% - 28px);background:var(--border);border-radius:9px;transform:scaleY(.08);transform-origin:top center;transition:background .45s ease,transform .55s ease}
+.orderStep.isDone:not(:last-child)::after{background:var(--blue);transform:scaleY(1);animation:orderLineFill .55s ease both}
+.stepMark{grid-column:1;grid-row:1;width:48px;height:48px;display:grid;place-items:center;border:1px solid var(--border);border-radius:17px;background:var(--page);font-size:25px;color:var(--muted);transition:all .35s ease}
+.orderStep small{grid-column:2;grid-row:1;display:block;font-size:15px;font-weight:800;color:var(--ink)}
+.orderStep.isDone .stepMark{background:var(--blue-light);border-color:var(--blue);color:var(--blue);animation:orderCheck .4s ease both}
+.orderStep.isCurrent .stepMark{border-color:var(--blue);color:var(--blue);animation:hourglassPulse 1.5s ease-in-out infinite}
+.orderTimeline.isRejected .orderStep:first-child .stepMark{background:#dc445b;border-color:#dc445b;color:#fff;animation:orderCheck .4s ease both}
+.orderTimeline.isRejected .orderStep:first-child small{color:#dc445b}
+.orderTimeline.isRejected .orderStep:first-child::after{background:#dc445b}
+.orderStep.isWaiting .stepMark{color:var(--muted)}
+.orderDetailsGrid{display:grid;grid-template-columns:minmax(0,1fr);gap:0;border-top:1px solid var(--border);padding-top:10px}.orderDetailCell{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 4px;border:0;border-bottom:1px solid var(--border);border-radius:0;background:transparent}.orderDetailCell small{flex:0 0 auto;margin:0;font-size:13px}.orderDetailCell strong{text-align:left;font-size:14px}
+.orderDetailCell{min-width:0;padding:10px;border:1px solid var(--border);border-radius:11px;background:var(--page)}
+.orderDetailCell small{display:block;color:var(--muted);font-size:11px;margin-bottom:4px}
+.orderDetailCell strong{display:block;color:var(--ink);font-size:13px;overflow-wrap:anywhere}
+.orderDate{margin:12px 0 0;color:var(--muted);font-size:11px}
+@keyframes orderLineFill{from{transform:scaleX(.05)}to{transform:scaleX(1)}}
+@keyframes orderCheck{0%{transform:scale(.55);opacity:.35}70%{transform:scale(1.13)}100%{transform:scale(1);opacity:1}}
+@keyframes hourglassPulse{0%,100%{transform:rotate(0);opacity:1}50%{transform:rotate(12deg);opacity:.65}}
+/* Reduce nonessential paint-heavy motion; retain small order-state transitions and selected-product glow. */
+.panel:not(.homePanel)::before{animation:none!important;will-change:auto!important}
+.homeCategory,.popularSection,.orderTrackCard{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+/* Light mode overrides all major surfaces while preserving the blue/black accents */
+html[data-theme="light"]{color-scheme:light;--ink:#142238;--muted:#5e6d80;--border:#d4dfeb;--surface:#fff;--page:#f4f7fb;--blue:#1679c8;--blue-dark:#1268aa;--blue-light:#e8f3fc;--shadow:0 8px 24px rgba(30,75,120,.09)}
+html[data-theme="light"] body{background:linear-gradient(180deg,#fff 0%,#f3f7fb 100%);color:var(--ink)}
+html[data-theme="light"] header{background:rgba(255,255,255,.98);border-color:#d9e4ef;box-shadow:0 3px 15px #193b5b0c}
+html[data-theme="light"] .brand span{color:#142238}
+html[data-theme="light"] .menuBox,html[data-theme="light"] .panel:not(.homePanel){background:#fff!important;border-color:#d4dfeb!important;color:#142238;box-shadow:0 10px 28px #173b5b12}
+html[data-theme="light"] .panel:not(.homePanel)::before{display:none}
+html[data-theme="light"] h2,html[data-theme="light"] h3,html[data-theme="light"] .product h3{color:#142238!important}
+html[data-theme="light"] input,html[data-theme="light"] select{background:#fff!important;color:#142238!important;border-color:#cbd8e6!important}
+html[data-theme="light"] input::placeholder{color:#8290a1}
+html[data-theme="light"] .secondary,html[data-theme="light"] .filePickBtn{background:#edf4fa!important;color:#18344f!important;border-color:#c9d9e8!important}
+html[data-theme="light"] .notice,html[data-theme="light"] .popularSection,html[data-theme="light"] .adminStat{background:#f1f6fb!important;color:#18344f!important;border-color:#d4e0ec!important}
+html[data-theme="light"] #products .product{background:#fff!important;border-color:#d4dfeb!important;box-shadow:0 3px 12px #193b5b0d!important}
+html[data-theme="light"] #products .product .price{background:#eaf4fc!important;border-color:#c9dff0!important;color:#1268aa!important}
+html[data-theme="light"] .homeCategory{background:linear-gradient(130deg,#e9f4fc,#fff)!important;border-color:#b9d7ed!important;color:#18344f!important;box-shadow:0 5px 16px #17466d10}
+html[data-theme="light"] .homeCategory.membershipPlaceholder{background:linear-gradient(130deg,#f1f4f8,#fff)!important;border-color:#cbd5df!important}
+html[data-theme="light"] .homeCategory .categoryText strong{color:#142238!important;text-shadow:none!important}
+html[data-theme="light"] .homeCategory .categoryText small{color:#62748a!important;text-shadow:none!important}
+html[data-theme="light"] .homeTrust{background:#edf4fa!important;border-color:#d2dfeb!important;color:#31475e!important}
+html[data-theme="light"] .bottomNav{background:rgba(255,255,255,.98)!important;border-color:#d5e0eb!important;box-shadow:0 -5px 18px #193b5b12!important}
+html[data-theme="light"] .bottomNav button{color:#63748a!important}
+html[data-theme="light"] .bottomNav button.active{color:#1268aa!important;background:#e7f2fb!important}
+html[data-theme="light"] .orderTrackCard{background:#fff;border-color:#d4dfeb;box-shadow:0 6px 20px #193b5b0d}
+html[data-theme="light"] .orderDetailCell{background:#f4f7fb;border-color:#dce5ee}
+html[data-theme="light"] .stepMark{background:#fff}
+html[data-theme="light"] .comingSoonGame{background:linear-gradient(145deg,#e7e9ed,#c9cdd4)!important}
+html[data-theme="light"] .homePanel,html[data-theme="light"] .homePanel .popularSection,html[data-theme="light"] .homePanel .homeTrust{background-color:#fff!important;color:#142238!important}
+html[data-theme="light"] .homePanel .heroCopy{color:#142238!important}
+@media(max-width:420px){.gameMainCategory{min-height:132px!important}.gameCategoryGrid{gap:9px}.mlbbSubcategories{gap:7px}.mlbbSubcategories .homeCategory{min-height:82px;padding:8px 6px}.orderTrackCard{padding:12px}.orderStep small{font-size:14px}.orderStep{min-height:68px}.stepMark{width:44px;height:44px}.orderDetailsGrid{gap:0}.orderDetailCell{padding:10px 3px}}
+@media(prefers-reduced-motion:reduce){.orderStep,.stepMark,.orderStep::after{animation:none!important;transition:none!important}}
+
+/* Final refinements: dedicated MLBB category page, screenshot-like order tracker and complete theme surfaces */
+.mlbbPageTitle{margin:18px 0 6px}.mlbbPageGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}.mlbbPageGrid .homeCategory{min-height:125px;padding:14px;position:relative;overflow:hidden}.mlbbPageGrid .categoryText strong{font-size:16px}.mlbbPageGrid .categoryText small{font-size:12px}
+.orderTrackCard{padding:18px 20px;border-radius:28px;background:#1b1530;border:1px solid #594579;box-shadow:0 8px 24px #09051355}
+.orderTrackTitle{font-size:18px;margin-bottom:12px}
+.orderTimeline{padding:0 6px;margin:8px 0 18px;gap:0}
+.orderStep{grid-template-columns:64px minmax(0,1fr) 1fr;min-height:96px;column-gap:14px}
+.stepMark{grid-column:1;grid-row:1;width:58px;height:58px;border-radius:20px;background:#292044;border:1px solid #594579;color:#a88aff;font-size:30px}
+.orderStep small{grid-column:2;grid-row:1;font-size:16px;font-weight:800}
+.orderStep .stepHint{grid-column:2;grid-row:2;display:block;margin-top:-16px;color:var(--muted);font-size:12px}
+.orderStep:not(:last-child)::after{right:28px;top:62px;height:calc(100% - 24px);width:3px;transform:scaleY(.04)}
+.orderStep.isDone .stepMark{background:#292044;border-color:#7959b2;color:#b69aff}
+.orderStep.isCurrent .stepMark{background:#292044;color:#b69aff}
+.orderTimeline.isRejected .orderStep:first-child .stepMark{background:#d83e59;border-color:#d83e59;color:#fff}
+.orderDetailsGrid{display:grid;grid-template-columns:1fr;gap:0;border-top:1px solid var(--border);padding-top:10px}
+.orderDetailCell{display:flex;justify-content:space-between;align-items:center;padding:12px 4px;border:0;border-bottom:1px solid var(--border);border-radius:0;background:transparent}
+.orderDetailCell small{font-size:14px;color:var(--muted);margin:0}.orderDetailCell strong{font-size:15px;text-align:left}
+#navCart .navCartIcon{display:flex;align-items:center;justify-content:center;width:24px;height:24px}#navCart .navCartIcon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+html[data-theme="light"] .homePanel,html[data-theme="light"] .homeTrust,html[data-theme="light"] .storeFooter,html[data-theme="light"] .adminPanel,html[data-theme="light"] .adminOrders,html[data-theme="light"] .walletBalance,html[data-theme="light"] .cartItem,html[data-theme="light"] .cartSummary,html[data-theme="light"] .cartEmpty,html[data-theme="light"] .purchaseSummary,html[data-theme="light"] .paymentBox,html[data-theme="light"] .orderTrackCard{background:#fff!important;color:#142238!important;border-color:#d4dfeb!important}
+html[data-theme="light"] .homePanel *,html[data-theme="light"] .homeTrust *,html[data-theme="light"] .storeFooter *,html[data-theme="light"] .orderTrackCard *{color:inherit}
+html[data-theme="light"] .orderTrackTitle,html[data-theme="light"] .orderStep small,html[data-theme="light"] .orderDetailCell strong{color:#142238!important}
+html[data-theme="light"] .orderStep .stepHint,html[data-theme="light"] .orderDetailCell small{color:#5e6d80!important}
+html[data-theme="light"] .orderStep .stepMark{background:#edf4fa!important;color:#1679c8!important;border-color:#cbddeb!important}
+html[data-theme="light"] .cartItem{background:#f5f8fb!important}.comingSoonGame{filter:grayscale(.85)}
+@media(max-width:520px){.mlbbPageGrid{gap:9px}.mlbbPageGrid .homeCategory{min-height:112px;padding:10px}.orderTrackCard{padding:15px 14px}.orderStep{min-height:88px;grid-template-columns:56px minmax(0,1fr) 1fr;column-gap:10px}.stepMark{width:50px;height:50px;border-radius:17px}.orderStep:not(:last-child)::after{right:24px;top:54px}}
+
+.bottomNav{grid-template-columns:repeat(5,minmax(0,1fr))!important}
 </style>
 
 <style id="zenith-poster-slider-style">
@@ -831,14 +935,273 @@ button,.filePickBtn{min-height:44px;touch-action:manipulation}
   }
 </style>
 
+
+<style id="zenith-legal-visual-fix">
+/* Legal footer actions: plain words only, matching Instagram and Telegram links. */
+.storeFooter .footerGroup .footerLinks #openTerms,
+.storeFooter .footerGroup .footerLinks #openPolicy {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  display: inline !important;
+  flex: 0 0 auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  color: #9999a3 !important;
+  font-family: inherit !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  text-decoration: none !important;
+  text-align: start !important;
+}
+.storeFooter .footerGroup .footerLinks #openTerms:focus,
+.storeFooter .footerGroup .footerLinks #openPolicy:focus,
+.storeFooter .footerGroup .footerLinks #openTerms:active,
+.storeFooter .footerGroup .footerLinks #openPolicy:active {
+  outline: none !important;
+  border: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  color: #ff6b91 !important;
+}
+.storeFooter .footerGroup .footerLinks {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 22px !important;
+}
+
+/* The "الرئيسية" control inside each legal page is a clear compact square button. */
+.infoPage .infoBack {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  position: absolute !important;
+  top: 12px !important;
+  right: 12px !important;
+  left: auto !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 78px !important;
+  min-width: 78px !important;
+  max-width: 78px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  margin: 0 !important;
+  padding: 0 8px !important;
+  border: 1px solid #34445b !important;
+  border-radius: 7px !important;
+  background: #171d29 !important;
+  box-shadow: none !important;
+  color: #d5e5ff !important;
+  font-family: inherit !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+}
+.infoPage .infoBack::before { content: none !important; }
+.infoPage { position: relative !important; padding-top: 60px !important; }
+@media (max-width: 420px) {
+  .infoPage .infoBack { top: 10px !important; right: 10px !important; }
+}
+
+/* Product category tabs and bottom shortcuts */
+.productCategoryTabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0 14px}
+.productCategoryTab{min-width:0;padding:11px 7px;border:1px solid #29415f;border-radius:12px;background:linear-gradient(145deg,#101d30,#0a1321);color:#c7d7ed;font-size:12px;font-weight:800;line-height:1.5}
+.productCategoryTab.active{border-color:#ff62b0;background:linear-gradient(135deg,#302039,#11243a);color:#fff;box-shadow:0 0 13px #ff4fa322}
+.productSearchWrap{margin:0 0 12px}
+.productSearchWrap input{width:100%;box-sizing:border-box}
+.bottomNav{grid-template-columns:repeat(4,minmax(0,1fr))}
+.bottomNav button{font-size:10px}
+.bottomNav button span{font-size:18px}
+@media(min-width:700px){.productCategoryTabs{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+
+/* Shopping cart */
+.navCartIcon{display:flex!important;align-items:center;justify-content:center;height:22px}
+.navCartIcon svg{width:20px;height:20px}
+.cartItems{display:grid;gap:10px;margin-top:16px}
+.cartItem{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:13px;border:1px solid #263d59;border-radius:14px;background:linear-gradient(145deg,#101d30,#0b1422)}
+.cartItem h3{margin:0 0 5px;font-size:14px}
+.cartItem .muted{font-size:11px}
+.cartItemActions{display:flex;align-items:center;gap:8px;margin-top:9px}
+.cartQty{display:flex;align-items:center;gap:10px;padding:4px 7px;border:1px solid #29415f;border-radius:10px}
+.cartQty button,.cartRemove{width:28px;height:28px;padding:0;border:0;border-radius:8px;background:#1c3551;color:#fff;font-size:18px}
+.cartRemove{background:#51243a;color:#ffc4d8;font-size:14px}
+.cartEmpty{text-align:center;padding:36px 12px 24px;border:1px dashed #29415f;border-radius:16px;margin-top:16px}
+.cartEmptyIcon{color:#78bfff;margin-bottom:12px}
+.cartEmpty strong{display:block;font-size:16px}
+.cartSummary{margin-top:14px;padding:14px;border:1px solid #29415f;border-radius:14px;background:#101d30}
+.cartSummary>div{display:flex;justify-content:space-between;gap:12px;padding:7px 0}
+.cartSummary strong{color:#fff}
+#addToCartBtn{background:linear-gradient(100deg,#175b78,#217ca0);border-color:#48a9d2;color:#fff;margin-top:12px}
+
+</style>
+
+<style>
+/* إطار كبير المعجبين والتوايلايت باس: بطاقة عريضة بحجم أربع وحدات عرض */
+#products .product.fanframe-large-card {
+  grid-column: 1 / -1 !important;
+  min-height: 260px;
+  padding: 22px 18px 24px !important;
+  gap: 12px !important;
+  border-radius: 20px !important;
+}
+#products .product.fanframe-large-card .product-gem-image {
+  height: 150px !important;
+  max-width: 100%;
+}
+#products .product.fanframe-large-card h3 { font-size: 21px !important; }
+#products .product.fanframe-large-card .price { font-size: 22px !important; padding: 8px 18px !important; }
+#products .productCategoryTabs[hidden] { display: none !important; }
+</style>
+
+<style>
+#products .product.twilight-large-card {
+  grid-column: 1 / -1 !important;
+  min-height: 260px;
+  padding: 22px 18px 24px !important;
+  gap: 12px !important;
+  border-radius: 20px !important;
+}
+#products .product.twilight-large-card .product-gem-image { height: 150px !important; max-width: 100%; }
+#products .product.twilight-large-card h3 { font-size: 21px !important; }
+#products .product.twilight-large-card .price { font-size: 22px !important; padding: 8px 18px !important; }
+</style>
+
+
+<style id="zenith-game-layout-update">
+/* Main games: four equal square tiles with a reserved image slot at the upper-right. */
+.gameCategoryGrid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  align-items:stretch;
+  gap:12px!important;
+}
+.gameCategoryGrid .gameGroupCard{
+  display:contents;
+}
+.gameCategoryGrid .gameMainCategory{
+  position:relative;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  gap:12px!important;
+  width:100%!important;
+  min-width:0;
+  aspect-ratio:1 / 1;
+  min-height:0!important;
+  height:auto!important;
+  margin:0!important;
+  padding:13px!important;
+  border:1px solid #327fbd;
+  border-radius:18px;
+  background:linear-gradient(145deg,#12385f,#0c1a30)!important;
+  color:#f2f7ff!important;
+  text-align:right!important;
+  box-shadow:0 8px 22px #0003;
+}
+.gameTileImagePlaceholder{
+  display:block;
+  width:54px;
+  height:54px;
+  flex:0 0 54px;
+  align-self:flex-start;
+  border:1px dashed #75bfff;
+  border-radius:13px;
+  background:rgba(5,18,34,.35);
+}
+.gameTileName{
+  display:block;
+  width:100%;
+  margin-top:0;
+  color:#f3f7ff;
+  font-size:15px;
+  line-height:1.4;
+  font-weight:850;
+  text-align:right;
+  overflow-wrap:anywhere;
+}
+.gameCategoryGrid .comingSoonGameTile{
+  opacity:1!important;
+  filter:none!important;
+  cursor:not-allowed!important;
+  border-color:#aeb4bd!important;
+  background:linear-gradient(145deg,#e7e9ed,#c9cdd4)!important;
+  box-shadow:none!important;
+}
+.gameCategoryGrid .comingSoonGameTile .gameTileName{color:#555d68!important}
+.gameCategoryGrid .comingSoonGameTile .gameTileImagePlaceholder{
+  border-color:#929ba7;
+  background:rgba(255,255,255,.25);
+}
+html[data-theme="light"] .gameCategoryGrid .gameMainCategory:not(.comingSoonGameTile){
+  background:linear-gradient(130deg,#e9f4fc,#fff)!important;
+  border-color:#b9d7ed!important;
+}
+html[data-theme="light"] .gameCategoryGrid .gameTileName{color:#142238}
+@media(max-width:420px){
+  .gameCategoryGrid{gap:9px!important}
+  .gameCategoryGrid .gameMainCategory{padding:11px!important;border-radius:15px}
+  .gameTileImagePlaceholder{width:48px;height:48px;flex-basis:48px}
+  .gameTileName{font-size:14px}
+}
+
+/* Four Mobile Legends sections: two equal wide horizontal cards per row. */
+.mlbbPageGrid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:10px!important;
+  margin-top:16px;
+}
+.mlbbPageGrid .homeCategory{
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:86px!important;
+  height:auto!important;
+  aspect-ratio:auto!important;
+  padding:12px 10px!important;
+  text-align:right!important;
+  border-radius:16px!important;
+}
+.mlbbPageGrid .homeCategory .categoryText{flex:1;min-width:0;text-align:right}
+.mlbbPageGrid .homeCategory .categoryText strong{font-size:14px}
+.mlbbPageGrid .homeCategory .categoryText small{font-size:11px}
+.mlbbPageGrid .homeCategory .categoryArrow{margin-inline-start:auto}
+.mlbbPageGrid .homeCategory .fanFrameHomeImage{max-width:54px;max-height:48px;object-fit:contain}
+@media(max-width:520px){
+  .mlbbPageGrid{gap:9px!important}
+  .mlbbPageGrid .homeCategory{min-height:82px!important;padding:10px 8px!important}
+}
+/* Keep the older hidden subcategory container in the same two-column layout. */
+.mlbbSubcategories{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.mlbbSubcategories .homeCategory{width:100%;min-height:82px!important}
+</style>
+
 </head>
 <body>
 <header>
   <div class="headerTop">
-    <div>
-      <div class="brand">316 <span>ZENITH STORE</span></div>
+    <div class="brandHeader">
+      <div class="brandImagePlaceholder" aria-label="مساحة صورة الشعار لاحقاً"></div>
+      <div class="brand brandStack"><span class="brandZenith">ZENITH</span><span class="brandStore">store</span></div>
     </div>
-    <button type="button" class="menuBtn" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false">☰</button>
+    <div class="headerActions"><button type="button" class="themeToggle" id="themeToggle" aria-label="تفعيل الوضع النهاري" title="تبديل الوضع">☀</button><button type="button" class="menuBtn" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false">☰</button></div>
   </div>
   <nav class="menuBox" id="mainMenu" hidden>
     <div class="menuAccountArea">
@@ -853,9 +1216,13 @@ button,.filePickBtn{min-height:44px;touch-action:manipulation}
       </form>
       <div id="authMsg" class="msg" aria-live="polite"></div>
     </div>
-    <button type="button" class="secondary" id="menuWallet" hidden>محفظتي</button>
-    <button type="button" class="secondary" id="menuMyOrders">طلباتي</button>
-    <button type="button" class="secondary" id="menuProducts">منتجات المتجر</button>
+    <div class="menuLinks" id="menuLinks">
+      <button type="button" class="secondary" id="menuHome">⌂ القائمة الرئيسية</button>
+      <button type="button" class="secondary" id="menuWallet" hidden>▣ المحفظة</button>
+      <button type="button" class="secondary" id="menuCart">🛒 السلة</button>
+      <button type="button" class="secondary" id="menuMyOrders">▤ الطلبات</button>
+      <button type="button" class="secondary" id="menuSearch">⌕ البحث</button>
+    </div>
   </nav>
 </header>
 <main>
@@ -871,22 +1238,36 @@ button,.filePickBtn{min-height:44px;touch-action:manipulation}
       <button type="button" class="posterDot isActive" aria-label="الصورة الأولى" aria-current="true"></button>
       <button type="button" class="posterDot" aria-label="الصورة الثانية" aria-current="false"></button>
     </div>
-    <div class="homeCategoryGrid">
-      <button type="button" class="homeCategory activeCategory" id="gemsCategory">
-        <span class="categoryIcon">💎</span><span class="categoryText"><strong>شحن الجواهر</strong><small>باقات الجواهر</small></span><span class="categoryArrow">←</span>
-      </button>
-      <button type="button" class="homeCategory membershipPlaceholder" id="membershipPlaceholder" aria-label="العضوية المميزة">
-        <span class="categoryText"><strong>العضوية المميزة</strong><small>العضويات والباقات</small></span><span class="categoryArrow">←</span>
-      </button>
-      <button type="button" class="homeCategory membershipPlaceholder fanFrameHomeCategory" id="fanFrameCategory" aria-label="إطار كبير المعجبين">
-        <img class="fanFrameHomeImage" src="https://zenithstor.github.io/Zenith-Store/images/big-fans-banner.png" alt="إطار كبير المعجبين">
-        <span class="categoryText"><strong>إطار كبير المعجبين</strong><small>إطار مميز</small></span><span class="categoryArrow">←</span>
-      </button>
-      <button type="button" class="homeCategory membershipPlaceholder" id="verifiedSquadCategory" aria-label="فرقة موثقة">
-        <span class="categoryText"><strong>فرقة موثقة</strong><small>قريباً</small></span><span class="categoryArrow">←</span>
-      </button>
+    <div class="homeCategoryGrid gameCategoryGrid">
+      <section class="gameGroupCard" id="mobileLegendsGroup">
+        <button type="button" class="homeCategory gameMainCategory" id="mobileLegendsToggle" aria-expanded="false">
+          <span class="gameTileImagePlaceholder" aria-hidden="true"></span>
+          <span class="gameTileName">Mobile Legends</span>
+        </button>
+        <div class="mlbbSubcategories" id="mlbbSubcategories" hidden>
+          <button type="button" class="homeCategory activeCategory" id="gemsCategory"><span class="categoryIcon">💎</span><span class="categoryText"><strong>شحن الجواهر</strong><small>باقات الجواهر</small></span><span class="categoryArrow">←</span></button>
+          <button type="button" class="homeCategory membershipPlaceholder" id="membershipPlaceholder"><span class="categoryText"><strong>العضوية المميزة</strong><small>العضويات والباقات</small></span><span class="categoryArrow">←</span></button>
+          <button type="button" class="homeCategory membershipPlaceholder fanFrameHomeCategory" id="fanFrameCategory" aria-label="إطار كبير المعجبين"><img class="fanFrameHomeImage" src="https://zenithstor.github.io/Zenith-Store/images/big-fans-banner.png" alt="إطار كبير المعجبين"><span class="categoryText"><strong>إطار كبير المعجبين</strong><small>إطار مميز</small></span><span class="categoryArrow">←</span></button>
+          <button type="button" class="homeCategory membershipPlaceholder" id="verifiedSquadCategory"><span class="categoryText"><strong>فرقة موثقة</strong><small>قريباً</small></span><span class="categoryArrow">←</span></button>
+        </div>
+      </section>
+      <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile" disabled><span class="gameTileImagePlaceholder" aria-hidden="true"></span><span class="gameTileName">Honor of Kings</span></button>
+      <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile" disabled><span class="gameTileImagePlaceholder" aria-hidden="true"></span><span class="gameTileName">PUBG Mobile</span></button>
+      <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile" disabled><span class="gameTileImagePlaceholder" aria-hidden="true"></span><span class="gameTileName">Genshin Impact</span></button>
     </div>
     <div class="homeTrust"><span>🛡️ دفع آمن</span><span>⚡ إرسال سريع وفوري</span><span>🎧 دعم فني</span></div>
+  </section>
+
+  <section class="panel mlbbCategoryPage" id="mlbbCategoryPanel" hidden>
+    <button type="button" class="secondary" id="backFromMlbb" aria-label="العودة للرئيسية" title="الرئيسية">←</button>
+    <h2 class="mlbbPageTitle">Mobile Legends</h2>
+    <p class="muted">اختر القسم الذي تريد تصفحه</p>
+    <div class="mlbbPageGrid">
+      <button type="button" class="homeCategory" id="mlbbPageGems"><span class="categoryIcon">💎</span><span class="categoryText"><strong>شحن الجواهر</strong><small>باقات الجواهر</small></span><span class="categoryArrow">←</span></button>
+      <button type="button" class="homeCategory" id="mlbbPageMembership"><span class="categoryText"><strong>العضوية المميزة</strong><small>العضويات والباقات</small></span><span class="categoryArrow">←</span></button>
+      <button type="button" class="homeCategory fanFrameHomeCategory" id="mlbbPageFanFrame"><img class="fanFrameHomeImage" src="https://zenithstor.github.io/Zenith-Store/images/big-fans-banner.png" alt="إطار كبير المعجبين"><span class="categoryText"><strong>إطار كبير المعجبين</strong><small>إطار مميز</small></span><span class="categoryArrow">←</span></button>
+      <button type="button" class="homeCategory" id="mlbbPageVerified"><span class="categoryText"><strong>فرقة موثقة</strong><small>قريباً</small></span><span class="categoryArrow">←</span></button>
+    </div>
   </section>
 
   <section class="panel" id="productsPanel" hidden>
@@ -947,14 +1328,15 @@ button,.filePickBtn{min-height:44px;touch-action:manipulation}
     </div>
   </section>
 
-  <section class="panel" id="customerWalletPanel" hidden>
-    <h2>محفظتي</h2>
-<button type="button" class="secondary backBtn" data-back>← رجوع</button>
-    <div class="muted">هذا رصيدك الداخلي في متجر زينيث، وتكدر تستخدمه للدفع عند شراء المنتجات.</div>
-    <div class="notice">
-      <div class="muted">الرصيد الحالي</div>
-      <div class="price" id="customerWalletBalance">جارٍ تحميل الرصيد...</div>
-      <button type="button" class="secondary" id="refreshCustomerWallet">تحديث الرصيد</button>
+  <section class="panel walletPage" id="customerWalletPanel" hidden>
+    <div class="walletPageHead">
+      <div><span class="walletEyebrow">ZENITH STORE</span><h2>المحفظة</h2><p class="muted">إدارة رصيدك وطلبات إضافة الأموال بكل سهولة.</p></div>
+      <button type="button" class="secondary walletBackHome" data-back aria-label="العودة للرئيسية">⌂ الرئيسية</button>
+    </div>
+    <div class="walletBalanceHero">
+      <div class="walletBalanceLabel"><span>◈</span> رصيدك الحالي</div>
+      <div class="walletBalanceValue" id="customerWalletBalance">جارٍ تحميل الرصيد...</div>
+      <button type="button" class="walletRefreshBtn" id="refreshCustomerWallet">↻ تحديث الرصيد</button>
     </div>
     <div id="customerWalletMsg" class="msg" aria-live="polite"></div>
     <section class="notice" aria-labelledby="depositHeading">
@@ -1142,9 +1524,10 @@ button,.filePickBtn{min-height:44px;touch-action:manipulation}
 </main>
 <nav class="bottomNav" aria-label="التنقل الرئيسي">
   <button type="button" id="navHome" class="active"><span>⌂</span>الرئيسية</button>
-  <button type="button" id="navSearch"><span>⌕</span>بحث</button>
-  <button type="button" id="navCart"><span class="navCartIcon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 2-1.6L22 7H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg></span>السلة</button>
+  <button type="button" id="navSearch"><span>⌕</span>البحث</button>
   <button type="button" id="navWallet"><span>▣</span>محفظتي</button>
+  <button type="button" id="navOrders"><span>▤</span>طلباتي</button>
+  <button type="button" id="navCart"><span class="navCartIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.4L22 8H6"/><circle cx="10" cy="20" r="1.2"/><circle cx="18" cy="20" r="1.2"/></svg></span>السلة</button>
 </nav>
 <div id="orderToast" class="toastNotice" role="status" aria-live="assertive" hidden></div>
 <footer class="storeFooter">
@@ -1184,6 +1567,7 @@ let selectedProduct = null;
 let selectedProvider = null;
 let adminLoadInProgress = false;
 let myOrdersLoadInProgress = false;
+let myOrdersStatusSnapshot = "";
 let knownOrderIds = null;
 let adminNotifications = [];
 let notificationPollBusy = false;
@@ -1686,8 +2070,7 @@ el("loginForm").addEventListener("submit", async e => {
   const {error} = await db.auth.signInWithPassword({email, password});
   setMessage("authMsg", error ? error.message : "تم تسجيل الدخول بنجاح.", error ? "error" : "success");
   await refreshSession();
-  el("mainMenu").hidden = true;
-  el("menuToggle").setAttribute("aria-expanded", "false");
+  closeMainMenu();
   await loadAdminOrders();
     await loadAdminDeposits();
 });
@@ -1873,7 +2256,7 @@ async function loadMyOrders() {
     setMessage("myOrdersMsg", "جارٍ تحميل طلباتك...");
 
     const {data: orders, error} = await db.from("orders")
-      .select("id, created_at, status, price_iqd, player_id, zone_id, product_id")
+      .select("id, created_at, status, price_iqd, player_id, zone_id, product_id, payment_method")
       .eq("user_id", user.id)
       .order("created_at", {ascending:false})
       .limit(100);
@@ -1882,6 +2265,7 @@ async function loadMyOrders() {
       setMessage("myOrdersMsg", "تعذر تحميل الطلبات: " + error.message, "error");
       return;
     }
+    myOrdersStatusSnapshot = JSON.stringify((orders || []).map(o => [String(o.id), String(o.status || "pending") ]));
     if (!orders || !orders.length) {
       setMessage("myOrdersMsg", "ما عندك طلبات حالياً.");
       return;
@@ -1893,36 +2277,55 @@ async function loadMyOrders() {
     setMessage("myOrdersMsg", `عدد طلباتك: ${orders.length}`);
     for (const order of orders) {
       const card = document.createElement("article");
-      card.className = "product";
-      card.style.marginTop = "12px";
-
+      card.className = "orderTrackCard";
       const title = document.createElement("h3");
+      title.className = "orderTrackTitle";
       title.textContent = `طلب #${order.id}`;
-
-      const productInfo = document.createElement("p");
-      productInfo.className = "muted";
+      const rawStatus = String(order.status || "pending").toLowerCase();
+      const rejected = rawStatus === "rejected";
+      const stage = rawStatus === "completed" ? 3 : rawStatus === "processing" ? 1 : 0;
+      const timeline = document.createElement("div");
+      timeline.className = "orderTimeline" + (rejected ? " isRejected" : "");
+      const steps = [
+        ["تأكيد الدفع", "التحقق من المبلغ"],
+        ["جاري الشحن", "التنفيذ لدى المزود"],
+        ["تم الشحن", "تأكيد إنجاز الشحن"]
+      ];
+      steps.forEach(([label, hint], i) => {
+        const item = document.createElement("div");
+        const done = !rejected && (rawStatus === "completed" || i < stage);
+        const current = !rejected && i === stage && rawStatus !== "completed";
+        item.className = "orderStep" + (done ? " isDone" : "") + (current ? " isCurrent" : "") + (!done && !current && !(rejected && i === 0) ? " isWaiting" : "");
+        const mark = document.createElement("span"); mark.className = "stepMark";
+        if (rejected && i === 0) mark.textContent = "×";
+        else if (done) mark.textContent = "✓";
+        else mark.innerHTML = '<svg class="stepHourglass" viewBox="0 0 24 24" aria-label="قيد الانتظار"><path d="M6 3h12M6 21h12M7 3c0 4 2 6 5 9-3 3-5 5-5 9m10-18c0 4-2 6-5 9 3 3 5 5 5 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 6h6l-3 4-3-4Zm0 12h6l-3-4-3 4Z" fill="currentColor" opacity=".65"/></svg>';
+        const textLabel = document.createElement("small"); textLabel.textContent = label;
+        const subLabel = document.createElement("span"); subLabel.className = "stepHint"; subLabel.textContent = hint;
+        item.append(mark, textLabel, subLabel); timeline.appendChild(item);
+      });
       const product = productsCache.find(p => String(p.id) === String(order.product_id));
       const lines = itemsByOrder[order.id] || [];
-      productInfo.textContent = lines.length ? "المنتجات: " + lines.map(x=>`${x.product_name || (x.diamonds ? x.diamonds+" جوهرة" : "منتج")} × ${x.quantity} — ${money(x.line_total_iqd)}`).join("، ") : "المنتج: " + (product ? productTitle(product) : `رقم ${order.product_id}`);
-
-      const price = document.createElement("p");
-      price.className = "muted";
-      price.textContent = "السعر: " + money(order.price_iqd);
-
-      const status = document.createElement("p");
-      status.className = "msg";
-      status.textContent = "الحالة: " + orderStatusArabic(order.status);
-
-      const player = document.createElement("p");
-      player.className = "muted";
-      player.textContent = `Player ID: ${order.player_id} | Zone ID: ${order.zone_id}`;
-
-      const date = document.createElement("p");
-      date.className = "muted";
-      date.textContent = "تاريخ الطلب: " +
-        (order.created_at ? new Date(order.created_at).toLocaleString("ar-IQ") : "-");
-
-      card.append(title, productInfo, price, status, player, date);
+      const productInfo = lines.length ? lines.map(x=>`${x.product_name || (x.diamonds ? x.diamonds+" جوهرة" : "منتج")} × ${x.quantity}`).join("، ") : (product ? productTitle(product) : `المنتج رقم ${order.product_id}`);
+      const details = document.createElement("div");
+      details.className = "orderDetailsGrid";
+      const fields = [
+        ["Game ID", order.player_id || "—"],
+        ["Game ZONE", order.zone_id || "—"],
+        ["الطلب", productInfo],
+        ["مجموع الطلب", money(order.price_iqd)],
+        ["طريقة الدفع", order.payment_method === "wallet" ? "المحفظة" : order.payment_method === "direct" ? "تحويل يدوي" : (order.payment_method || "—")],
+        ["الشحن", rejected ? "مرفوض" : rawStatus === "completed" ? "مكتمل" : orderStatusArabic(rawStatus)]
+      ];
+      fields.forEach(([label, value]) => {
+        const cell = document.createElement("div"); cell.className = "orderDetailCell";
+        const k = document.createElement("small"); k.textContent = label;
+        const v = document.createElement("strong"); v.textContent = String(value);
+        cell.append(k, v); details.appendChild(cell);
+      });
+      const date = document.createElement("p"); date.className = "orderDate";
+      date.textContent = "تاريخ الطلب: " + (order.created_at ? new Date(order.created_at).toLocaleString("ar-IQ") : "—");
+      card.append(title, timeline, details, date);
       box.appendChild(card);
     }
   } finally {
@@ -2247,7 +2650,7 @@ function saveActivePage(page) {
   try { localStorage.setItem(activePageStorageKey, page); } catch (_) {}
 }
 function hideCustomerPanels() {
-  ["homePanel", "productsPanel", "cartPanel", "customerWalletPanel", "myOrdersPanel", "purchasePanel", "termsPanel", "policyPanel"].forEach(id => {
+  ["homePanel", "mlbbCategoryPanel", "productsPanel", "cartPanel", "customerWalletPanel", "myOrdersPanel", "purchasePanel", "termsPanel", "policyPanel"].forEach(id => {
     const node = el(id); if (node) node.hidden = true;
   });
 }
@@ -2280,6 +2683,8 @@ el("navHome").addEventListener("click", () => {
   window.scrollTo({top:0, behavior:"smooth"});
 });
 el("navWallet").addEventListener("click", () => el("menuWallet").click());
+el("navOrders").addEventListener("click", () => el("menuMyOrders").click());
+el("navCart").addEventListener("click", showCart);
 el("navSearch").addEventListener("click", () => {
   if (el("homePanel").hidden && el("productsPanel").hidden) showGemProducts();
   else if (!el("productsPanel").hidden) {
@@ -2294,7 +2699,6 @@ el("navSearch").addEventListener("click", () => {
     setActiveNav("navSearch");
   }
 });
-el("navCart").addEventListener("click", showCart);
 el("backFromCart").addEventListener("click", showGemProducts);
 el("shopFromCart").addEventListener("click", showGemProducts);
 el("addToCartBtn").addEventListener("click", () => {
@@ -2303,6 +2707,15 @@ el("addToCartBtn").addEventListener("click", () => {
 });
 
 el("openGems").addEventListener("click", showGemProducts);
+el("mobileLegendsToggle").addEventListener("click", () => {
+  hideCustomerPanels(); el("mlbbCategoryPanel").hidden = false; saveActivePage("mlbb"); setActiveNav("navHome");
+  el("mlbbCategoryPanel").scrollIntoView({behavior:"smooth",block:"start"});
+});
+el("backFromMlbb").addEventListener("click", () => el("navHome").click());
+el("mlbbPageGems").addEventListener("click", () => { setProductCategory("gems"); showGemProducts(); });
+el("mlbbPageMembership").addEventListener("click", () => showHomeProductCategory("membership"));
+el("mlbbPageFanFrame").addEventListener("click", () => showHomeProductCategory("fanframe"));
+el("mlbbPageVerified").addEventListener("click", () => { setMessage("productsMsg", "منتجات الفرقة الموثقة ستُضاف لاحقاً."); showGemProducts(); });
 el("gemsCategory").addEventListener("click", () => { setProductCategory("gems"); showGemProducts(); });
 function showHomeProductCategory(category) {
   setProductCategory(category);
@@ -2325,9 +2738,20 @@ el("backHome").addEventListener("click", () => {
 
 el("menuToggle").addEventListener("click", () => {
   const menu = el("mainMenu");
-  menu.hidden = !menu.hidden;
-  el("menuToggle").setAttribute("aria-expanded", String(!menu.hidden));
+  const opening = menu.hidden;
+  menu.hidden = !opening;
+  el("menuToggle").classList.toggle("is-open", opening);
+  el("menuToggle").setAttribute("aria-expanded", String(opening));
 });
+function closeMainMenu() {
+  el("mainMenu").hidden = true;
+  el("menuToggle").classList.remove("is-open");
+  el("menuToggle").setAttribute("aria-expanded", "false");
+}
+el("menuHome").addEventListener("click", () => { closeMainMenu(); el("navHome").click(); });
+el("menuCart").addEventListener("click", () => { closeMainMenu(); showCart(); });
+el("menuSearch").addEventListener("click", () => { closeMainMenu(); el("navSearch").click(); });
+
 
 el("menuWallet").addEventListener("click", async () => {
   hideCustomerPanels();
@@ -2341,6 +2765,7 @@ el("menuWallet").addEventListener("click", async () => {
   }
 
   saveActivePage("wallet");
+  setActiveNav("navWallet");
   el("homePanel").hidden = true;
   el("productsPanel").hidden = true;
   el("customerWalletPanel").hidden = false;
@@ -2348,8 +2773,7 @@ el("menuWallet").addEventListener("click", async () => {
   el("purchasePanel").hidden = true;
   
 
-  el("mainMenu").hidden = true;
-  el("menuToggle").setAttribute("aria-expanded", "false");
+  closeMainMenu();
 
   await loadCustomerWallet();
   el("customerWalletPanel").scrollIntoView({
@@ -2361,17 +2785,7 @@ el("menuWallet").addEventListener("click", async () => {
 el("refreshCustomerWallet").addEventListener("click", loadCustomerWallet);
   
 el("customerWalletPanel").querySelector("[data-back]").addEventListener("click", () => {
-  saveActivePage("products");
-  hideCustomerPanels();
-  el("productsPanel").hidden = false;
-  
-  el("myOrdersPanel").hidden = true;
-  el("purchasePanel").hidden = true;
-
-  el("productsPanel").scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-  });
+  el("navHome").click();
 });
 
 
@@ -2388,6 +2802,7 @@ el("menuMyOrders").addEventListener("click", async () => {
   }
 
   saveActivePage("orders");
+  setActiveNav("navOrders");
   el("homePanel").hidden = true;
   el("productsPanel").hidden = true;
   el("customerWalletPanel").hidden = true;
@@ -2395,25 +2810,13 @@ el("menuMyOrders").addEventListener("click", async () => {
   el("purchasePanel").hidden = true;
   
 
-  el("mainMenu").hidden = true;
-  el("menuToggle").setAttribute("aria-expanded", "false");
+  closeMainMenu();
 
   await loadMyOrders();
 
   el("myOrdersPanel").scrollIntoView({behavior:"smooth", block:"start"});
 });
 
-el("menuProducts").addEventListener("click", () => {
-  saveActivePage("products");
-  hideCustomerPanels();
-  el("productsPanel").hidden = false;
-  
-
-  el("mainMenu").hidden = true;
-  el("menuToggle").setAttribute("aria-expanded", "false");
-
-  el("productsPanel").scrollIntoView({behavior:"smooth", block:"start"});
-});
 
 el("refreshOrders").addEventListener("click", loadAdminOrders);
 el("refreshAdminDeposits").addEventListener("click", loadAdminDeposits);
@@ -2425,6 +2828,18 @@ el("clearAdminNotifications").addEventListener("click", () => {
 });
 
 el("refreshMyOrders").addEventListener("click", loadMyOrders);
+// Keep order progress synchronized while the customer is viewing My Orders; update the panel only, never reload the page.
+setInterval(async () => {
+  if (document.hidden || !el("myOrdersPanel") || el("myOrdersPanel").hidden || myOrdersLoadInProgress) return;
+  try {
+    const {data: sessionData} = await db.auth.getSession();
+    const user = sessionData?.session?.user; if (!user) return;
+    const {data, error} = await db.from("orders").select("id,status").eq("user_id", user.id).order("created_at", {ascending:false}).limit(100);
+    if (error || !data) return;
+    const signature = JSON.stringify(data.map(o => [String(o.id), String(o.status || "pending")]));
+    if (signature !== myOrdersStatusSnapshot) await loadMyOrders();
+  } catch (_) {}
+}, 5000);
   el("myOrdersPanel").querySelector("[data-back]").addEventListener("click", () => {
   saveActivePage("products");
   hideCustomerPanels();
@@ -2533,6 +2948,7 @@ async function restoreActivePage() {
   // A section restore must reveal exactly one customer panel. Background data loaders
   // (including loadMyOrders) are deliberately not allowed to toggle panel visibility.
   if (page === "cart") { showCart(); return; }
+  if (page === "mlbb") { el("mlbbCategoryPanel").hidden = false; setActiveNav("navHome"); return; }
   if (page === "products") {
     el("productsPanel").hidden = false;
     setActiveNav("");
@@ -2634,147 +3050,89 @@ window.setInterval(checkForNewAdminOrders, 15000);
 })();
 </script>
 
+
+<script id="zenith-theme-init">
+// Persisted light/dark appearance preference.
+(function initZenithTheme(){
+  const root=document.documentElement, button=document.getElementById("themeToggle");
+  let theme="dark"; try{theme=localStorage.getItem("zenithstore:theme")||"dark";}catch(_){}
+  function apply(next){theme=next;root.dataset.theme=theme; if(button){button.textContent=theme==="dark"?"☀":"☾";button.setAttribute("aria-label",theme==="dark"?"تفعيل الوضع النهاري":"تفعيل الوضع الليلي");button.title=theme==="dark"?"الوضع النهاري":"الوضع الليلي";} try{localStorage.setItem("zenithstore:theme",theme);}catch(_){} }
+  apply(theme); if(button)button.addEventListener("click",()=>{button.classList.remove("theme-spinning");void button.offsetWidth;button.classList.add("theme-spinning");apply(theme==="dark"?"light":"dark");});
+})();
+</script>
+
+
+
+<style id="zenith-order-cart-final-fixes">
+/* Match the order tracker surface to the active site theme. */
+.orderTrackCard{background:var(--surface)!important;color:var(--ink);border-color:var(--border)!important;box-shadow:var(--shadow)!important}
+html[data-theme="dark"] .orderTrackCard{background:var(--surface)!important}
+html[data-theme="light"] .orderTrackCard{background:#fff!important}
+/* Three-step tracker: connector sits only in the gap between icon tiles. */
+.orderTimeline{gap:0!important}
+.orderStep{grid-template-columns:64px minmax(0,1fr)!important;grid-template-rows:auto auto!important;min-height:92px!important;column-gap:14px!important;align-items:center!important}
+.orderStep .stepMark{grid-column:1!important;grid-row:1 / span 2!important;justify-self:center;align-self:center;width:56px!important;height:56px!important;box-sizing:border-box;z-index:2}
+.orderStep small{grid-column:2!important;grid-row:1!important;align-self:end}
+.orderStep .stepHint{grid-column:2!important;grid-row:2!important;margin:3px 0 0!important;align-self:start}
+.orderStep:not(:last-child)::after{right:31px!important;top:calc(50% + 29px)!important;width:3px!important;height:34px!important;max-height:34px!important;z-index:1;transform:scaleY(.08);transform-origin:top center!important}
+.orderStep.isDone:not(:last-child)::after{transform:scaleY(1)!important}
+.stepHourglass{display:block;width:27px;height:27px;animation:hourglassPulse 1.7s ease-in-out infinite}
+.orderStep.isDone .stepHourglass{display:none}
+/* Keep all five bottom navigation items aligned, including the cart icon. */
+.bottomNav{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+.bottomNav button{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;min-width:0!important;width:100%!important;box-sizing:border-box!important;text-align:center!important;white-space:nowrap}
+.bottomNav button>span{display:flex!important;align-items:center!important;justify-content:center!important;flex:0 0 22px;width:100%;margin:0 auto!important;line-height:1}
+#navCart .navCartIcon{width:100%!important;height:22px!important;margin:0 auto!important;justify-content:center!important}
+#navCart .navCartIcon svg{display:block!important;width:22px!important;height:22px!important;margin:0 auto!important}
+@media(max-width:520px){.orderStep{min-height:88px!important;grid-template-columns:60px minmax(0,1fr)!important;column-gap:10px!important}.orderStep .stepMark{width:52px!important;height:52px!important}.orderStep:not(:last-child)::after{right:29px!important;top:calc(50% + 27px)!important;height:34px!important}}
+</style>
+
+
+<style id="zenith-navigation-wallet-polish">
+/* Compact animated theme and hamburger controls */
+.headerActions{gap:7px}
+.themeToggle{width:34px!important;min-width:34px!important;height:34px!important;padding:0!important;border-radius:50%!important;font-size:16px!important;display:grid;place-items:center;transition:transform .28s ease,background .25s,border-color .25s}
+.themeToggle:active{transform:scale(.82) rotate(-24deg)}
+.themeToggle.theme-spinning{animation:themeIconSpin .42s cubic-bezier(.2,.8,.2,1)}
+@keyframes themeIconSpin{0%{transform:rotate(0) scale(.8)}65%{transform:rotate(220deg) scale(1.12)}100%{transform:rotate(360deg) scale(1)}}
+.menuBtn{width:36px!important;min-width:36px!important;height:36px!important;padding:0!important;border-radius:11px!important;font-size:0!important;position:relative;display:grid;place-items:center;transition:background .2s,transform .2s}
+.menuBtn::before,.menuBtn::after{content:"";position:absolute;width:19px;height:2px;border-radius:3px;background:currentColor;transition:transform .25s,top .25s,box-shadow .25s}
+.menuBtn::before{top:12px;box-shadow:0 6px 0 currentColor}
+.menuBtn::after{top:24px}
+.menuBtn.is-open::before{top:18px;transform:rotate(45deg);box-shadow:none}
+.menuBtn.is-open::after{top:18px;transform:rotate(-45deg)}
+.menuBox{transform-origin:top center;animation:menuDrop .28s cubic-bezier(.2,.8,.2,1)}
+.menuBox[hidden]{display:none!important}
+@keyframes menuDrop{from{opacity:0;transform:translateY(-9px) scaleY(.94)}to{opacity:1;transform:translateY(0) scaleY(1)}}
+.menuLinks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.menuLinks button{margin:0!important;min-height:43px;text-align:right;border-radius:12px;transition:transform .18s,background .18s}
+.menuLinks button:active{transform:scale(.97)}
+.menuAccountArea{padding-bottom:12px;margin-bottom:12px}
+.menuAccountArea input{margin:5px 0}
+#backFromMlbb{position:absolute;top:12px;left:12px;width:32px!important;min-width:32px!important;height:32px!important;padding:0!important;margin:0!important;border-radius:10px!important;font-size:16px!important;display:grid;place-items:center;z-index:3}
+#mlbbCategoryPanel{position:relative;padding-top:55px}
+.walletPage{padding:18px!important}
+.walletPageHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:17px}
+.walletPageHead h2{margin:3px 0 4px;font-size:23px}
+.walletPageHead .muted{margin:0;font-size:12px}
+.walletEyebrow{font-size:10px;letter-spacing:2px;color:var(--blue);font-weight:900}
+.walletBackHome{width:auto!important;min-width:0!important;white-space:nowrap;padding:7px 10px!important;font-size:11px!important;margin:0!important;border-radius:10px!important}
+.walletBalanceHero{position:relative;overflow:hidden;padding:19px 17px;border:1px solid #367db5;border-radius:18px;background:linear-gradient(130deg,#102d4c,#0a1728 78%);color:#eff8ff;box-shadow:0 10px 24px #0002;margin-bottom:17px}
+.walletBalanceHero:after{content:"";position:absolute;width:155px;height:155px;left:-48px;top:-65px;border-radius:50%;border:1px solid #69baff22;box-shadow:0 0 0 18px #69baff09,0 0 0 38px #69baff06;pointer-events:none}
+.walletBalanceLabel{font-size:13px;color:#c5def3;font-weight:700}
+.walletBalanceLabel span{font-size:18px;margin-left:5px;color:#7dcaff}
+.walletBalanceValue{font-size:clamp(25px,6vw,34px);font-weight:900;letter-spacing:.2px;margin:7px 0 12px;color:#fff;direction:rtl}
+.walletRefreshBtn{width:auto!important;min-height:32px!important;margin:0!important;padding:5px 11px!important;border-radius:9px!important;background:#ffffff16!important;border:1px solid #ffffff30!important;color:#eaf6ff!important;font-size:11px!important;box-shadow:none!important}
+.walletPage>section.notice{padding:16px!important;margin:13px 0!important;border-radius:15px!important;border:1px solid var(--border)!important;background:var(--surface)!important}
+.walletPage>section.notice h3{font-size:15px;margin-bottom:8px}
+.walletPage .muted{line-height:1.7}
+.walletPage label{margin-top:13px}
+.walletPage input,.walletPage select{border-radius:11px!important}
+.walletPage #depositPaymentInfo{margin-top:10px}
+html[data-theme="light"] .walletBalanceHero{background:linear-gradient(130deg,#174e79,#0e2d4b)!important;border-color:#8bbfe2!important}
+@media(max-width:420px){.menuLinks{grid-template-columns:1fr 1fr}.walletPage{padding:14px!important}.walletPageHead{gap:7px}.walletBackHome{padding:6px 8px!important}}
+@media(prefers-reduced-motion:reduce){.themeToggle,.menuBtn,.menuBox,.menuLinks button{animation:none!important;transition:none!important}}
+</style>
+
 </body>
 </html>
-<style id="zenith-legal-visual-fix">
-/* Legal footer actions: plain words only, matching Instagram and Telegram links. */
-.storeFooter .footerGroup .footerLinks #openTerms,
-.storeFooter .footerGroup .footerLinks #openPolicy {
-  appearance: none !important;
-  -webkit-appearance: none !important;
-  display: inline !important;
-  flex: 0 0 auto !important;
-  width: auto !important;
-  min-width: 0 !important;
-  max-width: none !important;
-  height: auto !important;
-  min-height: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  outline: 0 !important;
-  background: none !important;
-  box-shadow: none !important;
-  color: #9999a3 !important;
-  font-family: inherit !important;
-  font-size: 13px !important;
-  font-weight: 400 !important;
-  line-height: 1.5 !important;
-  text-decoration: none !important;
-  text-align: start !important;
-}
-.storeFooter .footerGroup .footerLinks #openTerms:focus,
-.storeFooter .footerGroup .footerLinks #openPolicy:focus,
-.storeFooter .footerGroup .footerLinks #openTerms:active,
-.storeFooter .footerGroup .footerLinks #openPolicy:active {
-  outline: none !important;
-  border: 0 !important;
-  background: none !important;
-  box-shadow: none !important;
-  color: #ff6b91 !important;
-}
-.storeFooter .footerGroup .footerLinks {
-  display: flex !important;
-  align-items: center !important;
-  flex-wrap: wrap !important;
-  gap: 22px !important;
-}
-
-/* The "الرئيسية" control inside each legal page is a clear compact square button. */
-.infoPage .infoBack {
-  appearance: none !important;
-  -webkit-appearance: none !important;
-  position: absolute !important;
-  top: 12px !important;
-  right: 12px !important;
-  left: auto !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: 78px !important;
-  min-width: 78px !important;
-  max-width: 78px !important;
-  height: 36px !important;
-  min-height: 36px !important;
-  margin: 0 !important;
-  padding: 0 8px !important;
-  border: 1px solid #34445b !important;
-  border-radius: 7px !important;
-  background: #171d29 !important;
-  box-shadow: none !important;
-  color: #d5e5ff !important;
-  font-family: inherit !important;
-  font-size: 12px !important;
-  font-weight: 500 !important;
-  line-height: 1 !important;
-}
-.infoPage .infoBack::before { content: none !important; }
-.infoPage { position: relative !important; padding-top: 60px !important; }
-@media (max-width: 420px) {
-  .infoPage .infoBack { top: 10px !important; right: 10px !important; }
-}
-
-/* Product category tabs and bottom shortcuts */
-.productCategoryTabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0 14px}
-.productCategoryTab{min-width:0;padding:11px 7px;border:1px solid #29415f;border-radius:12px;background:linear-gradient(145deg,#101d30,#0a1321);color:#c7d7ed;font-size:12px;font-weight:800;line-height:1.5}
-.productCategoryTab.active{border-color:#ff62b0;background:linear-gradient(135deg,#302039,#11243a);color:#fff;box-shadow:0 0 13px #ff4fa322}
-.productSearchWrap{margin:0 0 12px}
-.productSearchWrap input{width:100%;box-sizing:border-box}
-.bottomNav{grid-template-columns:repeat(4,minmax(0,1fr))}
-.bottomNav button{font-size:10px}
-.bottomNav button span{font-size:18px}
-@media(min-width:700px){.productCategoryTabs{grid-template-columns:repeat(4,minmax(0,1fr))}}
-
-
-/* Shopping cart */
-.navCartIcon{display:flex!important;align-items:center;justify-content:center;height:22px}
-.navCartIcon svg{width:20px;height:20px}
-.cartItems{display:grid;gap:10px;margin-top:16px}
-.cartItem{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:13px;border:1px solid #263d59;border-radius:14px;background:linear-gradient(145deg,#101d30,#0b1422)}
-.cartItem h3{margin:0 0 5px;font-size:14px}
-.cartItem .muted{font-size:11px}
-.cartItemActions{display:flex;align-items:center;gap:8px;margin-top:9px}
-.cartQty{display:flex;align-items:center;gap:10px;padding:4px 7px;border:1px solid #29415f;border-radius:10px}
-.cartQty button,.cartRemove{width:28px;height:28px;padding:0;border:0;border-radius:8px;background:#1c3551;color:#fff;font-size:18px}
-.cartRemove{background:#51243a;color:#ffc4d8;font-size:14px}
-.cartEmpty{text-align:center;padding:36px 12px 24px;border:1px dashed #29415f;border-radius:16px;margin-top:16px}
-.cartEmptyIcon{color:#78bfff;margin-bottom:12px}
-.cartEmpty strong{display:block;font-size:16px}
-.cartSummary{margin-top:14px;padding:14px;border:1px solid #29415f;border-radius:14px;background:#101d30}
-.cartSummary>div{display:flex;justify-content:space-between;gap:12px;padding:7px 0}
-.cartSummary strong{color:#fff}
-#addToCartBtn{background:linear-gradient(100deg,#175b78,#217ca0);border-color:#48a9d2;color:#fff;margin-top:12px}
-
-</style>
-
-<style>
-/* إطار كبير المعجبين والتوايلايت باس: بطاقة عريضة بحجم أربع وحدات عرض */
-#products .product.fanframe-large-card {
-  grid-column: 1 / -1 !important;
-  min-height: 260px;
-  padding: 22px 18px 24px !important;
-  gap: 12px !important;
-  border-radius: 20px !important;
-}
-#products .product.fanframe-large-card .product-gem-image {
-  height: 150px !important;
-  max-width: 100%;
-}
-#products .product.fanframe-large-card h3 { font-size: 21px !important; }
-#products .product.fanframe-large-card .price { font-size: 22px !important; padding: 8px 18px !important; }
-#products .productCategoryTabs[hidden] { display: none !important; }
-</style>
-
-<style>
-#products .product.twilight-large-card {
-  grid-column: 1 / -1 !important;
-  min-height: 260px;
-  padding: 22px 18px 24px !important;
-  gap: 12px !important;
-  border-radius: 20px !important;
-}
-#products .product.twilight-large-card .product-gem-image { height: 150px !important; max-width: 100%; }
-#products .product.twilight-large-card h3 { font-size: 21px !important; }
-#products .product.twilight-large-card .price { font-size: 22px !important; padding: 8px 18px !important; }
-</style>
