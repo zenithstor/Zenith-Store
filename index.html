@@ -2997,7 +2997,29 @@ async function restoreActivePage() {
 }
 
 updatePaymentFields();
-Promise.all([refreshSession(), loadProducts()]).then(restoreActivePage).catch(error => console.error("تعذر استعادة القسم السابق", error));
+// Start customer-page restoration even if an optional background request fails.
+(async function bootZenithStore() {
+  try {
+    const results = await Promise.allSettled([refreshSession(), loadProducts()]);
+    results.forEach((result, index) => {
+      if (result.status === "rejected") {
+        console.error(index === 0 ? "تعذر تحديث الجلسة" : "تعذر تحميل المنتجات", result.reason);
+      }
+    });
+    try {
+      await restoreActivePage();
+    } catch (restoreError) {
+      console.error("تعذر استعادة القسم السابق؛ سيتم عرض الرئيسية", restoreError);
+      hideCustomerPanels();
+      el("homePanel").hidden = false;
+      saveActivePage("home");
+      setActiveNav("navHome");
+    }
+  } finally {
+    // Never leave the whole page visually suppressed after a startup error.
+    document.documentElement.classList.remove("zenith-restore-pending");
+  }
+})();
 loadAdminOrders();
 loadAdminDeposits();
 checkForNewAdminOrders();
