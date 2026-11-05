@@ -21,23 +21,29 @@ body {
     background-color: #020817 !important;
     background-image: url('./images/zenith-background.png') !important;
     background-position: center top;
-    background-size: 100% 100%;
+    background-size: 100% auto;
     background-repeat: repeat-y;
     background-attachment: scroll;
 }
 
-/* Main content background */
 main,
 #app,
 .app,
 .page,
 .page-content,
 .content,
-.container {
+.container,
+footer,
+.footer,
+.footer-content,
+.footer-section,
+.footer-links,
+.contact-section,
+.legal-section {
     background-color: transparent !important;
+    background-image: none !important;
 }
 
-/* Header and menu */
 header,
 .topBar,
 .header,
@@ -46,12 +52,10 @@ header,
     background-color: rgba(2, 8, 23, 0.45) !important;
 }
 
-/* Content panels */
 .panel {
     background: rgba(7, 13, 27, 0.65) !important;
 }
 
-/* Bottom navigation stays above the background */
 .bottomNav {
     position: fixed;
     bottom: 0;
