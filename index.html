@@ -5,11 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#080d18">
 <script>
-// Always open ZenithStore on the main page when the site is loaded.
-try {
-  sessionStorage.removeItem("zenithstore:activePage:" + location.pathname);
-  localStorage.setItem("zenithstore:activePage:" + location.pathname, "home");
-} catch (_) {}
+// Keep the last active section available for restoration after a page refresh.
+document.documentElement.classList.add("zenith-restore-pending");
 </script>
 <title>ZenithStore | متجر زينيث</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1279,7 +1276,7 @@ html[data-theme="light"] .gameCategoryGrid .gameTileName{color:#142238}
       <section class="gameGroupCard" id="mobileLegendsGroup">
         <button type="button" class="homeCategory gameMainCategory" id="mobileLegendsToggle" aria-expanded="false">
           <img class="gameTileImage" src="images/mobile-legends.png" alt="Mobile Legends">
-          <span class="gameTileName">Mobile Legends</span>
+          <span class="gameTileName">Mobile Legends<small class="gameMainSubtitle">تصفح أفضل العروض والباقات</small></span>
         </button>
         <div class="mlbbSubcategories" id="mlbbSubcategories" hidden>
           <button type="button" class="homeCategory activeCategory" id="gemsCategory"><span class="categoryIcon">💎</span><span class="categoryText"><strong>شحن الجواهر</strong><small>باقات الجواهر</small></span><span class="categoryArrow">←</span></button>
@@ -1288,9 +1285,9 @@ html[data-theme="light"] .gameCategoryGrid .gameTileName{color:#142238}
           <button type="button" class="homeCategory membershipPlaceholder" id="verifiedSquadCategory"><span class="categoryText"><strong>فرقة موثقة</strong><small>قريباً</small></span><span class="categoryArrow">←</span></button>
         </div>
       </section>
-      <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile" disabled><img class="gameTileImage" src="images/honor-of-kings.png" alt="Honor of Kings"><span class="gameTileName">Honor of Kings</span></button>
-      <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile" disabled><img class="gameTileImage" src="images/pubg-mobile.png" alt="PUBG Mobile"><span class="gameTileName">PUBG Mobile</span></button>
-      <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile" disabled><img class="gameTileImage" src="images/genshin-impact.png" alt="Genshin Impact"><span class="gameTileName">Genshin Impact</span></button>
+      <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile" disabled><img class="gameTileImage" src="images/honor-of-kings.png" alt="Honor of Kings"><span class="gameTileName">Honor of Kings<small class="gameComingSoonLabel">قريباً...</small></span></button>
+      <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile" disabled><img class="gameTileImage" src="images/pubg-mobile.png" alt="PUBG Mobile"><span class="gameTileName">PUBG Mobile<small class="gameComingSoonLabel">قريباً...</small></span></button>
+      <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile" disabled><img class="gameTileImage" src="images/genshin-impact.png" alt="Genshin Impact"><span class="gameTileName">Genshin Impact<small class="gameComingSoonLabel">قريباً...</small></span></button>
     </div>
     <div class="homeTrust"><span>🛡️ دفع آمن</span><span>⚡ إرسال سريع وفوري</span><span>🎧 دعم فني</span></div>
   </section>
@@ -1370,12 +1367,12 @@ html[data-theme="light"] .gameCategoryGrid .gameTileName{color:#142238}
       <div><span class="walletEyebrow">ZENITH STORE</span><h2>المحفظة</h2><p class="muted">إدارة رصيدك وطلبات إضافة الأموال بكل سهولة.</p></div>
       <button type="button" class="secondary walletBackHome" data-back aria-label="العودة للرئيسية">⌂ الرئيسية</button>
     </div>
-    <div class="walletBalanceHero">
+    <div class="walletBalanceHero" hidden>
       <div class="walletBalanceLabel"><span>◈</span> رصيدك الحالي</div>
       <div class="walletBalanceValue" id="customerWalletBalance">جارٍ تحميل الرصيد...</div>
       <button type="button" class="walletRefreshBtn" id="refreshCustomerWallet">↻ تحديث الرصيد</button>
     </div>
-    <div class="walletDashboard" aria-label="ملخص المحفظة">
+    <div class="walletDashboard" aria-label="ملخص المحفظة" hidden>
       <article class="walletDashCard walletDashBalance">
         <span class="walletDashIcon">◈</span>
         <div><small>رصيد المحفظة</small><strong id="walletDashboardBalance">جارٍ التحميل...</strong></div>
@@ -1408,7 +1405,7 @@ html[data-theme="light"] .gameCategoryGrid .gameTileName{color:#142238}
           <input id="depositAmount" type="number" min="1000" max="10000000" step="250" inputmode="numeric" placeholder="مثال: 5000" required>
           <div class="notice depositPaymentCard" id="depositPaymentInfo" aria-live="polite"></div>
           <div id="depositProofGroup"><label for="depositProof">صورة إثبات الدفع</label><input id="depositProof" type="file" accept="image/*"><button type="button" class="filePickBtn" id="chooseDepositProof">اختيار صورة الإثبات من الجهاز</button></div>
-          <div id="depositTransactionGroup"><label for="depositTransactionRef">رقم العملية / رقم الكارت</label><input id="depositTransactionRef" type="text" maxlength="120" placeholder="اكتب رقم العملية إن وجد"></div>
+          
           <div class="muted">ملاحظة المتجر: تأكد من صحة المعلومات قبل إرسال الطلب.</div>
           <button type="submit" id="submitDepositBtn">إرسال طلب إضافة الرصيد</button>
         </div>
@@ -1993,15 +1990,15 @@ function renderPaymentInfo(targetId, provider) {
     const note = document.createElement("p"); note.className = "depositInfoNote"; note.textContent = "بعد إتمام التحويل، أرفق صورة واضحة لإثبات الدفع في المكان المخصص أدناه.";
     target.append(eyebrow, title, label, number, copy, note);
     el("depositProofGroup").hidden = false; el("depositProof").required = true;
-    el("depositTransactionGroup").hidden = false; el("depositTransactionRef").placeholder = "رقم العملية إن وجد";
+    const transactionGroup = el("depositTransactionGroup"); if (transactionGroup) transactionGroup.hidden = true;
   } else {
     const eyebrow = document.createElement("small"); eyebrow.className = "depositInfoEyebrow"; eyebrow.textContent = "طريقة الدفع المختارة";
     const title = document.createElement("strong"); title.className = "depositInfoTitle"; title.textContent = "إضافة الرصيد عبر كارت آسياسيل";
-    const note = document.createElement("p"); note.className = "depositInfoNote"; note.textContent = "أدخل رقم كارت التعبئة في الحقل أدناه. أما التحويل عبر رقم آسياسيل فيتم حصراً بالتواصل مع دعم المتجر.";
+    const note = document.createElement("p"); note.className = "depositInfoNote"; note.textContent = "لإضافة الرصيد عبر آسياسيل، يرجى التواصل مع دعم المتجر لإتمام التحويل ومتابعة الطلب.";
     const support = document.createElement("a"); support.className = "depositSupportLink"; support.href = "https://t.me/zenithmlb"; support.target = "_blank"; support.rel = "noopener"; support.textContent = "التواصل مع دعم المتجر عبر تيليجرام";
     target.append(eyebrow, title, note, support);
     el("depositProofGroup").hidden = true; el("depositProof").required = false;
-    el("depositTransactionGroup").hidden = false; el("depositTransactionRef").placeholder = "أدخل رقم كارت آسياسيل";
+    const transactionGroup = el("depositTransactionGroup"); if (transactionGroup) transactionGroup.hidden = true;
   }
 }
 function depositStatusLabel(status) {
@@ -2043,16 +2040,16 @@ async function loadCustomerDeposits() {
     const details = document.createElement("div"); details.className = "orderDetailsGrid";
     const method = row.payment_method === "mastercard" ? "ماستركارد" : row.payment_method === "asiacell" ? "آسياسيل" : (row.payment_method || "—");
     const statusText = rejected ? "مرفوضة" : approved ? "مقبولة" : depositStatusLabel(status);
-    const date = row.created_at ? new Date(row.created_at).toLocaleString("ar-IQ") : "—";
-    [["طريقة الدفع",method],["الحالة",statusText],["التاريخ",date],["الكمية",money(row.amount_iqd)]].forEach(([label,value]) => {
+    [["طريقة الدفع",method],["الحالة",statusText],["الكمية",money(row.amount_iqd)]].forEach(([label,value]) => {
       const cell = document.createElement("div"); cell.className = "orderDetailCell";
       const small = document.createElement("small"); small.textContent = label;
       const strong = document.createElement("strong"); strong.textContent = String(value);
       if (label === "الحالة") strong.classList.add(rejected ? "depositStatusRejected" : approved ? "depositStatusApproved" : "depositStatusPending");
       cell.append(small,strong); details.appendChild(cell);
     });
-    card.append(title,timeline,details);
-    if (row.transaction_ref) { const ref = document.createElement("p"); ref.className = "orderDate"; ref.textContent = "رقم العملية / الكارت: " + row.transaction_ref; card.append(ref); }
+    const date = document.createElement("p"); date.className = "orderDate";
+    date.textContent = "تاريخ الطلب: " + (row.created_at ? new Date(row.created_at).toLocaleString("ar-IQ") : "—");
+    card.append(title,timeline,details,date);
     box.appendChild(card);
   });
 }
@@ -2065,11 +2062,9 @@ async function submitDepositRequest(e) {
   const amount = Number(el("depositAmount").value);
   const provider = el("depositProvider").value;
   const file = el("depositProof").files[0];
-  const cardNumber = provider === "asiacell" ? el("depositTransactionRef").value.trim() : "";
   if (!provider) { setMessage("depositMsg", "اختر طريقة الدفع أولاً.", "error"); return; }
   if (!Number.isSafeInteger(amount) || amount < 1000 || amount > 10000000) { setMessage("depositMsg", "أدخل مبلغاً صحيحاً بين 1,000 و10,000,000 دينار.", "error"); return; }
   if (provider === "mastercard" && (!file || !file.type || !file.type.startsWith("image/"))) { setMessage("depositMsg", "ارفع صورة إثبات التحويل أولاً.", "error"); return; }
-  if (provider === "asiacell" && !/^\d{10,16}$/.test(cardNumber)) { setMessage("depositMsg", "أدخل رقم كارت آسياسيل صحيحاً.", "error"); return; }
   if (file && file.size > 5 * 1024 * 1024) { setMessage("depositMsg", "حجم الصورة يجب ألا يتجاوز 5 ميغابايت.", "error"); return; }
   const btn = el("submitDepositBtn"); btn.disabled = true; btn.textContent = "جارٍ إرسال الطلب...";
   let proofPath = null;
@@ -2086,7 +2081,7 @@ async function submitDepositRequest(e) {
       amount_iqd: amount,
       payment_method: provider,
       proof_path: proofPath,
-      transaction_ref: (provider === "asiacell" ? cardNumber : el("depositTransactionRef").value.trim()) || null,
+      transaction_ref: null,
       status: "pending"
     }).select("id").single();
     if (error) throw new Error("تم رفع الصورة لكن تعذر تسجيل طلب الإيداع في جدول deposits: " + error.message);
@@ -3039,6 +3034,18 @@ db.auth.onAuthStateChange(() => {
       if (!el("productsPanel").hidden) {
         localStorage.setItem(activePageStorageKey, "products");
         localStorage.setItem(activeProductCategoryStorageKey, activeProductCategory || "gems");
+      } else if (!el("customerWalletPanel").hidden) {
+        localStorage.setItem(activePageStorageKey, "wallet");
+      } else if (!el("myOrdersPanel").hidden) {
+        localStorage.setItem(activePageStorageKey, "orders");
+      } else if (!el("mlbbCategoryPanel").hidden) {
+        localStorage.setItem(activePageStorageKey, "mlbb");
+      } else if (!el("cartPanel").hidden) {
+        localStorage.setItem(activePageStorageKey, "cart");
+      } else if (!el("termsPanel").hidden) {
+        localStorage.setItem(activePageStorageKey, "terms");
+      } else if (!el("policyPanel").hidden) {
+        localStorage.setItem(activePageStorageKey, "policy");
       } else if (!el("homePanel").hidden) {
         localStorage.setItem(activePageStorageKey, "home");
       } else if (!el("purchasePanel").hidden) {
@@ -3060,24 +3067,84 @@ db.auth.onAuthStateChange(() => {
 
 // Restore the last section after refresh (same tab), not only the gems section.
 async function restoreActivePage() {
-  // Each fresh visit starts at the main menu; saved product/category views are not restored.
   activeProductCategory = "gems";
   productSearchTerm = "";
+  let savedPage = "home";
   try {
-    localStorage.setItem(activePageStorageKey, "home");
-    sessionStorage.setItem(activePageStorageKey, "home");
-    sessionStorage.removeItem(selectedProductStorageKey);
-    sessionStorage.removeItem(selectedProviderStorageKey);
-    sessionStorage.removeItem("zenithstore:scrollY:" + location.pathname);
+    savedPage = sessionStorage.getItem(activePageStorageKey) || localStorage.getItem(activePageStorageKey) || "home";
   } catch (_) {}
   if (el("productSearch")) el("productSearch").value = "";
   if (el("productSearchWrap")) el("productSearchWrap").hidden = true;
   if (el("homeSearchWrap")) el("homeSearchWrap").hidden = true;
   hideCustomerPanels();
-  el("homePanel").hidden = false;
-  setActiveNav("navHome");
+
+  if (savedPage === "products") {
+    try { activeProductCategory = localStorage.getItem(activeProductCategoryStorageKey) || "gems"; } catch (_) {}
+    if (!["gems","double","special","twilight","membership","fanframe"].includes(activeProductCategory)) activeProductCategory = "gems";
+    if (typeof setProductCategory === "function") setProductCategory(activeProductCategory);
+    el("productsPanel").hidden = false;
+    setActiveNav("");
+  } else if (savedPage === "mlbb") {
+    el("mlbbCategoryPanel").hidden = false;
+    setActiveNav("navHome");
+  } else if (savedPage === "wallet") {
+    const {data} = await db.auth.getSession();
+    if (data?.session?.user) {
+      el("customerWalletPanel").hidden = false;
+      setActiveNav("navWallet");
+      await loadCustomerWallet();
+    } else {
+      savedPage = "home";
+    }
+  } else if (savedPage === "orders") {
+    const {data} = await db.auth.getSession();
+    if (data?.session?.user) {
+      el("myOrdersPanel").hidden = false;
+      setActiveNav("navOrders");
+      await loadMyOrders();
+    } else {
+      savedPage = "home";
+    }
+  } else if (savedPage === "cart") {
+    el("cartPanel").hidden = false;
+    setActiveNav("navCart");
+    renderCart();
+  } else if (savedPage === "purchase") {
+    let productId = null, provider = "mastercard";
+    try {
+      productId = sessionStorage.getItem(selectedProductStorageKey);
+      provider = sessionStorage.getItem(selectedProviderStorageKey) || "mastercard";
+    } catch (_) {}
+    const product = productId ? productsCache.find(item => String(item.id) === String(productId)) : null;
+    if (product) {
+      openPurchase(product, provider);
+    } else {
+      savedPage = "products";
+      el("productsPanel").hidden = false;
+    }
+  } else if (savedPage === "terms" || savedPage === "policy") {
+    el(savedPage === "terms" ? "termsPanel" : "policyPanel").hidden = false;
+    setActiveNav("");
+  } else {
+    savedPage = "home";
+  }
+
+  if (savedPage === "home") {
+    el("homePanel").hidden = false;
+    setActiveNav("navHome");
+  }
+  try {
+    sessionStorage.setItem(activePageStorageKey, savedPage);
+    localStorage.setItem(activePageStorageKey, savedPage);
+  } catch (_) {}
   document.documentElement.classList.remove("zenith-restore-pending");
-  window.scrollTo({top:0, behavior:"auto"});
+  requestAnimationFrame(() => {
+    const scrollKey = "zenithstore:scrollY:" + location.pathname;
+    let savedScroll = 0;
+    try { savedScroll = Number(sessionStorage.getItem(scrollKey) || 0); } catch (_) {}
+    if (Number.isFinite(savedScroll) && savedScroll > 0) window.scrollTo({top:savedScroll,behavior:"auto"});
+    else if (savedPage === "home") window.scrollTo({top:0,behavior:"auto"});
+  });
 }
 
 updatePaymentFields();
@@ -3518,6 +3585,39 @@ html[data-theme="light"] .homePanel .heroButton{background:rgba(4,20,48,.94)!imp
 .homePanel .heroButton span{display:inline-block!important;visibility:visible!important;opacity:1!important;animation:arrowNudge 1s ease-in-out infinite!important;will-change:transform}
 .homePanel .heroButton{visibility:visible!important;opacity:1!important}
 @media(max-width:420px){.depositTrackCard .orderDetailsGrid{gap:6px}.depositTrackCard .orderDetailCell{padding:9px}.depositMethodChoice{min-height:105px}}
+
+
+/* User refinements: vertical deposit history, compact payment choices and lighter blue accents. */
+.depositTrackCard .orderDetailsGrid{display:flex!important;flex-direction:column!important;gap:0!important;border-top:1px solid var(--border)!important;padding-top:10px!important}
+.depositTrackCard .orderDetailCell{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;padding:10px 4px!important;border:0!important;border-bottom:1px solid var(--border)!important;border-radius:0!important;background:transparent!important}
+.depositTrackCard .orderDetailCell small{display:block!important;flex:0 0 auto!important;margin:0!important;font-size:13px!important;color:var(--muted)!important}
+.depositTrackCard .orderDetailCell strong{display:block!important;text-align:left!important;font-size:14px!important;color:var(--ink)}
+.depositTrackCard .orderDate{margin:12px 0 0!important;padding-top:10px;border-top:1px solid var(--border);font-size:11px}
+.depositMethodGrid{grid-template-columns:repeat(2,minmax(0,110px))!important;gap:9px!important;justify-content:start}
+.depositMethodChoice{min-height:74px!important;padding:8px 7px!important;gap:3px!important;border-radius:12px!important}
+.depositMethodIcon{width:29px!important;height:29px!important;border-radius:9px!important;font-size:16px!important}
+.depositMethodChoice strong{font-size:12px!important}.depositMethodChoice small{font-size:9px!important}
+.depositChooserTitle{font-size:12px!important;margin-bottom:8px!important}
+#depositProofGroup{padding:7px 9px!important;margin-top:8px!important;border-radius:10px!important}
+#depositProofGroup label{font-size:11px!important}
+#depositProof{font-size:11px!important;padding:6px!important;max-width:100%}
+#chooseDepositProof{width:auto!important;min-height:29px!important;margin:5px 0 0!important;padding:5px 9px!important;font-size:10px!important}
+.depositPaymentCard{padding:13px!important}
+.depositInfoTitle{font-size:14px!important;margin-bottom:9px!important}
+.depositCardNumber{font-size:21px!important;padding:9px 6px!important;letter-spacing:1px!important}
+.depositCopyNumber{padding:6px!important;font-size:11px!important}
+.depositInfoNote{font-size:11px!important;line-height:1.65!important}
+.gameTileName{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:3px}
+.gameComingSoonLabel{display:block!important;font-size:10px!important;font-weight:700!important;color:var(--blue)!important;opacity:.95}
+.gameMainSubtitle{display:block!important;font-size:10px!important;font-weight:700!important;line-height:1.5!important;color:var(--blue)!important}
+html[data-theme="light"] .popularSection{background:linear-gradient(145deg,#e7f4ff,#d9edff)!important;border-color:#acd6f6!important;color:#16456e!important}
+html[data-theme="light"] .popularHead h2{color:#155f9f!important}
+html[data-theme="light"] .popularHead span{color:#4e7da4!important}
+html[data-theme="light"] .popularItem{background:#f4faff!important;border-color:#b8dcf7!important;color:#17466c!important}
+html[data-theme="light"] .popularItem strong,html[data-theme="light"] .popularItem span{color:#17466c!important}
+html[data-theme="light"] #menuToggle,html[data-theme="light"] .menuBtn,html[data-theme="light"] .menuToggle,html[data-theme="light"] .hamburgerButton{color:#258bd5!important;border-color:#b7d9f3!important;background:#e8f4ff!important}
+html[data-theme="light"] #menuToggle span,html[data-theme="light"] .menuToggle span,html[data-theme="light"] .hamburgerButton span{background:#258bd5!important}
+html[data-theme="light"] #menuToggle svg,html[data-theme="light"] .menuToggle svg{color:#258bd5!important;stroke:#258bd5!important}
 
 </style>
 
