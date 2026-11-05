@@ -1375,6 +1375,20 @@ html[data-theme="light"] .gameCategoryGrid .gameTileName{color:#142238}
       <div class="walletBalanceValue" id="customerWalletBalance">جارٍ تحميل الرصيد...</div>
       <button type="button" class="walletRefreshBtn" id="refreshCustomerWallet">↻ تحديث الرصيد</button>
     </div>
+    <div class="walletDashboard" aria-label="ملخص المحفظة">
+      <article class="walletDashCard walletDashBalance">
+        <span class="walletDashIcon">◈</span>
+        <div><small>رصيد المحفظة</small><strong id="walletDashboardBalance">جارٍ التحميل...</strong></div>
+      </article>
+      <article class="walletDashCard">
+        <span class="walletDashIcon">＋</span>
+        <div><small>الحد الأدنى للإيداع</small><strong>1,000 د.ع</strong></div>
+      </article>
+      <article class="walletDashCard">
+        <span class="walletDashIcon">▤</span>
+        <div><small>طرق الدفع المتاحة</small><strong>طريقتان للدفع</strong></div>
+      </article>
+    </div>
     <div id="customerWalletMsg" class="msg" aria-live="polite"></div>
     <section class="notice" aria-labelledby="depositHeading">
       <h3 id="depositHeading">إضافة رصيد للمحفظة</h3>
@@ -2070,6 +2084,7 @@ async function loadCustomerWallet() {
     }
     const balance = (data || []).reduce((sum, row) => sum + Number(row.amount_iqd || 0), 0);
     el("customerWalletBalance").textContent = money(balance);
+    el("walletDashboardBalance").textContent = money(balance);
     setMessage("customerWalletMsg", "تم تحديث رصيد محفظتك.", "success");
     await loadCustomerDeposits();
   } finally {
@@ -3166,6 +3181,243 @@ html[data-theme="light"] .orderTrackCard{background:#fff!important}
 html[data-theme="light"] .walletBalanceHero{background:linear-gradient(130deg,#174e79,#0e2d4b)!important;border-color:#8bbfe2!important}
 @media(max-width:420px){.menuLinks{grid-template-columns:1fr 1fr}.walletPage{padding:14px!important}.walletPageHead{gap:7px}.walletBackHome{padding:6px 8px!important}}
 @media(prefers-reduced-motion:reduce){.themeToggle,.menuBtn,.menuBox,.menuLinks button{animation:none!important;transition:none!important}}
+
+/* ZenithStore requested polish: full-tile fan-frame artwork, unified home tiles, and wallet dashboard. */
+
+/* Make the Big Fan artwork fill the complete category tile edge-to-edge. */
+.fanFrameHomeCategory{
+  position:relative!important;
+  overflow:hidden!important;
+  isolation:isolate!important;
+  padding:0!important;
+  background:#171d32!important;
+}
+.fanFrameHomeCategory .fanFrameHomeImage{
+  position:absolute!important;
+  inset:0!important;
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  min-width:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  padding:0!important;
+  margin:0!important;
+  object-fit:cover!important;
+  object-position:center center!important;
+  border-radius:inherit!important;
+  z-index:0!important;
+  pointer-events:none!important;
+}
+.fanFrameHomeCategory::after{
+  z-index:1!important;
+  background:linear-gradient(90deg,rgba(7,13,25,.12),rgba(7,13,25,.68))!important;
+}
+.fanFrameHomeCategory .categoryText,
+.fanFrameHomeCategory .categoryArrow{
+  position:relative!important;
+  z-index:2!important;
+}
+
+/* Give every home category/game tile the same blue visual identity in both themes. */
+.homePanel .homeCategory,
+.homePanel .homeCategory.membershipPlaceholder,
+.homePanel .homeCategory.comingSoonGame,
+.homePanel .gameCategoryGrid .gameMainCategory,
+#mlbbCategoryPanel .homeCategory,
+#mlbbCategoryPanel .homeCategory.membershipPlaceholder{
+  border:1px solid #315d82!important;
+  background:linear-gradient(135deg,#163d61 0%,#102b47 58%,#0b1b30 100%)!important;
+  color:#f1f7ff!important;
+  box-shadow:0 7px 18px rgba(0,0,0,.22)!important;
+}
+.homePanel .homeCategory .categoryText strong,
+.homePanel .homeCategory .categoryText small,
+.homePanel .gameCategoryGrid .gameTileName,
+#mlbbCategoryPanel .homeCategory .categoryText strong,
+#mlbbCategoryPanel .homeCategory .categoryText small{
+  color:#edf6ff!important;
+}
+.homePanel .homeCategory .categoryArrow,
+#mlbbCategoryPanel .homeCategory .categoryArrow{
+  border-color:#79b9e9!important;
+  color:#d8edff!important;
+}
+.homePanel .homeCategory .gameBadge,
+.homePanel .gameCategoryGrid .comingSoonGameTile .gameBadge{
+  background:#245982!important;
+  color:#fff!important;
+}
+.homePanel .homeCategory:disabled,
+.homePanel .comingSoonGame{
+  opacity:1!important;
+  filter:none!important;
+  cursor:not-allowed!important;
+}
+html[data-theme="light"] .homePanel .homeCategory,
+html[data-theme="light"] .homePanel .homeCategory.membershipPlaceholder,
+html[data-theme="light"] .homePanel .homeCategory.comingSoonGame,
+html[data-theme="light"] .homePanel .gameCategoryGrid .gameMainCategory,
+html[data-theme="light"] #mlbbCategoryPanel .homeCategory,
+html[data-theme="light"] #mlbbCategoryPanel .homeCategory.membershipPlaceholder{
+  border-color:#a9c9e2!important;
+  background:linear-gradient(135deg,#e7f3fc 0%,#dcecf8 58%,#cfe3f2 100%)!important;
+  color:#17334d!important;
+  box-shadow:0 6px 16px rgba(31,83,125,.10)!important;
+}
+html[data-theme="light"] .homePanel .homeCategory .categoryText strong,
+html[data-theme="light"] .homePanel .homeCategory .categoryText small,
+html[data-theme="light"] .homePanel .gameCategoryGrid .gameTileName,
+html[data-theme="light"] #mlbbCategoryPanel .homeCategory .categoryText strong,
+html[data-theme="light"] #mlbbCategoryPanel .homeCategory .categoryText small{
+  color:#17334d!important;
+}
+html[data-theme="light"] .homePanel .homeCategory .categoryArrow,
+html[data-theme="light"] #mlbbCategoryPanel .homeCategory .categoryArrow{
+  border-color:#78a9cf!important;
+  color:#24577e!important;
+}
+
+/* Wallet dashboard styling follows the same clear summary-card language as the orders dashboard. */
+.walletPage{
+  padding:18px!important;
+  background:linear-gradient(150deg,#101d30 0%,#0a1422 100%)!important;
+  border:1px solid #2a405a!important;
+  border-radius:22px!important;
+}
+.walletPageHead{
+  align-items:center!important;
+  padding-bottom:14px;
+  border-bottom:1px solid var(--border);
+}
+.walletPageHead h2{font-size:24px!important;letter-spacing:-.4px}
+.walletEyebrow{display:inline-block;margin-bottom:3px;color:#8bcaff!important}
+.walletBalanceHero{
+  padding:22px 19px!important;
+  border:1px solid #477eaa!important;
+  border-radius:20px!important;
+  background:linear-gradient(125deg,#1a4b70 0%,#123451 52%,#0b1c30 100%)!important;
+  box-shadow:0 12px 28px rgba(0,0,0,.24)!important;
+}
+.walletBalanceValue{
+  font-size:clamp(28px,7vw,38px)!important;
+  letter-spacing:.3px!important;
+  font-variant-numeric:tabular-nums;
+}
+.walletDashboard{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  margin:14px 0 17px;
+}
+.walletDashCard{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+  min-height:78px;
+  padding:12px;
+  border:1px solid #2b4562;
+  border-radius:15px;
+  background:linear-gradient(145deg,#142940,#0c1929);
+  box-shadow:inset 0 1px rgba(255,255,255,.035),0 5px 14px rgba(0,0,0,.12);
+}
+.walletDashBalance{grid-column:1/-1}
+.walletDashIcon{
+  display:grid;
+  place-items:center;
+  flex:0 0 42px;
+  width:42px;
+  height:42px;
+  border:1px solid #3c6b91;
+  border-radius:13px;
+  background:#1b3a56;
+  color:#9bd4ff;
+  font-size:23px;
+  font-weight:900;
+}
+.walletDashCard small{
+  display:block;
+  margin-bottom:4px;
+  color:#a9bfd5;
+  font-size:11px;
+}
+.walletDashCard strong{
+  display:block;
+  color:#eff7ff;
+  font-size:15px;
+  font-weight:900;
+  overflow-wrap:anywhere;
+}
+.walletPage>section.notice{
+  padding:17px!important;
+  margin:14px 0!important;
+  border:1px solid #2b4562!important;
+  border-radius:17px!important;
+  background:linear-gradient(145deg,#111f31,#0b1625)!important;
+  box-shadow:0 8px 20px rgba(0,0,0,.13);
+}
+.walletPage>section.notice h3{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:10px;
+  color:#dceeff!important;
+  font-size:16px!important;
+}
+.walletPage #depositForm{
+  padding-top:5px;
+}
+.walletPage #depositForm button[type="submit"]{
+  min-height:48px;
+  margin-top:14px;
+  border:1px solid #69baff;
+  background:linear-gradient(110deg,#267bb7,#4ba9e8);
+  color:#fff;
+  box-shadow:0 7px 18px rgba(38,123,183,.2);
+}
+.walletPage #depositsList .product{
+  padding:14px!important;
+  border:1px solid #2b4562!important;
+  border-radius:14px!important;
+  background:linear-gradient(145deg,#14253a,#0c1726)!important;
+}
+.walletPage #depositsList .price{font-size:17px}
+html[data-theme="light"] .walletPage{
+  background:linear-gradient(150deg,#fff,#f4f8fc)!important;
+  border-color:#d4dfeb!important;
+}
+html[data-theme="light"] .walletDashCard{
+  background:linear-gradient(145deg,#f4f8fc,#eaf2f9)!important;
+  border-color:#d3e0ec!important;
+}
+html[data-theme="light"] .walletDashIcon{
+  background:#e1effa!important;
+  border-color:#c1d9ed!important;
+  color:#176fae!important;
+}
+html[data-theme="light"] .walletDashCard small{color:#60758b!important}
+html[data-theme="light"] .walletDashCard strong{color:#17334d!important}
+html[data-theme="light"] .walletPage>section.notice{
+  background:linear-gradient(145deg,#fff,#f5f8fc)!important;
+  border-color:#d4dfeb!important;
+}
+html[data-theme="light"] .walletPage>section.notice h3{color:#17334d!important}
+html[data-theme="light"] .walletPage #depositsList .product{
+  background:#fff!important;
+  border-color:#d4dfeb!important;
+}
+@media(max-width:420px){
+  .walletPage{padding:14px!important}
+  .walletDashboard{gap:8px}
+  .walletDashCard{min-height:72px;padding:10px;gap:8px}
+  .walletDashIcon{width:36px;height:36px;flex-basis:36px;border-radius:11px}
+  .walletDashCard strong{font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){
+  .walletDashCard{transition:none!important}
+}
+
 </style>
 
 </body>
