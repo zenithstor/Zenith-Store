@@ -11,23 +11,54 @@ document.documentElement.classList.add("zenith-restore-pending");
 <title>ZenithStore | متجر زينيث</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-    body {
+    html {
+    background: #020817 !important;
+}
+
+body {
     margin: 0;
+    min-height: 100vh;
     background-color: #020817 !important;
     background-image: url('./images/zenith-background.png') !important;
     background-position: center top;
-    background-size: 100% auto;
+    background-size: 100% 100%;
     background-repeat: repeat-y;
     background-attachment: scroll;
 }
 
-html {
-    background-color: #020817;
+/* Main content background */
+main,
+#app,
+.app,
+.page,
+.page-content,
+.content,
+.container {
+    background-color: transparent !important;
 }
 
+/* Header and menu */
+header,
+.topBar,
+.header,
+.menuBtn,
+#menuToggle {
+    background-color: rgba(2, 8, 23, 0.45) !important;
+}
+
+/* Content panels */
+.panel {
+    background: rgba(7, 13, 27, 0.65) !important;
+}
+
+/* Bottom navigation stays above the background */
 .bottomNav {
     position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     z-index: 9999;
+    background: #020817 !important;
 }
 * {
   box-sizing: border-box;
