@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#080d18">
 <script>
-// Prevent the home panel flashing briefly before the saved section is restored.
+// Always open ZenithStore on the main page when the site is loaded.
 try {
-  const savedPage = sessionStorage.getItem("zenithstore:activePage:" + location.pathname) || "home";
-  if (savedPage !== "home") document.documentElement.classList.add("zenith-restore-pending");
+  sessionStorage.removeItem("zenithstore:activePage:" + location.pathname);
+  localStorage.setItem("zenithstore:activePage:" + location.pathname, "home");
 } catch (_) {}
 </script>
 <title>ZenithStore | متجر زينيث</title>
@@ -1193,12 +1193,46 @@ html[data-theme="light"] .gameCategoryGrid .gameTileName{color:#142238}
 .mlbbSubcategories .homeCategory{width:100%;min-height:82px!important}
 </style>
 
+
+<style id="zenith-game-images-home-search-fix">
+.brandImagePlaceholder{
+  overflow:hidden!important;
+  border:0!important;
+  opacity:1!important;
+  background:transparent!important;
+}
+.brandImagePlaceholder img{
+  display:block;width:100%;height:100%;object-fit:contain;object-position:center;
+}
+.gameTileImage{
+  display:block!important;
+  width:58px!important;height:58px!important;
+  flex:0 0 58px!important;
+  align-self:flex-start!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  border-radius:12px;
+}
+.gameCategoryGrid .gameMainCategory{align-items:flex-start!important}
+.gameCategoryGrid .gameTileName{display:block;width:100%;text-align:right}
+.homeSearchWrap{margin:0 0 12px}
+.homeSearchWrap input{display:block;width:100%;box-sizing:border-box}
+.gameCategoryGrid .gameGroupCard[hidden],
+.gameCategoryGrid > .gameMainCategory[hidden]{display:none!important}
+/* Show the entire outer Big Fan frame artwork without cropping its top or sides. */
+.fanFrameHomeCategory .fanFrameHomeImage{
+  object-fit:contain!important;
+  object-position:center center!important;
+  padding:5px!important;
+}
+</style>
+
 </head>
 <body>
 <header>
   <div class="headerTop">
     <div class="brandHeader">
-      <div class="brandImagePlaceholder" aria-label="مساحة صورة الشعار لاحقاً"></div>
+      <div class="brandImagePlaceholder"><img src="images/logo.png" alt="شعار ZenithStore"></div>
       <div class="brand brandStack"><span class="brandZenith">ZENITH</span><span class="brandStore">store</span></div>
     </div>
     <div class="headerActions"><button type="button" class="themeToggle" id="themeToggle" aria-label="تفعيل الوضع النهاري" title="تبديل الوضع">☀</button><button type="button" class="menuBtn" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false">☰</button></div>
@@ -1238,10 +1272,13 @@ html[data-theme="light"] .gameCategoryGrid .gameTileName{color:#142238}
       <button type="button" class="posterDot isActive" aria-label="الصورة الأولى" aria-current="true"></button>
       <button type="button" class="posterDot" aria-label="الصورة الثانية" aria-current="false"></button>
     </div>
+    <div class="homeSearchWrap" id="homeSearchWrap" hidden>
+      <input id="homeSearch" type="search" placeholder="ابحث عن لعبة..." aria-label="ابحث عن لعبة">
+    </div>
     <div class="homeCategoryGrid gameCategoryGrid">
       <section class="gameGroupCard" id="mobileLegendsGroup">
         <button type="button" class="homeCategory gameMainCategory" id="mobileLegendsToggle" aria-expanded="false">
-          <span class="gameTileImagePlaceholder" aria-hidden="true"></span>
+          <img class="gameTileImage" src="images/mobile-legends.png" alt="Mobile Legends">
           <span class="gameTileName">Mobile Legends</span>
         </button>
         <div class="mlbbSubcategories" id="mlbbSubcategories" hidden>
@@ -1251,9 +1288,9 @@ html[data-theme="light"] .gameCategoryGrid .gameTileName{color:#142238}
           <button type="button" class="homeCategory membershipPlaceholder" id="verifiedSquadCategory"><span class="categoryText"><strong>فرقة موثقة</strong><small>قريباً</small></span><span class="categoryArrow">←</span></button>
         </div>
       </section>
-      <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile" disabled><span class="gameTileImagePlaceholder" aria-hidden="true"></span><span class="gameTileName">Honor of Kings</span></button>
-      <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile" disabled><span class="gameTileImagePlaceholder" aria-hidden="true"></span><span class="gameTileName">PUBG Mobile</span></button>
-      <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile" disabled><span class="gameTileImagePlaceholder" aria-hidden="true"></span><span class="gameTileName">Genshin Impact</span></button>
+      <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile" disabled><img class="gameTileImage" src="images/honor-of-kings.png" alt="Honor of Kings"><span class="gameTileName">Honor of Kings</span></button>
+      <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile" disabled><img class="gameTileImage" src="images/pubg-mobile.png" alt="PUBG Mobile"><span class="gameTileName">PUBG Mobile</span></button>
+      <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile" disabled><img class="gameTileImage" src="images/genshin-impact.png" alt="Genshin Impact"><span class="gameTileName">Genshin Impact</span></button>
     </div>
     <div class="homeTrust"><span>🛡️ دفع آمن</span><span>⚡ إرسال سريع وفوري</span><span>🎧 دعم فني</span></div>
   </section>
@@ -2670,6 +2707,7 @@ el("openPolicy").addEventListener("click", () => showInfoPage("policy"));
 document.querySelectorAll(".infoBack").forEach(btn => btn.addEventListener("click", () => el("navHome").click()));
 function showGemProducts() {
   saveActivePage("products");
+  if (el("homeSearchWrap")) el("homeSearchWrap").hidden = true;
   hideCustomerPanels();
   document.querySelectorAll(".bottomNav button").forEach(b => b.classList.remove("active"));
   el("productsPanel").hidden = false;
@@ -2680,24 +2718,48 @@ el("navHome").addEventListener("click", () => {
   el("homePanel").hidden = false;
   saveActivePage("home");
   setActiveNav("navHome");
+  if (el("homeSearch")) el("homeSearch").value = "";
+  if (el("homeSearchWrap")) el("homeSearchWrap").hidden = true;
+  document.querySelectorAll(".gameCategoryGrid .gameGroupCard, .gameCategoryGrid > .gameMainCategory").forEach(card => card.hidden = false);
   window.scrollTo({top:0, behavior:"smooth"});
 });
 el("navWallet").addEventListener("click", () => el("menuWallet").click());
 el("navOrders").addEventListener("click", () => el("menuMyOrders").click());
 el("navCart").addEventListener("click", showCart);
+function filterHomeGames() {
+  const term = (el("homeSearch").value || "").trim().toLocaleLowerCase();
+  document.querySelectorAll(".gameCategoryGrid .gameGroupCard").forEach(card => {
+    const name = card.querySelector(".gameTileName")?.textContent || "";
+    card.hidden = !!term && !name.toLocaleLowerCase().includes(term);
+  });
+  document.querySelectorAll(".gameCategoryGrid > .gameMainCategory").forEach(card => {
+    const name = card.querySelector(".gameTileName")?.textContent || "";
+    card.hidden = !!term && !name.toLocaleLowerCase().includes(term);
+  });
+}
+el("homeSearch").addEventListener("input", filterHomeGames);
+
 el("navSearch").addEventListener("click", () => {
-  if (el("homePanel").hidden && el("productsPanel").hidden) showGemProducts();
-  else if (!el("productsPanel").hidden) {
-    el("productSearchWrap").hidden = false;
-    el("productSearch").focus();
+  if (!el("homePanel").hidden) {
+    el("homeSearchWrap").hidden = false;
     setActiveNav("navSearch");
-    el("productSearchWrap").scrollIntoView({behavior:"smooth", block:"center"});
-  } else showGemProducts();
+    el("homeSearch").focus();
+    el("homeSearchWrap").scrollIntoView({behavior:"smooth", block:"center"});
+    return;
+  }
   if (!el("productsPanel").hidden) {
     el("productSearchWrap").hidden = false;
-    el("productSearch").focus();
     setActiveNav("navSearch");
+    el("productSearch").focus();
+    el("productSearchWrap").scrollIntoView({behavior:"smooth", block:"center"});
+    return;
   }
+  // If Search is pressed from another view, return to Home and search its game list.
+  el("navHome").click();
+  el("homeSearchWrap").hidden = false;
+  setActiveNav("navSearch");
+  el("homeSearch").focus();
+  el("homeSearchWrap").scrollIntoView({behavior:"smooth", block:"center"});
 });
 el("backFromCart").addEventListener("click", showGemProducts);
 el("shopFromCart").addEventListener("click", showGemProducts);
@@ -2926,74 +2988,24 @@ db.auth.onAuthStateChange(() => {
 
 // Restore the last section after refresh (same tab), not only the gems section.
 async function restoreActivePage() {
-  let page = "home";
-  let savedProductId = "";
-  let savedProvider = "mastercard";
-  let savedCategory = "gems";
+  // Each fresh visit starts at the main menu; saved product/category views are not restored.
+  activeProductCategory = "gems";
+  productSearchTerm = "";
   try {
-    page = localStorage.getItem(activePageStorageKey) || sessionStorage.getItem(activePageStorageKey) || "home";
-    savedProductId = sessionStorage.getItem(selectedProductStorageKey) || "";
-    savedProvider = sessionStorage.getItem(selectedProviderStorageKey) || "mastercard";
-    savedCategory = localStorage.getItem(activeProductCategoryStorageKey) || sessionStorage.getItem(activeProductCategoryStorageKey) || "gems";
+    localStorage.setItem(activePageStorageKey, "home");
+    sessionStorage.setItem(activePageStorageKey, "home");
+    sessionStorage.removeItem(selectedProductStorageKey);
+    sessionStorage.removeItem(selectedProviderStorageKey);
+    sessionStorage.removeItem("zenithstore:scrollY:" + location.pathname);
   } catch (_) {}
-
-  // Wallet and orders are private sections; only restore them for a signed-in customer.
-  if (page === "wallet" || page === "orders") {
-    const {data} = await db.auth.getSession();
-    if (!data?.session?.user) page = "home";
-  }
-  const validCategories = ["gems", "double", "special", "twilight", "membership", "fanframe"];
-  activeProductCategory = validCategories.includes(savedCategory) ? savedCategory : "gems";
+  if (el("productSearch")) el("productSearch").value = "";
+  if (el("productSearchWrap")) el("productSearchWrap").hidden = true;
+  if (el("homeSearchWrap")) el("homeSearchWrap").hidden = true;
   hideCustomerPanels();
-  // A section restore must reveal exactly one customer panel. Background data loaders
-  // (including loadMyOrders) are deliberately not allowed to toggle panel visibility.
-  if (page === "cart") { showCart(); return; }
-  if (page === "mlbb") { el("mlbbCategoryPanel").hidden = false; setActiveNav("navHome"); return; }
-  if (page === "products") {
-    el("productsPanel").hidden = false;
-    setActiveNav("");
-    // Re-apply the saved category through the normal UI path so the heading,
-    // active tab and filtered products all match after a refresh.
-    setProductCategory(activeProductCategory);
-  } else if (page === "wallet") {
-    el("customerWalletPanel").hidden = false;
-    setActiveNav("navWallet");
-    await loadCustomerWallet();
-  } else if (page === "orders") {
-    el("myOrdersPanel").hidden = false;
-    setActiveNav("navOrders");
-    await loadMyOrders();
-  } else if (page === "terms") {
-    el("termsPanel").hidden = false;
-    setActiveNav("");
-  } else if (page === "policy") {
-    el("policyPanel").hidden = false;
-    setActiveNav("");
-  } else if (page === "purchase") {
-    const product = productsCache.find(p => String(p.id) === savedProductId);
-    if (product) {
-      el("productsPanel").hidden = false;
-      openPurchase(product, savedProvider);
-      document.documentElement.classList.remove("zenith-restore-pending");
-      return;
-    }
-    page = "products";
-    el("productsPanel").hidden = false;
-  } else {
-    page = "home";
-    el("homePanel").hidden = false;
-    setActiveNav("navHome");
-  }
-  saveActivePage(page);
-  // Reveal the selected section only after restoration, avoiding a brief flash of Home.
+  el("homePanel").hidden = false;
+  setActiveNav("navHome");
   document.documentElement.classList.remove("zenith-restore-pending");
-  // Restore scroll only after the correct panel is visible, so refresh works in every section.
-  const scrollKey = "zenithstore:scrollY:" + location.pathname;
-  let savedY = 0;
-  try { savedY = Number(sessionStorage.getItem(scrollKey) || 0); } catch (_) {}
-  if (Number.isFinite(savedY) && savedY > 0) {
-    requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo({ top: savedY, behavior: "auto" })));
-  }
+  window.scrollTo({top:0, behavior:"auto"});
 }
 
 updatePaymentFields();
