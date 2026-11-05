@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+Enter<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -1393,22 +1393,25 @@ html[data-theme="light"] .gameCategoryGrid .gameTileName{color:#142238}
     <section class="notice" aria-labelledby="depositHeading">
       <h3 id="depositHeading">إضافة رصيد للمحفظة</h3>
       <div class="muted">حدد المبلغ، ثم اختر طريقة التحويل واتبع المعلومات المعروضة. لا يتم إضافة الرصيد إلا بعد مراجعة الإدارة.</div>
+      <div class="depositMethodChooser" id="depositMethodChooser">
+        <p class="depositChooserTitle">اختر طريقة إضافة الرصيد للمتابعة</p>
+        <div class="depositMethodGrid">
+          <button type="button" class="depositMethodChoice" data-deposit-provider="asiacell"><span class="depositMethodIcon">📱</span><strong>آسياسيل</strong><small>كارت تعبئة</small></button>
+          <button type="button" class="depositMethodChoice" data-deposit-provider="mastercard"><span class="depositMethodIcon">💳</span><strong>ماستركارد</strong><small>تحويل إلكتروني</small></button>
+        </div>
+      </div>
       <form id="depositForm">
-        <label for="depositAmount">المبلغ المراد إضافته (دينار عراقي)</label>
-        <input id="depositAmount" type="number" min="1000" max="10000000" step="250" inputmode="numeric" placeholder="مثال: 5000" required>
-        <label for="depositProvider">طريقة الدفع</label>
-        <select id="depositProvider" required>
-          <option value="mastercard">ماستركارد</option>
-          <option value="asiacell">آسياسيل</option>
-        </select>
-        <div class="notice" id="depositPaymentInfo" aria-live="polite"></div>
-        <label for="depositProof">إثبات الدفع (صورة مطلوبة)</label>
-        <input id="depositProof" type="file" accept="image/*" required>
-        <button type="button" class="filePickBtn" id="chooseDepositProof">اختيار صورة الإثبات من الجهاز</button>
-        <label for="depositTransactionRef">رقم العملية / ملاحظة (اختياري)</label>
-        <input id="depositTransactionRef" type="text" maxlength="120" placeholder="اكتب رقم العملية إن وجد">
-        <div class="muted">ملاحظة المتجر: الرجاء تأكد من اضافة المعلومات بشكل صحيح قبل الدفع !</div>
-        <button type="submit" id="submitDepositBtn">إرسال طلب إضافة الرصيد</button>
+        <input id="depositProvider" type="hidden" value="">
+        <div id="depositEntryFields" hidden>
+          <button type="button" class="depositChangeMethod" id="changeDepositMethod">← تغيير طريقة الدفع</button>
+          <label for="depositAmount">المبلغ المراد إضافته (دينار عراقي)</label>
+          <input id="depositAmount" type="number" min="1000" max="10000000" step="250" inputmode="numeric" placeholder="مثال: 5000" required>
+          <div class="notice depositPaymentCard" id="depositPaymentInfo" aria-live="polite"></div>
+          <div id="depositProofGroup"><label for="depositProof">صورة إثبات الدفع</label><input id="depositProof" type="file" accept="image/*"><button type="button" class="filePickBtn" id="chooseDepositProof">اختيار صورة الإثبات من الجهاز</button></div>
+          <div id="depositTransactionGroup"><label for="depositTransactionRef">رقم العملية / رقم الكارت</label><input id="depositTransactionRef" type="text" maxlength="120" placeholder="اكتب رقم العملية إن وجد"></div>
+          <div class="muted">ملاحظة المتجر: تأكد من صحة المعلومات قبل إرسال الطلب.</div>
+          <button type="submit" id="submitDepositBtn">إرسال طلب إضافة الرصيد</button>
+        </div>
       </form>
       <div id="depositMsg" class="msg" aria-live="polite"></div>
     </section>
@@ -1977,17 +1980,30 @@ if (purchaseBackButton) purchaseBackButton.addEventListener("click", (event) => 
 function renderPaymentInfo(targetId, provider) {
   const target = el(targetId);
   if (!target) return;
-  const detail = PAYMENT_DETAILS[provider] || PAYMENT_DETAILS.mastercard;
   target.replaceChildren();
-  const title = document.createElement("div"); title.className = "muted"; title.textContent = "حوّل المبلغ إلى بيانات الدفع التالية:";
-  const method = document.createElement("div"); method.style.fontWeight = "bold"; method.textContent = detail.label;
-  const number = document.createElement("div"); number.className = "price"; number.textContent = detail.number;
-  const note = document.createElement("div"); note.className = "muted"; note.textContent = "الرجاء تأكد من اضافة المعلومات بشكل صحيح قبل الدفع !";
-  const copy = document.createElement("button"); copy.type = "button"; copy.className = "secondary"; copy.textContent = "نسخ رقم الدفع";
-  copy.addEventListener("click", async () => { try { await navigator.clipboard.writeText(detail.number); copy.textContent = "تم نسخ الرقم"; } catch (_) { copy.textContent = "انسخ الرقم يدوياً"; } });
-  target.append(title, method, number, note, copy);
+  target.classList.toggle("isMastercard", provider === "mastercard");
+  target.classList.toggle("isAsiacell", provider === "asiacell");
+  if (provider === "mastercard") {
+    const eyebrow = document.createElement("small"); eyebrow.className = "depositInfoEyebrow"; eyebrow.textContent = "بيانات التحويل المعتمدة";
+    const title = document.createElement("strong"); title.className = "depositInfoTitle"; title.textContent = "حوّل المبلغ إلى بطاقة ماستركارد";
+    const label = document.createElement("span"); label.className = "depositNumberLabel"; label.textContent = "رقم البطاقة";
+    const number = document.createElement("div"); number.className = "depositCardNumber"; number.textContent = PAYMENT_DETAILS.mastercard.number;
+    const copy = document.createElement("button"); copy.type = "button"; copy.className = "depositCopyNumber"; copy.textContent = "نسخ الرقم";
+    copy.addEventListener("click", async () => { try { await navigator.clipboard.writeText(PAYMENT_DETAILS.mastercard.number); copy.textContent = "تم نسخ الرقم ✓"; } catch (_) { copy.textContent = "انسخ الرقم يدوياً"; } });
+    const note = document.createElement("p"); note.className = "depositInfoNote"; note.textContent = "بعد إتمام التحويل، أرفق صورة واضحة لإثبات الدفع في المكان المخصص أدناه.";
+    target.append(eyebrow, title, label, number, copy, note);
+    el("depositProofGroup").hidden = false; el("depositProof").required = true;
+    el("depositTransactionGroup").hidden = false; el("depositTransactionRef").placeholder = "رقم العملية إن وجد";
+  } else {
+    const eyebrow = document.createElement("small"); eyebrow.className = "depositInfoEyebrow"; eyebrow.textContent = "طريقة الدفع المختارة";
+    const title = document.createElement("strong"); title.className = "depositInfoTitle"; title.textContent = "إضافة الرصيد عبر كارت آسياسيل";
+    const note = document.createElement("p"); note.className = "depositInfoNote"; note.textContent = "أدخل رقم كارت التعبئة في الحقل أدناه. أما التحويل عبر رقم آسياسيل فيتم حصراً بالتواصل مع دعم المتجر.";
+    const support = document.createElement("a"); support.className = "depositSupportLink"; support.href = "https://t.me/zenithmlb"; support.target = "_blank"; support.rel = "noopener"; support.textContent = "التواصل مع دعم المتجر عبر تيليجرام";
+    target.append(eyebrow, title, note, support);
+    el("depositProofGroup").hidden = true; el("depositProof").required = false;
+    el("depositTransactionGroup").hidden = false; el("depositTransactionRef").placeholder = "أدخل رقم كارت آسياسيل";
+  }
 }
-
 function depositStatusLabel(status) {
   const labels = {pending:"قيد المراجعة", processing:"قيد المعالجة", approved:"مقبول", completed:"مكتمل", rejected:"مرفوض", cancelled:"ملغي"};
   return labels[String(status || "pending").toLowerCase()] || String(status || "قيد المراجعة");
@@ -2007,14 +2023,37 @@ async function loadCustomerDeposits() {
   box.replaceChildren();
   if (!data || !data.length) { box.textContent = "ما عندك طلبات إضافة رصيد حالياً."; return; }
   data.forEach(row => {
-    const card = document.createElement("div"); card.className = "product"; card.style.marginTop = "9px";
-    const title = document.createElement("strong"); title.textContent = `طلب إيداع #${row.id}`;
-    const amount = document.createElement("div"); amount.className = "price"; amount.textContent = money(row.amount_iqd);
-    const details = document.createElement("div"); details.className = "muted";
-    const provider = row.payment_method || "غير محدد";
+    const card = document.createElement("article"); card.className = "orderTrackCard depositTrackCard";
+    const title = document.createElement("h3"); title.className = "orderTrackTitle"; title.textContent = `طلب إضافة رصيد #${row.id}`;
+    const status = String(row.status || "pending").toLowerCase();
+    const rejected = status === "rejected", approved = ["approved","completed"].includes(status);
+    const stage = approved ? 2 : status === "processing" ? 1 : 0;
+    const timeline = document.createElement("div"); timeline.className = "orderTimeline" + (rejected ? " isRejected" : "");
+    [["إرسال الطلب","تم استلام طلب الإضافة"],["مراجعة الإدارة","التحقق من عملية الدفع"],["إضافة الرصيد","إيداع المبلغ في المحفظة"]].forEach(([label,hint],i) => {
+      const item = document.createElement("div"), done = !rejected && (approved || i < stage), current = !rejected && i === stage && !approved;
+      item.className = "orderStep" + (done ? " isDone" : "") + (current ? " isCurrent" : "") + (!done && !current && !(rejected && i === 0) ? " isWaiting" : "");
+      const mark = document.createElement("span"); mark.className = "stepMark";
+      if (rejected && i === 0) mark.textContent = "×";
+      else if (done) mark.textContent = "✓";
+      else mark.innerHTML = '<svg class="stepHourglass" viewBox="0 0 24 24" aria-label="قيد الانتظار"><path d="M6 3h12M6 21h12M7 3c0 4 2 6 5 9-3 3-5 5-5 9m10-18c0 4-2 6-5 9 3 3 5 5 5 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 6h6l-3 4-3-4Zm0 12h6l-3-4-3 4Z" fill="currentColor" opacity=".65"/></svg>';
+      const small = document.createElement("small"); small.textContent = label;
+      const hintNode = document.createElement("span"); hintNode.className = "stepHint"; hintNode.textContent = hint;
+      item.append(mark,small,hintNode); timeline.appendChild(item);
+    });
+    const details = document.createElement("div"); details.className = "orderDetailsGrid";
+    const method = row.payment_method === "mastercard" ? "ماستركارد" : row.payment_method === "asiacell" ? "آسياسيل" : (row.payment_method || "—");
+    const statusText = rejected ? "مرفوضة" : approved ? "مقبولة" : depositStatusLabel(status);
     const date = row.created_at ? new Date(row.created_at).toLocaleString("ar-IQ") : "—";
-    details.textContent = `الطريقة: ${provider} · الحالة: ${depositStatusLabel(row.status)} · التاريخ: ${date}${row.transaction_ref ? " · رقم العملية: " + row.transaction_ref : ""}`;
-    card.append(title, amount, details); box.append(card);
+    [["طريقة الدفع",method],["الحالة",statusText],["التاريخ",date],["الكمية",money(row.amount_iqd)]].forEach(([label,value]) => {
+      const cell = document.createElement("div"); cell.className = "orderDetailCell";
+      const small = document.createElement("small"); small.textContent = label;
+      const strong = document.createElement("strong"); strong.textContent = String(value);
+      if (label === "الحالة") strong.classList.add(rejected ? "depositStatusRejected" : approved ? "depositStatusApproved" : "depositStatusPending");
+      cell.append(small,strong); details.appendChild(cell);
+    });
+    card.append(title,timeline,details);
+    if (row.transaction_ref) { const ref = document.createElement("p"); ref.className = "orderDate"; ref.textContent = "رقم العملية / الكارت: " + row.transaction_ref; card.append(ref); }
+    box.appendChild(card);
   });
 }
 
@@ -2026,29 +2065,36 @@ async function submitDepositRequest(e) {
   const amount = Number(el("depositAmount").value);
   const provider = el("depositProvider").value;
   const file = el("depositProof").files[0];
+  const cardNumber = provider === "asiacell" ? el("depositTransactionRef").value.trim() : "";
+  if (!provider) { setMessage("depositMsg", "اختر طريقة الدفع أولاً.", "error"); return; }
   if (!Number.isSafeInteger(amount) || amount < 1000 || amount > 10000000) { setMessage("depositMsg", "أدخل مبلغاً صحيحاً بين 1,000 و10,000,000 دينار.", "error"); return; }
-  if (!file || !file.type || !file.type.startsWith("image/")) { setMessage("depositMsg", "ارفع صورة إثبات الدفع أولاً.", "error"); return; }
-  if (file.size > 5 * 1024 * 1024) { setMessage("depositMsg", "حجم الصورة يجب ألا يتجاوز 5 ميغابايت.", "error"); return; }
+  if (provider === "mastercard" && (!file || !file.type || !file.type.startsWith("image/"))) { setMessage("depositMsg", "ارفع صورة إثبات التحويل أولاً.", "error"); return; }
+  if (provider === "asiacell" && !/^\d{10,16}$/.test(cardNumber)) { setMessage("depositMsg", "أدخل رقم كارت آسياسيل صحيحاً.", "error"); return; }
+  if (file && file.size > 5 * 1024 * 1024) { setMessage("depositMsg", "حجم الصورة يجب ألا يتجاوز 5 ميغابايت.", "error"); return; }
   const btn = el("submitDepositBtn"); btn.disabled = true; btn.textContent = "جارٍ إرسال الطلب...";
   let proofPath = null;
   try {
-    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(-90) || "deposit-proof";
-    proofPath = `${user.id}/deposit-${Date.now()}-${safeName}`;
-    const {error: uploadError} = await db.storage.from("payment-proofs").upload(proofPath, file, {contentType:file.type, upsert:false});
-    if (uploadError) throw new Error("تعذر رفع الإثبات: " + uploadError.message);
+    if (file) {
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(-90) || "deposit-proof";
+      proofPath = `${user.id}/deposit-${Date.now()}-${safeName}`;
+      const {error: uploadError} = await db.storage.from("payment-proofs").upload(proofPath, file, {contentType:file.type, upsert:false});
+      if (uploadError) throw new Error("تعذر رفع الإثبات: " + uploadError.message);
+    }
     // الطلب يُنشأ بحالة pending فقط؛ اعتماد الإيداع وإضافة الرصيد من صلاحية الإدارة.
     const {data, error} = await db.from("deposits").insert({
       user_id: user.id,
       amount_iqd: amount,
       payment_method: provider,
       proof_path: proofPath,
-      transaction_ref: el("depositTransactionRef").value.trim() || null,
+      transaction_ref: (provider === "asiacell" ? cardNumber : el("depositTransactionRef").value.trim()) || null,
       status: "pending"
     }).select("id").single();
     if (error) throw new Error("تم رفع الصورة لكن تعذر تسجيل طلب الإيداع في جدول deposits: " + error.message);
     setMessage("depositMsg", `تم إرسال طلب إضافة الرصيد رقم #${data.id}. سيبقى قيد المراجعة ولن يُضاف الرصيد إلا بعد موافقة الإدارة.`, "success");
     el("depositForm").reset();
-    renderPaymentInfo("depositPaymentInfo", el("depositProvider").value);
+    el("depositEntryFields").hidden = true;
+    el("depositMethodChooser").hidden = false;
+    el("depositProvider").value = "";
     await loadCustomerDeposits();
   } catch (err) {
     setMessage("depositMsg", err?.message || "حدث خطأ أثناء إرسال الطلب.", "error");
@@ -2688,10 +2734,21 @@ el("walletAdjustForm").addEventListener("submit", async e => {
   }
 });
 
-el("depositProvider").addEventListener("change", () => renderPaymentInfo("depositPaymentInfo", el("depositProvider").value));
+document.querySelectorAll("[data-deposit-provider]").forEach(button => button.addEventListener("click", () => {
+  const provider = button.dataset.depositProvider;
+  el("depositProvider").value = provider;
+  el("depositMethodChooser").hidden = true;
+  el("depositEntryFields").hidden = false;
+  renderPaymentInfo("depositPaymentInfo", provider);
+  setMessage("depositMsg", "");
+  el("depositEntryFields").scrollIntoView({behavior:"smooth",block:"nearest"});
+}));
+el("changeDepositMethod").addEventListener("click", () => {
+  el("depositEntryFields").hidden = true; el("depositMethodChooser").hidden = false;
+  el("depositProvider").value = ""; el("depositForm").reset(); setMessage("depositMsg", "");
+});
 el("depositForm").addEventListener("submit", submitDepositRequest);
 el("refreshDeposits").addEventListener("click", loadCustomerDeposits);
-renderPaymentInfo("depositPaymentInfo", "mastercard");
 
 const activePageStorageKey = "zenithstore:activePage:" + location.pathname;
 const activeProductCategoryStorageKey = "zenithstore:activeProductCategory:" + location.pathname;
@@ -3417,6 +3474,50 @@ html[data-theme="light"] .walletPage #depositsList .product{
 @media(prefers-reduced-motion:reduce){
   .walletDashCard{transition:none!important}
 }
+
+
+/* Deposit method selection and payment-specific presentation */
+.depositChooserTitle{margin:2px 0 12px;font-weight:800;color:var(--ink)}
+.depositMethodGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.depositMethodChoice{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:116px;padding:14px 10px!important;margin:0!important;border:1px solid #3c6388!important;border-radius:16px!important;background:linear-gradient(145deg,#17334f,#0d1d30)!important;color:#eff7ff!important;box-shadow:0 7px 18px #0002!important}
+.depositMethodChoice:active{transform:scale(.98)}
+.depositMethodIcon{display:grid;place-items:center;width:43px;height:43px;border-radius:13px;background:#244d70;color:#fff;font-size:23px}
+.depositMethodChoice strong{font-size:15px;color:inherit}.depositMethodChoice small{font-size:11px;color:#a9c5dd}
+.depositChangeMethod{width:auto!important;margin:0 0 10px!important;padding:6px 10px!important;border-radius:9px!important;background:transparent!important;border:1px solid var(--border)!important;color:var(--blue)!important;font-size:12px!important}
+.depositPaymentCard{padding:17px!important;border-radius:16px!important}
+.depositPaymentCard.isMastercard{border:1px solid #4d83ad!important;background:linear-gradient(135deg,#123c5c,#10263d 72%,#0b1b2d)!important;color:#f4f9ff!important}
+.depositPaymentCard.isAsiacell{border:1px solid #4a7895!important;background:linear-gradient(135deg,#123b42,#102b35)!important;color:#f4fbff!important}
+.depositInfoEyebrow{display:block;margin-bottom:5px;color:#8bcaff;font-size:10px;font-weight:800;letter-spacing:.5px}
+.depositInfoTitle{display:block;margin-bottom:13px;color:#f4f9ff;font-size:16px;font-weight:900}
+.depositNumberLabel{display:block;margin-bottom:5px;color:#b9d5e9;font-size:11px}
+.depositCardNumber{direction:ltr;text-align:center;letter-spacing:2px;font-size:clamp(22px,6vw,29px);font-weight:900;font-variant-numeric:tabular-nums;padding:13px 8px;border:1px solid #78b9e4;border-radius:13px;background:#061729;color:#fff;box-shadow:inset 0 1px 8px #0003}
+.depositCopyNumber{width:100%!important;margin:9px 0 0!important;padding:9px!important;border:1px solid #78b9e4!important;border-radius:10px!important;background:#ffffff12!important;color:#fff!important}
+.depositInfoNote{margin:11px 0 0;color:#d0e3f2;font-size:12px;line-height:1.8}
+.depositSupportLink{display:inline-flex;margin-top:9px;padding:8px 12px;border:1px solid #73c6d3;border-radius:10px;color:#d9fbff!important;text-decoration:none;font-size:12px;font-weight:800}
+#depositProofGroup[hidden],#depositTransactionGroup[hidden]{display:none!important}
+#depositProofGroup{padding:13px;margin-top:12px;border:1px dashed var(--blue);border-radius:13px;background:rgba(105,186,255,.06)}
+.depositTrackCard .orderTrackTitle{margin:0 0 8px;font-size:16px}
+.depositTrackCard .orderDetailsGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;border:0;padding-top:0}
+.depositTrackCard .orderDetailCell{display:block;padding:10px;border:1px solid var(--border);border-radius:11px;background:var(--page)}
+.depositTrackCard .orderDetailCell small{display:block;margin-bottom:4px}
+.depositTrackCard .orderDetailCell strong{display:block;text-align:right}
+.depositStatusApproved{color:#24b47e!important}.depositStatusRejected{color:#e05266!important}.depositStatusPending{color:#d99a35!important}
+html[data-theme="light"] .depositMethodChoice{background:linear-gradient(145deg,#f0f7fd,#e5f0f9)!important;border-color:#bfd5e7!important;color:#17334d!important;box-shadow:0 6px 16px #193b5b0d!important}
+html[data-theme="light"] .depositMethodIcon{background:#d8eafa;color:#176fae}
+html[data-theme="light"] .depositMethodChoice small{color:#60758b}
+html[data-theme="light"] .depositChangeMethod{color:#176fae!important;border-color:#cbd9e6!important}
+html[data-theme="light"] .depositTrackCard .orderDetailCell{background:#f4f7fb!important;border-color:#dce5ee!important}
+html[data-theme="light"] .depositTrackCard .orderDetailCell small{color:#5e6d80!important}
+html[data-theme="light"] .depositTrackCard .orderDetailCell strong{color:#142238}
+html[data-theme="light"] .depositTrackCard .depositStatusApproved{color:#16865f!important}
+html[data-theme="light"] .depositTrackCard .depositStatusRejected{color:#d33e55!important}
+html[data-theme="light"] .depositTrackCard .depositStatusPending{color:#a86b08!important}
+/* Preserve hero CTA text and its animated arrow in the light theme. */
+html[data-theme="light"] .homePanel .heroButton,html[data-theme="light"] .homePanel .heroButton span{color:#fff!important}
+html[data-theme="light"] .homePanel .heroButton{background:rgba(4,20,48,.94)!important;border-color:#6da9d3!important;box-shadow:0 3px 12px rgba(20,55,85,.24)!important}
+.homePanel .heroButton span{display:inline-block!important;visibility:visible!important;opacity:1!important;animation:arrowNudge 1s ease-in-out infinite!important;will-change:transform}
+.homePanel .heroButton{visibility:visible!important;opacity:1!important}
+@media(max-width:420px){.depositTrackCard .orderDetailsGrid{gap:6px}.depositTrackCard .orderDetailCell{padding:9px}.depositMethodChoice{min-height:105px}}
 
 </style>
 
