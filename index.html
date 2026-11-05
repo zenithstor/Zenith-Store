@@ -1328,9 +1328,9 @@ html[data-theme="light"] .gameCategoryGrid .gameTileName{color:#142238}
     </div>
     <div class="menuLinks" id="menuLinks">
       <button type="button" class="secondary" id="menuHome">⌂ القائمة الرئيسية</button>
-      <button type="button" class="secondary" id="menuWallet" hidden>▣ المحفظة</button>
-      <button type="button" class="secondary" id="menuCart">🛒 السلة</button>
-      <button type="button" class="secondary" id="menuMyOrders">▤ الطلبات</button>
+      <button type="button" class="secondary" id="menuWallet" hidden><span class="menuActionIcon walletSvgIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2.5"/><path d="M3 9h18M16 14h2"/><path d="M6 6V4.8A1.8 1.8 0 0 1 7.8 3H19"/></svg></span> محفظتي</button>
+      <button type="button" class="secondary" id="menuCart"><span class="menuActionIcon cartSvgIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.4L22 8H6"/><circle cx="10" cy="20" r="1.2"/><circle cx="18" cy="20" r="1.2"/></svg></span> السلة</button>
+      <button type="button" class="secondary" id="menuMyOrders"><span class="menuActionIcon receiptSvgIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><g transform="rotate(7 12 12)"><path d="M6 3.5h9l3 3V21l-2-1.2L14 21l-2-1.2L10 21l-2-1.2L6 21z"/><path d="M14.5 3.8V7h3.2M9 11h6M9 14.5h6"/></g></svg></span> الطلبات</button>
       <button type="button" class="secondary" id="menuSearch">⌕ البحث</button>
     </div>
   </nav>
@@ -1472,8 +1472,8 @@ html[data-theme="light"] .gameCategoryGrid .gameTileName{color:#142238}
       <div class="depositMethodChooser" id="depositMethodChooser">
         <p class="depositChooserTitle">اختر طريقة إضافة الرصيد للمتابعة</p>
         <div class="depositMethodGrid">
-          <button type="button" class="depositMethodChoice" data-deposit-provider="asiacell"><span class="depositMethodIcon">📱</span><strong>آسياسيل</strong><small>كارت تعبئة</small></button>
-          <button type="button" class="depositMethodChoice" data-deposit-provider="mastercard"><span class="depositMethodIcon">💳</span><strong>ماستركارد</strong><small>تحويل إلكتروني</small></button>
+          <button type="button" class="depositMethodChoice" data-deposit-provider="asiacell"><span class="depositMethodIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="6" y="2.8" width="12" height="18.4" rx="2.2"/><path d="M9 6h6M10.5 18h3"/></svg></span><strong>آسياسيل</strong><small>كارت تعبئة</small></button>
+          <button type="button" class="depositMethodChoice" data-deposit-provider="mastercard"><span class="depositMethodIcon mastercardMark" aria-hidden="true"><svg viewBox="0 0 36 24"><circle cx="14" cy="12" r="9" fill="#eb001b"/><circle cx="22" cy="12" r="9" fill="#f79e1b"/><path d="M18 5.7a9 9 0 0 1 0 12.6 9 9 0 0 1 0-12.6" fill="#ff5f00"/></svg></span><strong>ماستركارد</strong><small>تحويل إلكتروني</small></button>
         </div>
       </div>
       <form id="depositForm">
@@ -1483,10 +1483,15 @@ html[data-theme="light"] .gameCategoryGrid .gameTileName{color:#142238}
           <label for="depositAmount">المبلغ المراد إضافته (دينار عراقي)</label>
           <input id="depositAmount" type="number" min="1000" max="10000000" step="250" inputmode="numeric" placeholder="مثال: 5000" required>
           <div class="notice depositPaymentCard" id="depositPaymentInfo" aria-live="polite"></div>
+          <div id="depositAsiacellCardGroup" hidden>
+            <label for="depositAsiacellCardNumber">رقم كارت آسياسيل</label>
+            <input id="depositAsiacellCardNumber" type="text" inputmode="numeric" autocomplete="off" maxlength="24" pattern="[0-9]{10,24}" placeholder="أدخل رقم الكارت بالأرقام فقط">
+            <p class="depositAsiacellHelp">إذا كانت الإضافة تحويل من رقم الهاتف يرجى التواصل مع دعم المتجر.</p>
+          </div>
           <div id="depositProofGroup"><label for="depositProof">صورة إثبات الدفع</label><input id="depositProof" type="file" accept="image/*"><button type="button" class="filePickBtn" id="chooseDepositProof">اختيار صورة الإثبات من الجهاز</button></div>
-          
           <div class="muted">ملاحظة المتجر: تأكد من صحة المعلومات قبل إرسال الطلب.</div>
           <button type="submit" id="submitDepositBtn">إرسال طلب إضافة الرصيد</button>
+          <button type="button" id="cancelDepositModal" class="secondary depositCancelBtn">إلغاء</button>
         </div>
       </form>
       <div id="depositMsg" class="msg" aria-live="polite"></div>
@@ -1655,8 +1660,8 @@ html[data-theme="light"] .gameCategoryGrid .gameTileName{color:#142238}
 <nav class="bottomNav" aria-label="التنقل الرئيسي">
   <button type="button" id="navHome" class="active"><span>⌂</span>الرئيسية</button>
   <button type="button" id="navSearch"><span>⌕</span>البحث</button>
-  <button type="button" id="navWallet"><span>▣</span>محفظتي</button>
-  <button type="button" id="navOrders"><span>▤</span>طلباتي</button>
+  <button type="button" id="navWallet"><span class="navWalletIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2.5"/><path d="M3 9h18M16 14h2"/><path d="M6 6V4.8A1.8 1.8 0 0 1 7.8 3H19"/></svg></span>محفظتي</button>
+  <button type="button" id="navOrders"><span class="navOrdersIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><g transform="rotate(7 12 12)"><path d="M6 3.5h9l3 3V21l-2-1.2L14 21l-2-1.2L10 21l-2-1.2L6 21z"/><path d="M14.5 3.8V7h3.2M9 11h6M9 14.5h6"/></g></svg></span>طلباتي</button>
   <button type="button" id="navCart"><span class="navCartIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.4L22 8H6"/><circle cx="10" cy="20" r="1.2"/><circle cx="18" cy="20" r="1.2"/></svg></span>السلة</button>
 </nav>
 <div id="orderToast" class="toastNotice" role="status" aria-live="assertive" hidden></div>
@@ -2069,6 +2074,8 @@ function renderPaymentInfo(targetId, provider) {
     const note = document.createElement("p"); note.className = "depositInfoNote"; note.textContent = "بعد إتمام التحويل، أرفق صورة واضحة لإثبات الدفع في المكان المخصص أدناه.";
     target.append(eyebrow, title, label, number, copy, note);
     el("depositProofGroup").hidden = false; el("depositProof").required = true;
+    el("depositAsiacellCardGroup").hidden = true;
+    el("depositAsiacellCardNumber").required = false;
     const transactionGroup = el("depositTransactionGroup"); if (transactionGroup) transactionGroup.hidden = true;
   } else {
     const eyebrow = document.createElement("small"); eyebrow.className = "depositInfoEyebrow"; eyebrow.textContent = "طريقة الدفع المختارة";
@@ -2077,7 +2084,13 @@ function renderPaymentInfo(targetId, provider) {
     const support = document.createElement("a"); support.className = "depositSupportLink"; support.href = "https://t.me/zenithmlb"; support.target = "_blank"; support.rel = "noopener"; support.textContent = "التواصل مع دعم المتجر عبر تيليجرام";
     target.append(eyebrow, title, note, support);
     el("depositProofGroup").hidden = true; el("depositProof").required = false;
+    el("depositAsiacellCardGroup").hidden = false;
+    el("depositAsiacellCardNumber").required = true;
     const transactionGroup = el("depositTransactionGroup"); if (transactionGroup) transactionGroup.hidden = true;
+  }
+  if (provider === "mastercard") {
+    el("depositAsiacellCardGroup").hidden = true;
+    el("depositAsiacellCardNumber").required = false;
   }
 }
 function depositStatusLabel(status) {
@@ -2141,9 +2154,11 @@ async function submitDepositRequest(e) {
   const amount = Number(el("depositAmount").value);
   const provider = el("depositProvider").value;
   const file = el("depositProof").files[0];
+  const asiacellCardNumber = el("depositAsiacellCardNumber").value.replace(/\D/g, "");
   if (!provider) { setMessage("depositMsg", "اختر طريقة الدفع أولاً.", "error"); return; }
   if (!Number.isSafeInteger(amount) || amount < 1000 || amount > 10000000) { setMessage("depositMsg", "أدخل مبلغاً صحيحاً بين 1,000 و10,000,000 دينار.", "error"); return; }
   if (provider === "mastercard" && (!file || !file.type || !file.type.startsWith("image/"))) { setMessage("depositMsg", "ارفع صورة إثبات التحويل أولاً.", "error"); return; }
+  if (provider === "asiacell" && !/^[0-9]{10,24}$/.test(asiacellCardNumber)) { setMessage("depositMsg", "أدخل رقم كارت آسياسيل بشكل صحيح، بالأرقام فقط.", "error"); return; }
   if (file && file.size > 5 * 1024 * 1024) { setMessage("depositMsg", "حجم الصورة يجب ألا يتجاوز 5 ميغابايت.", "error"); return; }
   const btn = el("submitDepositBtn"); btn.disabled = true; btn.textContent = "جارٍ إرسال الطلب...";
   let proofPath = null;
@@ -2160,7 +2175,7 @@ async function submitDepositRequest(e) {
       amount_iqd: amount,
       payment_method: provider,
       proof_path: proofPath,
-      transaction_ref: null,
+      transaction_ref: provider === "asiacell" ? asiacellCardNumber : null,
       status: "pending"
     }).select("id").single();
     if (error) throw new Error("تم رفع الصورة لكن تعذر تسجيل طلب الإيداع في جدول deposits: " + error.message);
@@ -2169,6 +2184,8 @@ async function submitDepositRequest(e) {
     el("depositEntryFields").hidden = true;
     el("depositMethodChooser").hidden = false;
     el("depositProvider").value = "";
+    document.body.classList.remove("asiacell-deposit-open");
+    el("depositAsiacellCardGroup").hidden = true;
     await loadCustomerDeposits();
   } catch (err) {
     setMessage("depositMsg", err?.message || "حدث خطأ أثناء إرسال الطلب.", "error");
@@ -2815,11 +2832,27 @@ document.querySelectorAll("[data-deposit-provider]").forEach(button => button.ad
   el("depositEntryFields").hidden = false;
   renderPaymentInfo("depositPaymentInfo", provider);
   setMessage("depositMsg", "");
-  el("depositEntryFields").scrollIntoView({behavior:"smooth",block:"nearest"});
+  document.body.classList.toggle("asiacell-deposit-open", provider === "asiacell");
+  if (provider === "asiacell") el("depositAsiacellCardNumber").focus({preventScroll:true});
+  else el("depositEntryFields").scrollIntoView({behavior:"smooth",block:"nearest"});
 }));
 el("changeDepositMethod").addEventListener("click", () => {
+  document.body.classList.remove("asiacell-deposit-open");
   el("depositEntryFields").hidden = true; el("depositMethodChooser").hidden = false;
   el("depositProvider").value = ""; el("depositForm").reset(); setMessage("depositMsg", "");
+});
+el("cancelDepositModal").addEventListener("click", () => {
+  document.body.classList.remove("asiacell-deposit-open");
+  el("depositEntryFields").hidden = true;
+  el("depositMethodChooser").hidden = false;
+  el("depositProvider").value = "";
+  el("depositForm").reset();
+  el("depositAsiacellCardGroup").hidden = true;
+  setMessage("depositMsg", "");
+});
+el("depositAsiacellCardNumber").addEventListener("input", () => {
+  const field = el("depositAsiacellCardNumber");
+  field.value = field.value.replace(/\D/g, "").slice(0, 24);
 });
 el("depositForm").addEventListener("submit", submitDepositRequest);
 el("refreshDeposits").addEventListener("click", loadCustomerDeposits);
@@ -3698,6 +3731,91 @@ html[data-theme="light"] #menuToggle,html[data-theme="light"] .menuBtn,html[data
 html[data-theme="light"] #menuToggle span,html[data-theme="light"] .menuToggle span,html[data-theme="light"] .hamburgerButton span{background:#258bd5!important}
 html[data-theme="light"] #menuToggle svg,html[data-theme="light"] .menuToggle svg{color:#258bd5!important;stroke:#258bd5!important}
 
+</style>
+
+
+<style id="zenith-user-requested-light-and-payment-fixes">
+/* Light theme: header, footer sections and legal/contact areas remain genuinely transparent. */
+html[data-theme="light"] header,
+html[data-theme="light"] .headerTop,
+html[data-theme="light"] .storeFooter,
+html[data-theme="light"] .storeFooter .footerGroup,
+html[data-theme="light"] .storeFooter .footerLinks,
+html[data-theme="light"] .footerCopyright {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+html[data-theme="light"] header { border-color: transparent !important; }
+html[data-theme="light"] .headerTop { box-shadow: none !important; }
+html[data-theme="light"] .brandHeader,
+html[data-theme="light"] .headerActions { background: transparent !important; }
+html[data-theme="light"] .menuBtn,
+html[data-theme="light"] #menuToggle {
+  background: #edf4fa !important;
+  color: #17334d !important;
+  border: 1px solid #d4dfeb !important;
+  box-shadow: none !important;
+}
+html[data-theme="light"] .themeToggle { box-shadow: none !important; }
+html[data-theme="light"] .menuBox { box-shadow: none !important; }
+html[data-theme="light"] .storeFooter .footerGroup h3 { color: #17334d !important; }
+html[data-theme="light"] .storeFooter .footerLinks a,
+html[data-theme="light"] .storeFooter .footerLinks button { color: #63748a !important; }
+html[data-theme="light"] .storeFooter .footerLinks a:active,
+html[data-theme="light"] .storeFooter .footerLinks button:active { color: #1679c8 !important; }
+/* Header should not retain the dark strip or a drop shadow in light mode. */
+html[data-theme="light"] body > header { background: transparent !important; box-shadow: none !important; }
+/* Matching wallet, tilted receipt and cart SVGs in both navigation locations. */
+.bottomNav button .navWalletIcon svg,
+.bottomNav button .navOrdersIcon svg,
+.bottomNav button .navCartIcon svg,
+.menuActionIcon svg { width: 22px; height: 22px; display: block; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.bottomNav button .navWalletIcon,
+.bottomNav button .navOrdersIcon,
+.bottomNav button .navCartIcon { display: flex !important; align-items: center; justify-content: center; width: 100%; height: 22px; }
+.menuActionIcon { display: inline-flex; width: 23px; height: 23px; align-items: center; justify-content: center; vertical-align: middle; margin-inline-end: 7px; }
+.menuLinks button { display: flex !important; align-items: center; gap: 4px; }
+html[data-theme="light"] .bottomNav { box-shadow: none !important; }
+/* Asiacell deposit dialog with a translucent page backdrop. */
+body.asiacell-deposit-open::after {
+  content: ""; position: fixed; inset: 0; z-index: 10000;
+  background: rgba(12, 24, 40, .48); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+}
+body.asiacell-deposit-open #depositEntryFields {
+  display: block !important; position: fixed !important; z-index: 10001 !important;
+  top: 50% !important; left: 50% !important; right: auto !important;
+  transform: translate(-50%, -50%) !important;
+  width: min( calc(100vw - 28px), 430px ) !important;
+  max-height: min(82vh, 680px) !important; overflow-y: auto !important;
+  padding: 18px !important; border: 1px solid #cbd9e6 !important;
+  border-radius: 18px !important; background: rgba(255,255,255,.97) !important;
+  color: #17334d !important; box-shadow: 0 16px 50px rgba(0,0,0,.22) !important;
+}
+body.asiacell-deposit-open #depositEntryFields label { color: #17334d !important; }
+body.asiacell-deposit-open #depositEntryFields .muted { color: #60758b !important; }
+body.asiacell-deposit-open #depositEntryFields .depositPaymentCard.isAsiacell {
+  background: #edf7f8 !important; color: #17334d !important; border-color: #b9dadd !important;
+}
+body.asiacell-deposit-open #depositEntryFields .depositInfoTitle,
+body.asiacell-deposit-open #depositEntryFields .depositInfoNote { color: #17334d !important; }
+body.asiacell-deposit-open #depositEntryFields .depositInfoEyebrow { color: #167d88 !important; }
+body.asiacell-deposit-open #depositEntryFields .depositSupportLink { color: #126b78 !important; border-color: #8bbec4 !important; }
+#depositAsiacellCardGroup[hidden] { display: none !important; }
+.depositAsiacellHelp { margin: 7px 0 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
+.depositCancelBtn { margin-top: 7px !important; }
+body.asiacell-deposit-open #depositEntryFields #cancelDepositModal { background: #edf1f5 !important; color: #34495e !important; border-color: #d3dce5 !important; }
+@media (max-width: 420px) {
+  body.asiacell-deposit-open #depositEntryFields { padding: 14px !important; }
+  .bottomNav button .navWalletIcon svg, .bottomNav button .navOrdersIcon svg, .bottomNav button .navCartIcon svg { width: 21px; height: 21px; }
+}
+</style>
+
+
+<style id="zenith-payment-brand-icons">
+.depositMethodIcon svg { width:22px; height:22px; display:block; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.depositMethodIcon.mastercardMark svg { width:31px; height:22px; }
 </style>
 
 </body>
