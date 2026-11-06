@@ -1537,9 +1537,9 @@ html.zenith-restore-pending main { visibility:hidden !important; }
           </div>
           <div class="notice depositPaymentCard" id="depositPaymentInfo" aria-live="polite"></div>
           <div id="depositAsiacellCardGroup" hidden>
-            <label for="depositAsiacellCardNumber">رقم الهاتف / كارت آسياسيل</label>
-            <input id="depositAsiacellCardNumber" type="text" inputmode="numeric" autocomplete="off" maxlength="24" pattern="[0-9]{10,24}" placeholder="أدخل الرقم الذي ستحوّل منه" form="depositForm">
-            <p class="depositAsiacellHelp" id="depositAsiacellTransferNote">يجب أن يتم التحويل من نفس الرقم المدخل أعلاه.</p>
+            <label for="depositAsiacellCardNumber">ادخل رقم الكارت فقط</label>
+            <input id="depositAsiacellCardNumber" type="text" inputmode="numeric" autocomplete="off" maxlength="24" pattern="[0-9]{10,24}" placeholder="" form="depositForm">
+            <p class="depositAsiacellHelp" id="depositAsiacellTransferNote">إذا كان التحويل عن طريق رقم الهاتف يرجى التواصل مع دعم المتجر.</p>
           </div>
           <div id="depositProofGroup"><label for="depositProof">صورة إثبات الدفع</label><input id="depositProof" type="file" accept="image/*" form="depositForm"><button type="button" class="filePickBtn" id="chooseDepositProof">اختيار صورة الإثبات من الجهاز</button></div>
           <button type="submit" id="submitDepositBtn" form="depositForm">إرسال طلب إضافة الرصيد</button>
@@ -1571,29 +1571,30 @@ html.zenith-restore-pending main { visibility:hidden !important; }
       <input id="playerId" inputmode="numeric" autocomplete="off" placeholder="أدخل Player ID" required>
       <label for="zoneId">Zone ID</label>
       <input id="zoneId" inputmode="numeric" autocomplete="off" placeholder="أدخل Zone ID" required>
-      <label for="paymentMethod">طريقة الدفع</label>
-      <select id="paymentMethod" required>
-        <option value="wallet">الدفع من رصيد المحفظة</option>
-        <option value="direct">تحويل يدوي وإرفاق إثبات الدفع</option>
-      </select>
+      <input id="paymentMethod" type="hidden" value="wallet">
       <div id="walletInfo" class="notice">
-        <div>سيتم خصم سعر المنتج من رصيد محفظتك عند إرسال الطلب.</div>
-        <div class="muted">إذا كان الرصيد غير كافٍ، سيرفض النظام الطلب.</div>
+        <div>سيتم الدفع حصراً من محفظة طريقة التسعير المختارة لهذه الباقة.</div>
+        <div class="muted">تسعيرة آسياسيل تخصم من محفظة آسياسيل، وتسعيرة ماستركارد تخصم من محفظة ماستركارد.</div>
       </div>
-      <div id="directFields" hidden>
-        <div class="notice" id="directPaymentInfo"></div>
-        <label for="proofFile">صورة إثبات التحويل (مطلوبة)</label>
-        <input id="proofFile" type="file" accept="image/*">
-        <button type="button" class="filePickBtn" id="chooseOrderProof">اختيار صورة الإثبات من الجهاز</button>
-        <label for="transactionRef">رقم العملية أو ملاحظة (اختياري)</label>
-        <input id="transactionRef" type="text" maxlength="120" placeholder="رقم العملية إن وجد">
-        <div class="muted">ارفع صورة واضحة. الحد الأعلى 5 ميغابايت. سيبقى الطلب قيد المراجعة إلى أن يتحقق المسؤول من الدفع.</div>
-      </div>
-      <button type="submit" id="submitOrderBtn">إرسال الطلب</button>
+      <button type="submit" id="submitOrderBtn">إتمام الطلب</button>
       <button type="button" class="secondary" id="cancelPurchase">إلغاء</button>
     </form>
     <div id="orderMsg" class="msg" aria-live="polite"></div>
   </section>
+
+  <div id="orderConfirmOverlay" class="zenithModalOverlay" hidden aria-hidden="true">
+    <section class="zenithConfirmCard" role="dialog" aria-modal="true" aria-labelledby="orderConfirmTitle">
+      <h3 id="orderConfirmTitle">تأكيد معلومات الطلب</h3>
+      <div class="zenithConfirmRows" id="orderConfirmRows"></div>
+      <div class="zenithConfirmActions">
+        <button type="button" class="secondary" id="cancelOrderConfirm">إلغاء</button>
+        <button type="button" id="confirmOrderBtn">تأكيد</button>
+      </div>
+    </section>
+  </div>
+  <div id="orderSuccessOverlay" class="zenithSuccessOverlay" hidden aria-hidden="true">
+    <div class="zenithSuccessCheck" aria-label="تم تأكيد الطلب">✓</div>
+  </div>
 
   <section class="panel" id="adminPanel" hidden>
     <h2>لوحة إدارة الطلبات</h2>
@@ -1846,7 +1847,7 @@ function openProofPicker(inputId) {
   try { input.click(); } catch (error) { console.error("تعذر فتح اختيار الصورة", error); }
 }
 el("chooseDepositProof").addEventListener("click", () => openProofPicker("depositProof"));
-el("chooseOrderProof").addEventListener("click", () => openProofPicker("proofFile"));
+
 function setMessage(id, message, type="") {
   const node = el(id);
   node.textContent = message || "";
@@ -2116,13 +2117,12 @@ function openPurchase(product, provider, fromHistory = false) {
   if (!fromHistory) el("purchasePanel").scrollIntoView({behavior:"smooth", block:"start"});
 }
 function updatePaymentFields() {
-  const direct = el("paymentMethod").value === "direct";
-  el("directFields").hidden = !direct;
-  el("walletInfo").hidden = direct;
-  el("proofFile").required = direct;
-  if (direct) renderPaymentInfo("directPaymentInfo", selectedProvider || el("provider").value);
+  const payment = el("paymentMethod");
+  if (payment) payment.value = "wallet";
+  const walletInfo = el("walletInfo");
+  if (walletInfo) walletInfo.hidden = false;
 }
-el("paymentMethod").addEventListener("change", updatePaymentFields);
+
 el("cancelPurchase").addEventListener("click", () => {
   el("purchasePanel").hidden = true;
   el("purchaseForm").reset();
@@ -2402,8 +2402,7 @@ function explainOrderFailure(error) {
   return "لم يتم إرسال الطلب. السبب: " + (error?.message || error?.details || "حدث خطأ غير معروف، حاول مرة أخرى.");
 }
 
-el("purchaseForm").addEventListener("submit", async e => {
-  e.preventDefault();
+async function submitPurchaseOrder() {
   setMessage("orderMsg", "");
   const {data: sessionData} = await db.auth.getSession();
   const user = sessionData?.session?.user;
@@ -2502,8 +2501,87 @@ el("purchaseForm").addEventListener("submit", async e => {
     setMessage("orderMsg", explainOrderFailure(error), "error");
   } finally {
     submitBtn.disabled = false;
-    submitBtn.textContent = "إرسال الطلب";
+    submitBtn.textContent = "إتمام الطلب";
   }
+}
+
+function orderConfirmValue(label, value) {
+  const row = document.createElement("div"); row.className = "zenithConfirmRow";
+  const name = document.createElement("span"); name.textContent = label;
+  const val = document.createElement("strong"); val.textContent = String(value ?? "—");
+  row.append(name, val); return row;
+}
+function getCheckoutSummary() {
+  const playerId = el("playerId").value.trim();
+  const zoneId = el("zoneId").value.trim();
+  let total = 0;
+  let providers = [];
+  if (checkoutCartItemId === "cart") {
+    cartItems.forEach(line => {
+      const product = productsCache.find(p => String(p.id) === String(line.id));
+      if (!product) return;
+      total += Number(getPrice(product, line.provider) || 0) * Number(line.qty || 1);
+      if (!providers.includes(line.provider)) providers.push(line.provider);
+    });
+  } else if (selectedProduct && selectedProvider) {
+    total = Number(getPrice(selectedProduct, selectedProvider) || 0);
+    providers = [selectedProvider];
+  }
+  const methodNames = providers.map(provider => provider === "asiacell" ? "آسياسيل" : "MasterCard/VisaCard");
+  return {playerId, zoneId, total, method: methodNames.length > 1 ? methodNames.join(" + ") : (methodNames[0] || "—")};
+}
+function openOrderConfirmModal() {
+  const summary = getCheckoutSummary();
+  if (!summary.playerId || !summary.zoneId) {
+    setMessage("orderMsg", "أدخل Player ID وZone ID أولاً.", "error"); return false;
+  }
+  if (!summary.total || !Number.isFinite(summary.total)) {
+    setMessage("orderMsg", "تعذر حساب سعر الطلب. ارجع واختر الباقة من جديد.", "error"); return false;
+  }
+  const rows = el("orderConfirmRows"); rows.replaceChildren();
+  rows.append(
+    orderConfirmValue("Player ID", summary.playerId),
+    orderConfirmValue("Zone ID", summary.zoneId),
+    orderConfirmValue("طريقة الدفع", summary.method),
+    orderConfirmValue("إجمالي السعر", money(summary.total))
+  );
+  el("orderConfirmOverlay").hidden = false;
+  el("orderConfirmOverlay").setAttribute("aria-hidden", "false");
+  document.body.classList.add("zenith-modal-open");
+  return true;
+}
+function closeOrderConfirmModal() {
+  el("orderConfirmOverlay").hidden = true;
+  el("orderConfirmOverlay").setAttribute("aria-hidden", "true");
+  document.body.classList.remove("zenith-modal-open");
+}
+function showOrderSuccessAnimation() {
+  const overlay = el("orderSuccessOverlay");
+  overlay.hidden = false; overlay.setAttribute("aria-hidden", "false");
+  requestAnimationFrame(() => overlay.classList.add("isVisible"));
+  setTimeout(() => {
+    overlay.classList.remove("isVisible");
+    setTimeout(() => { overlay.hidden = true; overlay.setAttribute("aria-hidden", "true"); }, 420);
+  }, 2000);
+}
+el("purchaseForm").addEventListener("submit", event => {
+  event.preventDefault();
+  openOrderConfirmModal();
+});
+el("cancelOrderConfirm").addEventListener("click", closeOrderConfirmModal);
+el("orderConfirmOverlay").addEventListener("click", event => {
+  if (event.target === el("orderConfirmOverlay")) closeOrderConfirmModal();
+});
+el("confirmOrderBtn").addEventListener("click", async () => {
+  const button = el("confirmOrderBtn");
+  button.disabled = true; button.textContent = "جارٍ التأكيد...";
+  await submitPurchaseOrder();
+  const msg = el("orderMsg").textContent || "";
+  if (msg.startsWith("تم استلام طلبك")) {
+    closeOrderConfirmModal();
+    showOrderSuccessAnimation();
+  }
+  button.disabled = false; button.textContent = "تأكيد";
 });
 
 function orderStatusArabic(status) {
@@ -3372,6 +3450,9 @@ async function restoreActivePage(pageOverride = null, fromPopState = false) {
 
   if (savedPage === "home") {
     el("homePanel").hidden = false;
+    el("homePosterSlider").hidden = false;
+    const heroButton = el("openGems");
+    if (heroButton) { heroButton.hidden = false; heroButton.style.removeProperty("display"); }
     setActiveNav("navHome");
   }
   try {
@@ -4071,6 +4152,66 @@ body.asiacell-deposit-open #depositEntryFields #depositAmountGroup[hidden],
 body.asiacell-deposit-open #depositEntryFields #depositPaymentInfo[hidden],
 #depositAsiacellCardGroup[hidden] { display:none !important; }
 body.asiacell-deposit-open #depositEntryFields .depositAsiacellHelp { margin:8px 0 0 !important; font-size:12px !important; line-height:1.65 !important; color:#526b80 !important; }
+</style>
+
+
+<style id="zenith-latest-request-modal-fixes">
+/* Asiacell modal follows the selected theme and rises smoothly from below. */
+body.asiacell-deposit-open #depositEntryFields {
+  top:46% !important;
+  background:var(--surface) !important;
+  color:var(--ink) !important;
+  border-color:var(--border) !important;
+  animation:zenithAsiacellRise .42s cubic-bezier(.18,.78,.22,1) both !important;
+}
+@keyframes zenithAsiacellRise {
+  from { opacity:0; transform:translate(-50%,-40%) scale(.965); }
+  to { opacity:1; transform:translate(-50%,-50%) scale(1); }
+}
+body.asiacell-deposit-open #depositEntryFields label,
+body.asiacell-deposit-open #depositEntryFields .depositAsiacellHelp { color:var(--ink) !important; }
+body.asiacell-deposit-open #depositEntryFields input {
+  background:var(--page) !important; color:var(--ink) !important; border-color:var(--border) !important;
+}
+html[data-theme="light"] body.asiacell-deposit-open #depositEntryFields {
+  background:#fff !important; color:#142238 !important; border-color:#d4dfeb !important;
+}
+html[data-theme="dark"] body.asiacell-deposit-open #depositEntryFields {
+  background:#0c1321 !important; color:#edf4ff !important; border-color:#26364d !important;
+}
+body.asiacell-deposit-open #depositEntryFields #cancelDepositModal {
+  background:var(--page) !important; color:var(--ink) !important; border-color:var(--border) !important;
+}
+.depositAsiacellHelp { margin-top:10px !important; }
+.zenithModalOverlay,.zenithSuccessOverlay {
+  position:fixed; inset:0; z-index:2147483100; display:flex; align-items:center; justify-content:center;
+  padding:18px; background:rgba(3,8,18,.58); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+}
+.zenithConfirmCard {
+  width:min(100%,430px); max-height:85vh; overflow:auto; padding:20px; border-radius:22px;
+  background:var(--surface); color:var(--ink); border:1px solid var(--border);
+  box-shadow:0 22px 70px #0005; animation:zenithConfirmIn .32s cubic-bezier(.2,.8,.2,1) both;
+}
+.zenithConfirmCard h3 { margin:0 0 14px; text-align:center; font-size:18px; }
+.zenithConfirmRows { border:1px solid var(--border); border-radius:15px; overflow:hidden; }
+.zenithConfirmRow { display:flex; justify-content:space-between; gap:14px; align-items:center; padding:13px 12px; border-bottom:1px solid var(--border); }
+.zenithConfirmRow:last-child { border-bottom:0; }
+.zenithConfirmRow span { color:var(--muted); font-size:13px; }
+.zenithConfirmRow strong { text-align:left; font-size:14px; overflow-wrap:anywhere; }
+.zenithConfirmActions { display:flex; gap:10px; margin-top:16px; }
+.zenithConfirmActions button { flex:1; margin:0!important; }
+@keyframes zenithConfirmIn { from {opacity:0;transform:translateY(18px) scale(.97)} to {opacity:1;transform:translateY(0) scale(1)} }
+.zenithSuccessOverlay { z-index:2147483200; opacity:0; visibility:hidden; transition:opacity .38s ease,visibility .38s ease; }
+.zenithSuccessOverlay.isVisible { opacity:1; visibility:visible; }
+.zenithSuccessCheck {
+  width:104px; height:104px; display:grid; place-items:center; border-radius:50%;
+  background:#16a66a; color:#fff; font-size:62px; font-weight:900;
+  box-shadow:0 0 0 0 rgba(22,166,106,.3); transform:scale(.35); opacity:0;
+  animation:zenithCheckPop .55s cubic-bezier(.16,.9,.24,1.25) forwards;
+}
+@keyframes zenithCheckPop { 60% {transform:scale(1.12);opacity:1;box-shadow:0 0 0 22px rgba(22,166,106,.12)} 100% {transform:scale(1);opacity:1;box-shadow:0 0 0 0 rgba(22,166,106,0)} }
+body.zenith-modal-open { overflow:hidden; }
+@media(prefers-reduced-motion:reduce) { .zenithConfirmCard,.zenithSuccessCheck {animation:none!important;transform:none!important;opacity:1!important} }
 </style>
 
 </body>
