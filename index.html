@@ -1496,25 +1496,23 @@ html.zenith-restore-pending main { visibility:hidden !important; }
       <div><span class="walletEyebrow">ZENITH STORE</span><h2>المحفظة</h2><p class="muted">إدارة رصيدك وطلبات إضافة الأموال بكل سهولة.</p></div>
       <button type="button" class="secondary walletBackHome" data-back aria-label="العودة للرئيسية">⌂ الرئيسية</button>
     </div>
-    <div class="walletBalanceHero" hidden>
-      <div class="walletBalanceLabel"><span>◈</span> رصيدك الحالي</div>
-      <div class="walletBalanceValue" id="customerWalletBalance">جارٍ تحميل الرصيد...</div>
-      <button type="button" class="walletRefreshBtn" id="refreshCustomerWallet">↻ تحديث الرصيد</button>
-    </div>
-    <div class="walletDashboard" aria-label="ملخص المحفظة" hidden>
-      <article class="walletDashCard walletDashBalance">
-        <span class="walletDashIcon">◈</span>
-        <div><small>رصيد المحفظة</small><strong id="walletDashboardBalance">جارٍ التحميل...</strong></div>
+    <div class="walletCardsGrid" aria-label="أرصدة المحافظ">
+      <article class="walletBankCard walletAsiacellCard">
+        <span class="walletCardBrand">ZENITH WALLET</span>
+        <span class="walletCardChip" aria-hidden="true">▦</span>
+        <small>الرصيد المتاح</small>
+        <strong id="customerAsiacellBalance">جارٍ التحميل...</strong>
+        <span class="walletCardType">آسياسيل</span>
       </article>
-      <article class="walletDashCard">
-        <span class="walletDashIcon">＋</span>
-        <div><small>الحد الأدنى للإيداع</small><strong>1,000 د.ع</strong></div>
-      </article>
-      <article class="walletDashCard">
-        <span class="walletDashIcon">▤</span>
-        <div><small>طرق الدفع المتاحة</small><strong>طريقتان للدفع</strong></div>
+      <article class="walletBankCard walletMastercardCard">
+        <span class="walletCardBrand">ZENITH WALLET</span>
+        <span class="walletCardChip" aria-hidden="true">▦</span>
+        <small>الرصيد المتاح</small>
+        <strong id="customerMastercardBalance">جارٍ التحميل...</strong>
+        <span class="walletCardType">MasterCard</span>
       </article>
     </div>
+    <div class="walletCardsActions"><span class="muted">كل محفظة تُستخدم مع تسعيرتها فقط.</span><button type="button" class="walletRefreshBtn" id="refreshCustomerWallet">↻ تحديث الأرصدة</button></div>
     <div id="customerWalletMsg" class="msg" aria-live="polite"></div>
     <section class="notice" aria-labelledby="depositHeading">
       <h3 id="depositHeading">إضافة رصيد للمحفظة</h3>
@@ -1632,8 +1630,10 @@ html.zenith-restore-pending main { visibility:hidden !important; }
     <div id="walletManageBox" class="notice" hidden>
       <h3>الحساب المحدد</h3>
       <div id="walletUserInfo" class="muted"></div>
-      <div class="price" id="walletCurrentBalance">الرصيد: —</div>
+      <div class="walletAdminBalances"><div>آسياسيل: <strong id="walletCurrentAsiacell">—</strong></div><div>Mastercard: <strong id="walletCurrentMastercard">—</strong></div></div>
       <form id="walletAdjustForm">
+        <label for="walletProvider">المحفظة المراد تعديلها</label>
+        <select id="walletProvider" required><option value="mastercard">Mastercard</option><option value="asiacell">آسياسيل</option></select>
         <label for="walletAction">نوع العملية</label>
         <select id="walletAction" required>
           <option value="add">إضافة رصيد</option>
@@ -2272,6 +2272,7 @@ async function submitDepositRequest(e) {
     el("depositAmountGroup").hidden = false;
     el("depositAmount").required = false;
     el("depositPaymentInfo").hidden = false;
+    if (document.body.classList.contains("asiacell-deposit-open")) await closeAsiacellDepositModal(true);
     el("depositEntryFields").hidden = true;
     el("depositMethodChooser").hidden = false;
     el("depositProvider").value = "";
@@ -2303,18 +2304,24 @@ async function loadCustomerWallet() {
       return;
     }
     el("menuWallet").hidden = false;
-    el("customerWalletBalance").textContent = "جارٍ تحميل الرصيد...";
+    el("customerAsiacellBalance").textContent = "جارٍ تحميل الرصيد...";
+    el("customerMastercardBalance").textContent = "جارٍ تحميل الرصيد...";
     const {data, error} = await db.from("wallet_transactions")
-      .select("amount_iqd")
+      .select("amount_iqd,wallet_provider")
       .eq("user_id", user.id);
     if (error) {
-      el("customerWalletBalance").textContent = "تعذر تحميل الرصيد";
-      setMessage("customerWalletMsg", "تعذر قراءة رصيد المحفظة: " + error.message, "error");
+      el("customerAsiacellBalance").textContent = "تعذر تحميل الرصيد";
+      el("customerMastercardBalance").textContent = "تعذر تحميل الرصيد";
+      setMessage("customerWalletMsg", "تعذر قراءة أرصدة المحافظ: " + error.message, "error");
       return;
     }
-    const balance = (data || []).reduce((sum, row) => sum + Number(row.amount_iqd || 0), 0);
-    el("customerWalletBalance").textContent = money(balance);
-    el("walletDashboardBalance").textContent = money(balance);
+    const balances = (data || []).reduce((out, row) => {
+      const provider = row.wallet_provider === "asiacell" ? "asiacell" : "mastercard";
+      out[provider] += Number(row.amount_iqd || 0);
+      return out;
+    }, {asiacell:0, mastercard:0});
+    el("customerAsiacellBalance").textContent = money(balances.asiacell);
+    el("customerMastercardBalance").textContent = money(balances.mastercard);
     setMessage("customerWalletMsg", "تم تحديث رصيد محفظتك.", "success");
     await loadCustomerDeposits();
   } finally {
@@ -2538,6 +2545,9 @@ function openOrderConfirmModal() {
   if (!summary.total || !Number.isFinite(summary.total)) {
     setMessage("orderMsg", "تعذر حساب سعر الطلب. ارجع واختر الباقة من جديد.", "error"); return false;
   }
+  if (summary.method.includes(" + ")) {
+    setMessage("orderMsg", "لا يمكن جمع باقات بتسعيرتي آسياسيل وماستركارد في طلب واحد. أتمم كل طريقة دفع بطلب مستقل.", "error"); return false;
+  }
   const rows = el("orderConfirmRows"); rows.replaceChildren();
   rows.append(
     orderConfirmValue("Player ID", summary.playerId),
@@ -2547,13 +2557,22 @@ function openOrderConfirmModal() {
   );
   el("orderConfirmOverlay").hidden = false;
   el("orderConfirmOverlay").setAttribute("aria-hidden", "false");
+  el("orderConfirmOverlay").classList.remove("isClosing");
+  requestAnimationFrame(() => el("orderConfirmOverlay").classList.add("isVisible"));
   document.body.classList.add("zenith-modal-open");
   return true;
 }
 function closeOrderConfirmModal() {
-  el("orderConfirmOverlay").hidden = true;
-  el("orderConfirmOverlay").setAttribute("aria-hidden", "true");
+  const overlay = el("orderConfirmOverlay");
+  if (overlay.hidden) return;
+  overlay.classList.remove("isVisible");
+  overlay.classList.add("isClosing");
   document.body.classList.remove("zenith-modal-open");
+  setTimeout(() => {
+    overlay.hidden = true;
+    overlay.setAttribute("aria-hidden", "true");
+    overlay.classList.remove("isClosing");
+  }, 220);
 }
 function showOrderSuccessAnimation() {
   const overlay = el("orderSuccessOverlay");
@@ -2947,7 +2966,8 @@ el("walletSearchForm").addEventListener("submit", async e => {
     }
     selectedWalletUser = data[0];
     el("walletUserInfo").textContent = `البريد: ${selectedWalletUser.user_email || email} | اسم المستخدم: ${selectedWalletUser.username || "غير محدد"} | رقم الحساب: ${selectedWalletUser.user_id}`;
-    el("walletCurrentBalance").textContent = "الرصيد الحالي: " + money(selectedWalletUser.balance_iqd);
+    el("walletCurrentAsiacell").textContent = money(selectedWalletUser.balance_asiacell_iqd || 0);
+    el("walletCurrentMastercard").textContent = money(selectedWalletUser.balance_mastercard_iqd || 0);
     el("walletManageBox").hidden = false;
     setMessage("walletSearchMsg", "تم العثور على الحساب. تأكد من البريد قبل تنفيذ أي عملية.", "success");
   } catch (error) {
@@ -2988,14 +3008,17 @@ el("walletAdjustForm").addEventListener("submit", async e => {
     const {data, error} = await db.rpc("admin_adjust_wallet", {
       p_user_id: selectedWalletUser.user_id,
       p_amount_iqd: signedAmount,
-      p_reason: reason
+      p_reason: reason,
+      p_wallet_provider: el("walletProvider").value
     });
     if (error) throw error;
-    selectedWalletUser.balance_iqd = data;
-    el("walletCurrentBalance").textContent = "الرصيد الحالي: " + money(data);
+    if (el("walletProvider").value === "asiacell") selectedWalletUser.balance_asiacell_iqd = data;
+    else selectedWalletUser.balance_mastercard_iqd = data;
+    el("walletCurrentAsiacell").textContent = money(selectedWalletUser.balance_asiacell_iqd || 0);
+    el("walletCurrentMastercard").textContent = money(selectedWalletUser.balance_mastercard_iqd || 0);
     el("walletAmount").value = "";
     el("walletReason").value = "";
-    setMessage("walletAdjustMsg", `نجحت العملية. الرصيد الجديد: ${money(data)}. تم تسجيل العملية في سجل المحفظة.`, "success");
+    setMessage("walletAdjustMsg", `نجحت العملية. الرصيد الجديد لمحفظة ${el("walletProvider").value === "asiacell" ? "آسياسيل" : "Mastercard"}: ${money(data)}.`, "success");
   } catch (error) {
     setMessage("walletAdjustMsg", "فشلت العملية: " + (error?.message || "حدث خطأ غير معروف."), "error");
   } finally {
@@ -3006,9 +3029,25 @@ el("walletAdjustForm").addEventListener("submit", async e => {
 const depositEntryFields = el("depositEntryFields");
 const depositEntryPlaceholder = el("depositEntryPlaceholder");
 let depositModalBackdrop = null;
-function closeAsiacellDepositModal() {
+function closeAsiacellDepositModal(animate = false) {
+  if (!document.body.classList.contains("asiacell-deposit-open")) {
+    if (depositModalBackdrop) { depositModalBackdrop.remove(); depositModalBackdrop = null; }
+    return Promise.resolve();
+  }
+  if (animate && !depositEntryFields.hidden) {
+    depositEntryFields.classList.add("isClosing");
+    if (depositModalBackdrop) depositModalBackdrop.classList.add("isClosing");
+    return new Promise(resolve => setTimeout(() => {
+      document.body.classList.remove("asiacell-deposit-open");
+      depositEntryFields.classList.remove("isClosing");
+      if (depositModalBackdrop) { depositModalBackdrop.remove(); depositModalBackdrop = null; }
+      resolve();
+    }, 220));
+  }
   document.body.classList.remove("asiacell-deposit-open");
+  depositEntryFields.classList.remove("isClosing");
   if (depositModalBackdrop) { depositModalBackdrop.remove(); depositModalBackdrop = null; }
+  return Promise.resolve();
 }
 function restoreDepositEntryFields() {
   closeAsiacellDepositModal();
@@ -3031,13 +3070,17 @@ document.querySelectorAll("[data-deposit-provider]").forEach(button => button.ad
     document.body.appendChild(depositModalBackdrop);
     document.body.appendChild(depositEntryFields);
     document.body.classList.add("asiacell-deposit-open");
-    requestAnimationFrame(() => el("depositAsiacellCardNumber").focus({preventScroll:true}));
+    requestAnimationFrame(() => {
+      if (depositModalBackdrop) depositModalBackdrop.classList.add("isVisible");
+      el("depositAsiacellCardNumber").focus({preventScroll:true});
+    });
   } else {
     restoreDepositEntryFields();
     depositEntryFields.scrollIntoView({behavior:"smooth",block:"nearest"});
   }
 }));
-el("cancelDepositModal").addEventListener("click", () => {
+el("cancelDepositModal").addEventListener("click", async () => {
+  if (document.body.classList.contains("asiacell-deposit-open")) await closeAsiacellDepositModal(true);
   restoreDepositEntryFields();
   depositEntryFields.hidden = true;
   el("depositMethodChooser").hidden = false;
@@ -3504,6 +3547,7 @@ function installZenithBackNavigation() {
       return;
     }
     if (document.body.classList.contains("asiacell-deposit-open")) {
+      await closeAsiacellDepositModal(true);
       restoreDepositEntryFields();
       depositEntryFields.hidden = true;
       el("depositMethodChooser").hidden = false;
@@ -4212,6 +4256,43 @@ body.asiacell-deposit-open #depositEntryFields #cancelDepositModal {
 @keyframes zenithCheckPop { 60% {transform:scale(1.12);opacity:1;box-shadow:0 0 0 22px rgba(22,166,106,.12)} 100% {transform:scale(1);opacity:1;box-shadow:0 0 0 0 rgba(22,166,106,0)} }
 body.zenith-modal-open { overflow:hidden; }
 @media(prefers-reduced-motion:reduce) { .zenithConfirmCard,.zenithSuccessCheck {animation:none!important;transform:none!important;opacity:1!important} }
+</style>
+
+
+<style id="zenith-wallet-split-and-motion-final">
+.walletCardsGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin:18px 0 10px}
+.walletBankCard{position:relative;min-height:164px;overflow:hidden;border-radius:19px;padding:17px 16px 13px;display:flex;flex-direction:column;gap:7px;color:#fff!important;box-shadow:0 12px 28px #0002;border:1px solid #ffffff30}
+.walletBankCard:before{content:"";position:absolute;width:170px;height:170px;border:1px solid #ffffff25;border-radius:50%;inset:auto -55px -95px auto;pointer-events:none}
+.walletAsiacellCard{background:linear-gradient(135deg,#087d83,#064d66)!important}
+.walletMastercardCard{background:linear-gradient(135deg,#243b62,#101a32)!important}
+.walletCardBrand{font-size:10px;letter-spacing:2px;font-weight:900;opacity:.86}
+.walletCardChip{position:absolute;top:14px;left:15px;font-size:22px;opacity:.9}
+.walletBankCard small{font-size:11px;color:#ffffffc9!important;margin-top:12px}
+.walletBankCard strong{font-size:clamp(17px,4.5vw,23px);font-weight:900;direction:rtl;overflow-wrap:anywhere;color:#fff!important}
+.walletCardType{font-size:11px;font-weight:800;letter-spacing:.7px;margin-top:auto;color:#ffffffd9!important}
+.walletCardsActions{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.walletCardsActions .walletRefreshBtn{width:auto!important;margin:0!important}
+.walletAdminBalances{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0;padding:12px;border:1px solid var(--border);border-radius:12px}
+.walletAdminBalances>div{display:grid;gap:5px;font-size:12px;color:var(--muted)}
+.walletAdminBalances strong{font-size:15px;color:var(--ink)}
+@media(max-width:430px){.walletCardsGrid{grid-template-columns:1fr}.walletBankCard{min-height:145px}.walletAdminBalances{grid-template-columns:1fr}}
+.depositModalBackdrop{opacity:0;transition:opacity .22s ease}
+.depositModalBackdrop.isVisible{opacity:1}
+.depositModalBackdrop.isClosing{opacity:0}
+body.asiacell-deposit-open #depositEntryFields{top:45%!important;animation:zenithAsiacellRiseFinal .42s cubic-bezier(.18,.78,.22,1) both!important}
+body.asiacell-deposit-open #depositEntryFields.isClosing{animation:zenithAsiacellDropFinal .22s ease-in both!important}
+@keyframes zenithAsiacellRiseFinal{from{opacity:0;transform:translate(-50%,-34%) scale(.96)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@keyframes zenithAsiacellDropFinal{from{opacity:1;transform:translate(-50%,-50%) scale(1)}to{opacity:0;transform:translate(-50%,-34%) scale(.97)}}
+.zenithModalOverlay{opacity:0;visibility:hidden;transition:opacity .24s ease,visibility .24s ease}
+.zenithModalOverlay.isVisible{opacity:1;visibility:visible}
+.zenithModalOverlay.isClosing{opacity:0;visibility:visible}
+.zenithConfirmCard{animation:zenithConfirmRiseFinal .42s cubic-bezier(.18,.78,.22,1) both}
+@keyframes zenithConfirmRiseFinal{from{opacity:0;transform:translateY(35px) scale(.94)}to{opacity:1;transform:translateY(0) scale(1)}}
+.zenithModalOverlay.isClosing .zenithConfirmCard{animation:zenithConfirmExitFinal .22s ease-in both}
+@keyframes zenithConfirmExitFinal{to{opacity:0;transform:translateY(18px) scale(.97)}}
+html[data-theme="light"] body.asiacell-deposit-open #depositEntryFields{background:#fff!important;color:#142238!important;border-color:#d4dfeb!important}
+html[data-theme="dark"] body.asiacell-deposit-open #depositEntryFields{background:#0c1321!important;color:#edf4ff!important;border-color:#26364d!important}
+@media(prefers-reduced-motion:reduce){body.asiacell-deposit-open #depositEntryFields,.zenithConfirmCard{animation:none!important}}
 </style>
 
 </body>
