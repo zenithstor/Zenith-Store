@@ -1753,6 +1753,7 @@ let checkoutCartItemId = null;
 let selectedProduct = null;
 let selectedProvider = null;
 let adminLoadInProgress = false;
+let adminLoadQueued = false;
 let myOrdersLoadInProgress = false;
 let myOrdersStatusSnapshot = "";
 let knownOrderIds = null;
@@ -2765,22 +2766,45 @@ async function checkForNewAdminOrders() {
 }
 
 async function loadAdminOrders() {
-  if (adminLoadInProgress) return;
+  // If login/session restoration triggers another check while one is running,
+  // queue it instead of silently discarding the newer authenticated check.
+  if (adminLoadInProgress) {
+    adminLoadQueued = true;
+    return;
+  }
   adminLoadInProgress = true;
   try {
     const {data: authData, error: authError} = await db.auth.getUser();
     const user = authData?.user;
-    if (authError || !user) {
-      el("adminPanel").hidden = true;
-      applyRoleUI(false);
+
+    // A temporary Auth transport error is not proof that the user is a customer.
+    // Keep the last confirmed role and panel state until a real result is available.
+    if (authError) {
+      console.error("Admin auth verification failed:", authError);
+      setMessage("authMsg", "تعذر التحقق من جلسة الأدمن مؤقتاً. أعد المحاولة بعد لحظات.", "error");
       return;
     }
-    const {data: isAdmin, error: adminError} = await db.rpc("is_admin");
-    if (adminError || isAdmin !== true) {
+    if (!user) {
       el("adminPanel").hidden = true;
       selectedWalletUser = null;
       el("walletManageBox").hidden = true;
       applyRoleUI(false);
+      return;
+    }
+
+    const {data: isAdmin, error: adminError} = await db.rpc("is_admin");
+    // A failed permission request is different from an explicit non-admin result.
+    if (adminError) {
+      console.error("Admin permission check failed:", adminError);
+      setMessage("authMsg", "تم تسجيل الدخول، لكن تعذر التحقق من صلاحية الأدمن من قاعدة البيانات: " + adminError.message, "error");
+      return;
+    }
+    if (isAdmin !== true) {
+      el("adminPanel").hidden = true;
+      selectedWalletUser = null;
+      el("walletManageBox").hidden = true;
+      applyRoleUI(false);
+      setMessage("authMsg", "تم تسجيل الدخول، لكن هذا الحساب لا يملك صلاحية الأدمن حسب إعدادات Supabase.", "error");
       return;
     }
 
@@ -2897,6 +2921,14 @@ async function loadAdminOrders() {
     }
   } finally {
     adminLoadInProgress = false;
+    // Re-run the latest requested check after the current one finishes.
+    if (adminLoadQueued) {
+      adminLoadQueued = false;
+      window.setTimeout(async () => {
+        await loadAdminOrders();
+        if (currentUserIsAdmin) await loadAdminDeposits();
+      }, 0);
+    }
   }
 }
 
