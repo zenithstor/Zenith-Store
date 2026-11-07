@@ -1423,7 +1423,7 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
       <img class="heroPoster posterSlide" src="images/second-poster.png" alt="إعلان متجر زينيث">
       <img class="heroPoster posterSlide" src="main-poster.png" alt="إعلان متجر زينيث لشحن الجواهر في موبايل ليجندز">
       <div class="heroCopy">
-        <button type="button" id="openGems" class="heroButton" hidden>تصفح الباقات <span>←</span></button>
+        <button type="button" id="openGems" class="heroButton">تصفح الباقات <span>←</span></button>
       </div>
     </div>
     <div class="posterDots" id="homePosterDots" aria-label="التنقل بين الإعلانات">
@@ -1441,7 +1441,7 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
           <span class="gameTileName">Mobile Legends<small class="gameMainSubtitle">تصفح أفضل العروض والباقات</small></span>
         </button>
         <div class="mlbbSubcategories" id="mlbbSubcategories" hidden>
-          <button type="button" class="homeCategory activeCategory" id="gemsCategory"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>شحن الجواهر</strong><small>باقات الجواهر</small></span><span class="categoryArrow">←</span></button>
+          <button type="button" class="homeCategory activeCategory diamondsFullCategory fanFrameHomeCategory" id="gemsCategory"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>شحن الجواهر</strong><small>باقات الجواهر</small></span><span class="categoryArrow">←</span></button>
           <button type="button" class="homeCategory membershipPlaceholder" id="membershipPlaceholder"><img class="mlbbCategoryImage" src="images/memberships.png" alt="العضويات"><span class="categoryText"><strong>العضوية المميزة</strong><small>العضويات والباقات</small></span><span class="categoryArrow">←</span></button>
           <button type="button" class="homeCategory membershipPlaceholder fanFrameHomeCategory" id="fanFrameCategory" aria-label="إطار كبير المعجبين"><img class="fanFrameHomeImage" src="https://zenithstor.github.io/Zenith-Store/images/big-fans-banner.png" alt="إطار كبير المعجبين"><span class="categoryText"><strong>إطار كبير المعجبين</strong><small>إطار مميز</small></span><span class="categoryArrow">←</span></button>
           <button type="button" class="homeCategory membershipPlaceholder" id="verifiedSquadCategory"><span class="categoryText"><strong>فرقة موثقة</strong><small>قريباً</small></span><span class="categoryArrow">←</span></button>
@@ -1484,7 +1484,7 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
     </div>
     <p class="muted">اختر القسم الذي تريد تصفحه</p>
     <div class="mlbbPageGrid">
-      <button type="button" class="homeCategory" id="mlbbPageGems"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>شحن الجواهر</strong><small>باقات الجواهر</small></span><span class="categoryArrow">←</span></button>
+      <button type="button" class="homeCategory diamondsFullCategory fanFrameHomeCategory" id="mlbbPageGems"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>شحن الجواهر</strong><small>باقات الجواهر</small></span><span class="categoryArrow">←</span></button>
       <button type="button" class="homeCategory" id="mlbbPageMembership"><img class="mlbbCategoryImage" src="images/memberships.png" alt="العضويات"><span class="categoryText"><strong>العضوية المميزة</strong><small>العضويات والباقات</small></span><span class="categoryArrow">←</span></button>
       <button type="button" class="homeCategory fanFrameHomeCategory" id="mlbbPageFanFrame"><img class="fanFrameHomeImage" src="https://zenithstor.github.io/Zenith-Store/images/big-fans-banner.png" alt="إطار كبير المعجبين"><span class="categoryText"><strong>إطار كبير المعجبين</strong><small>إطار مميز</small></span><span class="categoryArrow">←</span></button>
       <button type="button" class="homeCategory" id="mlbbPageVerified"><span class="categoryText"><strong>فرقة موثقة</strong><small>قريباً</small></span><span class="categoryArrow">←</span></button>
@@ -2093,6 +2093,7 @@ window.addEventListener("scroll", () => {
 function renderProducts() {
   renderCart();
   const box = el("products");
+  if (box) box.classList.toggle("gem-products", activeProductCategory === "gems");
   const provider = el("provider").value;
   const continueBtn = el("continueOrderBtn");
   box.replaceChildren();
@@ -2115,6 +2116,7 @@ function renderProducts() {
     const price = getPrice(p, provider);
     const card = document.createElement("article");
     card.className = "product";
+    if (activeProductCategory === "gems") card.classList.add("gem-product-card");
     if (activeProductCategory === "fanframe") card.classList.add("fanframe-large-card");
     if (activeProductCategory === "twilight") card.classList.add("twilight-large-card");
     card.tabIndex = 0;
@@ -3768,7 +3770,7 @@ async function restoreActivePage(pageOverride = null, fromPopState = false) {
     el("homePanel").hidden = false;
     el("homePosterSlider").hidden = false;
     const heroButton = el("openGems");
-    if (heroButton) { heroButton.hidden = true; heroButton.style.removeProperty("display"); }
+    if (heroButton) { heroButton.hidden = false; heroButton.style.removeProperty("display"); }
     setActiveNav("navHome");
   }
   try {
@@ -4657,7 +4659,6 @@ body.mastercard-deposit-open #depositEntryFields #cancelDepositModal{background:
   height:calc(100% - 28px)!important;
 }
 </style>
-\n
 
 <style id="zenith-faq-animated-toggle-and-weekly-discount">
 /* FAQ answers stay hidden until their question is tapped. */
@@ -4823,5 +4824,147 @@ document.addEventListener("transitionend", function(event){
   html[data-theme="light"] .faqAnswer p{background:transparent!important;background-color:transparent!important;background-image:none!important;box-shadow:none!important}
 </style>
 
+
+<style id="zenith-user-final-adjustments-2026-11-07">
+  /* Restore the hero action in normal home and after session/page restoration. */
+  #homePanel #openGems { display:flex!important; visibility:visible!important; opacity:1!important; pointer-events:auto!important; }
+
+  /* Diamonds artwork fills the same complete tile footprint as the fan-frame artwork. */
+  .diamondsFullCategory {
+    position:relative!important; overflow:hidden!important; isolation:isolate!important;
+    padding:0!important; background:#171d32!important;
+  }
+  .diamondsFullCategory .mlbbCategoryImage {
+    position:absolute!important; inset:0!important; display:block!important;
+    width:100%!important; height:100%!important; min-width:100%!important;
+    max-width:none!important; max-height:none!important; flex:none!important;
+    margin:0!important; padding:0!important; object-fit:cover!important;
+    object-position:center center!important; border-radius:inherit!important;
+    z-index:0!important; pointer-events:none!important;
+  }
+  .diamondsFullCategory::after {
+    content:""; position:absolute; inset:0; z-index:1; pointer-events:none;
+    background:linear-gradient(90deg,rgba(7,13,25,.12),rgba(7,13,25,.68))!important;
+  }
+  .diamondsFullCategory .categoryText,
+  .diamondsFullCategory .categoryArrow { position:relative!important; z-index:2!important; }
+
+  /* FAQ is typography and dividers only: let the site's own background show through. */
+  #faqSection, #faqSection * {
+    background:transparent!important; background-color:transparent!important;
+    background-image:none!important; box-shadow:none!important;
+  }
+  #faqSection {
+    border:0!important; border-radius:0!important;
+  }
+  #faqSection .faqItem {
+    border:0!important; border-bottom:1px solid rgba(130,155,185,.32)!important;
+    border-radius:0!important;
+  }
+  #faqSection .faqQuestion {
+    border:0!important; border-radius:0!important; padding-left:2px!important;
+    padding-right:2px!important; color:var(--ink)!important;
+  }
+  #faqSection .faqQuestion span:first-child,
+  #faqSection h2 { color:var(--ink)!important; }
+  #faqSection .faqAnswer p,
+  #faqSection .faqSubtitle { color:var(--muted)!important; }
+  #faqSection .faqToggleIcon { border:0!important; border-radius:0!important; }
+</style>
+
+
+<style id="zenith-gem-layout-final-fix">
+/* Lock both gem and Big Fan category tiles to the same physical box size.
+   The artwork is absolutely positioned and cannot change the tile dimensions. */
+#mlbbSubcategories #gemsCategory,
+#mlbbSubcategories #fanFrameCategory,
+#mlbbPageGems,
+#mlbbPageFanFrame {
+  box-sizing:border-box!important;
+  width:100%!important;
+  height:82px!important;
+  min-height:82px!important;
+  max-height:82px!important;
+  padding:0!important;
+  position:relative!important;
+  overflow:hidden!important;
+  flex:none!important;
+}
+#mlbbSubcategories #gemsCategory .mlbbCategoryImage,
+#mlbbPageGems .mlbbCategoryImage,
+#mlbbSubcategories #fanFrameCategory .fanFrameHomeImage,
+#mlbbPageFanFrame .fanFrameHomeImage {
+  position:absolute!important;
+  inset:0!important;
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:none!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:0!important;
+  flex:none!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  pointer-events:none!important;
+}
+/* The four gem product cards are explicitly tagged by renderProducts().
+   This selector remains active even when a card is selected. */
+html[data-theme="light"] #products .product.gem-product-card,
+html[data-theme="light"] #products .product.gem-product-card.selected {
+  background:#fff!important;
+  background-color:#fff!important;
+  background-image:none!important;
+  color:#142238!important;
+  border:1px solid #cbdbea!important;
+  box-shadow:0 3px 12px rgba(25,59,91,.08)!important;
+  animation:none!important;
+}
+html[data-theme="light"] #products .product.gem-product-card.selected {
+  border:1.5px solid #f04470!important;
+  box-shadow:0 0 0 1px rgba(240,68,112,.12)!important;
+}
+html[data-theme="light"] #products .product.gem-product-card::before,
+html[data-theme="light"] #products .product.gem-product-card::after {
+  content:none!important;
+  display:none!important;
+  background:none!important;
+  box-shadow:none!important;
+  animation:none!important;
+}
+html[data-theme="light"] #products .product.gem-product-card h3,
+html[data-theme="light"] #products .product.gem-product-card .muted {
+  color:#142238!important;
+  text-shadow:none!important;
+}
+html[data-theme="light"] #products .product.gem-product-card .price {
+  background:#eaf4fc!important;
+  background-color:#eaf4fc!important;
+  background-image:none!important;
+  border-color:#c9dff0!important;
+  color:#1268aa!important;
+  box-shadow:none!important;
+}
+</style>
+
+
+<style id="zenith-light-gem-tabs-fix">
+/* In the light theme, all four package-category tabs use white cards. */
+html[data-theme="light"] #products .productCategoryTabs .productCategoryTab,
+html[data-theme="light"] #products .productCategoryTabs .productCategoryTab.active {
+  background:#fff!important;
+  background-color:#fff!important;
+  background-image:none!important;
+  color:#142238!important;
+  border:1px solid #cbdbea!important;
+  box-shadow:0 2px 9px rgba(25,59,91,.07)!important;
+}
+html[data-theme="light"] #products .productCategoryTabs .productCategoryTab.active {
+  border:1.5px solid #e85ca8!important;
+  box-shadow:0 0 0 1px rgba(232,92,168,.12)!important;
+}
+</style>
 </body>
 </html>
