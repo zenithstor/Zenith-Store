@@ -856,9 +856,9 @@ button,.filePickBtn{min-height:44px;touch-action:manipulation}
 .orderStep small{grid-column:2;grid-row:1;display:block;font-size:15px;font-weight:800;color:var(--ink)}
 .orderStep.isDone .stepMark{background:var(--blue-light);border-color:var(--blue);color:var(--blue);animation:orderCheck .4s ease both}
 .orderStep.isCurrent .stepMark{border-color:var(--blue);color:var(--blue);animation:hourglassPulse 1.5s ease-in-out infinite}
-.orderTimeline.isRejected .orderStep:first-child .stepMark{background:#dc445b;border-color:#dc445b;color:#fff;animation:orderCheck .4s ease both}
-.orderTimeline.isRejected .orderStep:first-child small{color:#dc445b}
-.orderTimeline.isRejected .orderStep:first-child::after{background:#dc445b}
+.orderTimeline.isRejected .orderStep:nth-child(2) .stepMark{background:#dc445b;border-color:#dc445b;color:#fff;animation:orderCheck .4s ease both}
+.orderTimeline.isRejected .orderStep:nth-child(2) small{color:#dc445b}
+.orderTimeline.isRejected .orderStep:nth-child(2)::after{background:var(--border)!important;transform:scaleY(.08)!important}
 .orderStep.isWaiting .stepMark{color:var(--muted)}
 .orderDetailsGrid{display:grid;grid-template-columns:minmax(0,1fr);gap:0;border-top:1px solid var(--border);padding-top:10px}.orderDetailCell{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 4px;border:0;border-bottom:1px solid var(--border);border-radius:0;background:transparent}.orderDetailCell small{flex:0 0 auto;margin:0;font-size:13px}.orderDetailCell strong{text-align:left;font-size:14px}
 .orderDetailCell{min-width:0;padding:10px;border:1px solid var(--border);border-radius:11px;background:var(--page)}
@@ -914,7 +914,7 @@ html[data-theme="light"] .homePanel .heroCopy{color:#142238!important}
 .orderStep:not(:last-child)::after{right:28px;top:62px;height:calc(100% - 24px);width:3px;transform:scaleY(.04)}
 .orderStep.isDone .stepMark{background:#292044;border-color:#7959b2;color:#b69aff}
 .orderStep.isCurrent .stepMark{background:#292044;color:#b69aff}
-.orderTimeline.isRejected .orderStep:first-child .stepMark{background:#d83e59;border-color:#d83e59;color:#fff}
+.orderTimeline.isRejected .orderStep:nth-child(2) .stepMark{background:#d83e59;border-color:#d83e59;color:#fff}
 .orderDetailsGrid{display:grid;grid-template-columns:1fr;gap:0;border-top:1px solid var(--border);padding-top:10px}
 .orderDetailCell{display:flex;justify-content:space-between;align-items:center;padding:12px 4px;border:0;border-bottom:1px solid var(--border);border-radius:0;background:transparent}
 .orderDetailCell small{font-size:14px;color:var(--muted);margin:0}.orderDetailCell strong{font-size:15px;text-align:left}
@@ -1618,6 +1618,10 @@ html.zenith-restore-pending main { visibility:hidden !important; }
     <div id="adminOrders"></div>
     <h3>طلبات تم قبولها وبانتظار إكمال الشحن</h3>
     <div id="adminProcessingOrders"></div>
+    <details class="adminArchive" style="margin-top:18px">
+      <summary>أرشيف طلبات الشحن (المكتملة والمرفوضة)</summary>
+      <div id="adminArchivedOrders"></div>
+    </details>
 
     <hr style="border:0;border-top:1px solid #304562;margin:22px 0">
     <h2>طلبات إضافة رصيد المحفظة</h2>
@@ -1625,6 +1629,10 @@ html.zenith-restore-pending main { visibility:hidden !important; }
     <button type="button" class="secondary" id="refreshAdminDeposits">تحديث طلبات الإيداع</button>
     <div id="adminDepositsMsg" class="msg" aria-live="polite"></div>
     <div id="adminDepositsList"></div>
+    <details class="adminArchive" style="margin-top:18px">
+      <summary>أرشيف طلبات الإيداع (المقبولة والمرفوضة)</summary>
+      <div id="adminArchivedDeposits"></div>
+    </details>
 
     <hr style="border:0;border-top:1px solid #304562;margin:22px 0">
     <h2>إدارة أرصدة المحافظ</h2>
@@ -1762,6 +1770,7 @@ let selectedProduct = null;
 let selectedProvider = null;
 let adminLoadInProgress = false;
 let adminLoadQueued = false;
+let adminDepositsLoadInProgress = false;
 let myOrdersLoadInProgress = false;
 let myOrdersStatusSnapshot = "";
 let knownOrderIds = null;
@@ -1788,9 +1797,12 @@ function applyRoleUI(isAdmin) {
     el("adminPanel").hidden = true;
     if (bottomNav) bottomNav.hidden = false;
   }
-  el("menuWallet").hidden = currentUserIsAdmin;
-  el("menuProducts").hidden = currentUserIsAdmin;
-  el("menuMyOrders").hidden = currentUserIsAdmin;
+  // Some navigation entries are optional in this layout (menuProducts is not
+  // rendered as a standalone button). Never dereference a missing element.
+  ["menuWallet", "menuProducts", "menuMyOrders"].forEach(id => {
+    const node = el(id);
+    if (node) node.hidden = currentUserIsAdmin;
+  });
 }
 
 const money = n => Number(n).toLocaleString("en-US") + " د.ع";
@@ -2220,10 +2232,10 @@ async function loadCustomerDeposits() {
     const stage = status === "completed" ? 3 : approved ? 2 : 1;
     const timeline = document.createElement("div"); timeline.className = "orderTimeline" + (rejected ? " isRejected" : "");
     [["إرسال الطلب","تم استلام طلب الإضافة"],["مراجعة الإدارة","التحقق من عملية الدفع"],["إضافة الرصيد","إيداع المبلغ في المحفظة"]].forEach(([label,hint],i) => {
-      const item = document.createElement("div"), done = i === 0 || (!rejected && (i < stage || approved)), current = !rejected && i === stage && status !== "completed";
-      item.className = "orderStep" + (done ? " isDone" : "") + (current ? " isCurrent" : "") + (!done && !current && !(rejected && i === 0) ? " isWaiting" : "");
+      const item = document.createElement("div"), done = rejected ? i === 0 : (i === 0 || i < stage || approved), current = !rejected && i === stage && status !== "completed";
+      item.className = "orderStep" + (done ? " isDone" : "") + (current ? " isCurrent" : "") + (!done && !current && !(rejected && i === 1) ? " isWaiting" : "");
       const mark = document.createElement("span"); mark.className = "stepMark";
-      if (rejected && i === 0) mark.textContent = "×";
+      if (rejected && i === 1) mark.textContent = "×";
       else if (done) mark.textContent = "✓";
       else mark.innerHTML = '<svg class="stepHourglass" viewBox="0 0 24 24" aria-label="قيد الانتظار"><path d="M6 3h12M6 21h12M7 3c0 4 2 6 5 9-3 3-5 5-5 9m10-18c0 4-2 6-5 9 3 3 5 5 5 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 6h6l-3 4-3-4Zm0 12h6l-3-4-3 4Z" fill="currentColor" opacity=".65"/></svg>';
       const small = document.createElement("small"); small.textContent = label;
@@ -2303,7 +2315,7 @@ async function loadCustomerWallet() {
   if (customerWalletLoadBusy) return;
   customerWalletLoadBusy = true;
   try {
-    const {data: authData, error: authError} = await db.auth.getUser();
+    const {data: authData, error: authError} = await withAdminTimeout(db.auth.getUser(), "التحقق من جلسة المستخدم");
     const user = authData?.user;
     if (authError || !user) {
       el("customerWalletPanel").hidden = true;
@@ -2708,11 +2720,11 @@ async function loadMyOrders() {
       ];
       steps.forEach(([label, hint], i) => {
         const item = document.createElement("div");
-        const done = !rejected && (rawStatus === "completed" || i < stage || (i === 0 && paymentConfirmed));
+        const done = rejected ? i === 0 : (rawStatus === "completed" || i < stage || (i === 0 && paymentConfirmed));
         const current = !rejected && i === stage && rawStatus !== "completed";
-        item.className = "orderStep" + (done ? " isDone" : "") + (current ? " isCurrent" : "") + (!done && !current && !(rejected && i === 0) ? " isWaiting" : "");
+        item.className = "orderStep" + (done ? " isDone" : "") + (current ? " isCurrent" : "") + (!done && !current && !(rejected && i === 1) ? " isWaiting" : "");
         const mark = document.createElement("span"); mark.className = "stepMark";
-        if (rejected && i === 0) mark.textContent = "×";
+        if (rejected && i === 1) mark.textContent = "×";
         else if (done) mark.textContent = "✓";
         else mark.innerHTML = '<svg class="stepHourglass" viewBox="0 0 24 24" aria-label="قيد الانتظار"><path d="M6 3h12M6 21h12M7 3c0 4 2 6 5 9-3 3-5 5-5 9m10-18c0 4-2 6-5 9 3 3 5 5 5 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 6h6l-3 4-3-4Zm0 12h6l-3-4-3 4Z" fill="currentColor" opacity=".65"/></svg>';
         const textLabel = document.createElement("small"); textLabel.textContent = label;
@@ -2799,292 +2811,149 @@ async function checkForNewAdminOrders() {
   }
 }
 
+// Prevent admin dashboard requests from leaving the interface stuck forever.
+function withAdminTimeout(promise, label, timeoutMs = 15000) {
+  let timer;
+  return Promise.race([
+    Promise.resolve(promise),
+    new Promise((_, reject) => { timer = window.setTimeout(() => reject(new Error(`انتهت مهلة الاتصال أثناء ${label}. تحقق من الإنترنت ثم أعد المحاولة.`)), timeoutMs); })
+  ]).finally(() => window.clearTimeout(timer));
+}
+
 async function loadAdminOrders() {
-  // If login/session restoration triggers another check while one is running,
-  // queue it instead of silently discarding the newer authenticated check.
-  if (adminLoadInProgress) {
-    adminLoadQueued = true;
-    return;
-  }
+  if (adminLoadInProgress) { adminLoadQueued = true; setMessage("adminMsg", "التحديث السابق ما زال جارياً؛ سيتم تنفيذ تحديث آخر بعد انتهائه."); return; }
   adminLoadInProgress = true;
   try {
-    const {data: authData, error: authError} = await db.auth.getUser();
+    const {data: authData, error: authError} = await withAdminTimeout(db.auth.getUser(), "التحقق من جلسة الأدمن");
     const user = authData?.user;
-
-    // A temporary Auth transport error is not proof that the user is a customer.
-    // Keep the last confirmed role and panel state until a real result is available.
-    if (authError) {
-      console.error("Admin auth verification failed:", authError);
-      setMessage("authMsg", "تعذر التحقق من جلسة الأدمن مؤقتاً. أعد المحاولة بعد لحظات.", "error");
-      return;
-    }
-    if (!user) {
-      el("adminPanel").hidden = true;
-      selectedWalletUser = null;
-      el("walletManageBox").hidden = true;
-      applyRoleUI(false);
-      return;
-    }
-
-    const {data: isAdmin, error: adminError} = await db.rpc("is_admin");
-    // A failed permission request is different from an explicit non-admin result.
-    if (adminError) {
-      console.error("Admin permission check failed:", adminError);
-      setMessage("authMsg", "تم تسجيل الدخول، لكن تعذر التحقق من صلاحية الأدمن من قاعدة البيانات: " + adminError.message, "error");
-      return;
-    }
-    if (isAdmin !== true) {
-      el("adminPanel").hidden = true;
-      selectedWalletUser = null;
-      el("walletManageBox").hidden = true;
-      applyRoleUI(false);
-      setMessage("authMsg", "تم تسجيل الدخول، لكن هذا الحساب لا يملك صلاحية الأدمن حسب إعدادات Supabase.", "error");
-      return;
-    }
-
-    applyRoleUI(true);
-    el("adminPanel").hidden = false;
-    setMessage("adminMsg", "جارٍ تحميل الطلبات...");
-    el("adminOrders").replaceChildren();
-
+    if (authError) { setMessage("adminMsg", "تعذر التحقق من جلسة الأدمن: " + authError.message, "error"); return; }
+    if (!user) { el("adminPanel").hidden = true; applyRoleUI(false); return; }
+    const {data: isAdmin, error: adminError} = await withAdminTimeout(db.rpc("is_admin"), "التحقق من صلاحية الأدمن");
+    if (adminError) { setMessage("adminMsg", "تعذر التحقق من صلاحية الأدمن: " + adminError.message, "error"); return; }
+    if (isAdmin !== true) { el("adminPanel").hidden = true; applyRoleUI(false); setMessage("authMsg", "هذا الحساب لا يملك صلاحية الأدمن.", "error"); return; }
+    applyRoleUI(true); el("adminPanel").hidden = false;
+    setMessage("adminMsg", "جارٍ تحميل جميع حالات طلبات الشحن...");
     const orderSelect = "id, created_at, status, price_iqd, zone_id, player_id, product_id, user_id, payment_method, payment_provider, transaction_ref, proof_path";
-    const {data: orders, error} = await db.from("orders")
-      .select(orderSelect).eq("status", "pending")
-      .order("created_at", {ascending:false}).limit(100);
-    const {data: processingOrders, error: processingError} = await db.from("orders")
-      .select(orderSelect).eq("status", "processing")
-      .order("created_at", {ascending:false}).limit(100);
-
+    const {data: allOrders, error} = await withAdminTimeout(db.from("orders").select(orderSelect)
+      .in("status", ["pending", "processing", "completed", "rejected"])
+      .order("created_at", {ascending:false}).limit(500), "تحميل طلبات الشحن");
     if (error) {
-      setMessage("adminMsg", "تعذر تحميل طلبات الشحن: " + error.message, "error");
-      el("adminOrders").textContent = "فشل تحميل طلبات الشحن. راجع صلاحيات SELECT وسياسات RLS لجدول orders.";
+      setMessage("adminMsg", "تعذر تحميل طلبات الشحن: " + error.message + " — تحقق من صلاحية SELECT وسياسة RLS لجدول orders.", "error");
+      ["adminOrders","adminProcessingOrders","adminArchivedOrders"].forEach(id=>el(id).replaceChildren());
       return;
     }
-    if (processingError) console.error("Could not load processing orders:", processingError);
-    const allVisibleOrders = [...(orders || []), ...(processingOrders || [])];
-    const allOrderIds = allVisibleOrders.map(o=>o.id);
-    const {data: adminOrderItems, error: itemsError} = allOrderIds.length
-      ? await db.from("order_items").select("order_id,product_name,diamonds,product_type,quantity,line_total_iqd").in("order_id", allOrderIds)
-      : {data: [], error: null};
-    if (itemsError) console.error("Could not load order_items:", itemsError);
-    const orderUserIds = [...new Set(allVisibleOrders.map(o => o.user_id).filter(Boolean))];
-    const {data: orderProfiles, error: orderProfilesError} = orderUserIds.length
-      ? await db.from("profiles").select("id,username").in("id", orderUserIds)
-      : {data: [], error: null};
-    if (orderProfilesError) {
-      console.error("Could not load order customer profiles:", orderProfilesError);
-      setMessage("adminMsg", "تم تحميل الطلبات، لكن تعذر تحميل أسماء الزبائن من profiles: " + orderProfilesError.message, "error");
-    }
-    if (itemsError) {
-      setMessage("adminMsg", "تم تحميل الطلبات، لكن تعذر تحميل تفاصيل الباقات من order_items: " + itemsError.message, "error");
-    }
-    const orderUsernameById = Object.fromEntries((orderProfiles || []).map(profile => [profile.id, profile.username]));
-    const adminItemsByOrder = {};
-    (adminOrderItems || []).forEach(item => (adminItemsByOrder[item.order_id] ||= []).push(item));
-    const statsOrders = allVisibleOrders;
-    const countStatus = status => statsOrders.filter(order => String(order.status || "").toLowerCase() === status).length;
-    const completedRevenue = statsOrders
-      .filter(order => String(order.status || "").toLowerCase() === "completed")
-      .reduce((sum, order) => sum + (Number(order.price_iqd) || 0), 0);
-    el("adminStatCount").textContent = String(statsOrders.length);
-    el("adminStatPending").textContent = String(countStatus("pending"));
-    el("adminStatProcessing").textContent = String(countStatus("processing"));
-    el("adminStatCompleted").textContent = String(countStatus("completed"));
-    el("adminStatRevenue").textContent = money(completedRevenue);
-    setMessage("adminMsg", `عدد الطلبات المعروضة: ${statsOrders.length}`);
-    el("adminOrders").replaceChildren();
-    el("adminProcessingOrders").replaceChildren();
-    if (!orders || !orders.length) el("adminOrders").textContent = "لا توجد طلبات جديدة بانتظار المراجعة.";
-    if (!processingOrders || !processingOrders.length) el("adminProcessingOrders").textContent = "لا توجد طلبات مقبولة بانتظار إكمال الشحن.";
-
-    for (const order of allVisibleOrders) {
-      const card = document.createElement("article");
-      card.className = "product";
-      card.style.marginTop = "12px";
-      const title = document.createElement("h3");
-      title.textContent = `طلب #${order.id}`;
-      const details = document.createElement("p");
-      details.className = "muted";
-      const lines = adminItemsByOrder[order.id] || [];
-      const productsText = lines.length ? lines.map(x=>`${x.product_name || (x.diamonds ? x.diamonds+" جوهرة" : "منتج")} × ${x.quantity} (${money(x.line_total_iqd)})`).join("، ") : `المنتج رقم: ${order.product_id}`;
-      details.textContent = `${productsText} | الإجمالي: ${money(order.price_iqd)} | الحالة: ${orderStatusArabic(order.status)}`;
-      const player = document.createElement("p");
-      player.className = "muted";
-      player.textContent = `Player ID: ${order.player_id} | Zone ID: ${order.zone_id}`;
-      const customer = document.createElement("p");
-      customer.className = "muted";
-      customer.textContent = `الزبون: ${orderUsernameById[order.user_id] ? "@" + orderUsernameById[order.user_id] : "اسم المستخدم غير متوفر في profiles"} | رقم الطلب: #${order.id}`;
-      const payment = document.createElement("p");
-      payment.className = "muted";
-      payment.textContent = `طريقة الدفع: ${order.payment_method || "-"} | المزود: ${order.payment_provider || "-"} | رقم العملية: ${order.transaction_ref || "-"}`;
-      const created = document.createElement("p");
-      created.className = "muted";
-      created.textContent = `تاريخ الطلب: ${order.created_at ? new Date(order.created_at).toLocaleString("ar-IQ") : "-"}`;
-      card.append(title, customer, details, player, payment, created);
-
-      if (order.proof_path) {
-        const proofBtn = document.createElement("button");
-        proofBtn.type = "button";
-        proofBtn.className = "secondary";
-        proofBtn.textContent = "عرض إثبات التحويل";
-        proofBtn.addEventListener("click", async () => {
-          proofBtn.disabled = true;
-          const {data, error: proofError} = await db.storage.from("payment-proofs").createSignedUrl(order.proof_path, 60);
-          proofBtn.disabled = false;
-          if (proofError) {
-            setMessage("adminMsg", "تعذر فتح الإثبات: " + proofError.message, "error");
-            return;
-          }
-          window.open(data.signedUrl, "_blank", "noopener,noreferrer");
-        });
-        card.appendChild(proofBtn);
-      }
-
-      if (order.status === "pending" || order.status === "processing") {
-        const actions = document.createElement("div");
-        actions.className = "actions";
-        const availableActions = order.status === "pending"
-          ? [["processing", "قبول الطلب", ""], ["rejected", "رفض الطلب", "danger"]]
-          : [["completed", "اكتمل الشحن", ""]];
-        for (const [status, label, css] of availableActions) {
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.textContent = label;
-          if (css) btn.className = css;
-          btn.addEventListener("click", async () => {
-            const confirmText = status === "processing"
-              ? "تأكدت من استلام المبلغ؟ الموافقة لا تعني أن الشحن اكتمل."
-              : status === "completed"
-                ? "هل أكملت شحن اللاعب فعلياً؟ سيتم وضع الطلب كمكتمل."
-                : "هل تريد رفض هذا الطلب؟";
-            if (!window.confirm(confirmText)) return;
-            btn.disabled = true;
-            const {error: updateError} = await db.rpc("admin_update_order_status", {
-              p_order_id: order.id,
-              p_new_status: status
-            });
-            if (updateError) {
-              setMessage("adminMsg", "فشل تحديث الطلب: " + updateError.message, "error");
-              btn.disabled = false;
-              return;
-            }
-            setMessage("adminMsg", `تم تحديث حالة الطلب #${order.id}.`, "success");
-            await loadAdminOrders();
-            await loadMyOrders();
-          });
-          actions.appendChild(btn);
-        }
+    const rows = allOrders || [];
+    const pending = rows.filter(o=>o.status === "pending");
+    const processing = rows.filter(o=>o.status === "processing");
+    const archived = rows.filter(o=>["completed","rejected"].includes(String(o.status||"").toLowerCase()));
+    const ids = rows.map(o=>o.id);
+    const {data: itemRows, error: itemsError} = ids.length
+      ? await withAdminTimeout(db.from("order_items").select("order_id,product_name,diamonds,product_type,quantity,line_total_iqd").in("order_id", ids), "تحميل تفاصيل الطلبات")
+      : {data:[],error:null};
+    const productIds = [...new Set(rows.map(o=>o.product_id).filter(Boolean))];
+    const {data: productRows, error: productsError} = productIds.length
+      ? await withAdminTimeout(db.from("products").select("id,name,diamonds,product_type").in("id", productIds), "تحميل أسماء المنتجات")
+      : {data:[],error:null};
+    const userIds = [...new Set(rows.map(o=>o.user_id).filter(Boolean))];
+    const {data: profiles, error: profilesError} = userIds.length
+      ? await withAdminTimeout(db.from("profiles").select("id,username").in("id", userIds), "تحميل أسماء الزبائن")
+      : {data:[],error:null};
+    const itemsByOrder = {};
+    (itemRows||[]).forEach(x=>(itemsByOrder[x.order_id] ||= []).push(x));
+    const productById = Object.fromEntries((productRows||[]).map(x=>[String(x.id),x]));
+    const usernameById = Object.fromEntries((profiles||[]).map(x=>[x.id,x.username]));
+    el("adminStatCount").textContent = String(rows.length);
+    el("adminStatPending").textContent = String(pending.length);
+    el("adminStatProcessing").textContent = String(processing.length);
+    el("adminStatCompleted").textContent = String(rows.filter(o=>o.status==="completed").length);
+    el("adminStatRevenue").textContent = money(rows.filter(o=>o.status==="completed").reduce((n,o)=>n+(Number(o.price_iqd)||0),0));
+    for (const id of ["adminOrders","adminProcessingOrders","adminArchivedOrders"]) el(id).replaceChildren();
+    const renderOrder = (order, target) => {
+      const card=document.createElement("article"); card.className="product"; card.style.marginTop="12px";
+      const title=document.createElement("h3"); title.textContent=`طلب شحن #${order.id}`;
+      const lines=itemsByOrder[order.id]||[];
+      const product=productById[String(order.product_id)];
+      const fallbackName=product ? (product.name || (product.diamonds ? `${product.diamonds} جوهرة` : "منتج")) : `منتج رقم ${order.product_id||"غير محدد"}`;
+      const productText=lines.length ? lines.map(x=>`${x.product_name || (x.diamonds ? x.diamonds+" جوهرة" : fallbackName)} × ${Number(x.quantity)||1} (${money(x.line_total_iqd)})`).join("، ") : fallbackName;
+      const add=(txt)=>{const e=document.createElement("p");e.className="muted";e.textContent=txt;card.appendChild(e);};
+      card.appendChild(title);
+      add(`الزبون: ${usernameById[order.user_id] ? "@"+usernameById[order.user_id] : "اسم المستخدم غير متوفر"} | رقم الطلب: #${order.id}`);
+      add(`المنتج: ${productText} | الإجمالي: ${money(order.price_iqd)} | الحالة: ${orderStatusArabic(order.status)}`);
+      add(`Player ID: ${order.player_id||"—"} | Zone ID: ${order.zone_id||"—"}`);
+      add(`طريقة الدفع: ${order.payment_method||"—"} | المزود: ${order.payment_provider||"—"} | رقم العملية: ${order.transaction_ref||"—"}`);
+      add(`تاريخ الطلب: ${order.created_at ? new Date(order.created_at).toLocaleString("ar-IQ") : "—"}`);
+      if(order.proof_path){const b=document.createElement("button");b.type="button";b.className="secondary";b.textContent="عرض إثبات التحويل";b.addEventListener("click",async()=>{b.disabled=true;const {data,error}=await db.storage.from("payment-proofs").createSignedUrl(order.proof_path,60);b.disabled=false;if(error){setMessage("adminMsg","تعذر فتح الإثبات: "+error.message,"error");return;}window.open(data.signedUrl,"_blank","noopener,noreferrer");});card.appendChild(b);}
+      if(order.status==="pending" || order.status==="processing"){
+        const actions=document.createElement("div");actions.className="actions";
+        const options=order.status==="pending" ? [["processing","قبول الطلب",""],["rejected","رفض الطلب","danger"]] : [["completed","اكتمل الشحن",""]];
+        for(const [status,label,css] of options){const b=document.createElement("button");b.type="button";b.textContent=label;if(css)b.className=css;b.addEventListener("click",async()=>{const msg=status==="processing"?"تأكدت من استلام المبلغ؟":"هل أكملت شحن اللاعب فعلياً؟";if(!confirm(msg))return;b.disabled=true;const {error}=await db.rpc("admin_update_order_status",{p_order_id:order.id,p_new_status:status});if(error){setMessage("adminMsg","فشل تحديث الطلب: "+error.message,"error");b.disabled=false;return;}setMessage("adminMsg",`تم تحديث الطلب #${order.id}.`,"success");await loadAdminOrders();await loadMyOrders();});actions.appendChild(b);}
         card.appendChild(actions);
       }
-      (order.status === "processing" ? el("adminProcessingOrders") : el("adminOrders")).appendChild(card);
-    }
+      target.appendChild(card);
+    };
+    if(!pending.length) el("adminOrders").textContent="لا توجد طلبات شحن جديدة بانتظار المراجعة.";
+    if(!processing.length) el("adminProcessingOrders").textContent="لا توجد طلبات مقبولة بانتظار إكمال الشحن.";
+    if(!archived.length) el("adminArchivedOrders").textContent="لا توجد طلبات مكتملة أو مرفوضة في الأرشيف.";
+    pending.forEach(o=>renderOrder(o,el("adminOrders")));
+    processing.forEach(o=>renderOrder(o,el("adminProcessingOrders")));
+    archived.forEach(o=>renderOrder(o,el("adminArchivedOrders")));
+    let message=`تم تحميل ${rows.length} طلب شحن: ${pending.length} جديدة، ${processing.length} قيد المعالجة، ${archived.length} بالأرشيف.`;
+    if(itemsError) message += " تعذر تحميل order_items: "+itemsError.message;
+    if(productsError) message += " تعذر تحميل أسماء المنتجات: "+productsError.message;
+    if(profilesError) message += " تعذر تحميل أسماء الزبائن: "+profilesError.message;
+    setMessage("adminMsg",message,(itemsError||productsError||profilesError)?"error":"success");
+  } catch (loadError) {
+    console.error("Admin orders load failed:", loadError);
+    setMessage("adminMsg", "توقف تحميل طلبات الشحن: " + (loadError?.message || "خطأ غير معروف") , "error");
   } finally {
-    adminLoadInProgress = false;
-    // Re-run the latest requested check after the current one finishes.
-    if (adminLoadQueued) {
-      adminLoadQueued = false;
-      window.setTimeout(async () => {
-        await loadAdminOrders();
-        if (currentUserIsAdmin) await loadAdminDeposits();
-      }, 0);
-    }
+    adminLoadInProgress=false;
+    if(adminLoadQueued){adminLoadQueued=false;window.setTimeout(()=>{loadAdminOrders();if(currentUserIsAdmin)loadAdminDeposits();},0);}
   }
 }
 
 async function loadAdminDeposits() {
-  if (!currentUserIsAdmin) return;
-  const box = el("adminDepositsList");
-  box.textContent = "جارٍ تحميل طلبات الإيداع...";
-  const {data, error} = await db.from("deposits")
-    .select("id,user_id,created_at,amount_iqd,status,payment_method,proof_path,transaction_ref")
-    .order("created_at", {ascending:false}).limit(200);
-  if (error) { box.textContent = "تعذر تحميل طلبات الإيداع: " + error.message; return; }
-  box.replaceChildren();
-  const rows = data || [];
-  const userIds = [...new Set(rows.map(row => row.user_id).filter(Boolean))];
-  const {data: profiles, error: profilesError} = userIds.length
-    ? await db.from("profiles").select("id,username").in("id", userIds)
-    : {data: [], error: null};
-  if (profilesError) console.warn("Could not load deposit customer profiles:", profilesError);
-  const usernames = Object.fromEntries((profiles || []).map(profile => [profile.id, profile.username]));
-  const pending = rows.filter(row => String(row.status || "pending").toLowerCase() === "pending");
-  const addSection = (heading, list, emptyText) => {
-    const section = document.createElement("section");
-    section.className = "adminDepositSection";
-    const h = document.createElement("h3"); h.textContent = heading; section.appendChild(h);
-    if (!list.length) { const empty = document.createElement("p"); empty.className = "muted"; empty.textContent = emptyText; section.appendChild(empty); box.appendChild(section); return; }
-    list.forEach(row => {
-      const status = String(row.status || "pending").toLowerCase();
-      const isPending = status === "pending";
-      const card = document.createElement("article"); card.className = "product"; card.style.marginTop = "9px";
-      const title = document.createElement("strong"); title.textContent = `طلب إيداع #${row.id}`;
-      const amount = document.createElement("div"); amount.className = "price";
-      amount.textContent = Number(row.amount_iqd) > 0 ? money(row.amount_iqd) : (row.payment_method === "asiacell" ? "الكمية: يحددها الأدمن" : "المبلغ غير محدد");
-      const details = document.createElement("div"); details.className = "muted";
-      const customerName = usernames[row.user_id] ? "@" + usernames[row.user_id] : "حساب " + String(row.user_id || "—").slice(0, 8);
-      details.textContent = `الزبون: ${customerName} · الطريقة: ${row.payment_method === "asiacell" ? "آسياسيل" : row.payment_method === "mastercard" ? "ماستركارد" : row.payment_method || "—"} · الحالة: ${depositStatusLabel(status)} · التاريخ: ${row.created_at ? new Date(row.created_at).toLocaleString("ar-IQ") : "—"}${row.transaction_ref ? " · رقم العملية/الكارت: " + row.transaction_ref : ""}`;
-      card.append(title, amount, details);
-      if (row.proof_path) {
-        const proof = document.createElement("button"); proof.type = "button"; proof.className = "secondary"; proof.textContent = "عرض إثبات الدفع";
-        proof.addEventListener("click", async () => {
-          proof.disabled = true;
-          const {data: signed, error: signError} = await db.storage.from("payment-proofs").createSignedUrl(row.proof_path, 60);
-          proof.disabled = false;
-          if (signError) { setMessage("adminDepositsMsg", "تعذر فتح الإثبات: " + signError.message, "error"); return; }
-          window.open(signed.signedUrl, "_blank", "noopener,noreferrer");
-        }); card.append(proof);
-      }
-      if (isPending) {
-        const actions = document.createElement("div"); actions.className = "actions";
-        let amountField = null;
-        if (row.payment_method === "asiacell" && !(Number(row.amount_iqd) > 0)) {
-          const amountLabel = document.createElement("label"); amountLabel.textContent = "حدد كمية/مبلغ كارت آسياسيل (د.ع)";
-          amountField = document.createElement("input"); amountField.type = "number"; amountField.min = "1"; amountField.step = "1"; amountField.inputMode = "numeric"; amountField.placeholder = "أدخل المبلغ بعد استلام الكارت"; amountField.required = true;
-          amountLabel.appendChild(amountField); card.appendChild(amountLabel);
-        }
-        const approve = document.createElement("button"); approve.type = "button"; approve.textContent = "تأكيد الدفع وإضافة الرصيد";
-        approve.addEventListener("click", async () => {
-          let finalAmount = Number(row.amount_iqd);
-          if (amountField) {
-            finalAmount = Number(amountField.value);
-            if (!Number.isSafeInteger(finalAmount) || finalAmount <= 0 || finalAmount > 10000000) {
-              setMessage("adminDepositsMsg", "أدخل كمية صحيحة أكبر من صفر ولا تتجاوز 10,000,000 دينار.", "error"); return;
-            }
-          }
-          if (!Number.isSafeInteger(finalAmount) || finalAmount <= 0) {
-            setMessage("adminDepositsMsg", "حدد مبلغ الإيداع أولاً.", "error"); return;
-          }
-          if (!confirm(`تأكدت من استلام ${money(finalAmount)} من ${customerName}؟ سيتم إضافة الرصيد لحساب الزبون.`)) return;
-          approve.disabled = true;
-          if (amountField) {
-            const {error: amountError} = await db.rpc("admin_set_deposit_amount", {p_deposit_id: row.id, p_amount_iqd: finalAmount});
-            if (amountError) { setMessage("adminDepositsMsg", "تعذر حفظ مبلغ الإيداع: " + amountError.message, "error"); approve.disabled = false; return; }
-          }
-          const {error: approveError} = await db.rpc("approve_deposit", {p_deposit_id: row.id});
-          if (approveError) { setMessage("adminDepositsMsg", "تعذرت الموافقة: " + approveError.message, "error"); approve.disabled = false; return; }
-          setMessage("adminDepositsMsg", `تم اعتماد طلب الإيداع #${row.id} وإضافة الرصيد.`, "success");
-          await loadAdminDeposits();
-          await loadCustomerWallet();
-        });
-        const reject = document.createElement("button"); reject.type = "button"; reject.className = "danger"; reject.textContent = "رفض الإيداع";
-        reject.addEventListener("click", async () => {
-          if (!confirm(`تأكيد رفض طلب الإيداع #${row.id}؟ لن تتم إضافة أي رصيد.`)) return;
-          reject.disabled = true;
-          const {error: rejectError} = await db.rpc("admin_reject_deposit", {p_deposit_id: row.id});
-          if (rejectError) {
-            setMessage("adminDepositsMsg", "تعذر رفض الإيداع: " + rejectError.message, "error");
-            reject.disabled = false; return;
-          }
-          setMessage("adminDepositsMsg", `تم رفض طلب الإيداع #${row.id}.`, "success");
-          await loadAdminDeposits();
-        });
-        actions.append(approve, reject); card.appendChild(actions);
-      }
-      section.appendChild(card);
-    });
-    box.appendChild(section);
+  if (!currentUserIsAdmin) { setMessage("adminDepositsMsg", "تعذر تحميل الإيداعات: لم يتم تأكيد صلاحية الأدمن بعد.", "error"); return; }
+  if (adminDepositsLoadInProgress) return;
+  adminDepositsLoadInProgress = true;
+  const box=el("adminDepositsList"), archive=el("adminArchivedDeposits");
+  box.textContent="جارٍ تحميل طلبات الإيداع..."; archive.textContent="جارٍ تحميل الأرشيف...";
+  try {
+  const {data:rows,error}=await withAdminTimeout(db.from("deposits").select("id,user_id,created_at,amount_iqd,status,payment_method,proof_path,transaction_ref").order("created_at",{ascending:false}).limit(500), "تحميل طلبات الإيداع");
+  if(error){box.textContent="تعذر تحميل طلبات الإيداع: "+error.message;archive.textContent="تعذر تحميل الأرشيف: "+error.message;setMessage("adminDepositsMsg","تحقق من صلاحية SELECT وسياسة RLS لجدول deposits: "+error.message,"error");return;}
+  box.replaceChildren();archive.replaceChildren();
+  const ids=[...new Set((rows||[]).map(r=>r.user_id).filter(Boolean))];
+  const {data:profiles,error:profileError}=ids.length?await withAdminTimeout(db.from("profiles").select("id,username").in("id",ids), "تحميل أسماء أصحاب الإيداعات"):{data:[],error:null};
+  const names=Object.fromEntries((profiles||[]).map(p=>[p.id,p.username]));
+  const pending=(rows||[]).filter(r=>String(r.status||"pending").toLowerCase()==="pending");
+  const history=(rows||[]).filter(r=>["approved","completed","rejected","cancelled"].includes(String(r.status||"").toLowerCase()));
+  const renderDeposit=(row,target)=>{
+    const status=String(row.status||"pending").toLowerCase(), isPending=status==="pending";
+    const card=document.createElement("article");card.className="product";card.style.marginTop="9px";
+    const title=document.createElement("strong");title.textContent=`طلب إيداع #${row.id}`;
+    const amount=document.createElement("div");amount.className="price";amount.textContent=Number(row.amount_iqd)>0?money(row.amount_iqd):(row.payment_method==="asiacell"?"الكمية: يحددها الأدمن":"المبلغ غير محدد");
+    const details=document.createElement("div");details.className="muted";const customer=names[row.user_id]?"@"+names[row.user_id]:"اسم المستخدم غير متوفر";
+    details.textContent=`الزبون: ${customer} · الطريقة: ${row.payment_method==="asiacell"?"آسياسيل":row.payment_method==="mastercard"?"ماستركارد":row.payment_method||"—"} · الحالة: ${depositStatusLabel(status)} · التاريخ: ${row.created_at?new Date(row.created_at).toLocaleString("ar-IQ"):"—"}${row.transaction_ref?" · رقم العملية/الكارت: "+row.transaction_ref:""}`;
+    card.append(title,amount,details);
+    if(row.proof_path){const proof=document.createElement("button");proof.type="button";proof.className="secondary";proof.textContent="عرض إثبات الدفع";proof.addEventListener("click",async()=>{proof.disabled=true;const {data,error}=await db.storage.from("payment-proofs").createSignedUrl(row.proof_path,60);proof.disabled=false;if(error){setMessage("adminDepositsMsg","تعذر فتح الإثبات: "+error.message,"error");return;}window.open(data.signedUrl,"_blank","noopener,noreferrer");});card.appendChild(proof);}
+    if(isPending){const actions=document.createElement("div");actions.className="actions";let amountField=null;
+      if(row.payment_method==="asiacell"&&!(Number(row.amount_iqd)>0)){const label=document.createElement("label");label.textContent="حدد مبلغ كارت آسياسيل (د.ع)";amountField=document.createElement("input");amountField.type="number";amountField.min="1";amountField.step="1";amountField.placeholder="أدخل المبلغ";label.appendChild(amountField);card.appendChild(label);}
+      const approve=document.createElement("button");approve.type="button";approve.textContent="تأكيد الدفع وإضافة الرصيد";approve.addEventListener("click",async()=>{let value=Number(row.amount_iqd);if(amountField)value=Number(amountField.value);if(!Number.isSafeInteger(value)||value<=0||value>10000000){setMessage("adminDepositsMsg","أدخل مبلغاً صحيحاً أكبر من صفر.","error");return;}if(!confirm(`تأكدت من استلام ${money(value)} من ${customer}؟`))return;approve.disabled=true;if(amountField){const {error}=await db.rpc("admin_set_deposit_amount",{p_deposit_id:row.id,p_amount_iqd:value});if(error){setMessage("adminDepositsMsg","تعذر حفظ المبلغ: "+error.message,"error");approve.disabled=false;return;}}const {error}=await db.rpc("approve_deposit",{p_deposit_id:row.id});if(error){setMessage("adminDepositsMsg","تعذرت الموافقة: "+error.message,"error");approve.disabled=false;return;}setMessage("adminDepositsMsg",`تم اعتماد الإيداع #${row.id}.`,"success");await loadAdminDeposits();await loadCustomerWallet();});
+      const reject=document.createElement("button");reject.type="button";reject.className="danger";reject.textContent="رفض الإيداع";reject.addEventListener("click",async()=>{if(!confirm(`تأكيد رفض طلب الإيداع #${row.id}؟`))return;reject.disabled=true;const {error}=await db.rpc("admin_reject_deposit",{p_deposit_id:row.id});if(error){setMessage("adminDepositsMsg","تعذر رفض الإيداع: "+error.message,"error");reject.disabled=false;return;}setMessage("adminDepositsMsg",`تم رفض الإيداع #${row.id}.`,"success");await loadAdminDeposits();});
+      actions.append(approve,reject);card.appendChild(actions);
+    }
+    target.appendChild(card);
   };
-  addSection("طلبات الإيداع الجديدة (بانتظار مراجعة الأدمن)", pending, "لا توجد طلبات إيداع جديدة حالياً.");
+  if(!pending.length)box.textContent="لا توجد طلبات إيداع جديدة حالياً.";else pending.forEach(r=>renderDeposit(r,box));
+  if(!history.length)archive.textContent="لا توجد طلبات إيداع مؤرشفة حالياً.";else history.forEach(r=>renderDeposit(r,archive));
+  setMessage("adminDepositsMsg",`تم تحميل ${pending.length} طلب إيداع جديد و${history.length} في الأرشيف.`+(profileError?" تعذر تحميل أسماء بعض الزبائن: "+profileError.message:""),profileError?"error":"success");
+  } catch (depositLoadError) {
+    console.error("Admin deposits load failed:", depositLoadError);
+    box.textContent = "تعذر تحميل طلبات الإيداع: " + (depositLoadError?.message || "خطأ غير معروف");
+    archive.textContent = "تعذر تحميل الأرشيف: " + (depositLoadError?.message || "خطأ غير معروف");
+    setMessage("adminDepositsMsg", "توقف تحميل الإيداعات: " + (depositLoadError?.message || "خطأ غير معروف"), "error");
+  } finally {
+    adminDepositsLoadInProgress = false;
+  }
 }
 
 el("walletSearchForm").addEventListener("submit", async e => {
@@ -3458,10 +3327,27 @@ el("menuMyOrders").addEventListener("click", async () => {
 
 el("refreshOrders").addEventListener("click", async () => {
   const btn = el("refreshOrders");
+  if (btn.disabled) return;
   btn.disabled = true;
   setMessage("adminMsg", "جارٍ تحديث طلبات الشحن والإيداع...");
-  try { await loadAdminOrders(); await loadAdminDeposits(); }
-  finally { btn.disabled = false; }
+  try {
+    const ordersResult = await Promise.resolve().then(() => loadAdminOrders()).then(() => ({ok:true}), error => ({ok:false,error}));
+    // Orders loading also verifies the admin role. Always attempt deposits afterwards.
+    const depositsResult = currentUserIsAdmin
+      ? await Promise.resolve().then(() => loadAdminDeposits()).then(() => ({ok:true}), error => ({ok:false,error}))
+      : {ok:false,error:new Error("لم يتم تأكيد صلاحية الأدمن؛ لم يبدأ تحميل الإيداعات.")};
+    if (!ordersResult.ok || !depositsResult.ok) {
+      const reason = !ordersResult.ok ? (ordersResult.error?.message || "تعذر تحميل الشحن") : (depositsResult.error?.message || "تعذر تحميل الإيداعات");
+      setMessage("adminMsg", "انتهى التحديث مع وجود مشكلة: " + reason, "error");
+    } else if (el("adminMsg").textContent.includes("جارٍ")) {
+      setMessage("adminMsg", "انتهى التحديث. راجع حالة تحميل الشحن والإيداعات أدناه.", "success");
+    }
+  } catch (refreshError) {
+    console.error("Admin refresh failed:", refreshError);
+    setMessage("adminMsg", "تعذر إكمال التحديث: " + (refreshError?.message || "خطأ غير معروف"), "error");
+  } finally {
+    btn.disabled = false;
+  }
 });
 el("refreshAdminDeposits").addEventListener("click", loadAdminDeposits);
 
