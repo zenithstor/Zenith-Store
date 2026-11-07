@@ -1237,6 +1237,8 @@ html[data-theme="light"] .gameCategoryGrid .gameTileName{color:#142238}
   .gameTileName{font-size:14px}
 }
 
+/* Keep the verified-squad section in the markup for later activation, but hide it temporarily. */
+#verifiedSquadCategory,#mlbbPageVerified{display:none!important}
 /* Four Mobile Legends sections: two equal wide horizontal cards per row. */
 .mlbbPageGrid{
   display:grid!important;
@@ -1412,8 +1414,8 @@ html.zenith-restore-pending main { visibility:hidden !important; }
           <span class="gameTileName">Mobile Legends<small class="gameMainSubtitle">تصفح أفضل العروض والباقات</small></span>
         </button>
         <div class="mlbbSubcategories" id="mlbbSubcategories" hidden>
-          <button type="button" class="homeCategory activeCategory" id="gemsCategory"><span class="categoryIcon">💎</span><span class="categoryText"><strong>شحن الجواهر</strong><small>باقات الجواهر</small></span><span class="categoryArrow">←</span></button>
-          <button type="button" class="homeCategory membershipPlaceholder" id="membershipPlaceholder"><span class="categoryText"><strong>العضوية المميزة</strong><small>العضويات والباقات</small></span><span class="categoryArrow">←</span></button>
+          <button type="button" class="homeCategory activeCategory" id="gemsCategory"><img class="mlbbSectionImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>شحن الجواهر</strong><small>باقات الجواهر</small></span><span class="categoryArrow">←</span></button>
+          <button type="button" class="homeCategory membershipPlaceholder" id="membershipPlaceholder"><img class="mlbbSectionImage" src="images/memberships.png" alt="العضويات"><span class="categoryText"><strong>العضوية المميزة</strong><small>العضويات والباقات</small></span><span class="categoryArrow">←</span></button>
           <button type="button" class="homeCategory membershipPlaceholder fanFrameHomeCategory" id="fanFrameCategory" aria-label="إطار كبير المعجبين"><img class="fanFrameHomeImage" src="https://zenithstor.github.io/Zenith-Store/images/big-fans-banner.png" alt="إطار كبير المعجبين"><span class="categoryText"><strong>إطار كبير المعجبين</strong><small>إطار مميز</small></span><span class="categoryArrow">←</span></button>
           <button type="button" class="homeCategory membershipPlaceholder" id="verifiedSquadCategory"><span class="categoryText"><strong>فرقة موثقة</strong><small>قريباً</small></span><span class="categoryArrow">←</span></button>
         </div>
@@ -1427,11 +1429,11 @@ html.zenith-restore-pending main { visibility:hidden !important; }
 
   <section class="panel mlbbCategoryPage" id="mlbbCategoryPanel" hidden>
     <button type="button" class="secondary" id="backFromMlbb" aria-label="العودة للرئيسية" title="الرئيسية">←</button>
-    <h2 class="mlbbPageTitle">Mobile Legends</h2>
+    <div class="mlbbTitleRow"><img class="mlbbTitleImage" src="images/mobile-legends.png" alt="Mobile Legends"><h2 class="mlbbPageTitle">Mobile Legends</h2></div>
     <p class="muted">اختر القسم الذي تريد تصفحه</p>
     <div class="mlbbPageGrid">
-      <button type="button" class="homeCategory" id="mlbbPageGems"><span class="categoryIcon">💎</span><span class="categoryText"><strong>شحن الجواهر</strong><small>باقات الجواهر</small></span><span class="categoryArrow">←</span></button>
-      <button type="button" class="homeCategory" id="mlbbPageMembership"><span class="categoryText"><strong>العضوية المميزة</strong><small>العضويات والباقات</small></span><span class="categoryArrow">←</span></button>
+      <button type="button" class="homeCategory" id="mlbbPageGems"><img class="mlbbSectionImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>شحن الجواهر</strong><small>باقات الجواهر</small></span><span class="categoryArrow">←</span></button>
+      <button type="button" class="homeCategory" id="mlbbPageMembership"><img class="mlbbSectionImage" src="images/memberships.png" alt="العضويات"><span class="categoryText"><strong>العضوية المميزة</strong><small>العضويات والباقات</small></span><span class="categoryArrow">←</span></button>
       <button type="button" class="homeCategory fanFrameHomeCategory" id="mlbbPageFanFrame"><img class="fanFrameHomeImage" src="https://zenithstor.github.io/Zenith-Store/images/big-fans-banner.png" alt="إطار كبير المعجبين"><span class="categoryText"><strong>إطار كبير المعجبين</strong><small>إطار مميز</small></span><span class="categoryArrow">←</span></button>
       <button type="button" class="homeCategory" id="mlbbPageVerified"><span class="categoryText"><strong>فرقة موثقة</strong><small>قريباً</small></span><span class="categoryArrow">←</span></button>
     </div>
@@ -1503,20 +1505,20 @@ html.zenith-restore-pending main { visibility:hidden !important; }
     <div class="walletCardsGrid" aria-label="أرصدة المحافظ">
       <article class="walletBankCard walletAsiacellCard">
         <span class="walletCardBrand">ZENITH WALLET</span>
-        <span class="walletCardChip" aria-hidden="true">▦</span>
+        <span class="walletCardChip" aria-hidden="true">＋</span>
         <small>الرصيد المتاح</small>
         <strong id="customerAsiacellBalance">جارٍ التحميل...</strong>
         <span class="walletCardType">آسياسيل</span>
       </article>
       <article class="walletBankCard walletMastercardCard">
         <span class="walletCardBrand">ZENITH WALLET</span>
-        <span class="walletCardChip" aria-hidden="true">▦</span>
+        <span class="walletCardChip" aria-hidden="true">＋</span>
         <small>الرصيد المتاح</small>
         <strong id="customerMastercardBalance">جارٍ التحميل...</strong>
         <span class="walletCardType">MasterCard</span>
       </article>
     </div>
-    <div class="walletCardsActions"><span class="muted">كل محفظة تُستخدم مع تسعيرتها فقط.</span><button type="button" class="walletRefreshBtn" id="refreshCustomerWallet">↻ تحديث الأرصدة</button></div>
+    <div class="walletCardsActions"><span class="muted">كل محفظة تُستخدم مع طريقة الدفع المطابقة لها.</span><button type="button" class="walletRefreshBtn" id="refreshCustomerWallet">↻ تحديث الأرصدة</button></div>
     <div id="customerWalletMsg" class="msg" aria-live="polite"></div>
     <section class="notice" aria-labelledby="depositHeading">
       <h3 id="depositHeading">إضافة رصيد للمحفظة</h3>
@@ -1576,8 +1578,8 @@ html.zenith-restore-pending main { visibility:hidden !important; }
       <input id="zoneId" inputmode="numeric" autocomplete="off" placeholder="أدخل Zone ID" required>
       <input id="paymentMethod" type="hidden" value="wallet">
       <div id="walletInfo" class="notice">
-        <div>سيتم الدفع حصراً من محفظة طريقة التسعير المختارة لهذه الباقة.</div>
-        <div class="muted">تسعيرة آسياسيل تخصم من محفظة آسياسيل، وتسعيرة ماستركارد تخصم من محفظة ماستركارد.</div>
+        <div>سيتم الدفع حصراً من محفظة طريقة الدفع المختارة لهذه الباقة.</div>
+        <div class="muted">الدفع بآسياسيل يخصم من محفظة آسياسيل، والدفع بماستركارد يخصم من محفظة ماستركارد.</div>
       </div>
       <button type="submit" id="submitOrderBtn">إتمام الطلب</button>
       <button type="button" class="secondary" id="cancelPurchase">إلغاء</button>
@@ -1960,8 +1962,8 @@ function getGemTierImage(product) {
     .sort((a,b) => Number(a.diamonds) - Number(b.diamonds));
   const index = gemProducts.findIndex(p => p === product || (p.id != null && String(p.id) === String(product.id)));
   if (index < 0 || !gemProducts.length) return ZENITH_PRODUCT_IMAGES.group;
-  const tier = Math.min(4, Math.floor(index * 5 / gemProducts.length));
-  return [ZENITH_PRODUCT_IMAGES.single, ZENITH_PRODUCT_IMAGES.double, ZENITH_PRODUCT_IMAGES.group, ZENITH_PRODUCT_IMAGES.ultra, ZENITH_PRODUCT_IMAGES.ultimate][tier];
+  const tier = Math.min(5, Math.floor(index * 6 / gemProducts.length));
+  return [ZENITH_PRODUCT_IMAGES.single, ZENITH_PRODUCT_IMAGES.double, ZENITH_PRODUCT_IMAGES.group, ZENITH_PRODUCT_IMAGES.chest, ZENITH_PRODUCT_IMAGES.ultra, ZENITH_PRODUCT_IMAGES.ultimate][tier];
 }
 
 function getProductCategory(p) {
@@ -2134,7 +2136,7 @@ function openPurchase(product, provider, fromHistory = false) {
   } catch (_) {}
   const price = getPrice(product, provider);
   el("selectedProductInfo").textContent =
-    `${productTitle(product)} — ${money(price)} (${provider === "mastercard" ? "تسعير ماستركارد" : "تسعير آسياسيل"})`;
+    `${productTitle(product)} — ${money(price)} (${provider === "mastercard" ? "ماستركارد" : "آسياسيل"})`;
   el("purchasePanel").hidden = false;
   setMessage("orderMsg", "");
   if (!fromHistory) el("purchasePanel").scrollIntoView({behavior:"smooth", block:"start"});
@@ -2190,7 +2192,7 @@ function renderPaymentInfo(targetId, provider) {
     const copy = document.createElement("button"); copy.type = "button"; copy.className = "depositCopyNumber"; copy.textContent = "نسخ الرقم";
     copy.addEventListener("click", async () => { try { await navigator.clipboard.writeText(PAYMENT_DETAILS.mastercard.number); copy.textContent = "تم نسخ الرقم ✓"; } catch (_) { copy.textContent = "انسخ الرقم يدوياً"; } });
     const note = document.createElement("p"); note.className = "depositInfoNote"; note.textContent = "بعد إتمام التحويل، أرفق صورة واضحة لإثبات الدفع في المكان المخصص أدناه.";
-    target.append(eyebrow, title, label, number, copy, note);
+    target.append(eyebrow, label, number, title, copy, note);
     el("depositProofGroup").hidden = false; el("depositProof").required = true;
     el("depositAsiacellCardGroup").hidden = true;
     el("depositAsiacellCardNumber").required = false;
@@ -2236,6 +2238,7 @@ async function loadCustomerDeposits() {
       item.className = "orderStep" + (done ? " isDone" : "") + (current ? " isCurrent" : "") + (!done && !current && !(rejected && i === 1) ? " isWaiting" : "");
       const mark = document.createElement("span"); mark.className = "stepMark";
       if (rejected && i === 1) mark.textContent = "×";
+      else if (rejected && i === 2) mark.innerHTML = `<svg class="stepHourglass stepHourglassBroken" viewBox="0 0 24 24" aria-label="توقف الطلب"><path d="M6 3h12M6 21h12M7 3c0 3.2 1.5 5.4 4.2 7.5M17 3c0 2.4-.9 4.2-2.7 5.8M7 21c0-2.8 1.3-4.8 3.5-6.7M17 21c0-2.8-1.3-4.8-3.5-6.7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="m12.8 8.2-2 3.1 2.1 1.4-2.2 3.1M14.6 10.4l-1.3 1.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
       else if (done) mark.textContent = "✓";
       else mark.innerHTML = '<svg class="stepHourglass" viewBox="0 0 24 24" aria-label="قيد الانتظار"><path d="M6 3h12M6 21h12M7 3c0 4 2 6 5 9-3 3-5 5-5 9m10-18c0 4-2 6-5 9 3 3 5 5 5 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 6h6l-3 4-3-4Zm0 12h6l-3-4-3 4Z" fill="currentColor" opacity=".65"/></svg>';
       const small = document.createElement("small"); small.textContent = label;
@@ -2297,7 +2300,7 @@ async function submitDepositRequest(e) {
     el("depositAmountGroup").hidden = false;
     el("depositAmount").required = false;
     el("depositPaymentInfo").hidden = false;
-    if (document.body.classList.contains("asiacell-deposit-open")) await closeAsiacellDepositModal(true);
+    if (document.body.classList.contains("deposit-modal-open")) await closeAsiacellDepositModal(true);
     el("depositEntryFields").hidden = true;
     el("depositMethodChooser").hidden = false;
     el("depositProvider").value = "";
@@ -2593,7 +2596,7 @@ function openOrderConfirmModal() {
     setMessage("orderMsg", "تعذر حساب سعر الطلب. ارجع واختر الباقة من جديد.", "error"); return false;
   }
   if (summary.method.includes(" + ")) {
-    setMessage("orderMsg", "لا يمكن جمع باقات بتسعيرتي آسياسيل وماستركارد في طلب واحد. أتمم كل طريقة دفع بطلب مستقل.", "error"); return false;
+    setMessage("orderMsg", "لا يمكن جمع باقات آسياسيل وماستركارد في طلب واحد. أتمم كل طريقة دفع بطلب مستقل.", "error"); return false;
   }
   const rows = el("orderConfirmRows"); rows.replaceChildren();
   rows.append(
@@ -2725,6 +2728,7 @@ async function loadMyOrders() {
         item.className = "orderStep" + (done ? " isDone" : "") + (current ? " isCurrent" : "") + (!done && !current && !(rejected && i === 1) ? " isWaiting" : "");
         const mark = document.createElement("span"); mark.className = "stepMark";
         if (rejected && i === 1) mark.textContent = "×";
+        else if (rejected && i === 2) mark.innerHTML = `<svg class="stepHourglass stepHourglassBroken" viewBox="0 0 24 24" aria-label="توقف الطلب"><path d="M6 3h12M6 21h12M7 3c0 3.2 1.5 5.4 4.2 7.5M17 3c0 2.4-.9 4.2-2.7 5.8M7 21c0-2.8 1.3-4.8 3.5-6.7M17 21c0-2.8-1.3-4.8-3.5-6.7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="m12.8 8.2-2 3.1 2.1 1.4-2.2 3.1M14.6 10.4l-1.3 1.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
         else if (done) mark.textContent = "✓";
         else mark.innerHTML = '<svg class="stepHourglass" viewBox="0 0 24 24" aria-label="قيد الانتظار"><path d="M6 3h12M6 21h12M7 3c0 4 2 6 5 9-3 3-5 5-5 9m10-18c0 4-2 6-5 9 3 3 5 5 5 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 6h6l-3 4-3-4Zm0 12h6l-3-4-3 4Z" fill="currentColor" opacity=".65"/></svg>';
         const textLabel = document.createElement("small"); textLabel.textContent = label;
@@ -3042,7 +3046,7 @@ const depositEntryFields = el("depositEntryFields");
 const depositEntryPlaceholder = el("depositEntryPlaceholder");
 let depositModalBackdrop = null;
 function closeAsiacellDepositModal(animate = false) {
-  if (!document.body.classList.contains("asiacell-deposit-open")) {
+  if (!document.body.classList.contains("deposit-modal-open")) {
     if (depositModalBackdrop) { depositModalBackdrop.remove(); depositModalBackdrop = null; }
     return Promise.resolve();
   }
@@ -3050,13 +3054,13 @@ function closeAsiacellDepositModal(animate = false) {
     depositEntryFields.classList.add("isClosing");
     if (depositModalBackdrop) depositModalBackdrop.classList.add("isClosing");
     return new Promise(resolve => setTimeout(() => {
-      document.body.classList.remove("asiacell-deposit-open");
+      document.body.classList.remove("asiacell-deposit-open", "mastercard-deposit-open", "deposit-modal-open");
       depositEntryFields.classList.remove("isClosing");
       if (depositModalBackdrop) { depositModalBackdrop.remove(); depositModalBackdrop = null; }
       resolve();
-    }, 220));
+    }, 1000));
   }
-  document.body.classList.remove("asiacell-deposit-open");
+  document.body.classList.remove("asiacell-deposit-open", "mastercard-deposit-open", "deposit-modal-open");
   depositEntryFields.classList.remove("isClosing");
   if (depositModalBackdrop) { depositModalBackdrop.remove(); depositModalBackdrop = null; }
   return Promise.resolve();
@@ -3069,30 +3073,26 @@ function restoreDepositEntryFields() {
 }
 document.querySelectorAll("[data-deposit-provider]").forEach(button => button.addEventListener("click", () => {
   const provider = button.dataset.depositProvider;
+  closeAsiacellDepositModal();
   el("depositProvider").value = provider;
   el("depositMethodChooser").hidden = true;
   depositEntryFields.hidden = false;
   renderPaymentInfo("depositPaymentInfo", provider);
   setMessage("depositMsg", "");
-  if (provider === "asiacell") {
-    closeAsiacellDepositModal();
-    depositModalBackdrop = document.createElement("div");
-    depositModalBackdrop.className = "depositModalBackdrop";
-    depositModalBackdrop.setAttribute("aria-hidden", "true");
-    document.body.appendChild(depositModalBackdrop);
-    document.body.appendChild(depositEntryFields);
-    document.body.classList.add("asiacell-deposit-open");
-    requestAnimationFrame(() => {
-      if (depositModalBackdrop) depositModalBackdrop.classList.add("isVisible");
-      el("depositAsiacellCardNumber").focus({preventScroll:true});
-    });
-  } else {
-    restoreDepositEntryFields();
-    depositEntryFields.scrollIntoView({behavior:"smooth",block:"nearest"});
-  }
+  depositModalBackdrop = document.createElement("div");
+  depositModalBackdrop.className = "depositModalBackdrop";
+  depositModalBackdrop.setAttribute("aria-hidden", "true");
+  document.body.appendChild(depositModalBackdrop);
+  document.body.appendChild(depositEntryFields);
+  document.body.classList.add("deposit-modal-open", provider === "asiacell" ? "asiacell-deposit-open" : "mastercard-deposit-open");
+  requestAnimationFrame(() => {
+    if (depositModalBackdrop) depositModalBackdrop.classList.add("isVisible");
+    const focusTarget = provider === "asiacell" ? el("depositAsiacellCardNumber") : el("depositAmount");
+    if (focusTarget) focusTarget.focus({preventScroll:true});
+  });
 }));
 el("cancelDepositModal").addEventListener("click", async () => {
-  if (document.body.classList.contains("asiacell-deposit-open")) await closeAsiacellDepositModal(true);
+  if (document.body.classList.contains("deposit-modal-open")) await closeAsiacellDepositModal(true);
   restoreDepositEntryFields();
   depositEntryFields.hidden = true;
   el("depositMethodChooser").hidden = false;
@@ -4091,7 +4091,7 @@ html[data-theme="light"] .homePanel .heroButton{background:rgba(4,20,48,.94)!imp
 .depositTrackCard .orderDetailCell{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;padding:10px 4px!important;border:0!important;border-bottom:1px solid var(--border)!important;border-radius:0!important;background:transparent!important}
 .depositTrackCard .orderDetailCell small{display:block!important;flex:0 0 auto!important;margin:0!important;font-size:13px!important;color:var(--muted)!important}
 .depositTrackCard .orderDetailCell strong{display:block!important;text-align:left!important;font-size:14px!important;color:var(--ink)}
-.depositTrackCard .orderDate{margin:12px 0 0!important;padding-top:10px;border-top:1px solid var(--border);font-size:11px}
+.depositTrackCard .orderDate{margin:12px 0 0!important;padding-top:10px;border-top:0!important;font-size:11px}
 .depositMethodGrid{grid-template-columns:repeat(2,minmax(0,110px))!important;gap:9px!important;justify-content:start}
 .depositMethodChoice{min-height:74px!important;padding:8px 7px!important;gap:3px!important;border-radius:12px!important}
 .depositMethodIcon{width:29px!important;height:29px!important;border-radius:9px!important;font-size:16px!important}
@@ -4347,6 +4347,45 @@ body.asiacell-deposit-open #depositEntryFields.isClosing{animation:zenithAsiacel
 html[data-theme="light"] body.asiacell-deposit-open #depositEntryFields{background:#fff!important;color:#142238!important;border-color:#d4dfeb!important}
 html[data-theme="dark"] body.asiacell-deposit-open #depositEntryFields{background:#0c1321!important;color:#edf4ff!important;border-color:#26364d!important}
 @media(prefers-reduced-motion:reduce){body.asiacell-deposit-open #depositEntryFields,.zenithConfirmCard{animation:none!important}}
+</style>
+
+
+<style id="zenith-user-request-batch-polish">
+/* Six gem artwork groups share the product list evenly. */
+/* Rejected orders: the third stage is stopped and silver, with a broken hourglass. */
+.orderTimeline.isRejected .orderStep:nth-child(2)::after{background:var(--border)!important;transform:scaleY(1)!important}
+.orderTimeline.isRejected .orderStep:nth-child(3) .stepMark{background:#aeb7c2!important;border-color:#aeb7c2!important;color:#fff!important;animation:none!important;box-shadow:none!important}
+.orderTimeline.isRejected .orderStep:nth-child(3) small,
+.orderTimeline.isRejected .orderStep:nth-child(3) .stepHint{color:#9aa4b1!important}
+.stepHourglassBroken{animation:none!important;opacity:1!important}
+/* Keep a single separator between the amount and date in wallet deposit history. */
+.depositTrackCard .orderDate{border-top:0!important}
+/* Wallet cards use a simple plus instead of the patterned chip. */
+.walletCardChip{font-size:29px!important;font-weight:500!important;line-height:1!important;opacity:.95!important}
+/* Remove the outer box around the payment method buttons, not the buttons themselves. */
+.depositMethodChooser{padding:0!important;margin:14px 0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+.depositChooserTitle{margin-top:0!important}
+/* Mobile Legends image slots and page title image. */
+.mlbbTitleRow{display:flex;align-items:center;gap:11px;margin:16px 0 6px;direction:rtl}
+.mlbbTitleRow .mlbbPageTitle{margin:0!important}
+.mlbbTitleImage{width:48px;height:48px;flex:0 0 48px;object-fit:contain;border:1px solid var(--border);border-radius:12px;background:var(--surface);padding:4px}
+.mlbbSectionImage{width:46px;height:46px;flex:0 0 46px;object-fit:contain;border-radius:10px}
+/* Both deposit providers use the same centered modal and a full one-second entrance/exit. */
+.depositModalBackdrop{transition:opacity 1s ease!important}
+body.deposit-modal-open #depositEntryFields{display:block!important;position:fixed!important;z-index:2147483001!important;top:50%!important;left:50%!important;right:auto!important;transform:translate(-50%,-50%)!important;width:min(calc(100vw - 28px),430px)!important;max-height:min(82vh,680px)!important;overflow-y:auto!important;padding:18px!important;border-radius:18px!important;box-shadow:0 16px 50px rgba(0,0,0,.22)!important;animation:zenithDepositOneSecondIn 1s cubic-bezier(.18,.78,.22,1) both!important}
+body.deposit-modal-open #depositEntryFields.isClosing{animation:zenithDepositOneSecondOut 1s ease-in both!important}
+body.deposit-modal-open #depositEntryFields #cancelDepositModal{margin-bottom:10px!important}
+body.mastercard-deposit-open #depositEntryFields{background:var(--surface)!important;color:var(--ink)!important;border:1px solid var(--border)!important}
+body.mastercard-deposit-open #depositEntryFields label{color:var(--ink)!important}
+body.mastercard-deposit-open #depositEntryFields input{background:var(--page)!important;color:var(--ink)!important;border-color:var(--border)!important}
+body.mastercard-deposit-open #depositEntryFields #cancelDepositModal{background:var(--page)!important;color:var(--ink)!important;border-color:var(--border)!important}
+.depositPaymentCard .depositNumberLabel{display:block;margin:0 0 3px!important;font-size:10px!important}
+.depositPaymentCard .depositCardNumber{display:inline-block!important;width:auto!important;max-width:100%!important;padding:4px 8px!important;margin:0 0 8px!important;font-size:14px!important;letter-spacing:1px!important;border-radius:8px!important;box-shadow:none!important}
+.depositPaymentCard .depositInfoTitle{display:block;margin-top:3px!important}
+@keyframes zenithDepositOneSecondIn{from{opacity:0;transform:translate(-50%,-35%) scale(.94)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@keyframes zenithDepositOneSecondOut{from{opacity:1;transform:translate(-50%,-50%) scale(1)}to{opacity:0;transform:translate(-50%,-35%) scale(.94)}}
+@media(max-width:520px){.mlbbSectionImage{width:40px;height:40px;flex-basis:40px}.mlbbTitleImage{width:44px;height:44px;flex-basis:44px}}
+@media(prefers-reduced-motion:reduce){body.deposit-modal-open #depositEntryFields{animation:none!important}.depositModalBackdrop{transition:none!important}}
 </style>
 
 </body>
