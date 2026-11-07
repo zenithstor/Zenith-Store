@@ -1353,6 +1353,32 @@ body.asiacell-deposit-open #depositEntryFields {
 html.zenith-restore-pending main { visibility:hidden !important; }
 </style>
 
+
+<style id="zenith-requested-account-faq-and-product-notes">
+.faqSection{margin:24px 0 18px;padding:8px 2px;border:0;border-radius:0;background:transparent!important;color:var(--ink)}
+.faqSection h2{margin:0 0 7px;font-size:25px;font-weight:900;line-height:1.5}
+.faqItem{display:block;border:0;border-bottom:1px solid rgba(130,155,185,.38);border-radius:0;padding:13px 2px 14px;color:var(--ink);background:transparent!important}
+.faqItem:last-child{border-bottom:0}
+.faqItem strong{display:block;font-size:16px;font-weight:850;line-height:1.7;color:var(--ink)}
+.faqItem p{display:block;margin:4px 2px 0;color:var(--muted);font-size:12px;line-height:1.9}
+.accountDetailsGrid{display:grid;grid-template-columns:1fr;gap:9px;margin-top:14px}
+.accountDetail{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--page)}
+.accountDetail span{font-size:12px;color:var(--muted)}
+.accountDetail strong{font-size:13px;text-align:left;overflow-wrap:anywhere;color:var(--ink)}
+#products .product .productInfoButton{display:grid!important}.productInfoButton{position:absolute;top:7px;right:7px;z-index:4;width:23px!important;min-width:23px!important;height:23px!important;min-height:23px!important;padding:0!important;margin:0!important;display:grid!important;place-items:center;border:1px solid #86caff!important;border-radius:50%!important;background:#102b48!important;color:#d9efff!important;font-size:13px!important;font-weight:900;line-height:1;box-shadow:0 2px 8px #0005!important}
+.productInfoPopover{position:fixed;z-index:2147482000;width:min(260px,calc(100vw - 24px));padding:10px 12px;border:1px solid #4d759d;border-radius:10px;background:#0b1728;color:#eaf4ff;font-size:12px;line-height:1.85;text-align:right;box-shadow:0 8px 22px #0008;pointer-events:none}
+.productSpecialNote{margin-top:10px;padding:10px;border:1px solid #4d759d;border-radius:11px;background:#10243a;color:#dceeff;font-size:12px;line-height:1.8}
+.depositModalBackdrop{transition:opacity .42s ease!important}
+body.deposit-modal-open #depositEntryFields{transform-origin:var(--deposit-origin-x,50%) var(--deposit-origin-y,50%)!important;animation:zenithDepositFromPlus .48s cubic-bezier(.16,.84,.25,1) both!important}
+body.deposit-modal-open #depositEntryFields.isClosing{animation:zenithDepositToPlus .42s cubic-bezier(.6,0,.8,.2) both!important}
+@keyframes zenithDepositFromPlus{from{opacity:0;transform:translate(-50%,-50%) scale(.04)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@keyframes zenithDepositToPlus{from{opacity:1;transform:translate(-50%,-50%) scale(1)}to{opacity:0;transform:translate(-50%,-50%) scale(.04)}}
+html[data-theme="light"] .faqSection{background:rgba(255,255,255,.38);border-color:#d4dfeb}
+html[data-theme="light"] .faqItem{border-color:#d4dfeb}
+html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSpecialNote{background:#f1f6fb;color:#18344f;border-color:#b9d2e7}
+@media(prefers-reduced-motion:reduce){body.deposit-modal-open #depositEntryFields{animation:none!important}}
+</style>
+
 </head>
 <body>
 <header>
@@ -1385,6 +1411,7 @@ html.zenith-restore-pending main { visibility:hidden !important; }
       <button type="button" class="secondary" id="menuWallet" hidden><span class="menuActionIcon walletSvgIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2.5"/><path d="M3 9h18M16 14h2"/><path d="M6 6V4.8A1.8 1.8 0 0 1 7.8 3H19"/></svg></span> محفظتي</button>
       <button type="button" class="secondary" id="menuCart"><span class="menuActionIcon cartSvgIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.4L22 8H6"/><circle cx="10" cy="20" r="1.2"/><circle cx="18" cy="20" r="1.2"/></svg></span> السلة</button>
       <button type="button" class="secondary" id="menuMyOrders"><span class="menuActionIcon receiptSvgIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><g transform="rotate(7 12 12)"><path d="M6 3.5h9l3 3V21l-2-1.2L14 21l-2-1.2L10 21l-2-1.2L6 21z"/><path d="M14.5 3.8V7h3.2M9 11h6M9 14.5h6"/></g></svg></span> الطلبات</button>
+      <button type="button" class="secondary" id="menuAccount">👤 حسابي</button>
       <button type="button" class="secondary" id="menuSearch">⌕ البحث</button>
     </div>
   </nav>
@@ -1425,7 +1452,28 @@ html.zenith-restore-pending main { visibility:hidden !important; }
       <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile" disabled><img class="gameTileImage" src="images/genshin-impact.png" alt="Genshin Impact"><span class="gameTileName">Genshin Impact<small class="gameComingSoonLabel">قريباً...</small></span></button>
     </div>
     <div class="homeTrust"><span>🛡️ دفع آمن</span><span>⚡ إرسال سريع وفوري</span><span>🎧 دعم فني</span></div>
+  <section class="faqSection" id="faqSection" aria-labelledby="faqTitle">
+    <h2 id="faqTitle">الأسئلة الشائعة</h2>
+    <div class="faqItem">
+      <button class="faqQuestion" type="button" aria-expanded="false"><span>كيف أشحن؟</span><span class="faqToggleIcon" aria-hidden="true">＋</span></button>
+      <div class="faqAnswer"><p>اختر اللعبة المراد الشحن بها وحدد الباقة المناسبة وطريقة الدفع، ادخل Player ID و Zone ID اذا كان مطلوباً ثم اكمل الطلب، يمكنك متابعة طلبك من خلال قسم «طلباتي»</p></div>
+    </div>
+    <div class="faqItem">
+      <button class="faqQuestion" type="button" aria-expanded="false"><span>كيف أقوم بتعبئة الرصيد داخل المحفظة؟</span><span class="faqToggleIcon" aria-hidden="true">＋</span></button>
+      <div class="faqAnswer"><p>افتح «محفظتي» واضغط (+) بجانب طريقة الدفع المناسبة، ثم أدخل المبلغ وأرسل طلب الإيداع مع بيانات التحويل المطلوبة.</p></div>
+    </div>
+    <div class="faqItem">
+      <button class="faqQuestion" type="button" aria-expanded="false"><span>ماذا أفعل إذا تأخر الطلب؟</span><span class="faqToggleIcon" aria-hidden="true">＋</span></button>
+      <div class="faqAnswer"><p>تابع حالة الطلب من قسم «طلباتي»، وإذا استمر التأخير تواصل مع الدعم وأرسل رقم الطلب.</p></div>
+    </div>
+    <div class="faqItem">
+      <button class="faqQuestion" type="button" aria-expanded="false"><span>ماذا لو قمت بإدخال بيانات اللعبة بشكل غير صحيح؟</span><span class="faqToggleIcon" aria-hidden="true">＋</span></button>
+      <div class="faqAnswer"><p>تواصل مع الدعم فوراً وأرسل رقم الطلب والبيانات الصحيحة؛ لا يمكن ضمان تعديل البيانات بعد بدء تنفيذ الشحن.</p></div>
+    </div>
   </section>
+  </section>
+
+
 
   <section class="panel mlbbCategoryPage" id="mlbbCategoryPanel" hidden>
     <button type="button" class="secondary" id="backFromMlbb" aria-label="العودة للرئيسية" title="الرئيسية">←</button>
@@ -1554,6 +1602,22 @@ html.zenith-restore-pending main { visibility:hidden !important; }
     </section>
   </section>
 
+
+  <section class="panel" id="accountPanel" hidden>
+    <h2>حسابي</h2>
+    <button type="button" class="secondary backBtn" id="accountBackHome">← الرئيسية</button>
+    <div id="accountPanelMsg" class="msg" aria-live="polite">جارٍ تحميل بيانات الحساب...</div>
+    <div class="accountDetailsGrid">
+      <div class="accountDetail"><span>الاسم</span><strong id="accountFullName">—</strong></div>
+      <div class="accountDetail"><span>اسم المستخدم</span><strong id="accountUsername">—</strong></div>
+      <div class="accountDetail"><span>البريد الإلكتروني</span><strong id="accountEmail">—</strong></div>
+      <div class="accountDetail"><span>إجمالي الطلبات</span><strong id="accountOrderCount">—</strong></div>
+      <div class="accountDetail"><span>الرصيد الحالي</span><strong id="accountCurrentBalance">—</strong></div>
+      <div class="accountDetail"><span>إجمالي الرصيد المستخدم عبر آسياسيل</span><strong id="accountAsiacellUsed">—</strong></div>
+      <div class="accountDetail"><span>إجمالي الرصيد المستخدم عبر ماستركارد</span><strong id="accountMastercardUsed">—</strong></div>
+    </div>
+  </section>
+
   <section class="panel" id="myOrdersPanel" hidden>
     <h2>طلباتي</h2>
 <button type="button" class="secondary backBtn" data-back>← رجوع</button>
@@ -1574,7 +1638,6 @@ html.zenith-restore-pending main { visibility:hidden !important; }
       <input id="zoneId" inputmode="numeric" autocomplete="off" placeholder="أدخل Zone ID" required>
       <input id="paymentMethod" type="hidden" value="wallet">
       <div id="walletInfo" class="notice">
-        <div>سيتم الدفع حصراً من محفظة طريقة الدفع المختارة لهذه الباقة.</div>
         <div class="muted">الدفع بآسياسيل يخصم من محفظة آسياسيل، والدفع بماستركارد يخصم من محفظة ماستركارد.</div>
       </div>
       <button type="submit" id="submitOrderBtn">إتمام الطلب</button>
@@ -1746,7 +1809,7 @@ html.zenith-restore-pending main { visibility:hidden !important; }
       <button type="button" id="openPolicy">سياسة المتجر والاسترجاع</button>
     </div>
   </div>
-  <div class="footerCopyright">© ZenithStore — متجر زينيث</div>
+  <div class="footerCopyright">© ZenithStore — متجر زينيث | جميع الحقوق محفوظة</div>
 </footer>
 
 <script>
@@ -1797,7 +1860,7 @@ function applyRoleUI(isAdmin) {
   }
   // Some navigation entries are optional in this layout (menuProducts is not
   // rendered as a standalone button). Never dereference a missing element.
-  ["menuWallet", "menuProducts", "menuMyOrders"].forEach(id => {
+  ["menuWallet", "menuProducts", "menuMyOrders", "menuAccount"].forEach(id => {
     const node = el(id);
     if (node) node.hidden = currentUserIsAdmin;
   });
@@ -1878,7 +1941,18 @@ function productTitle(p) {
   return p.name || (p.product_type === "weekly" ? "الاشتراك الأسبوعي" : `${p.diamonds || ""} جوهرة`);
 }
 function getPrice(p, provider) {
+  if (isWeeklySubscriptionProduct(p)) {
+    return provider === "mastercard" ? 2500 : 2750;
+  }
   return provider === "mastercard" ? p.price_mastercard_iqd : p.price_asiacell_iqd;
+}
+function getWeeklyOldPrice(provider) {
+  return provider === "mastercard" ? 3000 : 3250;
+}
+function isWeeklySubscriptionProduct(p) {
+  const name = String(p?.name || "");
+  const type = String(p?.product_type || "").toLowerCase();
+  return type === "weekly" || /الاشتراك الأسبوعي|الاشتراك الاسبوعي|weekly subscription/i.test(name);
 }
 
 async function loadProducts() {
@@ -2005,6 +2079,15 @@ el("productSearch").addEventListener("input", () => {
   productSearchTerm = el("productSearch").value.trim().toLowerCase();
   renderProducts();
 });
+document.addEventListener("click", event => {
+  if (event.target.closest(".productInfoButton,.productInfoPopover")) return;
+  document.querySelectorAll(".productInfoPopover").forEach(node => node.remove());
+  document.querySelectorAll(".productInfoButton[aria-expanded='true']").forEach(node => node.setAttribute("aria-expanded","false"));
+});
+window.addEventListener("scroll", () => {
+  document.querySelectorAll(".productInfoPopover").forEach(node => node.remove());
+  document.querySelectorAll(".productInfoButton[aria-expanded='true']").forEach(node => node.setAttribute("aria-expanded", "false"));
+}, {passive:true});
 
 function renderProducts() {
   renderCart();
@@ -2054,7 +2137,52 @@ function renderProducts() {
     h.textContent = productTitle(p);
     const priceEl = document.createElement("div");
     priceEl.className = "price";
-    priceEl.textContent = money(price);
+    if (isWeeklySubscriptionProduct(p)) {
+      const oldPrice = document.createElement("del");
+      oldPrice.className = "weeklyOldPrice";
+      oldPrice.textContent = money(getWeeklyOldPrice(provider));
+      const newPrice = document.createElement("span");
+      newPrice.className = "weeklyNewPrice";
+      newPrice.textContent = money(price);
+      priceEl.append(oldPrice, newPrice);
+    } else {
+      priceEl.textContent = money(price);
+    }
+    const infoText = (() => {
+      const name = String(p.name || "").toLowerCase();
+      const type = String(p.product_type || "").toLowerCase();
+      const amount = Number(p.diamonds || 0);
+      if (type === "weekly" || /الاشتراك الأسبوعي|الاشتراك الاسبوعي|weekly subscription/.test(name)) return "ستحصل مباشرة على 80 جوهرة و20 كل يوم لمدة 7 أيام، المجموع 220 جوهرة، تنجز 100 جوهرة في مهام الشحن.";
+      if (/الباقة الأسبوعية|الباقة الاسبوعية|weekly pack|weekly bundle/.test(name + " " + type)) return "ستحصل على 55 جوهرة و20 نجوم فجر و2 قطع مظاهر نادرة و1 بطاقة مضاعفة الذهب";
+      if (type === "monthly" || /شهري|monthly/.test(name + " " + type)) return "ستحصل على 275 جوهرة و180 نجوم فجر و10 قطع مظاهر نادرة و1 بطاقة مضاعفة الذهب";
+      if (amount === 257) return "ملاحظة مهمة: باقة 257 جوهرة لا تنجز مهام الشحن بالكامل لأنها 234+23 والجواهر الإضافية لا تحتسب ضمن الشحن.";
+      return "";
+    })();
+    let infoButton = null;
+    if (infoText) {
+      infoButton = document.createElement("button");
+      infoButton.type = "button";
+      infoButton.className = "productInfoButton";
+      infoButton.textContent = "?";
+      infoButton.setAttribute("aria-label", "معلومات عن " + productTitle(p));
+      infoButton.setAttribute("aria-expanded", "false");
+      infoButton.addEventListener("click", event => {
+        event.stopPropagation();
+        const existing = document.querySelector(".productInfoPopover");
+        if (existing && infoButton.getAttribute("aria-expanded") === "true") { existing.remove(); infoButton.setAttribute("aria-expanded", "false"); return; }
+        document.querySelectorAll(".productInfoPopover").forEach(node => node.remove());
+        document.querySelectorAll(".productInfoButton[aria-expanded='true']").forEach(node => node.setAttribute("aria-expanded", "false"));
+        const pop = document.createElement("div");
+        pop.className = "productInfoPopover";
+        pop.textContent = infoText;
+        pop.setAttribute("role", "tooltip");
+        const buttonRect = infoButton.getBoundingClientRect();
+        pop.style.left = Math.max(12, Math.min(window.innerWidth - 272, buttonRect.left + buttonRect.width / 2 - 130)) + "px";
+        pop.style.bottom = Math.max(8, window.innerHeight - buttonRect.top + 7) + "px";
+        document.body.appendChild(pop);
+        infoButton.setAttribute("aria-expanded", "true");
+      });
+    }
     const note = document.createElement("div");
     note.className = "muted";
     note.textContent = p.__pendingSupabase
@@ -2086,6 +2214,7 @@ function renderProducts() {
     streak.className = "light-streak";
     streak.setAttribute("aria-hidden", "true");
     card.append(streak, mark, imageWrap, h, priceEl, note);
+    if (infoButton) card.appendChild(infoButton);
     box.appendChild(card);
   });
   setMessage("productsMsg", "اضغط على البطاقة لاختيار الباقة، ثم اضغط متابعة لإتمام الطلب.");
@@ -2096,7 +2225,7 @@ function renderPopularProducts() {
   box.replaceChildren();
   const provider = el("provider").value;
   const weekly = productsCache.find(p => (p.product_type === "weekly" || /weekly|أسبوعي|اسبوعي/i.test(String(p.name || ""))) && getPrice(p, provider) != null);
-  const preferred = [22, 257, 514];
+  const preferred = [22, 284, 514];
   const gemPicks = preferred.map(amount => productsCache.find(p => Number(p.diamonds) === amount && getPrice(p, provider) != null)).filter(Boolean);
   const chosen = [weekly, ...gemPicks].filter(Boolean);
   if (!chosen.length) { box.textContent = "الباقات غير متاحة حالياً."; return; }
@@ -2108,7 +2237,17 @@ function renderPopularProducts() {
     img.src = productImageData(product); img.alt = ""; img.loading = "lazy";
     const info = document.createElement("span");
     const title = document.createElement("strong"); title.textContent = productTitle(product);
-    const price = document.createElement("small"); price.textContent = money(getPrice(product, el("provider").value));
+    const price = document.createElement("small");
+    if (isWeeklySubscriptionProduct(product)) {
+      price.className = "popularWeeklyDiscount";
+      const oldPrice = document.createElement("del");
+      oldPrice.textContent = money(getWeeklyOldPrice(el("provider").value));
+      const newPrice = document.createElement("strong");
+      newPrice.textContent = money(getPrice(product, el("provider").value));
+      price.append(oldPrice, newPrice);
+    } else {
+      price.textContent = money(getPrice(product, el("provider").value));
+    }
     info.append(title, price); button.append(img, info);
     button.addEventListener("click", () => {
       showGemProducts();
@@ -2131,8 +2270,22 @@ function openPurchase(product, provider, fromHistory = false) {
     sessionStorage.setItem(selectedProviderStorageKey, String(provider || "mastercard"));
   } catch (_) {}
   const price = getPrice(product, provider);
-  el("selectedProductInfo").textContent =
-    `${productTitle(product)} — ${money(price)} (${provider === "mastercard" ? "ماستركارد" : "آسياسيل"})`;
+  el("selectedProductInfo").replaceChildren();
+  const summaryText = document.createElement("div");
+  summaryText.textContent = `${productTitle(product)} — ${money(price)} (${provider === "mastercard" ? "ماستركارد" : "آسياسيل"})`;
+  el("selectedProductInfo").appendChild(summaryText);
+  if (isWeeklySubscriptionProduct(product)) {
+    const oldPrice = document.createElement("del");
+    oldPrice.className = "weeklyOldPrice purchaseOldPrice";
+    oldPrice.textContent = money(getWeeklyOldPrice(provider));
+    el("selectedProductInfo").appendChild(oldPrice);
+  }
+  if (Number(product.diamonds) === 257) {
+    const specialNote = document.createElement("div");
+    specialNote.className = "productSpecialNote";
+    specialNote.textContent = "ملاحظة مهمة: باقة 257 جوهرة لا تنجز مهام الشحن بالكامل لأنها 234+23 والجواهر الإضافية لا تحتسب ضمن الشحن.";
+    el("selectedProductInfo").appendChild(specialNote);
+  }
   el("purchasePanel").hidden = false;
   setMessage("orderMsg", "");
   if (!fromHistory) el("purchasePanel").scrollIntoView({behavior:"smooth", block:"start"});
@@ -2828,7 +2981,7 @@ async function loadAdminOrders() {
     if (!user) { el("adminPanel").hidden = true; applyRoleUI(false); return; }
     const {data: isAdmin, error: adminError} = await withAdminTimeout(db.rpc("is_admin"), "التحقق من صلاحية الأدمن");
     if (adminError) { setMessage("adminMsg", "تعذر التحقق من صلاحية الأدمن: " + adminError.message, "error"); return; }
-    if (isAdmin !== true) { el("adminPanel").hidden = true; applyRoleUI(false); setMessage("authMsg", "هذا الحساب لا يملك صلاحية الأدمن.", "error"); return; }
+    if (isAdmin !== true) { el("adminPanel").hidden = true; applyRoleUI(false); setMessage("authMsg", ""); return; }
     applyRoleUI(true); el("adminPanel").hidden = false;
     setMessage("adminMsg", "جارٍ تحميل جميع حالات طلبات الشحن...");
     const orderSelect = "id, created_at, status, price_iqd, zone_id, player_id, product_id, user_id, payment_method, payment_provider, transaction_ref, proof_path";
@@ -3050,12 +3203,16 @@ function closeAsiacellDepositModal(animate = false) {
     return new Promise(resolve => setTimeout(() => {
       document.body.classList.remove("asiacell-deposit-open", "mastercard-deposit-open", "deposit-modal-open");
       depositEntryFields.classList.remove("isClosing");
+      depositEntryFields.style.removeProperty("--deposit-origin-x");
+      depositEntryFields.style.removeProperty("--deposit-origin-y");
       if (depositModalBackdrop) { depositModalBackdrop.remove(); depositModalBackdrop = null; }
       resolve();
     }, 1000));
   }
   document.body.classList.remove("asiacell-deposit-open", "mastercard-deposit-open", "deposit-modal-open");
   depositEntryFields.classList.remove("isClosing");
+  depositEntryFields.style.removeProperty("--deposit-origin-x");
+  depositEntryFields.style.removeProperty("--deposit-origin-y");
   if (depositModalBackdrop) { depositModalBackdrop.remove(); depositModalBackdrop = null; }
   return Promise.resolve();
 }
@@ -3078,7 +3235,11 @@ document.querySelectorAll("[data-deposit-provider]").forEach(button => button.ad
   document.body.appendChild(depositModalBackdrop);
   document.body.appendChild(depositEntryFields);
   document.body.classList.add("deposit-modal-open", provider === "asiacell" ? "asiacell-deposit-open" : "mastercard-deposit-open");
+  const plusRect = button.getBoundingClientRect();
   requestAnimationFrame(() => {
+    const modalRect = depositEntryFields.getBoundingClientRect();
+    depositEntryFields.style.setProperty("--deposit-origin-x", (plusRect.left + plusRect.width / 2 - modalRect.left) + "px");
+    depositEntryFields.style.setProperty("--deposit-origin-y", (plusRect.top + plusRect.height / 2 - modalRect.top) + "px");
     if (depositModalBackdrop) depositModalBackdrop.classList.add("isVisible");
     const focusTarget = provider === "asiacell" ? el("depositAsiacellCardNumber") : el("depositAmount");
     if (focusTarget) focusTarget.focus({preventScroll:true});
@@ -3116,6 +3277,7 @@ function saveActivePage(page, trackNavigation = true) {
   try { localStorage.setItem(activePageStorageKey, page); } catch (_) {}
 }
 function hideCustomerPanels() {
+  if (el("accountPanel")) el("accountPanel").hidden = true;
   ["homePanel", "mlbbCategoryPanel", "productsPanel", "cartPanel", "customerWalletPanel", "myOrdersPanel", "purchasePanel", "termsPanel", "policyPanel"].forEach(id => {
     const node = el(id); if (node) node.hidden = true;
   });
@@ -3251,6 +3413,66 @@ el("menuHome").addEventListener("click", () => { closeMainMenu(); el("navHome").
 el("menuCart").addEventListener("click", () => { closeMainMenu(); showCart(); });
 el("menuSearch").addEventListener("click", () => { closeMainMenu(); el("navSearch").click(); });
 
+
+
+async function loadAccountPanel() {
+  const msg = el("accountPanelMsg");
+  msg.textContent = "جارٍ تحميل بيانات الحساب...";
+  const {data: authData, error: authError} = await db.auth.getUser();
+  const user = authData?.user;
+  if (authError || !user) { msg.textContent = "سجّل الدخول أولاً لعرض بيانات حسابك."; return; }
+  const metadata = user.user_metadata || {};
+  el("accountFullName").textContent = metadata.full_name || metadata.name || "غير متوفر في بيانات الحساب";
+  el("accountUsername").textContent = metadata.username ? "@" + metadata.username : "غير متوفر في بيانات الحساب";
+  el("accountEmail").textContent = user.email || "—";
+  const [ordersResult, walletResult] = await Promise.all([
+    db.from("orders").select("id", {count:"exact", head:true}).eq("user_id", user.id),
+    db.from("wallet_transactions").select("amount_iqd,wallet_provider").eq("user_id", user.id)
+  ]);
+  el("accountOrderCount").textContent = ordersResult.error ? "تعذر التحميل" : Number(ordersResult.count || 0).toLocaleString("en-US");
+  if (walletResult.error) {
+    el("accountCurrentBalance").textContent = "تعذر التحميل";
+    el("accountAsiacellUsed").textContent = "تعذر التحميل";
+    el("accountMastercardUsed").textContent = "تعذر التحميل";
+    msg.textContent = "تعذر تحميل بيانات المحفظة: " + walletResult.error.message;
+    msg.className = "msg error";
+    return;
+  }
+  const totals = (walletResult.data || []).reduce((acc, row) => {
+    const provider = row.wallet_provider === "asiacell" ? "asiacell" : "mastercard";
+    const amount = Number(row.amount_iqd || 0);
+    acc.balance[provider] += amount;
+    if (amount < 0) acc.used[provider] += Math.abs(amount);
+    return acc;
+  }, {balance:{asiacell:0,mastercard:0},used:{asiacell:0,mastercard:0}});
+  el("accountCurrentBalance").textContent = money(totals.balance.asiacell + totals.balance.mastercard);
+  el("accountAsiacellUsed").textContent = money(totals.used.asiacell);
+  el("accountMastercardUsed").textContent = money(totals.used.mastercard);
+  msg.textContent = ordersResult.error ? "تم تحميل بيانات الحساب والمحفظة، لكن تعذر عدّ الطلبات." : "تم تحميل بيانات حسابك الفعلية.";
+  msg.className = ordersResult.error ? "msg error" : "msg success";
+}
+
+el("menuAccount").addEventListener("click", async () => {
+  const {data} = await db.auth.getSession();
+  if (!data?.session?.user) {
+    setMessage("authMsg", "سجّل الدخول أولاً لعرض حسابك.", "error");
+    return;
+  }
+  hideCustomerPanels();
+  el("homePanel").hidden = true;
+  el("accountPanel").hidden = false;
+  el("myOrdersPanel").hidden = true;
+  el("customerWalletPanel").hidden = true;
+  el("purchasePanel").hidden = true;
+  saveActivePage("account");
+  closeMainMenu();
+  await loadAccountPanel();
+  el("accountPanel").scrollIntoView({behavior:"smooth",block:"start"});
+});
+el("accountBackHome").addEventListener("click", () => {
+  el("accountPanel").hidden = true;
+  el("navHome").click();
+});
 
 el("menuWallet").addEventListener("click", async () => {
   hideCustomerPanels();
@@ -3496,6 +3718,15 @@ async function restoreActivePage(pageOverride = null, fromPopState = false) {
       el("customerWalletPanel").hidden = false;
       setActiveNav("navWallet");
       await loadCustomerWallet();
+    } else {
+      savedPage = "home";
+    }
+  } else if (savedPage === "account") {
+    const {data} = await db.auth.getSession();
+    if (data?.session?.user) {
+      el("accountPanel").hidden = false;
+      setActiveNav("");
+      await loadAccountPanel();
     } else {
       savedPage = "home";
     }
@@ -4425,5 +4656,149 @@ body.mastercard-deposit-open #depositEntryFields #cancelDepositModal{background:
   height:calc(100% - 28px)!important;
 }
 </style>
-\n</body>
+\n
+
+<style id="zenith-faq-animated-toggle-and-weekly-discount">
+/* FAQ answers stay hidden until their question is tapped. */
+.faqItem{padding:0!important}
+.faqQuestion{
+  appearance:none!important;-webkit-appearance:none!important;
+  width:100%!important;display:flex!important;align-items:center!important;
+  justify-content:space-between!important;gap:14px!important;
+  padding:13px 2px 14px!important;margin:0!important;
+  border:0!important;border-radius:0!important;background:transparent!important;
+  color:var(--ink)!important;text-align:right!important;
+  font:inherit!important;font-size:16px!important;font-weight:850!important;
+  line-height:1.7!important;cursor:pointer!important;box-shadow:none!important;
+}
+.faqToggleIcon{
+  display:grid;place-items:center;flex:0 0 25px;width:25px;height:25px;
+  border:1px solid rgba(130,155,185,.55);border-radius:50%;
+  color:var(--ink);font-size:18px;font-weight:500;line-height:1;
+  transition:transform .28s ease,background .28s ease,color .28s ease;
+}
+.faqQuestion[aria-expanded="true"] .faqToggleIcon{
+  transform:rotate(45deg);background:rgba(130,155,185,.15);
+}
+.faqAnswer{
+  max-height:0;opacity:0;overflow:hidden;visibility:hidden;
+  transform:translateY(-6px);
+  transition:max-height .36s cubic-bezier(.2,.75,.25,1),opacity .25s ease,transform .3s ease,visibility .36s;
+}
+.faqAnswer p{margin:0!important;padding:0 3px 14px!important;font-size:12px!important;line-height:1.9!important;color:var(--muted)!important}
+.faqAnswer.isOpen{opacity:1;visibility:visible;transform:translateY(0)}
+.weeklyOldPrice{display:inline-block!important;margin-inline-end:8px!important;color:var(--muted)!important;opacity:.8;font-size:.82em!important;font-weight:600!important;text-decoration:line-through!important;text-decoration-thickness:1.5px!important}
+.weeklyNewPrice{display:inline-block!important;color:var(--accent,#18a7b8)!important;font-weight:900!important}
+.price:has(.weeklyOldPrice){display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap}
+.popularWeeklyDiscount{display:flex!important;align-items:center;gap:7px;flex-wrap:wrap}
+.popularWeeklyDiscount del{font-size:.86em;opacity:.7}
+.popularWeeklyDiscount strong{font-size:1em;color:var(--accent,#18a7b8)}
+.purchaseOldPrice{margin-top:5px!important}
+@media(prefers-reduced-motion:reduce){
+ .faqAnswer,.faqToggleIcon{transition:none!important}
+}
+</style>
+<script id="zenith-faq-toggle-behavior">
+document.addEventListener("click", function(event){
+  const question = event.target.closest(".faqQuestion");
+  if (!question) return;
+  const answer = question.nextElementSibling;
+  if (!answer || !answer.classList.contains("faqAnswer")) return;
+  const opening = question.getAttribute("aria-expanded") !== "true";
+
+  // Close other answers first, preserving a single expanded answer at a time.
+  document.querySelectorAll(".faqQuestion[aria-expanded='true']").forEach(other => {
+    if (other === question) return;
+    other.setAttribute("aria-expanded","false");
+    const otherAnswer = other.nextElementSibling;
+    if (otherAnswer) {
+      otherAnswer.style.maxHeight = otherAnswer.scrollHeight + "px";
+      requestAnimationFrame(() => {
+        otherAnswer.style.maxHeight = "0px";
+        otherAnswer.classList.remove("isOpen");
+      });
+    }
+  });
+
+  if (opening) {
+    question.setAttribute("aria-expanded","true");
+    answer.style.visibility = "visible";
+    answer.classList.add("isOpen");
+    answer.style.maxHeight = "0px";
+    requestAnimationFrame(() => {
+      answer.style.maxHeight = answer.scrollHeight + "px";
+    });
+  } else {
+    question.setAttribute("aria-expanded","false");
+    answer.style.maxHeight = answer.scrollHeight + "px";
+    requestAnimationFrame(() => {
+      answer.style.maxHeight = "0px";
+      answer.classList.remove("isOpen");
+    });
+  }
+});
+document.addEventListener("transitionend", function(event){
+  if (!event.target.classList?.contains("faqAnswer") || event.propertyName !== "max-height") return;
+  if (event.target.classList.contains("isOpen")) {
+    event.target.style.maxHeight = event.target.scrollHeight + "px";
+  } else {
+    event.target.style.visibility = "hidden";
+  }
+});
+</script>
+
+<style id="zenith-final-requested-faq-refinements">
+  /* FAQ: reveal the original store background, remove item cards/shadows, and add breathing room. */
+  .faqSection,
+  html[data-theme="light"] .faqSection {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 8px 2px !important;
+    margin: 30px 0 24px !important;
+  }
+  .faqItem,
+  html[data-theme="light"] .faqItem {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    border: 0 !important;
+    border-bottom: 1px solid rgba(130,155,185,.32) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin: 0 0 13px !important;
+    padding: 0 0 13px !important;
+  }
+  .faqItem:last-child { border-bottom: 0 !important; margin-bottom: 0 !important; }
+  .faqQuestion {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 15px 2px 16px !important;
+  }
+  .faqToggleIcon {
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    width: 25px !important;
+    min-width: 25px !important;
+    height: 25px !important;
+    flex-basis: 25px !important;
+  }
+  .faqQuestion[aria-expanded="true"] .faqToggleIcon {
+    background: transparent !important;
+  }
+  .faqAnswer,
+  .faqAnswer p {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+</style>
+
+</body>
 </html>
