@@ -1411,7 +1411,7 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
       <button type="button" class="secondary" id="menuWallet" hidden><span class="menuActionIcon walletSvgIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2.5"/><path d="M3 9h18M16 14h2"/><path d="M6 6V4.8A1.8 1.8 0 0 1 7.8 3H19"/></svg></span> محفظتي</button>
       <button type="button" class="secondary" id="menuCart"><span class="menuActionIcon cartSvgIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.4L22 8H6"/><circle cx="10" cy="20" r="1.2"/><circle cx="18" cy="20" r="1.2"/></svg></span> السلة</button>
       <button type="button" class="secondary" id="menuMyOrders"><span class="menuActionIcon receiptSvgIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><g transform="rotate(7 12 12)"><path d="M6 3.5h9l3 3V21l-2-1.2L14 21l-2-1.2L10 21l-2-1.2L6 21z"/><path d="M14.5 3.8V7h3.2M9 11h6M9 14.5h6"/></g></svg></span> الطلبات</button>
-      <button type="button" class="secondary" id="menuAccount">👤 حسابي</button>
+      <button type="button" class="secondary" id="menuAccount"><span class="menuActionIcon accountSvgIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c.8-3.7 3.3-5.5 7.5-5.5s6.7 1.8 7.5 5.5"/></svg></span> حسابي</button>
       <button type="button" class="secondary" id="menuSearch">⌕ البحث</button>
     </div>
   </nav>
@@ -1423,7 +1423,7 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
       <img class="heroPoster posterSlide" src="images/second-poster.png" alt="إعلان متجر زينيث">
       <img class="heroPoster posterSlide" src="main-poster.png" alt="إعلان متجر زينيث لشحن الجواهر في موبايل ليجندز">
       <div class="heroCopy">
-        <button type="button" id="openGems" class="heroButton">تصفح الباقات <span>←</span></button>
+        <button type="button" id="openGems" class="heroButton" hidden>تصفح الباقات <span>←</span></button>
       </div>
     </div>
     <div class="posterDots" id="homePosterDots" aria-label="التنقل بين الإعلانات">
@@ -1441,8 +1441,8 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
           <span class="gameTileName">Mobile Legends<small class="gameMainSubtitle">تصفح أفضل العروض والباقات</small></span>
         </button>
         <div class="mlbbSubcategories" id="mlbbSubcategories" hidden>
-          <button type="button" class="homeCategory activeCategory" id="gemsCategory"><span class="categoryIcon">💎</span><span class="categoryText"><strong>شحن الجواهر</strong><small>باقات الجواهر</small></span><span class="categoryArrow">←</span></button>
-          <button type="button" class="homeCategory membershipPlaceholder" id="membershipPlaceholder"><span class="categoryText"><strong>العضوية المميزة</strong><small>العضويات والباقات</small></span><span class="categoryArrow">←</span></button>
+          <button type="button" class="homeCategory activeCategory" id="gemsCategory"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>شحن الجواهر</strong><small>باقات الجواهر</small></span><span class="categoryArrow">←</span></button>
+          <button type="button" class="homeCategory membershipPlaceholder" id="membershipPlaceholder"><img class="mlbbCategoryImage" src="images/memberships.png" alt="العضويات"><span class="categoryText"><strong>العضوية المميزة</strong><small>العضويات والباقات</small></span><span class="categoryArrow">←</span></button>
           <button type="button" class="homeCategory membershipPlaceholder fanFrameHomeCategory" id="fanFrameCategory" aria-label="إطار كبير المعجبين"><img class="fanFrameHomeImage" src="https://zenithstor.github.io/Zenith-Store/images/big-fans-banner.png" alt="إطار كبير المعجبين"><span class="categoryText"><strong>إطار كبير المعجبين</strong><small>إطار مميز</small></span><span class="categoryArrow">←</span></button>
           <button type="button" class="homeCategory membershipPlaceholder" id="verifiedSquadCategory"><span class="categoryText"><strong>فرقة موثقة</strong><small>قريباً</small></span><span class="categoryArrow">←</span></button>
         </div>
@@ -1454,6 +1454,7 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
     <div class="homeTrust"><span>🛡️ دفع آمن</span><span>⚡ إرسال سريع وفوري</span><span>🎧 دعم فني</span></div>
   <section class="faqSection" id="faqSection" aria-labelledby="faqTitle">
     <h2 id="faqTitle">الأسئلة الشائعة</h2>
+    <p class="faqSubtitle">أسئلة ذات أجوبة قصيرة</p>
     <div class="faqItem">
       <button class="faqQuestion" type="button" aria-expanded="false"><span>كيف أشحن؟</span><span class="faqToggleIcon" aria-hidden="true">＋</span></button>
       <div class="faqAnswer"><p>اختر اللعبة المراد الشحن بها وحدد الباقة المناسبة وطريقة الدفع، ادخل Player ID و Zone ID اذا كان مطلوباً ثم اكمل الطلب، يمكنك متابعة طلبك من خلال قسم «طلباتي»</p></div>
@@ -1483,8 +1484,8 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
     </div>
     <p class="muted">اختر القسم الذي تريد تصفحه</p>
     <div class="mlbbPageGrid">
-      <button type="button" class="homeCategory" id="mlbbPageGems"><span class="categoryIcon">💎</span><span class="categoryText"><strong>شحن الجواهر</strong><small>باقات الجواهر</small></span><span class="categoryArrow">←</span></button>
-      <button type="button" class="homeCategory" id="mlbbPageMembership"><span class="categoryText"><strong>العضوية المميزة</strong><small>العضويات والباقات</small></span><span class="categoryArrow">←</span></button>
+      <button type="button" class="homeCategory" id="mlbbPageGems"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>شحن الجواهر</strong><small>باقات الجواهر</small></span><span class="categoryArrow">←</span></button>
+      <button type="button" class="homeCategory" id="mlbbPageMembership"><img class="mlbbCategoryImage" src="images/memberships.png" alt="العضويات"><span class="categoryText"><strong>العضوية المميزة</strong><small>العضويات والباقات</small></span><span class="categoryArrow">←</span></button>
       <button type="button" class="homeCategory fanFrameHomeCategory" id="mlbbPageFanFrame"><img class="fanFrameHomeImage" src="https://zenithstor.github.io/Zenith-Store/images/big-fans-banner.png" alt="إطار كبير المعجبين"><span class="categoryText"><strong>إطار كبير المعجبين</strong><small>إطار مميز</small></span><span class="categoryArrow">←</span></button>
       <button type="button" class="homeCategory" id="mlbbPageVerified"><span class="categoryText"><strong>فرقة موثقة</strong><small>قريباً</small></span><span class="categoryArrow">←</span></button>
     </div>
@@ -3767,7 +3768,7 @@ async function restoreActivePage(pageOverride = null, fromPopState = false) {
     el("homePanel").hidden = false;
     el("homePosterSlider").hidden = false;
     const heroButton = el("openGems");
-    if (heroButton) { heroButton.hidden = false; heroButton.style.removeProperty("display"); }
+    if (heroButton) { heroButton.hidden = true; heroButton.style.removeProperty("display"); }
     setActiveNav("navHome");
   }
   try {
@@ -4656,6 +4657,7 @@ body.mastercard-deposit-open #depositEntryFields #cancelDepositModal{background:
   height:calc(100% - 28px)!important;
 }
 </style>
+\n
 
 <style id="zenith-faq-animated-toggle-and-weekly-discount">
 /* FAQ answers stay hidden until their question is tapped. */
@@ -4797,6 +4799,28 @@ document.addEventListener("transitionend", function(event){
     background: transparent !important;
     box-shadow: none !important;
   }
+</style>
+
+
+<style id="zenith-latest-user-refinements">
+  /* Keep category tile dimensions unchanged while using the supplied category artwork. */
+  .mlbbCategoryImage{width:48px;height:48px;flex:0 0 48px;object-fit:contain;display:block}
+  @media(max-width:420px){.mlbbCategoryImage{width:42px;height:42px;flex-basis:42px}}
+  .menuActionIcon.accountSvgIcon{display:inline-grid;place-items:center;width:19px;height:19px;vertical-align:middle}
+  .menuActionIcon.accountSvgIcon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .faqSubtitle{margin:-3px 0 14px!important;color:var(--muted)!important;font-size:12px!important;font-weight:500!important;line-height:1.6!important}
+  /* In the light theme, order and deposit details use clean white surfaces, not grey/shaded boxes. */
+  html[data-theme="light"] .orderTrackCard,
+  html[data-theme="light"] .depositTrackCard{background:#fff!important;box-shadow:none!important}
+  html[data-theme="light"] .orderDetailCell,
+  html[data-theme="light"] .depositTrackCard .orderDetailCell{background:#fff!important;background-color:#fff!important;background-image:none!important;border-color:#e5eaf0!important;box-shadow:none!important}
+  html[data-theme="light"] .orderDetailsGrid,
+  html[data-theme="light"] .depositTrackCard .orderDetailsGrid{background:#fff!important;box-shadow:none!important}
+  html[data-theme="light"] .faqSection,
+  html[data-theme="light"] .faqItem,
+  html[data-theme="light"] .faqQuestion,
+  html[data-theme="light"] .faqAnswer,
+  html[data-theme="light"] .faqAnswer p{background:transparent!important;background-color:transparent!important;background-image:none!important;box-shadow:none!important}
 </style>
 
 </body>
