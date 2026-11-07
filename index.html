@@ -1765,18 +1765,20 @@ let customerWalletLoadBusy = false;
 
 function applyRoleUI(isAdmin) {
   currentUserIsAdmin = isAdmin === true;
-  // A background role check must not send a customer back to Home while browsing.
-  // Only force the admin layout when the account is actually an administrator.
+  const bottomNav = document.querySelector(".bottomNav");
   if (currentUserIsAdmin) {
-    el("productsPanel").hidden = true;
-    el("homePanel").hidden = true;
-    
-    el("purchasePanel").hidden = true;
-    el("myOrdersPanel").hidden = true;
-    el("customerWalletPanel").hidden = true;
+    // Admin accounts must never be left on the customer storefront.
+    hideCustomerPanels();
+    el("adminPanel").hidden = false;
     el("selectedProductInfo").textContent = "";
     selectedProduct = null;
     selectedProvider = null;
+    activeAppPage = "admin";
+    setActiveNav("");
+    if (bottomNav) bottomNav.hidden = true;
+  } else {
+    el("adminPanel").hidden = true;
+    if (bottomNav) bottomNav.hidden = false;
   }
   el("menuWallet").hidden = currentUserIsAdmin;
   el("menuProducts").hidden = currentUserIsAdmin;
@@ -3459,6 +3461,20 @@ try { history.scrollRestoration = "manual"; } catch (_) {}
 
 // Restore the last section after refresh (same tab), not only the gems section.
 async function restoreActivePage(pageOverride = null, fromPopState = false) {
+  // A confirmed admin session always opens the administration dashboard, not a saved customer page.
+  if (currentUserIsAdmin) {
+    hideCustomerPanels();
+    el("adminPanel").hidden = false;
+    activeAppPage = "admin";
+    setActiveNav("");
+    const bottomNav = document.querySelector(".bottomNav");
+    if (bottomNav) bottomNav.hidden = true;
+    requestAnimationFrame(() => {
+      el("adminPanel").scrollIntoView({behavior:"instant", block:"start"});
+      document.documentElement.classList.remove("zenith-restore-pending");
+    });
+    return;
+  }
   activeProductCategory = "gems";
   productSearchTerm = "";
   let savedPage = pageOverride || "home";
@@ -3617,7 +3633,7 @@ function installZenithBackNavigation() {
 }
 
 updatePaymentFields();
-// Start customer-page restoration even if an optional background request fails.
+// Startup order: restore the session, verify the role, then show exactly one interface.
 (async function bootZenithStore() {
   try {
     const results = await Promise.allSettled([refreshSession(), loadProducts()]);
@@ -3626,30 +3642,35 @@ updatePaymentFields();
         console.error(index === 0 ? "تعذر تحديث الجلسة" : "تعذر تحميل المنتجات", result.reason);
       }
     });
-    try {
+
+    // Verify the account role before restoring a previously saved customer page.
+    await loadAdminOrders();
+    if (currentUserIsAdmin) {
+      await loadAdminDeposits();
+      hideCustomerPanels();
+      el("adminPanel").hidden = false;
+      activeAppPage = "admin";
+      setActiveNav("");
+      const bottomNav = document.querySelector(".bottomNav");
+      if (bottomNav) bottomNav.hidden = true;
+      requestAnimationFrame(() => el("adminPanel").scrollIntoView({behavior:"instant", block:"start"}));
+    } else {
       await restoreActivePage();
       appNavigationStack = [];
-      installZenithBackNavigation();
-    } catch (restoreError) {
-      console.error("تعذر استعادة القسم السابق؛ سيتم عرض الرئيسية", restoreError);
+    }
+    installZenithBackNavigation();
+  } catch (bootError) {
+    console.error("تعذر إكمال تهيئة المتجر", bootError);
+    if (!currentUserIsAdmin) {
       hideCustomerPanels();
       el("homePanel").hidden = false;
       saveActivePage("home", false);
       setActiveNav("navHome");
-      installZenithBackNavigation();
-      requestAnimationFrame(() => document.documentElement.classList.remove("zenith-restore-pending"));
     }
   } finally {
-    // The restore routine reveals the page after the correct panel and scroll position are applied.
-    if (el("homePanel").hidden && el("productsPanel").hidden && el("customerWalletPanel").hidden && el("myOrdersPanel").hidden && el("cartPanel").hidden && el("purchasePanel").hidden && el("termsPanel").hidden && el("policyPanel").hidden && el("mlbbCategoryPanel").hidden) {
-      el("homePanel").hidden = false;
-      activeAppPage = "home";
-      requestAnimationFrame(() => document.documentElement.classList.remove("zenith-restore-pending"));
-    }
+    document.documentElement.classList.remove("zenith-restore-pending");
   }
 })();
-loadAdminOrders();
-loadAdminDeposits();
 checkForNewAdminOrders();
 window.setInterval(checkForNewAdminOrders, 15000);
 </script>
