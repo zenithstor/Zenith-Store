@@ -1414,8 +1414,8 @@ html.zenith-restore-pending main { visibility:hidden !important; }
           <span class="gameTileName">Mobile Legends<small class="gameMainSubtitle">تصفح أفضل العروض والباقات</small></span>
         </button>
         <div class="mlbbSubcategories" id="mlbbSubcategories" hidden>
-          <button type="button" class="homeCategory activeCategory" id="gemsCategory"><img class="mlbbSectionImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>شحن الجواهر</strong><small>باقات الجواهر</small></span><span class="categoryArrow">←</span></button>
-          <button type="button" class="homeCategory membershipPlaceholder" id="membershipPlaceholder"><img class="mlbbSectionImage" src="images/memberships.png" alt="العضويات"><span class="categoryText"><strong>العضوية المميزة</strong><small>العضويات والباقات</small></span><span class="categoryArrow">←</span></button>
+          <button type="button" class="homeCategory activeCategory" id="gemsCategory"><span class="categoryIcon">💎</span><span class="categoryText"><strong>شحن الجواهر</strong><small>باقات الجواهر</small></span><span class="categoryArrow">←</span></button>
+          <button type="button" class="homeCategory membershipPlaceholder" id="membershipPlaceholder"><span class="categoryText"><strong>العضوية المميزة</strong><small>العضويات والباقات</small></span><span class="categoryArrow">←</span></button>
           <button type="button" class="homeCategory membershipPlaceholder fanFrameHomeCategory" id="fanFrameCategory" aria-label="إطار كبير المعجبين"><img class="fanFrameHomeImage" src="https://zenithstor.github.io/Zenith-Store/images/big-fans-banner.png" alt="إطار كبير المعجبين"><span class="categoryText"><strong>إطار كبير المعجبين</strong><small>إطار مميز</small></span><span class="categoryArrow">←</span></button>
           <button type="button" class="homeCategory membershipPlaceholder" id="verifiedSquadCategory"><span class="categoryText"><strong>فرقة موثقة</strong><small>قريباً</small></span><span class="categoryArrow">←</span></button>
         </div>
@@ -1429,11 +1429,14 @@ html.zenith-restore-pending main { visibility:hidden !important; }
 
   <section class="panel mlbbCategoryPage" id="mlbbCategoryPanel" hidden>
     <button type="button" class="secondary" id="backFromMlbb" aria-label="العودة للرئيسية" title="الرئيسية">←</button>
-    <div class="mlbbTitleRow"><img class="mlbbTitleImage" src="images/mobile-legends.png" alt="Mobile Legends"><h2 class="mlbbPageTitle">Mobile Legends</h2></div>
+    <div class="mlbbTitleRow">
+      <img class="mlbbTitleImage" src="images/mobile-legends.png" alt="Mobile Legends">
+      <h2 class="mlbbPageTitle">Mobile Legends</h2>
+    </div>
     <p class="muted">اختر القسم الذي تريد تصفحه</p>
     <div class="mlbbPageGrid">
-      <button type="button" class="homeCategory" id="mlbbPageGems"><img class="mlbbSectionImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>شحن الجواهر</strong><small>باقات الجواهر</small></span><span class="categoryArrow">←</span></button>
-      <button type="button" class="homeCategory" id="mlbbPageMembership"><img class="mlbbSectionImage" src="images/memberships.png" alt="العضويات"><span class="categoryText"><strong>العضوية المميزة</strong><small>العضويات والباقات</small></span><span class="categoryArrow">←</span></button>
+      <button type="button" class="homeCategory" id="mlbbPageGems"><span class="categoryIcon">💎</span><span class="categoryText"><strong>شحن الجواهر</strong><small>باقات الجواهر</small></span><span class="categoryArrow">←</span></button>
+      <button type="button" class="homeCategory" id="mlbbPageMembership"><span class="categoryText"><strong>العضوية المميزة</strong><small>العضويات والباقات</small></span><span class="categoryArrow">←</span></button>
       <button type="button" class="homeCategory fanFrameHomeCategory" id="mlbbPageFanFrame"><img class="fanFrameHomeImage" src="https://zenithstor.github.io/Zenith-Store/images/big-fans-banner.png" alt="إطار كبير المعجبين"><span class="categoryText"><strong>إطار كبير المعجبين</strong><small>إطار مميز</small></span><span class="categoryArrow">←</span></button>
       <button type="button" class="homeCategory" id="mlbbPageVerified"><span class="categoryText"><strong>فرقة موثقة</strong><small>قريباً</small></span><span class="categoryArrow">←</span></button>
     </div>
@@ -1505,14 +1508,14 @@ html.zenith-restore-pending main { visibility:hidden !important; }
     <div class="walletCardsGrid" aria-label="أرصدة المحافظ">
       <article class="walletBankCard walletAsiacellCard">
         <span class="walletCardBrand">ZENITH WALLET</span>
-        <span class="walletCardChip" aria-hidden="true">＋</span>
+        <button type="button" class="walletCardChip depositCardAddButton" data-deposit-provider="asiacell" aria-label="إضافة رصيد عبر آسياسيل" title="إضافة رصيد عبر آسياسيل">＋</button>
         <small>الرصيد المتاح</small>
         <strong id="customerAsiacellBalance">جارٍ التحميل...</strong>
         <span class="walletCardType">آسياسيل</span>
       </article>
       <article class="walletBankCard walletMastercardCard">
         <span class="walletCardBrand">ZENITH WALLET</span>
-        <span class="walletCardChip" aria-hidden="true">＋</span>
+        <button type="button" class="walletCardChip depositCardAddButton" data-deposit-provider="mastercard" aria-label="إضافة رصيد عبر ماستركارد" title="إضافة رصيد عبر ماستركارد">＋</button>
         <small>الرصيد المتاح</small>
         <strong id="customerMastercardBalance">جارٍ التحميل...</strong>
         <span class="walletCardType">MasterCard</span>
@@ -1522,14 +1525,7 @@ html.zenith-restore-pending main { visibility:hidden !important; }
     <div id="customerWalletMsg" class="msg" aria-live="polite"></div>
     <section class="notice" aria-labelledby="depositHeading">
       <h3 id="depositHeading">إضافة رصيد للمحفظة</h3>
-      <div class="muted">اختر طريقة الدفع واتبع المعلومات المعروضة. لا يتم إضافة الرصيد إلا بعد مراجعة الإدارة.</div>
-      <div class="depositMethodChooser" id="depositMethodChooser">
-        <p class="depositChooserTitle">اختر طريقة إضافة الرصيد للمتابعة</p>
-        <div class="depositMethodGrid">
-          <button type="button" class="depositMethodChoice" data-deposit-provider="asiacell"><span class="depositMethodIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="6" y="2.8" width="12" height="18.4" rx="2.2"/><path d="M9 6h6M10.5 18h3"/></svg></span><strong>آسياسيل</strong><small>كارت تعبئة</small></button>
-          <button type="button" class="depositMethodChoice" data-deposit-provider="mastercard"><span class="depositMethodIcon mastercardMark" aria-hidden="true"><svg viewBox="0 0 36 24"><circle cx="14" cy="12" r="9" fill="#eb001b"/><circle cx="22" cy="12" r="9" fill="#f79e1b"/><path d="M18 5.7a9 9 0 0 1 0 12.6 9 9 0 0 1 0-12.6" fill="#ff5f00"/></svg></span><strong>ماستركارد</strong><small>تحويل إلكتروني</small></button>
-        </div>
-      </div>
+      <div class="muted">اضغط علامة + في بطاقة آسياسيل أو ماستركارد لفتح نموذج إضافة الرصيد. لا يُضاف الرصيد إلا بعد مراجعة الإدارة.</div>
       <form id="depositForm">
         <input id="depositProvider" type="hidden" value="" form="depositForm">
         <div id="depositEntryPlaceholder" aria-hidden="true"></div>
@@ -2302,11 +2298,9 @@ async function submitDepositRequest(e) {
     el("depositPaymentInfo").hidden = false;
     if (document.body.classList.contains("deposit-modal-open")) await closeAsiacellDepositModal(true);
     el("depositEntryFields").hidden = true;
-    el("depositMethodChooser").hidden = false;
     el("depositProvider").value = "";
     restoreDepositEntryFields();
     el("depositEntryFields").hidden = true;
-    el("depositMethodChooser").hidden = false;
     el("depositAsiacellCardGroup").hidden = true;
     await loadCustomerDeposits();
   } catch (err) {
@@ -3075,7 +3069,6 @@ document.querySelectorAll("[data-deposit-provider]").forEach(button => button.ad
   const provider = button.dataset.depositProvider;
   closeAsiacellDepositModal();
   el("depositProvider").value = provider;
-  el("depositMethodChooser").hidden = true;
   depositEntryFields.hidden = false;
   renderPaymentInfo("depositPaymentInfo", provider);
   setMessage("depositMsg", "");
@@ -3095,7 +3088,6 @@ el("cancelDepositModal").addEventListener("click", async () => {
   if (document.body.classList.contains("deposit-modal-open")) await closeAsiacellDepositModal(true);
   restoreDepositEntryFields();
   depositEntryFields.hidden = true;
-  el("depositMethodChooser").hidden = false;
   el("depositProvider").value = "";
   el("depositForm").reset();
   el("depositAsiacellCardGroup").hidden = true;
@@ -3599,8 +3591,7 @@ function installZenithBackNavigation() {
       await closeAsiacellDepositModal(true);
       restoreDepositEntryFields();
       depositEntryFields.hidden = true;
-      el("depositMethodChooser").hidden = false;
-      el("depositProvider").value = "";
+        el("depositProvider").value = "";
       rearmBackTrap();
       return;
     }
@@ -4366,9 +4357,9 @@ html[data-theme="dark"] body.asiacell-deposit-open #depositEntryFields{backgroun
 .depositMethodChooser{padding:0!important;margin:14px 0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
 .depositChooserTitle{margin-top:0!important}
 /* Mobile Legends image slots and page title image. */
-.mlbbTitleRow{display:flex;align-items:center;gap:11px;margin:16px 0 6px;direction:rtl}
-.mlbbTitleRow .mlbbPageTitle{margin:0!important}
-.mlbbTitleImage{width:48px;height:48px;flex:0 0 48px;object-fit:contain;border:1px solid var(--border);border-radius:12px;background:var(--surface);padding:4px}
+.mlbbTitleRow{display:block;position:relative;margin:16px 0 6px;direction:rtl}
+.mlbbTitleRow .mlbbPageTitle{margin:18px 0 6px!important}
+.mlbbTitleImage{position:absolute;right:0;top:-62px;left:auto;transform:none;width:62px;height:62px;object-fit:contain;border:1px solid var(--border);border-radius:12px;background:var(--surface);padding:4px}
 .mlbbSectionImage{width:46px;height:46px;flex:0 0 46px;object-fit:contain;border-radius:10px}
 /* Both deposit providers use the same centered modal and a full one-second entrance/exit. */
 .depositModalBackdrop{transition:opacity 1s ease!important}
@@ -4388,5 +4379,51 @@ body.mastercard-deposit-open #depositEntryFields #cancelDepositModal{background:
 @media(prefers-reduced-motion:reduce){body.deposit-modal-open #depositEntryFields{animation:none!important}.depositModalBackdrop{transition:none!important}}
 </style>
 
-</body>
+
+<style id="zenith-wallet-cards-and-mlbb-final-adjustments">
+/* The wallet-card plus buttons are now the only entry points for deposits. */
+.walletBankCard{position:relative!important}
+.walletCardChip.depositCardAddButton{appearance:none!important;-webkit-appearance:none!important;position:absolute!important;top:12px!important;left:13px!important;width:39px!important;height:39px!important;min-width:39px!important;padding:0!important;margin:0!important;display:grid!important;place-items:center!important;border:1px solid #ffffff70!important;border-radius:50%!important;background:#ffffff20!important;color:#fff!important;font-size:28px!important;font-weight:400!important;line-height:1!important;cursor:pointer!important;box-shadow:0 3px 12px #0002!important;z-index:3!important}
+.walletCardChip.depositCardAddButton:active{transform:scale(.92)!important}
+.walletCardChip.depositCardAddButton:focus-visible{outline:2px solid #fff!important;outline-offset:3px!important}
+/* On rejected requests, break the connector between stage two and stage three at its midpoint. */
+.orderTimeline.isRejected .orderStep:nth-child(2)::after{background:linear-gradient(to bottom,var(--border) 0 40%,transparent 40% 60%,var(--border) 60% 100%)!important;transform:scaleY(1)!important;height:calc(100% - 28px)!important}
+
+</style>
+
+
+<style id="zenith-mobile-legends-inner-logo-and-original-tile-shape">
+.gameCategoryGrid #mobileLegendsToggle{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  aspect-ratio:1 / 1!important;
+  min-height:0!important;
+  height:auto!important;
+  padding:13px!important;
+  gap:12px!important;
+}
+.gameCategoryGrid #mobileLegendsToggle .gameTileImage{
+  display:block!important;
+  width:58px!important;
+  height:58px!important;
+  flex:0 0 58px!important;
+  align-self:flex-start!important;
+  box-sizing:border-box!important;
+  object-fit:contain!important;
+  object-position:center!important;
+}
+.gameCategoryGrid #mobileLegendsToggle .gameTileName{
+  display:block!important;
+  width:100%!important;
+  text-align:right!important;
+}
+.orderTimeline.isRejected .orderStep:nth-child(2)::after{
+  background:var(--border)!important;
+  transform:scaleY(1)!important;
+  height:calc(100% - 28px)!important;
+}
+</style>
+\n</body>
 </html>
