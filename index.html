@@ -1614,7 +1614,10 @@ html.zenith-restore-pending main { visibility:hidden !important; }
       <div class="adminStat adminStatWide"><span>قيمة الطلبات المكتملة المعروضة</span><strong id="adminStatRevenue">—</strong></div>
       <p class="muted adminStatsNote">الإحصائيات محسوبة من آخر 100 طلب محمّل، وليست إجمالي مبيعات المتجر التاريخية.</p>
     </div>
+    <h3>طلبات الشحن الجديدة (بانتظار قبولك أو رفضك)</h3>
     <div id="adminOrders"></div>
+    <h3>طلبات تم قبولها وبانتظار إكمال الشحن</h3>
+    <div id="adminProcessingOrders"></div>
 
     <hr style="border:0;border-top:1px solid #304562;margin:22px 0">
     <h2>طلبات إضافة رصيد المحفظة</h2>
@@ -2161,13 +2164,11 @@ function renderPaymentInfo(targetId, provider) {
   target.classList.toggle("isMastercard", provider === "mastercard");
   target.classList.toggle("isAsiacell", provider === "asiacell");
   const amountGroup = el("depositAmountGroup");
-  if (amountGroup) amountGroup.hidden = false;
   const amountInput = el("depositAmount");
-  if (amountInput) amountInput.required = true;
+  if (amountGroup) amountGroup.hidden = provider === "asiacell";
+  if (amountInput) amountInput.required = provider === "mastercard";
   const amountHelp = el("depositAmountHelp");
-  if (amountHelp) amountHelp.textContent = provider === "asiacell"
-    ? "أدخل قيمة كارت آسياسيل بالدينار العراقي. يجب أن يكون المبلغ مطابقاً لقيمة الكارت."
-    : "أدخل المبلغ الذي حولته حتى تتمكن الإدارة من مطابقته وإضافته للمحفظة.";
+  if (amountHelp) amountHelp.textContent = "أدخل المبلغ الذي حولته حتى تتمكن الإدارة من مطابقته وإضافته للمحفظة.";
   target.hidden = provider !== "mastercard";
   if (provider === "mastercard") {
     const eyebrow = document.createElement("small"); eyebrow.className = "depositInfoEyebrow"; eyebrow.textContent = "بيانات التحويل المعتمدة";
@@ -2232,7 +2233,7 @@ async function loadCustomerDeposits() {
     const details = document.createElement("div"); details.className = "orderDetailsGrid";
     const method = row.payment_method === "mastercard" ? "ماستركارد" : row.payment_method === "asiacell" ? "آسياسيل" : (row.payment_method || "—");
     const statusText = rejected ? "مرفوضة" : approved ? "مقبولة" : depositStatusLabel(status);
-    [["طريقة الدفع",method],["الحالة",statusText],["الكمية",row.payment_method === "asiacell" && Number(row.amount_iqd) === 0 ? "تُحدد بعد المراجعة" : money(row.amount_iqd)]].forEach(([label,value]) => {
+    [["طريقة الدفع",method],["الحالة",statusText],["الكمية",row.payment_method === "asiacell" && !(Number(row.amount_iqd) > 0) ? "تُحدد بعد المراجعة" : money(row.amount_iqd)]].forEach(([label,value]) => {
       const cell = document.createElement("div"); cell.className = "orderDetailCell";
       const small = document.createElement("small"); small.textContent = label;
       const strong = document.createElement("strong"); strong.textContent = String(value);
@@ -2252,11 +2253,11 @@ async function submitDepositRequest(e) {
   const user = authData?.user;
   if (authError || !user) { setMessage("depositMsg", "سجّل الدخول أولاً لإرسال طلب الإيداع.", "error"); return; }
   const provider = el("depositProvider").value;
-  const amount = Number(el("depositAmount").value);
+  const amount = provider === "asiacell" ? null : Number(el("depositAmount").value);
   const file = el("depositProof").files[0];
   const asiacellCardNumber = el("depositAsiacellCardNumber").value.replace(/\D/g, "");
   if (!provider) { setMessage("depositMsg", "اختر طريقة الدفع أولاً.", "error"); return; }
-  if (!Number.isSafeInteger(amount) || amount < 1000 || amount > 10000000) { setMessage("depositMsg", "أدخل مبلغاً صحيحاً بين 1,000 و10,000,000 دينار.", "error"); return; }
+  if (provider === "mastercard" && (!Number.isSafeInteger(amount) || amount < 1000 || amount > 10000000)) { setMessage("depositMsg", "أدخل مبلغاً صحيحاً بين 1,000 و10,000,000 دينار.", "error"); return; }
   if (provider === "mastercard" && (!file || !file.type || !file.type.startsWith("image/"))) { setMessage("depositMsg", "ارفع صورة إثبات التحويل أولاً.", "error"); return; }
   if (provider === "asiacell" && !/^[0-9]{10,24}$/.test(asiacellCardNumber)) { setMessage("depositMsg", "أدخل رقم كارت آسياسيل بشكل صحيح، بالأرقام فقط.", "error"); return; }
   if (file && file.size > 5 * 1024 * 1024) { setMessage("depositMsg", "حجم الصورة يجب ألا يتجاوز 5 ميغابايت.", "error"); return; }
@@ -2282,7 +2283,7 @@ async function submitDepositRequest(e) {
     setMessage("depositMsg", `تم إرسال طلب إضافة الرصيد رقم #${data.id}. سيبقى قيد المراجعة ولن يُضاف الرصيد إلا بعد موافقة الإدارة.`, "success");
     el("depositForm").reset();
     el("depositAmountGroup").hidden = false;
-    el("depositAmount").required = true;
+    el("depositAmount").required = false;
     el("depositPaymentInfo").hidden = false;
     if (document.body.classList.contains("asiacell-deposit-open")) await closeAsiacellDepositModal(true);
     el("depositEntryFields").hidden = true;
@@ -2846,25 +2847,41 @@ async function loadAdminOrders() {
     setMessage("adminMsg", "جارٍ تحميل الطلبات...");
     el("adminOrders").replaceChildren();
 
+    const orderSelect = "id, created_at, status, price_iqd, zone_id, player_id, product_id, user_id, payment_method, payment_provider, transaction_ref, proof_path";
     const {data: orders, error} = await db.from("orders")
-      .select("id, created_at, status, price_iqd, zone_id, player_id, product_id, user_id, payment_method, payment_provider, transaction_ref, proof_path")
-      .order("created_at", {ascending:false})
-      .limit(100);
+      .select(orderSelect).eq("status", "pending")
+      .order("created_at", {ascending:false}).limit(100);
+    const {data: processingOrders, error: processingError} = await db.from("orders")
+      .select(orderSelect).eq("status", "processing")
+      .order("created_at", {ascending:false}).limit(100);
 
     if (error) {
-      setMessage("adminMsg", "تعذر تحميل الطلبات: " + error.message, "error");
+      setMessage("adminMsg", "تعذر تحميل طلبات الشحن: " + error.message, "error");
+      el("adminOrders").textContent = "فشل تحميل طلبات الشحن. راجع صلاحيات SELECT وسياسات RLS لجدول orders.";
       return;
     }
-    const {data: adminOrderItems} = await db.from("order_items").select("order_id,product_name,diamonds,product_type,quantity,line_total_iqd").in("order_id", (orders || []).map(o=>o.id));
-    const orderUserIds = [...new Set((orders || []).map(o => o.user_id).filter(Boolean))];
+    if (processingError) console.error("Could not load processing orders:", processingError);
+    const allVisibleOrders = [...(orders || []), ...(processingOrders || [])];
+    const allOrderIds = allVisibleOrders.map(o=>o.id);
+    const {data: adminOrderItems, error: itemsError} = allOrderIds.length
+      ? await db.from("order_items").select("order_id,product_name,diamonds,product_type,quantity,line_total_iqd").in("order_id", allOrderIds)
+      : {data: [], error: null};
+    if (itemsError) console.error("Could not load order_items:", itemsError);
+    const orderUserIds = [...new Set(allVisibleOrders.map(o => o.user_id).filter(Boolean))];
     const {data: orderProfiles, error: orderProfilesError} = orderUserIds.length
       ? await db.from("profiles").select("id,username").in("id", orderUserIds)
       : {data: [], error: null};
-    if (orderProfilesError) console.warn("Could not load order customer profiles:", orderProfilesError);
+    if (orderProfilesError) {
+      console.error("Could not load order customer profiles:", orderProfilesError);
+      setMessage("adminMsg", "تم تحميل الطلبات، لكن تعذر تحميل أسماء الزبائن من profiles: " + orderProfilesError.message, "error");
+    }
+    if (itemsError) {
+      setMessage("adminMsg", "تم تحميل الطلبات، لكن تعذر تحميل تفاصيل الباقات من order_items: " + itemsError.message, "error");
+    }
     const orderUsernameById = Object.fromEntries((orderProfiles || []).map(profile => [profile.id, profile.username]));
     const adminItemsByOrder = {};
     (adminOrderItems || []).forEach(item => (adminItemsByOrder[item.order_id] ||= []).push(item));
-    const statsOrders = orders || [];
+    const statsOrders = allVisibleOrders;
     const countStatus = status => statsOrders.filter(order => String(order.status || "").toLowerCase() === status).length;
     const completedRevenue = statsOrders
       .filter(order => String(order.status || "").toLowerCase() === "completed")
@@ -2875,12 +2892,12 @@ async function loadAdminOrders() {
     el("adminStatCompleted").textContent = String(countStatus("completed"));
     el("adminStatRevenue").textContent = money(completedRevenue);
     setMessage("adminMsg", `عدد الطلبات المعروضة: ${statsOrders.length}`);
-    if (!orders || !orders.length) {
-      el("adminOrders").textContent = "لا توجد طلبات حالياً.";
-      return;
-    }
+    el("adminOrders").replaceChildren();
+    el("adminProcessingOrders").replaceChildren();
+    if (!orders || !orders.length) el("adminOrders").textContent = "لا توجد طلبات جديدة بانتظار المراجعة.";
+    if (!processingOrders || !processingOrders.length) el("adminProcessingOrders").textContent = "لا توجد طلبات مقبولة بانتظار إكمال الشحن.";
 
-    for (const order of orders) {
+    for (const order of allVisibleOrders) {
       const card = document.createElement("article");
       card.className = "product";
       card.style.marginTop = "12px";
@@ -2896,7 +2913,7 @@ async function loadAdminOrders() {
       player.textContent = `Player ID: ${order.player_id} | Zone ID: ${order.zone_id}`;
       const customer = document.createElement("p");
       customer.className = "muted";
-      customer.textContent = `الزبون: ${orderUsernameById[order.user_id] ? "@" + orderUsernameById[order.user_id] : "حساب " + String(order.user_id || "—").slice(0, 8)} | رقم الطلب: #${order.id}`;
+      customer.textContent = `الزبون: ${orderUsernameById[order.user_id] ? "@" + orderUsernameById[order.user_id] : "اسم المستخدم غير متوفر في profiles"} | رقم الطلب: #${order.id}`;
       const payment = document.createElement("p");
       payment.className = "muted";
       payment.textContent = `طريقة الدفع: ${order.payment_method || "-"} | المزود: ${order.payment_provider || "-"} | رقم العملية: ${order.transaction_ref || "-"}`;
@@ -2959,7 +2976,7 @@ async function loadAdminOrders() {
         }
         card.appendChild(actions);
       }
-      el("adminOrders").appendChild(card);
+      (order.status === "processing" ? el("adminProcessingOrders") : el("adminOrders")).appendChild(card);
     }
   } finally {
     adminLoadInProgress = false;
@@ -2991,7 +3008,6 @@ async function loadAdminDeposits() {
   if (profilesError) console.warn("Could not load deposit customer profiles:", profilesError);
   const usernames = Object.fromEntries((profiles || []).map(profile => [profile.id, profile.username]));
   const pending = rows.filter(row => String(row.status || "pending").toLowerCase() === "pending");
-  const archived = rows.filter(row => String(row.status || "pending").toLowerCase() !== "pending");
   const addSection = (heading, list, emptyText) => {
     const section = document.createElement("section");
     section.className = "adminDepositSection";
@@ -3003,7 +3019,7 @@ async function loadAdminDeposits() {
       const card = document.createElement("article"); card.className = "product"; card.style.marginTop = "9px";
       const title = document.createElement("strong"); title.textContent = `طلب إيداع #${row.id}`;
       const amount = document.createElement("div"); amount.className = "price";
-      amount.textContent = money(row.amount_iqd);
+      amount.textContent = Number(row.amount_iqd) > 0 ? money(row.amount_iqd) : (row.payment_method === "asiacell" ? "الكمية: يحددها الأدمن" : "المبلغ غير محدد");
       const details = document.createElement("div"); details.className = "muted";
       const customerName = usernames[row.user_id] ? "@" + usernames[row.user_id] : "حساب " + String(row.user_id || "—").slice(0, 8);
       details.textContent = `الزبون: ${customerName} · الطريقة: ${row.payment_method === "asiacell" ? "آسياسيل" : row.payment_method === "mastercard" ? "ماستركارد" : row.payment_method || "—"} · الحالة: ${depositStatusLabel(status)} · التاريخ: ${row.created_at ? new Date(row.created_at).toLocaleString("ar-IQ") : "—"}${row.transaction_ref ? " · رقم العملية/الكارت: " + row.transaction_ref : ""}`;
@@ -3020,13 +3036,30 @@ async function loadAdminDeposits() {
       }
       if (isPending) {
         const actions = document.createElement("div"); actions.className = "actions";
+        let amountField = null;
+        if (row.payment_method === "asiacell" && !(Number(row.amount_iqd) > 0)) {
+          const amountLabel = document.createElement("label"); amountLabel.textContent = "حدد كمية/مبلغ كارت آسياسيل (د.ع)";
+          amountField = document.createElement("input"); amountField.type = "number"; amountField.min = "1"; amountField.step = "1"; amountField.inputMode = "numeric"; amountField.placeholder = "أدخل المبلغ بعد استلام الكارت"; amountField.required = true;
+          amountLabel.appendChild(amountField); card.appendChild(amountLabel);
+        }
         const approve = document.createElement("button"); approve.type = "button"; approve.textContent = "تأكيد الدفع وإضافة الرصيد";
         approve.addEventListener("click", async () => {
-          if (!Number.isSafeInteger(Number(row.amount_iqd)) || Number(row.amount_iqd) <= 0) {
-            setMessage("adminDepositsMsg", "مبلغ الإيداع غير صالح. صحح المبلغ في سجل deposits داخل Supabase أولاً.", "error"); return;
+          let finalAmount = Number(row.amount_iqd);
+          if (amountField) {
+            finalAmount = Number(amountField.value);
+            if (!Number.isSafeInteger(finalAmount) || finalAmount <= 0 || finalAmount > 10000000) {
+              setMessage("adminDepositsMsg", "أدخل كمية صحيحة أكبر من صفر ولا تتجاوز 10,000,000 دينار.", "error"); return;
+            }
           }
-          if (!confirm(`تأكدت من استلام ${money(row.amount_iqd)} من ${customerName}؟ سيتم إضافة الرصيد لحساب الزبون.`)) return;
+          if (!Number.isSafeInteger(finalAmount) || finalAmount <= 0) {
+            setMessage("adminDepositsMsg", "حدد مبلغ الإيداع أولاً.", "error"); return;
+          }
+          if (!confirm(`تأكدت من استلام ${money(finalAmount)} من ${customerName}؟ سيتم إضافة الرصيد لحساب الزبون.`)) return;
           approve.disabled = true;
+          if (amountField) {
+            const {error: amountError} = await db.rpc("admin_set_deposit_amount", {p_deposit_id: row.id, p_amount_iqd: finalAmount});
+            if (amountError) { setMessage("adminDepositsMsg", "تعذر حفظ مبلغ الإيداع: " + amountError.message, "error"); approve.disabled = false; return; }
+          }
           const {error: approveError} = await db.rpc("approve_deposit", {p_deposit_id: row.id});
           if (approveError) { setMessage("adminDepositsMsg", "تعذرت الموافقة: " + approveError.message, "error"); approve.disabled = false; return; }
           setMessage("adminDepositsMsg", `تم اعتماد طلب الإيداع #${row.id} وإضافة الرصيد.`, "success");
@@ -3051,8 +3084,7 @@ async function loadAdminDeposits() {
     });
     box.appendChild(section);
   };
-  addSection("طلبات قيد المراجعة", pending, "لا توجد طلبات إيداع قيد المراجعة حالياً.");
-  addSection("أرشيف الإيداعات (المقبولة والمرفوضة وغيرها)", archived, "لا توجد طلبات سابقة في الأرشيف.");
+  addSection("طلبات الإيداع الجديدة (بانتظار مراجعة الأدمن)", pending, "لا توجد طلبات إيداع جديدة حالياً.");
 }
 
 el("walletSearchForm").addEventListener("submit", async e => {
@@ -3424,7 +3456,13 @@ el("menuMyOrders").addEventListener("click", async () => {
 });
 
 
-el("refreshOrders").addEventListener("click", loadAdminOrders);
+el("refreshOrders").addEventListener("click", async () => {
+  const btn = el("refreshOrders");
+  btn.disabled = true;
+  setMessage("adminMsg", "جارٍ تحديث طلبات الشحن والإيداع...");
+  try { await loadAdminOrders(); await loadAdminDeposits(); }
+  finally { btn.disabled = false; }
+});
 el("refreshAdminDeposits").addEventListener("click", loadAdminDeposits);
 
 el("clearAdminNotifications").addEventListener("click", () => {
