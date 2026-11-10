@@ -2159,6 +2159,7 @@ function isWeeklySubscriptionProduct(product) {
 }
 function openGemRegion(region) {
   activeStoreGame = "mlbb";
+  el("productsPanel")?.classList.remove("honor-mode");
   activeGemRegion = region || "global";
   try { localStorage.setItem("zenithstore:activeGemRegion:" + location.pathname, activeGemRegion); } catch (_) {}
   productSearchTerm = "";
@@ -2169,6 +2170,7 @@ function openGemRegion(region) {
 }
 function openHonorKings() {
   activeStoreGame = "honor";
+  el("productsPanel")?.classList.add("honor-mode");
   activeGemRegion = "global";
   productSearchTerm = "";
   if (el("productSearch")) el("productSearch").value = "";
@@ -2177,6 +2179,8 @@ function openHonorKings() {
   showGemProducts();
   const crumb = el("mlbbRegionBreadcrumb");
   if (crumb) crumb.textContent = "Honor of Kings";
+  const storeHeading = el("productsPanel")?.querySelector(":scope > h2");
+  if (storeHeading) storeHeading.textContent = "باقات التوكنز";
   const back = el("backHome");
   if (back) back.textContent = "← رجوع";
 }
@@ -2274,7 +2278,8 @@ function renderProducts() {
       Number(p.diamonds) <= 23 ? "images/honor-token-1.png" :
       Number(p.diamonds) <= 240 ? "images/honor-token-2.png" :
       Number(p.diamonds) <= 560 ? "images/honor-token-3.png" :
-      Number(p.diamonds) <= 1200 ? "images/honor-token-4.png" : "images/honor-token-5.png"
+      Number(p.diamonds) <= 1200 ? "images/honor-token-4.png" :
+      Number(p.diamonds) <= 4000 ? "images/honor-token-5.png" : "images/honor-token-6.png"
     ) : (activeProductCategory === "fanframe" ? "images/big-fans.png" :
       (activeProductCategory === "gems" && Number(p.diamonds) > 0 ? getGemTierImage(p) : productImageData(p)));
     image.alt = productTitle(p);
@@ -5318,6 +5323,91 @@ html[data-theme="light"] .regionGemCategory .categoryText small {
 }
 .orderStep.isDone:not(:last-child)::after {background:#22a45a!important;}
 html[data-theme="light"] .orderStep.isDone .stepMark {background:#dcfce7!important;color:#15803d!important;border-color:#22a45a!important;}
+</style>
+
+
+<style id="zenith-v7-transparent-faq-clear-region-tiles-hok-only">
+/* The FAQ should sit directly on the site's background in the light theme. */
+html[data-theme="light"] #homePanel {
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  border-color:transparent!important;
+}
+html[data-theme="light"] #homePanel #faqSection,
+html[data-theme="light"] #homePanel #faqSection * {
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+}
+
+/* Region tiles: use the image edge-to-edge, without card borders or dark tint. */
+.diamondsFullCategory {
+  position:relative!important;
+  overflow:hidden!important;
+  isolation:isolate!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.diamondsFullCategory .mlbbCategoryImage {
+  position:absolute!important;
+  inset:0!important;
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  min-width:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:0!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  border:0!important;
+  border-radius:inherit!important;
+  opacity:1!important;
+  filter:none!important;
+  mix-blend-mode:normal!important;
+  z-index:0!important;
+}
+.diamondsFullCategory::after {
+  content:none!important;
+  display:none!important;
+  background:none!important;
+}
+.diamondsFullCategory .categoryText {
+  position:absolute!important;
+  z-index:2!important;
+  right:8px!important;
+  bottom:8px!important;
+  max-width:calc(100% - 16px)!important;
+  padding:5px 8px!important;
+  border-radius:8px!important;
+  background:rgba(255,255,255,.94)!important;
+  color:#142238!important;
+  text-shadow:none!important;
+  box-shadow:0 1px 5px rgba(0,0,0,.18)!important;
+}
+.diamondsFullCategory .categoryText strong,
+.diamondsFullCategory .categoryText small {
+  color:#142238!important;
+  opacity:1!important;
+  filter:none!important;
+  text-shadow:none!important;
+  font-weight:900!important;
+  line-height:1.3!important;
+}
+.diamondsFullCategory .categoryArrow {display:none!important}
+
+/* Honor of Kings is a token-only catalog, without MLBB's popular picks or category tabs. */
+#productsPanel.honor-mode .popularSection,
+#productsPanel.honor-mode .productCategoryTabs,
+#productsPanel.honor-mode .productSearchWrap {
+  display:none!important;
+}
 </style>
 
 </body>
