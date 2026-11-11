@@ -1643,7 +1643,7 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
 
   <section class="panel zenithSupportPage" id="supportPanel" hidden>
     <button type="button" class="secondary zenithSupportHome" id="supportBackHome" title="الرئيسية" aria-label="العودة للرئيسية">⌂</button>
-    <div class="zenithSupportHead"><div class="zenithBotAvatar">🤖</div><div><h2>مساعد زينيث الذكي</h2><p>مساعد المتجر المجاني — اسألني بأي صيغة</p></div></div>
+    <div class="zenithSupportHead"><div class="zenithBotAvatar">🤖</div><div><h2>مساعد زينيث الذكي</h2><p>مساعد المتجر المجاني — اسألني عن الموقع والباقات</p></div></div>
     <div class="zenithSupportNotice">أساعدك بمعلومات المتجر وإرشادات الحساب والشحن. إذا ما عندي جواب موثوق، أوصلك مباشرةً لمسؤول المتجر.</div>
     <div class="zenithChatMessages" id="zenithChatMessages" aria-live="polite" aria-label="محادثة الدعم">
       <div class="zenithChatBubble bot">أهلاً بك في ZenithStore 👋
@@ -3647,6 +3647,8 @@ el("menuToggle").addEventListener("click", () => {
   el("menuToggle").classList.toggle("is-open", opening);
   el("menuToggle").setAttribute("aria-expanded", String(opening));
 });
+document.addEventListener('click',event=>{const menu=el('mainMenu'),toggle=el('menuToggle');if(menu&&!menu.hidden&&!menu.contains(event.target)&&!toggle?.contains(event.target))closeMainMenu();});
+document.addEventListener('keydown',event=>{if(event.key==='Escape')closeMainMenu();});
 function closeMainMenu() {
   el("mainMenu").hidden = true;
   el("menuToggle").classList.remove("is-open");
@@ -4245,11 +4247,16 @@ html[data-theme="light"] .orderTrackCard{background:#fff!important}
 .menuBtn::after{top:24px}
 .menuBtn.is-open::before{top:18px;transform:rotate(45deg);box-shadow:none}
 .menuBtn.is-open::after{top:18px;transform:rotate(-45deg)}
-.menuBox{transform-origin:top center;animation:menuDrop .28s cubic-bezier(.2,.8,.2,1)}
+.menuBox{position:fixed!important;z-index:9999;top:62px;left:10px;right:auto!important;width:min(285px,calc(100vw - 20px));max-width:none!important;max-height:calc(100dvh - 76px);overflow:auto;margin:0!important;padding:10px!important;border-radius:15px!important;transform-origin:top left;animation:menuLeftIn .3s cubic-bezier(.2,.8,.2,1);box-shadow:0 14px 38px #0004!important}
 .menuBox[hidden]{display:none!important}
-@keyframes menuDrop{from{opacity:0;transform:translateY(-9px) scaleY(.94)}to{opacity:1;transform:translateY(0) scaleY(1)}}
-.menuLinks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.menuLinks button{margin:0!important;min-height:43px;text-align:right;border-radius:12px;transition:transform .18s,background .18s}
+@keyframes menuLeftIn{from{opacity:0;transform:translateX(-24px) scale(.97)}to{opacity:1;transform:translateX(0) scale(1)}}
+.menuLinks{display:flex!important;flex-direction:column!important;gap:5px!important}
+.menuLinks button{width:100%;margin:0!important;min-height:36px!important;padding:7px 10px!important;font-size:12px!important;text-align:right;border-radius:10px;transition:transform .18s,background .18s}
+.menuAccountArea{padding:5px 4px 9px!important;margin-bottom:8px!important}
+.menuAccountArea h3{font-size:14px;margin-bottom:6px}
+.menuAccountArea input{height:34px!important;font-size:12px!important;margin:4px 0!important}
+.menuBox .msg{font-size:11px}
+@media(max-width:480px){.menuBox{top:58px;width:min(260px,calc(100vw - 20px));padding:9px!important}.menuLinks button{min-height:34px!important;font-size:11px!important}}
 .menuLinks button:active{transform:scale(.97)}
 .menuAccountArea{padding-bottom:12px;margin-bottom:12px}
 .menuAccountArea input{margin:5px 0}
@@ -5840,66 +5847,7 @@ html[data-theme="light"] #homePanel #faqSection * {
 #mlbbCategoryPanel #mlbbPageRegionRussia { grid-column:2!important; grid-row:auto!important; }
 </style>
 
-<script id="zenith-free-support-script">
-(() => {
-  const panel=document.getElementById('supportPanel'); if(!panel)return;
-  const $=id=>document.getElementById(id), instagramUrl='https://ig.me/m/zenith.mlbb1';
-  const messages=$('zenithChatMessages'),input=$('zenithChatInput'),form=$('zenithChatForm'),empty=$('zenithChatEmpty'),limitLabel=$('zenithChatLimit');
-  const STORE_KEY='zenith_support_chat_v2',DAY=24*60*60*1000;
-  let session=(()=>{try{return JSON.parse(localStorage.getItem(STORE_KEY)||'null')}catch(_){return null}})();
-  if(!session||!session.started||Date.now()-session.started>=DAY){session={started:Date.now()};localStorage.setItem(STORE_KEY,JSON.stringify(session));}
-  const handoff='ما عندي معلومة مؤكدة تكفي حتى أجاوبك بدون تخمين. تگدر تتواصل مباشرةً ويا مسؤول المتجر من هنا: ';
-  const norm=s=>String(s||'').toLowerCase().normalize('NFKD').replace(/[\u064B-\u065F\u0670]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/[؟?!،,.؛:()\[\]{}]/g,' ').replace(/\s+/g,' ').trim();
-  const has=(t,words)=>words.some(w=>t.includes(w));
-  function addMessage(text,who='bot',handoffLink=false){
-    const b=document.createElement('div');b.className='zenithChatBubble '+who;
-    if(handoffLink){b.append(document.createTextNode(text));const a=document.createElement('a');a.href=instagramUrl;a.target='_blank';a.rel='noopener noreferrer';a.textContent='محادثة مسؤول المتجر على إنستغرام ↗';a.style.cssText='display:inline-block;margin:7px 0;color:#4aaeff;text-decoration:underline;font-weight:700';b.append(document.createElement('br'),a);}
-    else b.textContent=text;
-    messages.appendChild(b);messages.scrollTop=messages.scrollHeight;return b;
-  }
-  function showSupport(){if(typeof hideCustomerPanels==='function')hideCustomerPanels();panel.hidden=false;if(typeof saveActivePage==='function')saveActivePage('support');if(typeof setActiveNav==='function')setActiveNav('');const m=$('mainMenu');if(m)m.hidden=true;const mt=$('menuToggle');if(mt){mt.classList.remove('is-open');mt.setAttribute('aria-expanded','false')}panel.scrollIntoView({behavior:'smooth',block:'start'});input.focus()}
-  function answer(q){
-    const t=norm(q);
-    if(has(t,['مرحبا','هلا','السلام عليكم','اهلا','سلام عليكم','صباح الخير','مساء الخير']))return 'هلا بيك ونورت ZenithStore 🌟 شلون أگدر أساعدك؟ اسألني عن الحساب أو الباقات أو الشحن أو المحفظة أو الطلبات.';
-    if(has(t,['منو انت','من انت','شنو انت','مساعد','اسمك']))return 'أنا مساعد زينيث الذكي 🤖، مساعد مجاني مبرمج حتى أشرح خدمات المتجر وأرشدك للخطوات الصحيحة. إذا ما أعرف الجواب أحوّلك للمسؤول.';
-    if(has(t,['حساب','تسجيل','اسجل','انشاء','انشئ','اشتراك','دخول','نسيت كلمة','كلمه المرور','باسورد','ايميل'])){
-      if(has(t,['نسيت','ما اتذكر','ما اعرف كلمة','استرجاع']))return 'إذا نسيت كلمة المرور، استخدم خيار استعادة كلمة المرور إن كان ظاهراً بصفحة الدخول. إذا ما وصلك رابط الاستعادة أو ما قدرت تدخل، راسل المسؤول من رابط إنستغرام بنهاية ردي.';
-      return 'لإنشاء حساب جديد:\n1) افتح القائمة ☰ أعلى الموقع.\n2) اضغط «إنشاء حساب جديد».\n3) أدخل الاسم الكامل واسم المستخدم والبريد الإلكتروني.\n4) أنشئ كلمة مرور لا تقل عن 6 أحرف، ثم أرسل النموذج.\nبعدها تگدر تسجل دخولك وتستخدم المحفظة والطلبات. لا تشارك كلمة المرور أو رمز التحقق ويا أي شخص.';
-    }
-    if(has(t,['سعر','اسعار','بكم','كم سعر','كم تكلف','باقات','جوهرة','جواهر','دايموند','دايموندز','توكن','token','diamond','price'])){
-      const region=has(t,['اندون','اندونيسي'])?'الإندونيسي':has(t,['ماليز','ماليزي'])?'الماليزي':has(t,['فلبين','فلبيني'])?'الفلبيني':has(t,['سنغافور','سنغافوري'])?'السنغافوري':has(t,['روسي','روسيا'])?'الروسي':has(t,['تركي','تركيا'])?'التركي':'العالمي';
-      const pay=has(t,['اسيا','اسياسيل','اسيا سيل'])?'آسياسيل':has(t,['ماستر','master','بطاقه'])?'ماستركارد':'';
-      return `حتى تشوف السعر الدقيق، افتح اللعبة واختر ريجن ${region}، وبعدها افتح الباقة المطلوبة. الأسعار تظهر داخل بطاقات المنتجات حسب طريقة الدفع${pay?' ('+pay+')':''}. أعتمد الأسعار المعروضة بالموقع لأنها المرجع الأحدث، وما أريد أعطيك رقم ممكن يكون قديم. إذا تكتبلي اسم الباقة والريجن أگدر أوجهك لمكانها، وإذا السعر مو ظاهر راسل المسؤول.`;
-    }
-    if(has(t,['ريجن','منطقه','منطقة','اندون','ماليز','فلبين','سنغافور','تركي','روسي','اختار اي','اي ريجن']))return 'الريجن لازم يطابق منطقة حساب اللعبة عندك، مو مكان سكنك بالضرورة. اختار نفس الريجن المرتبط بحسابك داخل اللعبة. حالياً المتجر يعرض العالمي والإندونيسي والماليزي والفلبيني والسنغافوري، أما التركي والروسي فهما غير متاحين حالياً.';
-    if(has(t,['اشحن','شحن','شراء','اشتري','اطلب','طلب','جواهر','توكن','هونر','ليجند','uid','ايدي','id اللاعب']))return 'خطوات الشحن:\n1) من الرئيسية اختار اللعبة.\n2) اختار الريجن المطابق لحسابك.\n3) اختار الباقة المناسبة واضغط عليها.\n4) أدخل UID وبيانات اللاعب المطلوبة بالنموذج.\n5) راجع البيانات والريجن جيداً، ثم أضف للسلة وأكمل الطلب باستخدام رصيد المحفظة.\nلا ترسل كلمة مرور اللعبة لأي أحد؛ الشحن ما يحتاجها.';
-    if(has(t,['اسياسيل','اسيا سيل','كارت اسيا','كارت آسياسيل','رصيد الهاتف','تعبئة الهاتف']))return 'تعبئة رصيد آسياسيل:\n1) سجل دخولك للموقع.\n2) افتح «محفظتي».\n3) اختار إضافة رصيد آسياسيل من علامة (+).\n4) اتبع طريقة الدفع والتعليمات الظاهرة بالنموذج.\n5) ارفع إثبات الدفع إذا طُلب، ثم أرسل الطلب وتابع حالته بسجل الإيداعات.\nلا ترسل رقم الكارت أو صورة الإثبات داخل محادثة الدعم.';
-    if(has(t,['ماستر','mastercard','master card','فيزا','بطاقه','بطاقة','مصرف']))return 'تعبئة الرصيد بالماستركارد:\n1) سجل دخولك وافتح «محفظتي».\n2) اضغط (+) عند طريقة ماستركارد.\n3) اتبع تفاصيل الدفع الظاهرة في صفحة الإيداع.\n4) أرسل طلب الإضافة وارفع الإثبات إذا طلبه النموذج.\n5) تابع حالة الطلب من سجل الإيداعات.\nلا تكتب رقم البطاقة أو CVV أو OTP داخل المحادثة.';
-    if(has(t,['رصيد','محفظه','محفظتي','ايداع','اضافه رصيد','اشحن رصيد']))return 'لإضافة رصيد للمحفظة: سجل دخولك، افتح «محفظتي»، اضغط علامة (+) على وسيلة الدفع المناسبة (آسياسيل أو ماستركارد)، اتبع التعليمات وأرسل طلب الإيداع. تگدر تتابع حالة الطلب من سجل طلبات إضافة الرصيد.';
-    if(has(t,['ما وصل','لم يصل','متاخر','تاخر','فشل','مشكله','مشكلة','خطا','خطأ','انخصم','خصم','الغاء','الغاء الطلب','استرجاع','ما يشتغل','ما يفتح','ما يشتغل']))return 'خلينا نتحقق من المشكلة بهدوء:\n• افتح «طلباتي» وشوف حالة الطلب.\n• تأكد من UID والريجن والباقة.\n• إذا انخصم الرصيد والطلب ما اكتمل، لا تعيد الشراء مرة ثانية.\n• جهّز رقم الطلب ووصف مختصر للمشكلة، وراسل المسؤول عبر رابط إنستغرام أدناه حتى يراجعها.';
-    if(has(t,['وين','اين','مكان','القائمه','الرئيسيه','الرئيسية','الصفحه','صفحة']))return 'تگدر ترجع للرئيسية من زر البيت الصغير أعلى يمين صفحة الدعم. القائمة ☰ موجودة أعلى الموقع وتضم الحساب والمحفظة والطلبات والدعم.';
-    if(has(t,['شكرا','مشكور','تسلم','شكراً']))return 'العفو، بالخدمة دائماً 🌟 إذا تحتاج أي مساعدة ثانية اكتبلي.';
-    if(has(t,['مسؤول','انستا','انستغرام','instagram','ادمن','بشري','شخص حقيقي','اتواصل','تواصل']))return handoff;
-    return handoff;
-  }
-  function send(q){q=String(q||'').trim();if(!q)return;empty.classList.add('is-hidden');addMessage(q,'user');input.value='';const typing=document.createElement('div');typing.className='zenithTyping';typing.setAttribute('aria-label','المساعد يكتب');typing.innerHTML='<i></i><i></i><i></i>';messages.appendChild(typing);messages.scrollTop=messages.scrollHeight;const response=answer(q);setTimeout(()=>{typing.remove();const needsLink=response===handoff||response.startsWith('ما عندي معلومة مؤكدة');addMessage(response, 'bot',needsLink);},1000);}
-  $('menuSupport')?.addEventListener('click',showSupport);$('supportBackHome')?.addEventListener('click',()=>$('navHome')?.click());
-  form?.addEventListener('submit',e=>{e.preventDefault();send(input.value)});
-  document.querySelectorAll('#zenithChatSuggestions button').forEach(b=>b.addEventListener('click',()=>send(b.dataset.question)));
-  limitLabel.textContent='محادثة مجانية بلا حد يومي — تُمسح المحادثة تلقائياً بعد 24 ساعة.';
-  // The visible conversation is intentionally fresh on each new 24-hour window.
-  // Reset an already-open chat exactly when its 24-hour window expires.
-  setTimeout(()=>{
-    try{localStorage.removeItem(STORE_KEY)}catch(_){}
-    messages.innerHTML='';
-    const welcome=document.createElement('div');welcome.className='zenithChatBubble bot';welcome.textContent='أهلاً بك في ZenithStore 👋\nبدأت محادثة جديدة. اكتب سؤالك بطريقتك، وأنا أساعدك قدر الإمكان.';messages.appendChild(welcome);
-    empty.classList.remove('is-hidden');
-    session={started:Date.now()};try{localStorage.setItem(STORE_KEY,JSON.stringify(session))}catch(_){}
-  },Math.max(0,DAY-(Date.now()-session.started)));
-  if(Date.now()-session.started>=DAY){session={started:Date.now()};localStorage.setItem(STORE_KEY,JSON.stringify(session));}
-  if(sessionStorage.getItem('zenithstore:activePage:'+location.pathname)==='support'&&performance.getEntriesByType('navigation')[0]?.type==='reload')showSupport();
-})();
-</script>
+<script src="./js/zenith-ai.js" defer></script>
 </body>
 </html>
 
