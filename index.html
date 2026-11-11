@@ -1379,6 +1379,34 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
 @media(prefers-reduced-motion:reduce){body.deposit-modal-open #depositEntryFields{animation:none!important}}
 </style>
 
+<style id="zenith-free-support-styles">
+.zenithSupportPage{position:relative;padding:54px 14px 18px!important}
+.zenithSupportHead{display:flex;align-items:center;gap:12px;margin:0 0 12px}
+.zenithBotAvatar{width:48px;height:48px;display:grid;place-items:center;border-radius:15px;background:linear-gradient(135deg,#176bb2,#18385b);font-size:26px;flex:0 0 auto}
+.zenithSupportHead h2{margin:0 0 3px}.zenithSupportHead p{margin:0;color:var(--muted);font-size:12px}
+.zenithSupportNotice{padding:9px 12px;border:1px solid var(--border);border-radius:12px;background:transparent;color:var(--muted);font-size:11px;line-height:1.8}
+.zenithChatMessages{height:min(57vh,520px);min-height:280px;overflow:auto;display:flex;flex-direction:column;gap:10px;padding:14px;margin:10px 0;border:1px solid var(--border);border-radius:16px;background:var(--page);position:relative;scroll-behavior:smooth}
+.zenithChatBubble{max-width:88%;padding:10px 13px;border-radius:14px;font-size:13px;line-height:1.9;white-space:pre-wrap;overflow-wrap:anywhere;opacity:0;transform:translateY(9px) scale(.985);animation:zenithMessageIn .32s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes zenithMessageIn{to{opacity:1;transform:translateY(0) scale(1)}}
+.zenithChatBubble.bot{align-self:flex-start;background:var(--surface);border:1px solid var(--border);color:var(--ink);border-top-right-radius:4px}
+.zenithChatBubble.user{align-self:flex-end;background:#176bb2;color:#fff;border-top-left-radius:4px}
+.zenithTyping{align-self:flex-start;display:flex;gap:5px;align-items:center;padding:12px 15px;background:var(--surface);border:1px solid var(--border);border-radius:13px;border-top-right-radius:4px;animation:zenithMessageIn .2s ease both}
+.zenithTyping i{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:zenithTypingDot .75s infinite ease-in-out}.zenithTyping i:nth-child(2){animation-delay:.13s}.zenithTyping i:nth-child(3){animation-delay:.26s}@keyframes zenithTypingDot{0%,60%,100%{transform:translateY(0);opacity:.45}30%{transform:translateY(-5px);opacity:1}}
+.zenithChatEmpty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:16px;pointer-events:none;transition:opacity .28s,transform .28s}
+.zenithChatEmpty.is-hidden{opacity:0;transform:translateY(10px);visibility:hidden}
+.zenithChatSuggestions{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;pointer-events:auto}
+.zenithChatSuggestions button{margin:0;padding:10px 7px;min-height:43px;border:1px solid color-mix(in srgb,var(--border) 70%,transparent);border-radius:12px;background:color-mix(in srgb,var(--surface) 58%,transparent);backdrop-filter:blur(7px);color:var(--ink);font-size:12px;transition:transform .22s,opacity .22s,background .22s}
+.zenithChatSuggestions button:active{transform:scale(.96)}
+.zenithChatForm{display:flex;gap:8px}.zenithChatForm input{flex:1;min-width:0;margin:0}.zenithChatForm button{width:auto;min-width:72px;margin:0}
+.zenithChatLimit{margin:7px 2px;color:var(--muted);font-size:10px}
+.zenithSupportHome{position:absolute;top:10px;right:10px;width:32px!important;min-width:32px!important;height:32px!important;padding:0!important;margin:0!important;border-radius:9px!important;display:grid;place-items:center;font-size:15px!important}
+#menuSupport{display:flex!important;align-items:center;gap:9px}.menuActionIcon.botSvgIcon{width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 20px}.menuActionIcon.botSvgIcon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.menuLinks{display:flex!important;flex-direction:column!important;gap:7px!important}.menuLinks button{width:100%;justify-content:flex-start;min-height:42px}
+#mlbbSubcategories #mlbbRegionTurkey,#mlbbSubcategories #mlbbRegionRussia,#mlbbCategoryPanel #mlbbPageRegionTurkey,#mlbbCategoryPanel #mlbbPageRegionRussia{filter:grayscale(1)!important;opacity:.72!important;color:#c5cbd3!important;background:linear-gradient(135deg,#4b515a,#252a31)!important;border:1px solid #aeb5bf!important;box-shadow:inset 0 0 0 1px #ffffff20!important}
+#mlbbSubcategories #mlbbRegionTurkey .categoryText strong,#mlbbSubcategories #mlbbRegionRussia .categoryText strong,#mlbbCategoryPanel #mlbbPageRegionTurkey .categoryText strong,#mlbbCategoryPanel #mlbbPageRegionRussia .categoryText strong{color:#f0f2f5!important}
+#mlbbSubcategories #mlbbRegionTurkey .categoryText small,#mlbbSubcategories #mlbbRegionRussia .categoryText small,#mlbbCategoryPanel #mlbbPageRegionTurkey .categoryText small,#mlbbCategoryPanel #mlbbPageRegionRussia .categoryText small{color:#d4d9df!important}
+@media(prefers-reduced-motion:reduce){.zenithChatBubble,.zenithTyping i,.zenithChatEmpty{animation:none!important;transition:none!important}.zenithChatBubble{opacity:1;transform:none}}
+</style>
 </head>
 <body>
 <header>
@@ -1413,6 +1441,7 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
       <button type="button" class="secondary" id="menuMyOrders"><span class="menuActionIcon receiptSvgIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><g transform="rotate(7 12 12)"><path d="M6 3.5h9l3 3V21l-2-1.2L14 21l-2-1.2L10 21l-2-1.2L6 21z"/><path d="M14.5 3.8V7h3.2M9 11h6M9 14.5h6"/></g></svg></span> الطلبات</button>
       <button type="button" class="secondary" id="menuAccount"><span class="menuActionIcon accountSvgIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c.8-3.7 3.3-5.5 7.5-5.5s6.7 1.8 7.5 5.5"/></svg></span> حسابي</button>
       <button type="button" class="secondary" id="menuSearch">⌕ البحث</button>
+      <button type="button" class="secondary" id="menuSupport"><span class="menuActionIcon botSvgIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="13" rx="4"/><path d="M12 3v4M8 12h.01M16 12h.01M9 16h6M2 12h2M20 12h2"/></svg></span> مساعد زينيث الذكي</button>
     </div>
   </nav>
 </header>
@@ -1449,8 +1478,8 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
 <button type="button" class="homeCategory membershipPlaceholder fanFrameHomeCategory" id="fanFrameCategory" aria-label="إطار كبير المعجبين"><img class="fanFrameHomeImage" src="https://zenithstor.github.io/Zenith-Store/images/big-fans-banner.png" alt="إطار كبير المعجبين"><span class="categoryText"><strong>إطار كبير المعجبين</strong></span><span class="categoryArrow">←</span></button>
 <button type="button" class="homeCategory membershipPlaceholder" id="membershipPlaceholder"><img class="mlbbCategoryImage" src="images/memberships.png" alt="العضويات"><span class="categoryText"><strong>العضوية المميزة</strong></span><span class="categoryArrow">←</span></button>
 <button type="button" class="homeCategory membershipPlaceholder" id="verifiedSquadCategory"><span class="categoryText"><strong>فرقة موثقة</strong><small>قريباً</small></span><span class="categoryArrow">←</span></button>
-<button type="button" class="homeCategory diamondsFullCategory regionGemCategory unavailableRegionTile" id="mlbbRegionTurkey" data-gem-region="turkey" disabled aria-disabled="true"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>غير متاح</small></span><span class="categoryArrow">←</span></button>
-<button type="button" class="homeCategory diamondsFullCategory regionGemCategory unavailableRegionTile" id="mlbbRegionRussia" data-gem-region="russia" disabled aria-disabled="true"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>غير متاح</small></span><span class="categoryArrow">←</span></button>
+<button type="button" class="homeCategory diamondsFullCategory regionGemCategory unavailableRegionTile" id="mlbbRegionTurkey" data-gem-region="turkey" disabled aria-disabled="true"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن تركي</small></span><span class="categoryArrow">←</span></button>
+<button type="button" class="homeCategory diamondsFullCategory regionGemCategory unavailableRegionTile" id="mlbbRegionRussia" data-gem-region="russia" disabled aria-disabled="true"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن روسي</small></span><span class="categoryArrow">←</span></button>
 </div>
       </section>
       <button type="button" class="homeCategory gameMainCategory" id="honorOfKingsToggle"><img class="gameTileImage" src="images/honor-of-kings.png" alt="Honor of Kings"><span class="gameTileName">Honor of Kings</span></button>
@@ -1494,8 +1523,8 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
       <button type="button" class="homeCategory fanFrameHomeCategory" id="mlbbPageFanFrame"><img class="fanFrameHomeImage" src="https://zenithstor.github.io/Zenith-Store/images/big-fans-banner.png" alt="إطار كبير المعجبين"><span class="categoryText"><strong>إطار كبير المعجبين</strong></span><span class="categoryArrow">←</span></button>
       <button type="button" class="homeCategory" id="mlbbPageMembership"><img class="mlbbCategoryImage" src="images/memberships.png" alt="العضويات"><span class="categoryText"><strong>العضوية المميزة</strong></span><span class="categoryArrow">←</span></button>
       <button type="button" class="homeCategory" id="mlbbPageVerified"><span class="categoryText"><strong>فرقة موثقة</strong><small>قريباً</small></span><span class="categoryArrow">←</span></button>
-<button disabled aria-disabled="true" type="button" class="homeCategory diamondsFullCategory regionGemCategory unavailableRegionTile" id="mlbbPageRegionTurkey"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>غير متاح</small></span><span class="categoryArrow">←</span></button>
-<button disabled aria-disabled="true" type="button" class="homeCategory diamondsFullCategory regionGemCategory unavailableRegionTile" id="mlbbPageRegionRussia"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>غير متاح</small></span><span class="categoryArrow">←</span></button>
+<button disabled aria-disabled="true" type="button" class="homeCategory diamondsFullCategory regionGemCategory unavailableRegionTile" id="mlbbPageRegionTurkey"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن تركي</small></span><span class="categoryArrow">←</span></button>
+<button disabled aria-disabled="true" type="button" class="homeCategory diamondsFullCategory regionGemCategory unavailableRegionTile" id="mlbbPageRegionRussia"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن روسي</small></span><span class="categoryArrow">←</span></button>
 </div>
   </section>
 
@@ -1612,6 +1641,25 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
   </section>
 
 
+  <section class="panel zenithSupportPage" id="supportPanel" hidden>
+    <button type="button" class="secondary zenithSupportHome" id="supportBackHome" title="الرئيسية" aria-label="العودة للرئيسية">⌂</button>
+    <div class="zenithSupportHead"><div class="zenithBotAvatar">🤖</div><div><h2>مساعد زينيث الذكي</h2><p>مساعد المتجر المجاني — اسألني بأي صيغة</p></div></div>
+    <div class="zenithSupportNotice">أساعدك بمعلومات المتجر وإرشادات الحساب والشحن. إذا ما عندي جواب موثوق، أوصلك مباشرةً لمسؤول المتجر.</div>
+    <div class="zenithChatMessages" id="zenithChatMessages" aria-live="polite" aria-label="محادثة الدعم">
+      <div class="zenithChatBubble bot">أهلاً بك في ZenithStore 👋
+اكتب سؤالك بطريقتك، وأنا أساعدك قدر الإمكان.</div>
+      <div class="zenithChatEmpty" id="zenithChatEmpty"><div class="zenithChatSuggestions" id="zenithChatSuggestions">
+        <button type="button" data-question="شلون أسوي حساب جديد؟">إنشاء حساب</button>
+        <button type="button" data-question="شلون أشحن الجواهر؟">طريقة الشحن</button>
+        <button type="button" data-question="شلون أعبي رصيد آسياسيل؟">تعبئة آسياسيل</button>
+        <button type="button" data-question="شلون أضيف رصيد بالماستركارد؟">تعبئة ماستركارد</button>
+        <button type="button" data-question="وين ألكه أسعار الباقات؟">أسعار الباقات</button>
+        <button type="button" data-question="عندي مشكلة بالطلب شنو أسوي؟">مشكلة بالطلب</button>
+      </div></div>
+    </div>
+    <form class="zenithChatForm" id="zenithChatForm"><input id="zenithChatInput" type="text" maxlength="500" autocomplete="off" placeholder="اكتب سؤالك هنا..." aria-label="اكتب سؤالك"><button type="submit">إرسال</button></form>
+    <div class="zenithChatLimit" id="zenithChatLimit">محادثة مجانية — تُمسح تلقائياً بعد 24 ساعة.</div>
+  </section>
   <section class="panel" id="accountPanel" hidden>
     <h2>حسابي</h2>
     <button type="button" class="secondary backBtn" id="accountBackHome">← الرئيسية</button>
@@ -3453,7 +3501,7 @@ function saveActivePage(page, trackNavigation = true) {
 }
 function hideCustomerPanels() {
   if (el("accountPanel")) el("accountPanel").hidden = true;
-  ["homePanel", "mlbbCategoryPanel", "productsPanel", "cartPanel", "customerWalletPanel", "myOrdersPanel", "purchasePanel", "termsPanel", "policyPanel"].forEach(id => {
+  ["homePanel", "mlbbCategoryPanel", "productsPanel", "cartPanel", "customerWalletPanel", "myOrdersPanel", "purchasePanel", "termsPanel", "policyPanel", "supportPanel"].forEach(id => {
     const node = el(id); if (node) node.hidden = true;
   });
 }
@@ -3907,6 +3955,9 @@ async function restoreActivePage(pageOverride = null, fromPopState = false) {
     if (!["gems","double","special","twilight","membership","fanframe"].includes(activeProductCategory)) activeProductCategory = "gems";
     if (typeof setProductCategory === "function") setProductCategory(activeProductCategory);
     el("productsPanel").hidden = false;
+    setActiveNav("");
+  } else if (savedPage === "support") {
+    el("supportPanel").hidden = false;
     setActiveNav("");
   } else if (savedPage === "mlbb") {
     el("mlbbCategoryPanel").hidden = false;
@@ -5789,6 +5840,66 @@ html[data-theme="light"] #homePanel #faqSection * {
 #mlbbCategoryPanel #mlbbPageRegionRussia { grid-column:2!important; grid-row:auto!important; }
 </style>
 
+<script id="zenith-free-support-script">
+(() => {
+  const panel=document.getElementById('supportPanel'); if(!panel)return;
+  const $=id=>document.getElementById(id), instagramUrl='https://ig.me/m/zenith.mlbb1';
+  const messages=$('zenithChatMessages'),input=$('zenithChatInput'),form=$('zenithChatForm'),empty=$('zenithChatEmpty'),limitLabel=$('zenithChatLimit');
+  const STORE_KEY='zenith_support_chat_v2',DAY=24*60*60*1000;
+  let session=(()=>{try{return JSON.parse(localStorage.getItem(STORE_KEY)||'null')}catch(_){return null}})();
+  if(!session||!session.started||Date.now()-session.started>=DAY){session={started:Date.now()};localStorage.setItem(STORE_KEY,JSON.stringify(session));}
+  const handoff='ما عندي معلومة مؤكدة تكفي حتى أجاوبك بدون تخمين. تگدر تتواصل مباشرةً ويا مسؤول المتجر من هنا: ';
+  const norm=s=>String(s||'').toLowerCase().normalize('NFKD').replace(/[\u064B-\u065F\u0670]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/[؟?!،,.؛:()\[\]{}]/g,' ').replace(/\s+/g,' ').trim();
+  const has=(t,words)=>words.some(w=>t.includes(w));
+  function addMessage(text,who='bot',handoffLink=false){
+    const b=document.createElement('div');b.className='zenithChatBubble '+who;
+    if(handoffLink){b.append(document.createTextNode(text));const a=document.createElement('a');a.href=instagramUrl;a.target='_blank';a.rel='noopener noreferrer';a.textContent='محادثة مسؤول المتجر على إنستغرام ↗';a.style.cssText='display:inline-block;margin:7px 0;color:#4aaeff;text-decoration:underline;font-weight:700';b.append(document.createElement('br'),a);}
+    else b.textContent=text;
+    messages.appendChild(b);messages.scrollTop=messages.scrollHeight;return b;
+  }
+  function showSupport(){if(typeof hideCustomerPanels==='function')hideCustomerPanels();panel.hidden=false;if(typeof saveActivePage==='function')saveActivePage('support');if(typeof setActiveNav==='function')setActiveNav('');const m=$('mainMenu');if(m)m.hidden=true;const mt=$('menuToggle');if(mt){mt.classList.remove('is-open');mt.setAttribute('aria-expanded','false')}panel.scrollIntoView({behavior:'smooth',block:'start'});input.focus()}
+  function answer(q){
+    const t=norm(q);
+    if(has(t,['مرحبا','هلا','السلام عليكم','اهلا','سلام عليكم','صباح الخير','مساء الخير']))return 'هلا بيك ونورت ZenithStore 🌟 شلون أگدر أساعدك؟ اسألني عن الحساب أو الباقات أو الشحن أو المحفظة أو الطلبات.';
+    if(has(t,['منو انت','من انت','شنو انت','مساعد','اسمك']))return 'أنا مساعد زينيث الذكي 🤖، مساعد مجاني مبرمج حتى أشرح خدمات المتجر وأرشدك للخطوات الصحيحة. إذا ما أعرف الجواب أحوّلك للمسؤول.';
+    if(has(t,['حساب','تسجيل','اسجل','انشاء','انشئ','اشتراك','دخول','نسيت كلمة','كلمه المرور','باسورد','ايميل'])){
+      if(has(t,['نسيت','ما اتذكر','ما اعرف كلمة','استرجاع']))return 'إذا نسيت كلمة المرور، استخدم خيار استعادة كلمة المرور إن كان ظاهراً بصفحة الدخول. إذا ما وصلك رابط الاستعادة أو ما قدرت تدخل، راسل المسؤول من رابط إنستغرام بنهاية ردي.';
+      return 'لإنشاء حساب جديد:\n1) افتح القائمة ☰ أعلى الموقع.\n2) اضغط «إنشاء حساب جديد».\n3) أدخل الاسم الكامل واسم المستخدم والبريد الإلكتروني.\n4) أنشئ كلمة مرور لا تقل عن 6 أحرف، ثم أرسل النموذج.\nبعدها تگدر تسجل دخولك وتستخدم المحفظة والطلبات. لا تشارك كلمة المرور أو رمز التحقق ويا أي شخص.';
+    }
+    if(has(t,['سعر','اسعار','بكم','كم سعر','كم تكلف','باقات','جوهرة','جواهر','دايموند','دايموندز','توكن','token','diamond','price'])){
+      const region=has(t,['اندون','اندونيسي'])?'الإندونيسي':has(t,['ماليز','ماليزي'])?'الماليزي':has(t,['فلبين','فلبيني'])?'الفلبيني':has(t,['سنغافور','سنغافوري'])?'السنغافوري':has(t,['روسي','روسيا'])?'الروسي':has(t,['تركي','تركيا'])?'التركي':'العالمي';
+      const pay=has(t,['اسيا','اسياسيل','اسيا سيل'])?'آسياسيل':has(t,['ماستر','master','بطاقه'])?'ماستركارد':'';
+      return `حتى تشوف السعر الدقيق، افتح اللعبة واختر ريجن ${region}، وبعدها افتح الباقة المطلوبة. الأسعار تظهر داخل بطاقات المنتجات حسب طريقة الدفع${pay?' ('+pay+')':''}. أعتمد الأسعار المعروضة بالموقع لأنها المرجع الأحدث، وما أريد أعطيك رقم ممكن يكون قديم. إذا تكتبلي اسم الباقة والريجن أگدر أوجهك لمكانها، وإذا السعر مو ظاهر راسل المسؤول.`;
+    }
+    if(has(t,['ريجن','منطقه','منطقة','اندون','ماليز','فلبين','سنغافور','تركي','روسي','اختار اي','اي ريجن']))return 'الريجن لازم يطابق منطقة حساب اللعبة عندك، مو مكان سكنك بالضرورة. اختار نفس الريجن المرتبط بحسابك داخل اللعبة. حالياً المتجر يعرض العالمي والإندونيسي والماليزي والفلبيني والسنغافوري، أما التركي والروسي فهما غير متاحين حالياً.';
+    if(has(t,['اشحن','شحن','شراء','اشتري','اطلب','طلب','جواهر','توكن','هونر','ليجند','uid','ايدي','id اللاعب']))return 'خطوات الشحن:\n1) من الرئيسية اختار اللعبة.\n2) اختار الريجن المطابق لحسابك.\n3) اختار الباقة المناسبة واضغط عليها.\n4) أدخل UID وبيانات اللاعب المطلوبة بالنموذج.\n5) راجع البيانات والريجن جيداً، ثم أضف للسلة وأكمل الطلب باستخدام رصيد المحفظة.\nلا ترسل كلمة مرور اللعبة لأي أحد؛ الشحن ما يحتاجها.';
+    if(has(t,['اسياسيل','اسيا سيل','كارت اسيا','كارت آسياسيل','رصيد الهاتف','تعبئة الهاتف']))return 'تعبئة رصيد آسياسيل:\n1) سجل دخولك للموقع.\n2) افتح «محفظتي».\n3) اختار إضافة رصيد آسياسيل من علامة (+).\n4) اتبع طريقة الدفع والتعليمات الظاهرة بالنموذج.\n5) ارفع إثبات الدفع إذا طُلب، ثم أرسل الطلب وتابع حالته بسجل الإيداعات.\nلا ترسل رقم الكارت أو صورة الإثبات داخل محادثة الدعم.';
+    if(has(t,['ماستر','mastercard','master card','فيزا','بطاقه','بطاقة','مصرف']))return 'تعبئة الرصيد بالماستركارد:\n1) سجل دخولك وافتح «محفظتي».\n2) اضغط (+) عند طريقة ماستركارد.\n3) اتبع تفاصيل الدفع الظاهرة في صفحة الإيداع.\n4) أرسل طلب الإضافة وارفع الإثبات إذا طلبه النموذج.\n5) تابع حالة الطلب من سجل الإيداعات.\nلا تكتب رقم البطاقة أو CVV أو OTP داخل المحادثة.';
+    if(has(t,['رصيد','محفظه','محفظتي','ايداع','اضافه رصيد','اشحن رصيد']))return 'لإضافة رصيد للمحفظة: سجل دخولك، افتح «محفظتي»، اضغط علامة (+) على وسيلة الدفع المناسبة (آسياسيل أو ماستركارد)، اتبع التعليمات وأرسل طلب الإيداع. تگدر تتابع حالة الطلب من سجل طلبات إضافة الرصيد.';
+    if(has(t,['ما وصل','لم يصل','متاخر','تاخر','فشل','مشكله','مشكلة','خطا','خطأ','انخصم','خصم','الغاء','الغاء الطلب','استرجاع','ما يشتغل','ما يفتح','ما يشتغل']))return 'خلينا نتحقق من المشكلة بهدوء:\n• افتح «طلباتي» وشوف حالة الطلب.\n• تأكد من UID والريجن والباقة.\n• إذا انخصم الرصيد والطلب ما اكتمل، لا تعيد الشراء مرة ثانية.\n• جهّز رقم الطلب ووصف مختصر للمشكلة، وراسل المسؤول عبر رابط إنستغرام أدناه حتى يراجعها.';
+    if(has(t,['وين','اين','مكان','القائمه','الرئيسيه','الرئيسية','الصفحه','صفحة']))return 'تگدر ترجع للرئيسية من زر البيت الصغير أعلى يمين صفحة الدعم. القائمة ☰ موجودة أعلى الموقع وتضم الحساب والمحفظة والطلبات والدعم.';
+    if(has(t,['شكرا','مشكور','تسلم','شكراً']))return 'العفو، بالخدمة دائماً 🌟 إذا تحتاج أي مساعدة ثانية اكتبلي.';
+    if(has(t,['مسؤول','انستا','انستغرام','instagram','ادمن','بشري','شخص حقيقي','اتواصل','تواصل']))return handoff;
+    return handoff;
+  }
+  function send(q){q=String(q||'').trim();if(!q)return;empty.classList.add('is-hidden');addMessage(q,'user');input.value='';const typing=document.createElement('div');typing.className='zenithTyping';typing.setAttribute('aria-label','المساعد يكتب');typing.innerHTML='<i></i><i></i><i></i>';messages.appendChild(typing);messages.scrollTop=messages.scrollHeight;const response=answer(q);setTimeout(()=>{typing.remove();const needsLink=response===handoff||response.startsWith('ما عندي معلومة مؤكدة');addMessage(response, 'bot',needsLink);},1000);}
+  $('menuSupport')?.addEventListener('click',showSupport);$('supportBackHome')?.addEventListener('click',()=>$('navHome')?.click());
+  form?.addEventListener('submit',e=>{e.preventDefault();send(input.value)});
+  document.querySelectorAll('#zenithChatSuggestions button').forEach(b=>b.addEventListener('click',()=>send(b.dataset.question)));
+  limitLabel.textContent='محادثة مجانية بلا حد يومي — تُمسح المحادثة تلقائياً بعد 24 ساعة.';
+  // The visible conversation is intentionally fresh on each new 24-hour window.
+  // Reset an already-open chat exactly when its 24-hour window expires.
+  setTimeout(()=>{
+    try{localStorage.removeItem(STORE_KEY)}catch(_){}
+    messages.innerHTML='';
+    const welcome=document.createElement('div');welcome.className='zenithChatBubble bot';welcome.textContent='أهلاً بك في ZenithStore 👋\nبدأت محادثة جديدة. اكتب سؤالك بطريقتك، وأنا أساعدك قدر الإمكان.';messages.appendChild(welcome);
+    empty.classList.remove('is-hidden');
+    session={started:Date.now()};try{localStorage.setItem(STORE_KEY,JSON.stringify(session))}catch(_){}
+  },Math.max(0,DAY-(Date.now()-session.started)));
+  if(Date.now()-session.started>=DAY){session={started:Date.now()};localStorage.setItem(STORE_KEY,JSON.stringify(session));}
+  if(sessionStorage.getItem('zenithstore:activePage:'+location.pathname)==='support'&&performance.getEntriesByType('navigation')[0]?.type==='reload')showSupport();
+})();
+</script>
 </body>
 </html>
 
