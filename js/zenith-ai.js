@@ -18,7 +18,7 @@
   const INSTAGRAM = 'https://ig.me/m/zenith.mlbb1';
   // Replace this URL after deploying worker/worker.js to Cloudflare.
   const AI_ENDPOINT = 'https://zenithstore-ai.mradawy41.workers.dev/chat';
-  const DAILY_AI_LIMIT = 20;
+  const DAILY_AI_LIMIT = 15;
   const CLIENT_ID_KEY = 'zenith_ai_client_id_v1';
   const DAY = 86400000;
   const SESSION_KEY = 'zenith_support_chat_v3';
@@ -861,8 +861,8 @@
       const remote = await askRemoteAI(q);
       if (remote?.limited) {
         typing.remove();
-        addMessage('وصلت إلى الحد اليومي للمساعد الذكي (20 رسالة). تتجدد حصتك عند منتصف الليل بتوقيت العراق. تگدر ترجع تسألني باچر.','bot');
-        if(limitLabel)limitLabel.textContent='استهلكت 20 من 20 رسالة اليوم — تتجدد الحصة عند منتصف الليل بتوقيت العراق.';
+        addMessage('وصلت إلى الحد اليومي للمساعد الذكي (15 رسالة). تتجدد حصتك عند منتصف الليل بتوقيت العراق. تگدر ترجع تسألني باچر.','bot');
+        if(limitLabel)limitLabel.textContent='استهلكت 15 من 15 رسالة اليوم — تتجدد الحصة عند منتصف الليل بتوقيت العراق.';
         return;
       }
       if (remote?.reply) {
@@ -885,7 +885,7 @@
   form?.addEventListener('submit',event=>{event.preventDefault();send(input?.value);});
   document.querySelectorAll('#zenithChatSuggestions button').forEach(button=>button.addEventListener('click',()=>send(button.dataset.question||button.textContent)));
 
-  if(limitLabel)limitLabel.textContent='مساعد زينيث الذكي — 20 رسالة يومياً لكل زبون. إذا تعذّر الاتصال، يعمل المساعد الاحتياطي.';
+  if(limitLabel)limitLabel.textContent='مساعد زينيث الذكي — 15 رسالة يومياً لكل زبون. إذا تعذّر الاتصال، يعمل المساعد الاحتياطي.';
   if(Date.now()-session.started>=DAY){session={started:Date.now()};try{localStorage.setItem(SESSION_KEY,JSON.stringify(session));}catch(_){}}
   setTimeout(()=>{
     try{localStorage.removeItem(SESSION_KEY);}catch(_){}
