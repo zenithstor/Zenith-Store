@@ -20,14 +20,25 @@
   const AI_ENDPOINT = 'https://zenithstore-ai.mradawy41.workers.dev/chat';
   const DAILY_AI_LIMIT = 15;
   const CLIENT_ID_KEY = 'zenith_ai_client_id_v1';
-  const DAY = 86400000;
-  const SESSION_KEY = 'zenith_support_chat_v3';
+  const SESSION_KEY = 'zenith_support_chat_v4';
+  const CHAT_HISTORY_KEY = 'zenith_support_chat_history_v1';
   const moneyFmt = n => typeof money === 'function' ? money(Number(n)||0) : (Number(n)||0).toLocaleString('en-US')+' د.ع';
+  function baghdadDayKey() {
+    const parts = new Intl.DateTimeFormat('en-CA', {timeZone:'Asia/Baghdad',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+    const values = Object.fromEntries(parts.map(part => [part.type,part.value]));
+    return `${values.year}-${values.month}-${values.day}`;
+  }
+  function msUntilBaghdadMidnight() {
+    const parts = new Intl.DateTimeFormat('en-GB', {timeZone:'Asia/Baghdad',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(new Date());
+    const values = Object.fromEntries(parts.map(part => [part.type,Number(part.value)]));
+    const elapsed = values.hour*3600 + values.minute*60 + values.second;
+    return Math.max(1000,(86400-elapsed)*1000);
+  }
   let session;
   try { session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch (_) { session = null; }
-  if (!session || !session.started || Date.now() - session.started >= DAY) {
-    session = { started: Date.now() };
-    try { localStorage.setItem(SESSION_KEY, JSON.stringify(session)); } catch (_) {}
+  if (!session || session.day !== baghdadDayKey()) {
+    session = {day:baghdadDayKey(),started:Date.now()};
+    try {localStorage.setItem(SESSION_KEY,JSON.stringify(session));localStorage.removeItem(CHAT_HISTORY_KEY);} catch (_) {}
   }
 
   const state = {
@@ -750,13 +761,37 @@
     return 'أگدر أساعدك بهذا الموضوع إذا تحددلي شنو الجزء اللي تقصده. '+generalHelp();
   }
 
-  function addMessage(text,who='bot') {
+  function saveChatHistory() {
+    if (!messages) return;
+    try {
+      const items = [...messages.querySelectorAll('.zenithChatBubble')].slice(-40).map(node => ({
+        who:node.classList.contains('user')?'user':'bot',
+        text:(node.textContent||'').slice(0,3500)
+      }));
+      localStorage.setItem(CHAT_HISTORY_KEY,JSON.stringify({day:baghdadDayKey(),items}));
+    } catch (_) {}
+  }
+  function addMessage(text,who='bot',persist=true) {
     const node=document.createElement('div');
     node.className='zenithChatBubble '+who;
     node.textContent=String(text||'');
     messages.appendChild(node);
     messages.scrollTop=messages.scrollHeight;
+    if(persist) saveChatHistory();
     return node;
+  }
+  function restoreChatHistory() {
+    if(!messages) return;
+    try {
+      const saved=JSON.parse(localStorage.getItem(CHAT_HISTORY_KEY)||'null');
+      if(!saved||saved.day!==baghdadDayKey()||!Array.isArray(saved.items)||!saved.items.length) return;
+      messages.querySelectorAll('.zenithChatBubble').forEach(node=>node.remove());
+      saved.items.slice(-40).forEach(item=>{
+        if(typeof item?.text==='string'&&item.text) addMessage(item.text,item.who==='user'?'user':'bot',false);
+      });
+      empty?.classList.toggle('is-hidden',saved.items.length>1);
+      messages.scrollTop=messages.scrollHeight;
+    } catch (_) {}
   }
   function showSupport() {
     if(typeof window.hideCustomerPanels==='function')window.hideCustomerPanels();
@@ -863,6 +898,7 @@
         typing.remove();
         addMessage('وصلت إلى الحد اليومي للمساعد الذكي (15 رسالة). تتجدد حصتك عند منتصف الليل بتوقيت العراق. تگدر ترجع تسألني باچر.','bot');
         if(limitLabel)limitLabel.textContent='استهلكت 15 من 15 رسالة اليوم — تتجدد الحصة عند منتصف الليل بتوقيت العراق.';
+        saveChatHistory();
         return;
       }
       if (remote?.reply) {
@@ -880,24 +916,38 @@
     setTimeout(()=>{typing.remove();addMessage(reply,'bot');},delay);
   }
 
+  restoreChatHistory();
+  if(messages&&!localStorage.getItem(CHAT_HISTORY_KEY)) saveChatHistory();
+
   $('menuSupport')?.addEventListener('click',showSupport);
   $('supportBackHome')?.addEventListener('click',()=>$('navHome')?.click());
   form?.addEventListener('submit',event=>{event.preventDefault();send(input?.value);});
   document.querySelectorAll('#zenithChatSuggestions button').forEach(button=>button.addEventListener('click',()=>send(button.dataset.question||button.textContent)));
 
   if(limitLabel)limitLabel.textContent='مساعد زينيث الذكي — 15 رسالة يومياً لكل زبون. إذا تعذّر الاتصال، يعمل المساعد الاحتياطي.';
-  if(Date.now()-session.started>=DAY){session={started:Date.now()};try{localStorage.setItem(SESSION_KEY,JSON.stringify(session));}catch(_){}}
-  setTimeout(()=>{
-    try{localStorage.removeItem(SESSION_KEY);}catch(_){}
-    if(messages){
+  function resetChatForNewDay() {
+    const today=baghdadDayKey();
+    if(session?.day===today) return;
+    session={day:today,started:Date.now()};
+    try {localStorage.setItem(SESSION_KEY,JSON.stringify(session));localStorage.removeItem(CHAT_HISTORY_KEY);} catch (_) {}
+    if(messages) {
       messages.innerHTML='';
-      const welcome=document.createElement('div');welcome.className='zenithChatBubble bot';
-      welcome.textContent='أهلاً بك في ZenithStore 👋\nبدأت محادثة جديدة. اسألني عن المنتجات أو أي قسم بالموقع.';
+      const welcome=document.createElement('div');
+      welcome.className='zenithChatBubble bot';
+      welcome.textContent='أهلاً بك في ZenithStore 👋\\nبدأت حصة جديدة. اسألني عن المنتجات أو أي قسم بالموقع.';
       messages.appendChild(welcome);
+      saveChatHistory();
     }
     empty?.classList.remove('is-hidden');
-    session={started:Date.now()};try{localStorage.setItem(SESSION_KEY,JSON.stringify(session));}catch(_){}
-  },Math.max(0,DAY-(Date.now()-session.started)));
+    if(limitLabel) limitLabel.textContent='مساعد زينيث الذكي — 15 رسالة يومياً لكل زبون. تجددت حصتك الآن.';
+  }
+  function scheduleBaghdadReset() {
+    setTimeout(()=>{resetChatForNewDay();scheduleBaghdadReset();},msUntilBaghdadMidnight());
+  }
+  scheduleBaghdadReset();
+  document.addEventListener('visibilitychange',()=>{
+    if(!document.hidden&&session?.day!==baghdadDayKey()) resetChatForNewDay();
+  });
 
   // Expose a tiny read-only diagnostic surface for maintainers; no purchase actions.
   window.ZenithAssistant = {
