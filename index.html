@@ -6094,3 +6094,74 @@ html[data-theme="light"] #mlbbCategoryPanel .homeCategory .categoryText strong,
 html[data-theme="light"] #mlbbCategoryPanel .homeCategory .categoryText small {color:#142238!important;text-shadow:none!important}
 #honorOfKingsToggle .gameTileImage {object-fit:contain!important;filter:none!important}
 </style>
+
+
+<style id="zenith-membership-outer-artwork-and-fanframe-caption-final">
+/* Outer artwork for the membership tile; membership.png remains the centered inner artwork. */
+#mlbbSubcategories #membershipPlaceholder,
+#mlbbCategoryPanel #mlbbPageMembership {
+  position:relative!important;
+  overflow:hidden!important;
+  isolation:isolate!important;
+}
+#mlbbSubcategories #membershipPlaceholder::before,
+#mlbbCategoryPanel #mlbbPageMembership::before {
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:0!important;
+  background-image:url("images/IMG_20261112_124322_063.png")!important;
+  background-position:center!important;
+  background-size:cover!important;
+  background-repeat:no-repeat!important;
+  pointer-events:none!important;
+}
+#mlbbSubcategories #membershipPlaceholder > .mlbbCategoryImage,
+#mlbbCategoryPanel #mlbbPageMembership > .mlbbCategoryImage {
+  position:absolute!important;
+  inset:5px 8px 25px!important;
+  display:block!important;
+  width:calc(100% - 16px)!important;
+  height:calc(100% - 30px)!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:none!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:0!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  z-index:1!important;
+}
+#mlbbSubcategories #membershipPlaceholder > .categoryText,
+#mlbbCategoryPanel #mlbbPageMembership > .categoryText {
+  position:absolute!important;
+  right:8px!important;
+  left:auto!important;
+  top:auto!important;
+  bottom:5px!important;
+  z-index:2!important;
+  width:auto!important;
+  max-width:calc(100% - 16px)!important;
+  margin:0!important;
+  padding:0!important;
+  text-align:right!important;
+}
+/* Override the older rule that accidentally pinned the fan-frame caption to the top. */
+#mlbbSubcategories #fanFrameCategory > .categoryText,
+#mlbbCategoryPanel #mlbbPageFanFrame > .categoryText {
+  position:absolute!important;
+  top:auto!important;
+  bottom:5px!important;
+  right:8px!important;
+  left:auto!important;
+  z-index:3!important;
+  display:block!important;
+  width:auto!important;
+  max-width:calc(100% - 16px)!important;
+  margin:0!important;
+  padding:0!important;
+  text-align:right!important;
+}
+</style>
