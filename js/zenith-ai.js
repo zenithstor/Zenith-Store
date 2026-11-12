@@ -17,7 +17,7 @@
   const limitLabel = $('zenithChatLimit');
   const INSTAGRAM = 'https://ig.me/m/zenith.mlbb1';
   // Replace this URL after deploying worker/worker.js to Cloudflare.
-  const AI_ENDPOINT = 'https://YOUR-WORKER.YOUR-SUBDOMAIN.workers.dev/chat';
+  const AI_ENDPOINT = 'https://zenithstore-ai.mradawy41.workers.dev/chat';
   const DAILY_AI_LIMIT = 20;
   const CLIENT_ID_KEY = 'zenith_ai_client_id_v1';
   const DAY = 86400000;
