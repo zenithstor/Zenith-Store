@@ -1424,7 +1424,56 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
   body.zenith-chat-expanded{overflow:hidden!important}
   @media(max-width:520px){.zenithSupportHead h2{font-size:18px}.zenithSupportHead p{font-size:11px}.zenithChatWindowControls{gap:5px}.zenithChatWindowControls button{width:33px!important;min-width:33px!important;height:33px!important;min-height:33px!important}}
 </style>
-\n</head>
+<style id="zenith-membership-image-full-tile">
+#mlbbSubcategories #membershipPlaceholder,
+#mlbbCategoryPanel #mlbbPageMembership {
+  position:relative!important;
+  overflow:hidden!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  isolation:isolate!important;
+}
+#mlbbSubcategories #membershipPlaceholder > .mlbbCategoryImage,
+#mlbbCategoryPanel #mlbbPageMembership > .mlbbCategoryImage {
+  position:absolute!important;
+  inset:0!important;
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  min-width:100%!important;
+  min-height:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:0!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  opacity:1!important;
+  filter:none!important;
+  mix-blend-mode:normal!important;
+  border:0!important;
+  border-radius:inherit!important;
+  z-index:0!important;
+}
+#mlbbCategoryPanel #mlbbPageMembership .categoryText {
+  position:absolute!important;
+  z-index:2!important;
+  right:8px!important;
+  bottom:7px!important;
+  max-width:calc(100% - 16px)!important;
+  padding:0!important;
+  margin:0!important;
+  background:transparent!important;
+  color:#fff!important;
+  text-shadow:0 1px 3px rgba(0,0,0,.95),0 0 5px rgba(0,0,0,.8)!important;
+  font-weight:900!important;
+}
+#mlbbSubcategories #membershipPlaceholder .categoryArrow,
+#mlbbCategoryPanel #mlbbPageMembership .categoryArrow {display:none!important;}
+</style>
+</head>
 <body>
 <header>
   <div class="headerTop">
@@ -4945,7 +4994,6 @@ body.mastercard-deposit-open #depositEntryFields #cancelDepositModal{background:
   height:calc(100% - 28px)!important;
 }
 </style>
-
 <style id="zenith-faq-animated-toggle-and-weekly-discount">
 /* FAQ answers stay hidden until their question is tapped. */
 .faqItem{padding:0!important}
