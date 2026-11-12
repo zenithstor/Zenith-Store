@@ -16,6 +16,10 @@
   const empty = $('zenithChatEmpty');
   const limitLabel = $('zenithChatLimit');
   const INSTAGRAM = 'https://ig.me/m/zenith.mlbb1';
+  // Replace this URL after deploying worker/worker.js to Cloudflare.
+  const AI_ENDPOINT = 'https://YOUR-WORKER.YOUR-SUBDOMAIN.workers.dev/chat';
+  const DAILY_AI_LIMIT = 20;
+  const CLIENT_ID_KEY = 'zenith_ai_client_id_v1';
   const DAY = 86400000;
   const SESSION_KEY = 'zenith_support_chat_v3';
   const moneyFmt = n => typeof money === 'function' ? money(Number(n)||0) : (Number(n)||0).toLocaleString('en-US')+' د.ع';
@@ -764,7 +768,85 @@
     panel.scrollIntoView({behavior:'smooth',block:'start'});
     input?.focus();
   }
-  function send(value) {
+  function getClientId() {
+    try {
+      let id = localStorage.getItem(CLIENT_ID_KEY);
+      if (!id) {
+        id = (window.crypto && typeof window.crypto.randomUUID === 'function')
+          ? window.crypto.randomUUID()
+          : 'zs-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+        localStorage.setItem(CLIENT_ID_KEY, id);
+      }
+      return id;
+    } catch (_) {
+      return 'zs-session-' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    }
+  }
+
+  async function getSupabaseAccessToken() {
+    try {
+      if (typeof db !== 'undefined' && db?.auth?.getSession) {
+        const result = await db.auth.getSession();
+        return result?.data?.session?.access_token || '';
+      }
+    } catch (_) {}
+    return '';
+  }
+
+  function buildAIContext() {
+    const publicIds = new Set(['homePanel','productsPanel','termsPanel','policyPanel']);
+    const pages = pageKnowledge()
+      .filter(section => publicIds.has(section.id))
+      .map(section => ({section:section.name, content:section.text.slice(0,2200)}));
+
+    const products = (typeof productsCache !== 'undefined' && Array.isArray(productsCache) ? productsCache : [])
+      .filter(p => p && p.active !== false && !p.__unavailable)
+      .slice(0,90)
+      .map(p => ({
+        name: productTitle(p),
+        game: p.__game === 'honor' ? 'Honor of Kings' : 'Mobile Legends',
+        region: p.__gemRegion || 'global',
+        category: productCategory(p),
+        amount: Number(p.diamonds || p.tokens || 0) || null,
+        asiacell_iqd: price(p,'asiacell'),
+        mastercard_iqd: price(p,'mastercard'),
+        type: p.product_type || ''
+      }));
+
+    const faqs = [...document.querySelectorAll('#faqSection .faqItem')].slice(0,24).map(node => ({
+      question: node.querySelector('.faqQuestion')?.innerText?.trim() || '',
+      answer: node.querySelector('.faqAnswer')?.innerText?.trim() || ''
+    })).filter(x => x.question && x.answer);
+
+    return {pages, products, faqs};
+  }
+
+  async function askRemoteAI(question) {
+    if (!AI_ENDPOINT || AI_ENDPOINT.includes('YOUR-WORKER')) return null;
+    const bubbles = [...messages.querySelectorAll('.zenithChatBubble')];
+    const history = bubbles.slice(-9, -1).map(node => ({
+      role: node.classList.contains('user') ? 'user' : 'assistant',
+      content: (node.textContent || '').slice(0,1000)
+    })).filter(item => item.content);
+    const headers = {'Content-Type':'application/json'};
+    const accessToken = await getSupabaseAccessToken();
+    if (accessToken) headers.Authorization = 'Bearer ' + accessToken;
+    const response = await fetch(AI_ENDPOINT, {
+      method:'POST',
+      headers,
+      cache:'no-store',
+      body:JSON.stringify({clientId:getClientId(), message:question, history, storeContext:buildAIContext()})
+    });
+    let data = {};
+    try { data = await response.json(); } catch (_) {}
+    if (response.status === 429 && data.code === 'DAILY_LIMIT') {
+      return {limited:true, remaining:0, resetAt:data.resetAt || ''};
+    }
+    if (!response.ok || data.fallback || !data.reply) return null;
+    return {reply:String(data.reply), remaining:Number.isFinite(Number(data.remaining)) ? Number(data.remaining) : null};
+  }
+
+  async function send(value) {
     const q=String(value||'').trim();
     if(!q||!messages)return;
     empty?.classList.add('is-hidden');
@@ -774,10 +856,27 @@
     typing.className='zenithTyping';typing.setAttribute('aria-label','المساعد يكتب');
     typing.innerHTML='<i></i><i></i><i></i>';
     messages.appendChild(typing);messages.scrollTop=messages.scrollHeight;
-    let reply;
-    try { reply=respond(q); }
-    catch(err) { console.error('[Zenith Assistant]',err); reply='صار خطأ بسيط أثناء قراءة البيانات. حدّث الصفحة وجرب مرة ثانية، وإذا استمرت المشكلة تواصل ويا المسؤول.'; }
-    const delay=Math.min(1100,350+String(reply).length*2);
+    let reply='';
+    try {
+      const remote = await askRemoteAI(q);
+      if (remote?.limited) {
+        typing.remove();
+        addMessage('وصلت إلى الحد اليومي للمساعد الذكي (20 رسالة). تتجدد حصتك عند منتصف الليل بتوقيت العراق. تگدر ترجع تسألني باچر.','bot');
+        if(limitLabel)limitLabel.textContent='استهلكت 20 من 20 رسالة اليوم — تتجدد الحصة عند منتصف الليل بتوقيت العراق.';
+        return;
+      }
+      if (remote?.reply) {
+        reply = remote.reply;
+        if(limitLabel && remote.remaining !== null) limitLabel.textContent=`مساعد زينيث بالذكاء الاصطناعي — المتبقي اليوم: ${remote.remaining} من ${DAILY_AI_LIMIT} رسالة.`;
+      }
+    } catch(err) {
+      console.warn('[Zenith AI] Remote assistant unavailable; using local fallback.', err);
+    }
+    if (!reply) {
+      try { reply=respond(q); }
+      catch(err) { console.error('[Zenith Assistant]',err); reply='صار خطأ بسيط أثناء قراءة البيانات. حدّث الصفحة وجرب مرة ثانية، وإذا استمرت المشكلة تواصل ويا المسؤول.'; }
+    }
+    const delay=Math.min(1100,250+String(reply).length*2);
     setTimeout(()=>{typing.remove();addMessage(reply,'bot');},delay);
   }
 
@@ -786,7 +885,7 @@
   form?.addEventListener('submit',event=>{event.preventDefault();send(input?.value);});
   document.querySelectorAll('#zenithChatSuggestions button').forEach(button=>button.addEventListener('click',()=>send(button.dataset.question||button.textContent)));
 
-  if(limitLabel)limitLabel.textContent='مساعد زينيث المحلي — يقرأ بيانات المتجر الحالية، بدون اشتراك أو API.';
+  if(limitLabel)limitLabel.textContent='مساعد زينيث الذكي — 20 رسالة يومياً لكل زبون. إذا تعذّر الاتصال، يعمل المساعد الاحتياطي.';
   if(Date.now()-session.started>=DAY){session={started:Date.now()};try{localStorage.setItem(SESSION_KEY,JSON.stringify(session));}catch(_){}}
   setTimeout(()=>{
     try{localStorage.removeItem(SESSION_KEY);}catch(_){}
@@ -802,8 +901,9 @@
 
   // Expose a tiny read-only diagnostic surface for maintainers; no purchase actions.
   window.ZenithAssistant = {
-    version:'2.0.0-local',
+    version:'3.0.0-hybrid',
     ask:respond,
+    askRemote:askRemoteAI,
     getState:()=>({...state}),
     getProductCount:()=>typeof productsCache !== 'undefined' && Array.isArray(productsCache) ? productsCache.length : 0
   };
