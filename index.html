@@ -1595,6 +1595,105 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
 #mlbbCategoryPanel #mlbbPageFanFrame .categoryArrow {display:none!important;}
 </style>
 
+
+<style id="zenith-membership-inner-art-and-white-caption-final">
+/* Membership tile: the custom poster is the only outer artwork; membership.png stays contained inside it. */
+#mlbbSubcategories #membershipPlaceholder,
+#mlbbCategoryPanel #mlbbPageMembership {
+  position:relative!important;
+  display:block!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  height:82px!important;
+  min-height:82px!important;
+  max-height:82px!important;
+  padding:0!important;
+  overflow:hidden!important;
+  isolation:isolate!important;
+  background:transparent!important;
+}
+#mlbbSubcategories #membershipPlaceholder::before,
+#mlbbCategoryPanel #mlbbPageMembership::before {
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:0!important;
+  background-image:url("images/IMG_20261112_124322_063.png")!important;
+  background-position:center!important;
+  background-size:cover!important;
+  background-repeat:no-repeat!important;
+  pointer-events:none!important;
+}
+#mlbbSubcategories #membershipPlaceholder > .mlbbCategoryImage,
+#mlbbCategoryPanel #mlbbPageMembership > .mlbbCategoryImage {
+  position:absolute!important;
+  inset:5px 8px 27px!important;
+  display:block!important;
+  width:calc(100% - 16px)!important;
+  height:calc(100% - 32px)!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:calc(100% - 16px)!important;
+  max-height:calc(100% - 32px)!important;
+  margin:0!important;
+  padding:0!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  z-index:1!important;
+  opacity:1!important;
+  visibility:visible!important;
+  background:transparent!important;
+}
+/* Both requested captions use the same small white label treatment as the region labels. */
+#mlbbSubcategories #membershipPlaceholder > .categoryText,
+#mlbbCategoryPanel #mlbbPageMembership > .categoryText,
+#mlbbSubcategories #fanFrameCategory > .categoryText,
+#mlbbCategoryPanel #mlbbPageFanFrame > .categoryText {
+  position:absolute!important;
+  top:auto!important;
+  right:8px!important;
+  bottom:5px!important;
+  left:auto!important;
+  z-index:3!important;
+  display:block!important;
+  width:auto!important;
+  max-width:calc(100% - 16px)!important;
+  margin:0!important;
+  padding:0!important;
+  text-align:right!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+#mlbbSubcategories #membershipPlaceholder > .categoryText strong,
+#mlbbCategoryPanel #mlbbPageMembership > .categoryText strong,
+#mlbbSubcategories #fanFrameCategory > .categoryText strong,
+#mlbbCategoryPanel #mlbbPageFanFrame > .categoryText strong {
+  display:inline-block!important;
+  width:max-content!important;
+  max-width:100%!important;
+  margin:0!important;
+  padding:3px 8px!important;
+  border:0!important;
+  border-radius:6px!important;
+  background:#fff!important;
+  color:#172235!important;
+  font-size:11px!important;
+  line-height:1.25!important;
+  font-weight:900!important;
+  opacity:1!important;
+  text-shadow:none!important;
+  -webkit-text-stroke:0!important;
+  box-shadow:0 1px 4px rgba(0,0,0,.2)!important;
+}
+#mlbbSubcategories #membershipPlaceholder > .categoryArrow,
+#mlbbCategoryPanel #mlbbPageMembership > .categoryArrow,
+#mlbbSubcategories #fanFrameCategory > .categoryArrow,
+#mlbbCategoryPanel #mlbbPageFanFrame > .categoryArrow {display:none!important;}
+</style>
+
 </head>
 <body>
 <header>
