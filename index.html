@@ -1407,7 +1407,24 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
 #mlbbSubcategories #mlbbRegionTurkey .categoryText small,#mlbbSubcategories #mlbbRegionRussia .categoryText small,#mlbbCategoryPanel #mlbbPageRegionTurkey .categoryText small,#mlbbCategoryPanel #mlbbPageRegionRussia .categoryText small{color:#d4d9df!important}
 @media(prefers-reduced-motion:reduce){.zenithChatBubble,.zenithTyping i,.zenithChatEmpty{animation:none!important;transition:none!important}.zenithChatBubble{opacity:1;transform:none}}
 </style>
-</head>
+
+<style id="zenith-user-requested-chat-and-icon-controls">
+  #menuToggle{font-size:25px!important;line-height:1!important}
+  #navSearch>span{font-size:27px!important;line-height:1!important}
+  #menuSearch .searchMenuIcon{display:inline-block;font-size:25px!important;line-height:1;vertical-align:middle;margin-inline-end:4px}
+  .zenithBotAvatar svg{width:29px;height:29px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .zenithSupportHead{gap:10px}
+  .zenithSupportTitle{min-width:0;flex:1}
+  .zenithChatWindowControls{display:flex;align-items:center;gap:7px;margin-inline-start:auto;flex:0 0 auto}
+  .zenithChatWindowControls button{width:36px!important;min-width:36px!important;height:36px!important;min-height:36px!important;margin:0!important;padding:0!important;display:grid;place-items:center;border:1px solid var(--border)!important;border-radius:10px!important;background:var(--surface)!important;color:var(--ink)!important;font-size:21px!important;line-height:1!important}
+  #supportPanel.zenith-chat-expanded{position:fixed!important;inset:0!important;z-index:2147483000!important;width:100vw!important;height:100vh!important;height:100dvh!important;max-height:100dvh!important;margin:0!important;padding:calc(58px + env(safe-area-inset-top)) 12px calc(14px + env(safe-area-inset-bottom))!important;border:0!important;border-radius:0!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;background:var(--page)!important}
+  #supportPanel.zenith-chat-expanded .zenithSupportHome{top:calc(10px + env(safe-area-inset-top))!important}
+  #supportPanel.zenith-chat-expanded .zenithSupportHead,#supportPanel.zenith-chat-expanded .zenithSupportNotice,#supportPanel.zenith-chat-expanded .zenithChatForm,#supportPanel.zenith-chat-expanded .zenithChatLimit{flex:0 0 auto}
+  #supportPanel.zenith-chat-expanded .zenithChatMessages{flex:1 1 auto;height:auto!important;min-height:0!important;max-height:none!important}
+  body.zenith-chat-expanded{overflow:hidden!important}
+  @media(max-width:520px){.zenithSupportHead h2{font-size:18px}.zenithSupportHead p{font-size:11px}.zenithChatWindowControls{gap:5px}.zenithChatWindowControls button{width:33px!important;min-width:33px!important;height:33px!important;min-height:33px!important}}
+</style>
+\n</head>
 <body>
 <header>
   <div class="headerTop">
@@ -1440,7 +1457,7 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
       <button type="button" class="secondary" id="menuCart"><span class="menuActionIcon cartSvgIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.4L22 8H6"/><circle cx="10" cy="20" r="1.2"/><circle cx="18" cy="20" r="1.2"/></svg></span> السلة</button>
       <button type="button" class="secondary" id="menuMyOrders"><span class="menuActionIcon receiptSvgIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><g transform="rotate(7 12 12)"><path d="M6 3.5h9l3 3V21l-2-1.2L14 21l-2-1.2L10 21l-2-1.2L6 21z"/><path d="M14.5 3.8V7h3.2M9 11h6M9 14.5h6"/></g></svg></span> الطلبات</button>
       <button type="button" class="secondary" id="menuAccount"><span class="menuActionIcon accountSvgIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c.8-3.7 3.3-5.5 7.5-5.5s6.7 1.8 7.5 5.5"/></svg></span> حسابي</button>
-      <button type="button" class="secondary" id="menuSearch">⌕ البحث</button>
+      <button type="button" class="secondary" id="menuSearch"><span class="searchMenuIcon" aria-hidden="true">⌕</span> البحث</button>
       <button type="button" class="secondary" id="menuSupport"><span class="menuActionIcon botSvgIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="13" rx="4"/><path d="M12 3v4M8 12h.01M16 12h.01M9 16h6M2 12h2M20 12h2"/></svg></span> مساعد زينيث الذكي</button>
     </div>
   </nav>
@@ -1475,8 +1492,8 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
 <button type="button" class="homeCategory diamondsFullCategory regionGemCategory" id="mlbbRegionMalaysia" data-gem-region="malaysia"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن ماليزي</small></span><span class="categoryArrow">←</span></button>
 <button type="button" class="homeCategory diamondsFullCategory regionGemCategory" id="mlbbRegionPhilippines" data-gem-region="philippines"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن فلبيني</small></span><span class="categoryArrow">←</span></button>
 <button type="button" class="homeCategory diamondsFullCategory regionGemCategory" id="mlbbRegionSingapore" data-gem-region="singapore"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن سنغافوري</small></span><span class="categoryArrow">←</span></button>
-<button type="button" class="homeCategory membershipPlaceholder fanFrameHomeCategory" id="fanFrameCategory" aria-label="إطار كبير المعجبين"><img class="fanFrameHomeImage" src="https://zenithstor.github.io/Zenith-Store/images/big-fans-banner.png" alt="إطار كبير المعجبين"><span class="categoryText"><strong>إطار كبير المعجبين</strong></span><span class="categoryArrow">←</span></button>
-<button type="button" class="homeCategory membershipPlaceholder" id="membershipPlaceholder"><img class="mlbbCategoryImage" src="images/memberships.png" alt="العضويات"><span class="categoryText"><strong>العضوية المميزة</strong></span><span class="categoryArrow">←</span></button>
+<button type="button" class="homeCategory membershipPlaceholder fanFrameHomeCategory" id="fanFrameCategory" aria-label="إطار كبير المعجبين"><img class="fanFrameHomeImage" src="images/Picsart_26-11-11_21-22-28-621.png" alt="إطار كبير المعجبين"><span class="categoryText"><strong>إطار كبير المعجبين</strong></span><span class="categoryArrow">←</span></button>
+<button type="button" class="homeCategory membershipPlaceholder" id="membershipPlaceholder"><img class="mlbbCategoryImage" src="images/IMG_20261112_124322_063.png" alt="العضويات"><span class="categoryText"><strong>العضوية المميزة</strong></span><span class="categoryArrow">←</span></button>
 <button type="button" class="homeCategory membershipPlaceholder" id="verifiedSquadCategory"><span class="categoryText"><strong>فرقة موثقة</strong><small>قريباً</small></span><span class="categoryArrow">←</span></button>
 <button type="button" class="homeCategory diamondsFullCategory regionGemCategory unavailableRegionTile" id="mlbbRegionTurkey" data-gem-region="turkey" disabled aria-disabled="true"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن تركي</small></span><span class="categoryArrow">←</span></button>
 <button type="button" class="homeCategory diamondsFullCategory regionGemCategory unavailableRegionTile" id="mlbbRegionRussia" data-gem-region="russia" disabled aria-disabled="true"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن روسي</small></span><span class="categoryArrow">←</span></button>
@@ -1506,6 +1523,10 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
       <button class="faqQuestion" type="button" aria-expanded="false"><span>ماذا لو قمت بإدخال بيانات اللعبة بشكل غير صحيح؟</span><span class="faqToggleIcon" aria-hidden="true">＋</span></button>
       <div class="faqAnswer"><p>تواصل مع الدعم فوراً وأرسل رقم الطلب والبيانات الصحيحة؛ لا يمكن ضمان تعديل البيانات بعد بدء تنفيذ الشحن.</p></div>
     </div>
+    <div class="faqItem">
+      <button class="faqQuestion" type="button" aria-expanded="false"><span>لدي المزيد من الأسئلة، ماذا أفعل؟</span><span class="faqToggleIcon" aria-hidden="true">＋</span></button>
+      <div class="faqAnswer"><p>تواصل مع مساعد زينيث الذكي في أعلى شريط الإعدادات. إذا كان لديك أي أسئلة أخرى، فلا تتردد في التواصل معنا عبر إنستغرام أو تيليغرام!</p></div>
+    </div>
   </section>
   </section>
 
@@ -1520,8 +1541,8 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
     <p class="muted">اختر القسم الذي تريد تصفحه</p>
     <div class="mlbbPageGrid">
       <button type="button" class="homeCategory diamondsFullCategory regionGemCategory" id="mlbbPageGems" data-gem-region="global"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن عالمي</small></span><span class="categoryArrow">←</span></button><button type="button" class="homeCategory diamondsFullCategory regionGemCategory" id="mlbbPageRegionIndonesia"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن اندونيسي</small></span><span class="categoryArrow">←</span></button><button type="button" class="homeCategory diamondsFullCategory regionGemCategory" id="mlbbPageRegionMalaysia"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن ماليزي</small></span><span class="categoryArrow">←</span></button><button type="button" class="homeCategory diamondsFullCategory regionGemCategory" id="mlbbPageRegionPhilippines"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن فلبيني</small></span><span class="categoryArrow">←</span></button><button type="button" class="homeCategory diamondsFullCategory regionGemCategory" id="mlbbPageRegionSingapore"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن سنغافوري</small></span><span class="categoryArrow">←</span></button>
-      <button type="button" class="homeCategory fanFrameHomeCategory" id="mlbbPageFanFrame"><img class="fanFrameHomeImage" src="https://zenithstor.github.io/Zenith-Store/images/big-fans-banner.png" alt="إطار كبير المعجبين"><span class="categoryText"><strong>إطار كبير المعجبين</strong></span><span class="categoryArrow">←</span></button>
-      <button type="button" class="homeCategory" id="mlbbPageMembership"><img class="mlbbCategoryImage" src="images/memberships.png" alt="العضويات"><span class="categoryText"><strong>العضوية المميزة</strong></span><span class="categoryArrow">←</span></button>
+      <button type="button" class="homeCategory fanFrameHomeCategory" id="mlbbPageFanFrame"><img class="fanFrameHomeImage" src="images/Picsart_26-11-11_21-22-28-621.png" alt="إطار كبير المعجبين"><span class="categoryText"><strong>إطار كبير المعجبين</strong></span><span class="categoryArrow">←</span></button>
+      <button type="button" class="homeCategory" id="mlbbPageMembership"><img class="mlbbCategoryImage" src="images/IMG_20261112_124322_063.png" alt="العضويات"><span class="categoryText"><strong>العضوية المميزة</strong></span><span class="categoryArrow">←</span></button>
       <button type="button" class="homeCategory" id="mlbbPageVerified"><span class="categoryText"><strong>فرقة موثقة</strong><small>قريباً</small></span><span class="categoryArrow">←</span></button>
 <button disabled aria-disabled="true" type="button" class="homeCategory diamondsFullCategory regionGemCategory unavailableRegionTile" id="mlbbPageRegionTurkey"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن تركي</small></span><span class="categoryArrow">←</span></button>
 <button disabled aria-disabled="true" type="button" class="homeCategory diamondsFullCategory regionGemCategory unavailableRegionTile" id="mlbbPageRegionRussia"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن روسي</small></span><span class="categoryArrow">←</span></button>
@@ -1643,7 +1664,14 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
 
   <section class="panel zenithSupportPage" id="supportPanel" hidden>
     <button type="button" class="secondary zenithSupportHome" id="supportBackHome" title="الرئيسية" aria-label="العودة للرئيسية">⌂</button>
-    <div class="zenithSupportHead"><div class="zenithBotAvatar">🤖</div><div><h2>مساعد زينيث الذكي</h2><p>مساعد المتجر المجاني — اسألني عن الموقع والباقات</p></div></div>
+    <div class="zenithSupportHead">
+      <div class="zenithBotAvatar" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="13" rx="4"/><path d="M12 3v4M8 12h.01M16 12h.01M9 16h6M2 12h2M20 12h2"/></svg></div>
+      <div class="zenithSupportTitle"><h2>مساعد زينيث الذكي</h2><p>مساعد المتجر المجاني — اسألني عن الموقع والباقات</p></div>
+      <div class="zenithChatWindowControls">
+        <button type="button" id="zenithChatExpand" aria-label="تكبير المحادثة" title="تكبير المحادثة">⛶</button>
+        <button type="button" id="zenithChatMinimize" aria-label="تصغير المحادثة" title="تصغير المحادثة" hidden>↙</button>
+      </div>
+    </div>
     <div class="zenithSupportNotice">أساعدك بمعلومات المتجر وإرشادات الحساب والشحن. إذا ما عندي جواب موثوق، أوصلك مباشرةً لمسؤول المتجر.</div>
     <div class="zenithChatMessages" id="zenithChatMessages" aria-live="polite" aria-label="محادثة الدعم">
       <div class="zenithChatBubble bot">أهلاً بك في ZenithStore 👋
@@ -2132,7 +2160,7 @@ async function loadProducts() {
     regionalProduct("singapore", "التوايلايت باس", "twilight", null, null, {__unavailable:true})
   );
   // Honor of Kings token packages (preview until the matching products are added to Supabase).
-  const honorTokenRows = [[16,750,750],[23,1000,1000],[80,2000,2000],[240,5500,6000],[400,9000,10000],[560,12000,14000],[800,17000,19000],[1200,25000,28000],[2400,49000,55000],[4000,82000,90000],[8000,164000,180000]];
+  const honorTokenRows = [[16,750,750],[23,1000,1000],[80,2000,2000],[240,5500,6000],[400,9000,10000],[560,12000,14000],[800,17000,19000],[1200,25000,28000],[2400,49000,55000],[4000,82000,90000],[6400,130000,145000],[8000,164000,180000]];
   const honorProducts = honorTokenRows.map(([tokens, mastercard, asiacell]) => ({
     id: null, name: `${tokens} توكن`, diamonds: tokens, product_type: "gems",
     price_mastercard_iqd: mastercard, price_asiacell_iqd: asiacell, active: true,
@@ -2149,7 +2177,7 @@ const ZENITH_PRODUCT_IMAGES = {
   weeklySubscription: "images/weekly-subscription.png",
   monthly: "images/monthly.png",
   twilight: "images/twilight-pass.png",
-  membership: "images/membership.png",
+  membership: "images/IMG_20261112_124322_063.png",
   advancedMembership: "images/advanced-membership.png",
   doubleProduct: "images/double-diamonds.png",
   single: "images/gem-single.png",
@@ -2186,6 +2214,10 @@ function getGemTierImage(product) {
   const gemProducts = productsCache
     .filter(p => getProductCategory(p) === "gems" && Number(p.diamonds) > 0)
     .sort((a,b) => Number(a.diamonds) - Number(b.diamonds));
+  if (product?.__game === "honor" && Number(product.diamonds) === 6400) {
+    const highestHonor = productsCache.find(p => p?.__game === "honor" && Number(p.diamonds) === 8000);
+    if (highestHonor) return getGemTierImage(highestHonor);
+  }
   const index = gemProducts.findIndex(p => p === product || (p.id != null && String(p.id) === String(product.id)));
   if (index < 0 || !gemProducts.length) return ZENITH_PRODUCT_IMAGES.group;
   const tier = Math.min(5, Math.floor(index * 6 / gemProducts.length));
@@ -5847,7 +5879,28 @@ html[data-theme="light"] #homePanel #faqSection * {
 #mlbbCategoryPanel #mlbbPageRegionRussia { grid-column:2!important; grid-row:auto!important; }
 </style>
 
-<script src="./js/zenith-ai.js?v=3.0.0" defer></script>
+
+<script id="zenith-chat-window-controls">
+(() => {
+  const panel = document.getElementById('supportPanel');
+  const expand = document.getElementById('zenithChatExpand');
+  const minimize = document.getElementById('zenithChatMinimize');
+  if (!panel || !expand || !minimize) return;
+  const setExpanded = value => {
+    panel.classList.toggle('zenith-chat-expanded', value);
+    document.body.classList.toggle('zenith-chat-expanded', value);
+    expand.hidden = value;
+    minimize.hidden = !value;
+    if (value) document.getElementById('zenithChatInput')?.focus({preventScroll:true});
+  };
+  expand.addEventListener('click', () => setExpanded(true));
+  minimize.addEventListener('click', () => setExpanded(false));
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && panel.classList.contains('zenith-chat-expanded')) setExpanded(false);
+  });
+})();
+</script>
+\n<script src="./js/zenith-ai.js?v=3.1.0" defer></script>
 </body>
 </html>
 
