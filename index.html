@@ -1473,6 +1473,40 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
 #mlbbSubcategories #membershipPlaceholder .categoryArrow,
 #mlbbCategoryPanel #mlbbPageMembership .categoryArrow {display:none!important;}
 </style>
+
+<style id="zenith-final-two-polishes">
+/* Fan-frame label sits below its artwork, matching the membership tile layout. */
+#fanFrameCategory, #mlbbPageFanFrame {
+  position:relative!important; overflow:hidden!important; display:flex!important;
+  flex-direction:column!important; justify-content:flex-start!important;
+  align-items:stretch!important; gap:0!important; padding:0 0 7px!important;
+}
+#fanFrameCategory .fanFrameHomeImage, #mlbbPageFanFrame .fanFrameHomeImage {
+  position:relative!important; inset:auto!important; display:block!important;
+  width:100%!important; height:calc(100% - 29px)!important; min-height:0!important;
+  max-height:none!important; flex:1 1 auto!important; object-fit:cover!important;
+  object-position:center!important; z-index:0!important; margin:0!important;
+}
+#fanFrameCategory .categoryText, #mlbbPageFanFrame .categoryText {
+  position:relative!important; inset:auto!important; display:block!important;
+  flex:0 0 22px!important; width:100%!important; max-width:100%!important;
+  margin:0!important; padding:2px 7px 0!important; text-align:center!important;
+  background:transparent!important; z-index:2!important;
+}
+#fanFrameCategory .categoryText strong, #mlbbPageFanFrame .categoryText strong {
+  display:block!important; color:#fff!important; font-weight:900!important;
+  text-shadow:0 1px 3px rgba(0,0,0,.95)!important;
+}
+#fanFrameCategory .categoryArrow, #mlbbPageFanFrame .categoryArrow {display:none!important}
+
+/* Remove the old text glyph; the animated CSS hamburger is the only icon. */
+#menuToggle {font-size:0!important; line-height:0!important;}
+#menuToggle::before, #menuToggle::after {content:""!important;}
+#menuToggle::before {top:11px!important; width:19px!important; height:2px!important; box-shadow:0 6px 0 currentColor!important;}
+#menuToggle::after {top:23px!important; width:19px!important; height:2px!important;}
+#menuToggle.is-open::before {top:17px!important; box-shadow:none!important; transform:rotate(45deg)!important;}
+#menuToggle.is-open::after {top:17px!important; transform:rotate(-45deg)!important;}
+</style>
 </head>
 <body>
 <header>
@@ -1481,7 +1515,7 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
       <div class="brandImagePlaceholder"><img class="brandLogoDark" src="images/logo.png" alt="شعار ZenithStore"><img class="brandLogoLight" src="images/logo-black.png" alt="شعار ZenithStore"></div>
       <div class="brand brandStack"><span class="brandZenith">ZENITH</span><span class="brandStore">store</span></div>
     </div>
-    <div class="headerActions"><button type="button" class="themeToggle" id="themeToggle" aria-label="تفعيل الوضع النهاري" title="تبديل الوضع">☀</button><button type="button" class="menuBtn" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false">☰</button></div>
+    <div class="headerActions"><button type="button" class="themeToggle" id="themeToggle" aria-label="تفعيل الوضع النهاري" title="تبديل الوضع">☀</button><button type="button" class="menuBtn" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false"></button></div>
   </div>
   <nav class="menuBox" id="mainMenu" hidden>
     <div class="menuAccountArea">
