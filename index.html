@@ -1820,6 +1820,18 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
   .zenithAppsTrack,.zenithAppsSet img,.zenithAppsSection::before{animation:none!important}
   .zenithAppsSection{mask-image:none}
 }
+
+.zenithAppsHeading{display:flex;align-items:center;justify-content:center;gap:8px;margin:8px 0 2px;color:#eaf5ff;font-size:16px;font-weight:900;text-shadow:0 0 12px rgba(75,165,255,.32)}
+.zenithAppsFire{display:inline-block;filter:hue-rotate(165deg) saturate(1.8) drop-shadow(0 0 7px rgba(64,157,255,.75));animation:zenithBlueFire 1.8s ease-in-out infinite alternate}
+@keyframes zenithBlueFire{from{transform:translateY(1px) scale(.94);filter:hue-rotate(165deg) saturate(1.7) drop-shadow(0 0 4px #329cff)}to{transform:translateY(-2px) scale(1.06);filter:hue-rotate(165deg) saturate(2.1) drop-shadow(0 0 11px #329cff)}}
+.zenithAppsSection{touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
+.zenithAppsSection.isDragging{cursor:grabbing}
+.zenithAppsTrack{animation:none!important;transform:translate3d(0,0,0);will-change:transform}
+.zenithAppsSet img{animation:none!important;filter:drop-shadow(0 0 5px rgba(93,174,255,.25))}
+#homePanel .zenithGameBannerGrid .gameBannerCard{background-image:linear-gradient(90deg,rgba(3,8,18,.46),rgba(3,8,18,.12) 62%,rgba(3,8,18,.04)),var(--game-banner)!important}
+#homePanel .zenithGameBannerGrid .gameBannerCard .gameBannerShade{background:linear-gradient(0deg,rgba(0,0,0,.12),transparent 58%)!important}
+.product-gem-image img.game-product-image{object-fit:contain!important}
+.product.product-unavailable,.product.genshin-unavailable-card{filter:grayscale(1);opacity:.72}
 </style>
 </head>
 <body>
@@ -1877,7 +1889,8 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
     <div class="homeSearchWrap" id="homeSearchWrap" hidden>
       <input id="homeSearch" type="search" placeholder="ابحث عن لعبة..." aria-label="ابحث عن لعبة">
     </div>
-    <section class="zenithAppsSection" aria-label="تطبيقاتنا المفضلة">
+    <div class="zenithAppsHeading"><span>خدمات المتجر</span><span class="zenithAppsFire" aria-hidden="true">🔥</span></div>
+    <section class="zenithAppsSection" aria-label="خدمات المتجر والتطبيقات">
       <div class="zenithAppsTrack">
         <div class="zenithAppsSet">
           <img src="images/instagram.png" alt="Instagram" loading="lazy">
@@ -1916,13 +1929,13 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
 </div>
       </section>
       <button type="button" class="homeCategory gameMainCategory gameBannerCard" id="honorOfKingsToggle" style="--game-banner:url('images/honor-of-kings-1uz5g.png')"><img class="gameTileImage" src="images/honor-of-kings.png" alt="Honor of Kings"><span class="gameTileName">Honor of Kings</span><span class="gameBannerShade" aria-hidden="true"></span></button>
-      <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile gameBannerCard" disabled style="--game-banner:url('images/banner-pubg-mobile.jpg')"><img class="gameTileImage" src="images/pubg-mobile.png" alt="PUBG Mobile"><span class="gameTileName">PUBG Mobile<small class="gameComingSoonLabel">قريباً...</small></span><span class="gameBannerShade" aria-hidden="true"></span></button>
-      <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile gameBannerCard" disabled style="--game-banner:url('images/banner-genshin-impact.jpg')"><img class="gameTileImage" src="images/genshin-impact.png" alt="Genshin Impact"><span class="gameTileName">Genshin Impact<small class="gameComingSoonLabel">قريباً...</small></span><span class="gameBannerShade" aria-hidden="true"></span></button>
-      <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile gameBannerCard" disabled style="--game-banner:url('images/banner-wuthering-waves.jpg')"><img class="gameTileImage" src="images/wuthering-waves.png" alt="Wuthering Waves"><span class="gameTileName">Wuthering Waves<small class="gameComingSoonLabel">قريباً...</small></span><span class="gameBannerShade" aria-hidden="true"></span></button>
-      <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile gameBannerCard" disabled style="--game-banner:url('images/banner-honkai-star-rail.jpg')"><img class="gameTileImage" src="images/honkai-star-rail.png" alt="Honkai: Star Rail"><span class="gameTileName">Honkai: Star Rail<small class="gameComingSoonLabel">قريباً...</small></span><span class="gameBannerShade" aria-hidden="true"></span></button>
-      <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile gameBannerCard" disabled style="--game-banner:url('images/banner-zenless-zone-zero.jpg')"><img class="gameTileImage" src="images/zenless-zone-zero.png" alt="Zenless Zone Zero"><span class="gameTileName">Zenless Zone Zero<small class="gameComingSoonLabel">قريباً...</small></span><span class="gameBannerShade" aria-hidden="true"></span></button>
-      <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile gameBannerCard" disabled style="--game-banner:url('images/banner-identity-v.jpg')"><img class="gameTileImage" src="images/identity-v.png" alt="Identity V"><span class="gameTileName">Identity V<small class="gameComingSoonLabel">قريباً...</small></span><span class="gameBannerShade" aria-hidden="true"></span></button>
-      <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile gameBannerCard" disabled style="--game-banner:url('images/banner-yalla-ludo.jpg')"><img class="gameTileImage" src="images/yalla-ludo.png" alt="Yalla Ludo"><span class="gameTileName">Yalla Ludo<small class="gameComingSoonLabel">قريباً...</small></span><span class="gameBannerShade" aria-hidden="true"></span></button>
+      <button type="button" class="homeCategory gameMainCategory gameBannerCard" data-zenith-game="pubg" style="--game-banner:url('images/banner-pubg-mobile.jpg')"><img class="gameTileImage" src="images/pubg-mobile.png" alt="PUBG Mobile"><span class="gameTileName">PUBG Mobile</span><span class="gameBannerShade" aria-hidden="true"></span></button>
+      <button type="button" class="homeCategory gameMainCategory gameBannerCard" data-zenith-game="genshin" style="--game-banner:url('images/banner-genshin-impact.jpg')"><img class="gameTileImage" src="images/genshin-impact.png" alt="Genshin Impact"><span class="gameTileName">Genshin Impact</span><span class="gameBannerShade" aria-hidden="true"></span></button>
+      <button type="button" class="homeCategory gameMainCategory gameBannerCard" data-zenith-game="wuthering" style="--game-banner:url('images/banner-wuthering-waves.jpg')"><img class="gameTileImage" src="images/wuthering-waves.png" alt="Wuthering Waves"><span class="gameTileName">Wuthering Waves</span><span class="gameBannerShade" aria-hidden="true"></span></button>
+      <button type="button" class="homeCategory gameMainCategory gameBannerCard" data-zenith-game="hsr" style="--game-banner:url('images/banner-honkai-star-rail.jpg')"><img class="gameTileImage" src="images/honkai-star-rail.png" alt="Honkai: Star Rail"><span class="gameTileName">Honkai: Star Rail</span><span class="gameBannerShade" aria-hidden="true"></span></button>
+      <button type="button" class="homeCategory gameMainCategory gameBannerCard" data-zenith-game="zzz" style="--game-banner:url('images/banner-zenless-zone-zero.jpg')"><img class="gameTileImage" src="images/zenless-zone-zero.png" alt="Zenless Zone Zero"><span class="gameTileName">Zenless Zone Zero</span><span class="gameBannerShade" aria-hidden="true"></span></button>
+      <button type="button" class="homeCategory gameMainCategory gameBannerCard" data-zenith-game="identity" style="--game-banner:url('images/banner-identity-v.jpg')"><img class="gameTileImage" src="images/identity-v.png" alt="Identity V"><span class="gameTileName">Identity V</span><span class="gameBannerShade" aria-hidden="true"></span></button>
+      <button type="button" class="homeCategory gameMainCategory gameBannerCard" data-zenith-game="yalla" style="--game-banner:url('images/banner-yalla-ludo.jpg')"><img class="gameTileImage" src="images/yalla-ludo.png" alt="Yalla Ludo"><span class="gameTileName">Yalla Ludo</span><span class="gameBannerShade" aria-hidden="true"></span></button>
       <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile gameBannerCard" disabled style="--game-banner:url('images/banner-free-fire.jpg')"><img class="gameTileImage" src="images/free-fire.png" alt="Free Fire"><span class="gameTileName">Free Fire<small class="gameComingSoonLabel">قريباً...</small></span><span class="gameBannerShade" aria-hidden="true"></span></button>
     </div>
 
@@ -2589,7 +2602,43 @@ async function loadProducts() {
     price_mastercard_iqd: mastercard, price_asiacell_iqd: asiacell, active: true,
     __pendingSupabase: true, __game: "honor"
   }));
-  productsCache = [...(data || []), ...previewPackages, ...regional, ...honorProducts];
+  // New game packages are staged in the storefront until matching Supabase product rows exist.
+  // Each image is assigned in descending package order; where fewer images exist, each supplied
+  // image is shared by a consecutive group of packages rather than inventing missing artwork.
+  const stagedGameRows = [];
+  const addStagedGame = (game, rows, imageFiles, imageMode="tier") => {
+    const count = rows.length;
+    rows.forEach((row, index) => {
+      const [name, mastercard, asiacell, type="gems", unavailable=false, imageOverride=null] = row;
+      let imageIndex = Math.min(imageFiles.length - 1, Math.floor(index * imageFiles.length / count));
+      if (imageMode === "fixed") imageIndex = Math.min(index, imageFiles.length - 1);
+      stagedGameRows.push({id:null,name,diamonds:Number((String(name).match(/[0-9,]+/)||[0])[0].replace(/,/g,""))||0,
+        product_type:type,price_mastercard_iqd:mastercard,price_asiacell_iqd:asiacell,active:true,
+        __pendingSupabase:!unavailable,__unavailable:unavailable,__game:game,__image:imageOverride || imageFiles[imageIndex],__sortOrder:index});
+    });
+  };
+  addStagedGame("wuthering", [
+    ["الاشتراك الشهري",9000,10000,"monthly",false,"images/wuthering-monthly.png"], ["8080 كرستالة",150000,165000,"gems",false,"images/wuthering-crystal-1.png"], ["4480 كرستالة",94000,106000,"gems",false,"images/wuthering-crystal-2.png"], ["3880 كرستالة",77000,85000,"gems",false,"images/wuthering-crystal-3.png"], ["2240 كرستالة",47000,53000,"gems",false,"images/wuthering-crystal-4.png"], ["1090 كرستالة",25000,28000,"gems",false,"images/wuthering-crystal-3.png"], ["330 كرستالة",9000,10000,"gems",false,"images/wuthering-crystal-4.png"], ["60 كرستالة",2250,2500,"gems",false,"images/wuthering-crystal-4.png"]
+  ], ["images/wuthering-monthly.png","images/wuthering-crystal-1.png","images/wuthering-crystal-2.png","images/wuthering-crystal-3.png","images/wuthering-crystal-4.png"]);
+  addStagedGame("identity", [
+    ["مجموعة مجال الذاكرة",18500,21000,"special",false,"images/identity-memory-domain.png"], ["مجموعة الإلهام",2500,2750,"special",false,"images/identity-inspiration.png"], ["7000 Echoes",170000,188000,"gems",false,"images/identity-echoes-1.png"], ["4666 Echoes",117000,130000,"gems",false,"images/identity-echoes-1.png"], ["3498 Echoes",86500,96000,"gems",false,"images/identity-echoes-2.png"], ["2333 Echoes",58500,65000,"gems",false,"images/identity-echoes-3.png"], ["1100 Echoes",31000,35000,"gems",false,"images/identity-echoes-4.png"], ["758 Echoes",19000,21000,"gems",false,"images/identity-echoes-4.png"], ["323 Echoes",9500,11000,"gems",false,"images/identity-echoes-5.png"], ["194 Echoes",6000,7000,"gems",false,"images/identity-echoes-6.png"]
+  ], ["images/identity-memory-domain.png","images/identity-inspiration.png","images/identity-echoes-1.png","images/identity-echoes-2.png","images/identity-echoes-3.png","images/identity-echoes-4.png","images/identity-echoes-5.png","images/identity-echoes-6.png"],"fixed");
+  addStagedGame("zzz", [
+    ["عضوية Inter-Knot",10000,11000,"monthly",false,"images/zzz-inter-knot.png"], ["8080 Monochrome",182500,200000,"gems",false,"images/zzz-monochrome-1.png"], ["4480 Monochrome",109000,120000,"gems",false,"images/zzz-monochrome-2.png"], ["3880 Monochrome",92500,104000,"gems",false,"images/zzz-monochrome-3.png"], ["2240 Monochrome",54500,60000,"gems",false,"images/zzz-monochrome-4.png"], ["1090 Monochrome",27500,30000,"gems",false,"images/zzz-monochrome-5.png"], ["330 Monochrome",10000,11000,"gems",false,"images/zzz-monochrome-6.png"], ["60 Monochrome",2500,2750,"gems",false,"images/zzz-monochrome-6.png"]
+  ], ["images/zzz-inter-knot.png","images/zzz-monochrome-1.png","images/zzz-monochrome-2.png","images/zzz-monochrome-3.png","images/zzz-monochrome-4.png","images/zzz-monochrome-5.png","images/zzz-monochrome-6.png"],"fixed");
+  addStagedGame("hsr", [
+    ["تصريح الإمداد السريع",10000,11000,"monthly",false,"images/hsr-supply-pass.png"], ["8080 شظية",182500,200000,"gems",false,"images/hsr-shard-1.png"], ["4480 شظية",109000,120000,"gems",false,"images/hsr-shard-2.png"], ["3880 شظية",92500,103000,"gems",false,"images/hsr-shard-2.png"], ["2240 شظية",54500,60000,"gems",false,"images/hsr-shard-2.png"], ["1090 شظية",28000,31000,"gems",false,"images/hsr-shard-3.png"], ["330 شظية",10000,11000,"gems",false,"images/hsr-shard-3.png"], ["60 شظية",2250,2500,"gems",false,"images/hsr-shard-3.png"]
+  ], ["images/hsr-supply-pass.png","images/hsr-shard-1.png","images/hsr-shard-2.png","images/hsr-shard-3.png"]);
+  addStagedGame("yalla", [
+    ["27,640 جوهرة",100000,112000,"gems",false,"images/yalla-gems-1.png"], ["9,973,990 ذهب",100000,112000,"gems",false,"images/yalla-gold-1.png"], ["13,580 جوهرة",54500,62000,"gems",false,"images/yalla-gems-1.png"], ["3,666,470 ذهب",54500,62000,"gems",false,"images/yalla-gold-1.png"], ["5,150 جوهرة",22000,25000,"gems",false,"images/yalla-gems-2.png"], ["1,463,320 ذهب",22000,25000,"gems",false,"images/yalla-gold-2.png"], ["2,320 جوهرة",11000,13000,"gems",false,"images/yalla-gems-2.png"], ["22,370 ذهب",11000,13000,"gems",false,"images/yalla-gold-2.png"], ["830 جوهرة",5500,6000,"gems",false,"images/yalla-gems-2.png"], ["68,500 ذهب",5500,null,"gems",false,"images/yalla-gold-2.png"]
+  ], ["images/yalla-gems-1.png","images/yalla-gems-2.png","images/yalla-gold-1.png","images/yalla-gold-2.png"],"fixed");
+  addStagedGame("pubg", [
+    ["8100 شدة",155000,172000],["3850 شدة",75000,83000],["1800 شدة",38500,42000],["852 شدة",23500,26000],["660 شدة",16000,18000],["500 شدة",14000,16000],["325 شدة",8000,9000],["248 شدة",7250,8000],["144 شدة",5000,5500],["96 شدة",3250,3500],["60 شدة",2000,2250],["48 شدة",1750,2000],["24 شدة",1000,1000]
+  ], ["images/pubg-uc-1.png","images/pubg-uc-2.png","images/pubg-uc-3.png","images/pubg-uc-4.png","images/pubg-uc-5.png","images/pubg-uc-6.png"]);
+  addStagedGame("genshin", [
+    ["8080 بلورة",null,null,"gems",true],["4480 بلورة",null,null,"gems",true],["3880 بلورة",null,null,"gems",true],["2240 بلورة",null,null,"gems",true],["1090 بلورة",null,null,"gems",true],["330 بلورة",null,null,"gems",true],["60 بلورة",null,null,"gems",true]
+  ], ["images/genshin-crystal-1.png","images/genshin-crystal-2.png","images/genshin-crystal-3.png","images/genshin-crystal-4.png"]);
+  productsCache = [...(data || []), ...previewPackages, ...regional, ...honorProducts, ...stagedGameRows];
   renderProducts();
   renderPopularProducts();
   if (el("myOrdersPanel") && !el("myOrdersPanel").hidden) loadMyOrders();
@@ -2679,6 +2728,22 @@ function openGemRegion(region) {
   setProductCategory("gems");
   showGemProducts();
 }
+function openZenithGame(game, title) {
+  activeStoreGame = game;
+  activeGemRegion = "global";
+  el("productsPanel")?.classList.toggle("honor-mode", game === "honor");
+  productSearchTerm = "";
+  if (el("productSearch")) el("productSearch").value = "";
+  if (el("productSearchWrap")) el("productSearchWrap").hidden = true;
+  setProductCategory("gems");
+  showGemProducts();
+  const crumb = el("mlbbRegionBreadcrumb");
+  if (crumb) crumb.textContent = title;
+  const heading = el("productsPanel")?.querySelector(":scope > h2");
+  if (heading) heading.textContent = "باقات " + title;
+  const back = el("backHome");
+  if (back) back.textContent = "← رجوع";
+}
 function openHonorKings() {
   activeStoreGame = "honor";
   el("productsPanel")?.classList.add("honor-mode");
@@ -2751,16 +2816,20 @@ function renderProducts() {
   if (continueBtn) { continueBtn.hidden = true; continueBtn.disabled = true; }
   const addBtn = el("addToCartBtn"); if (addBtn) { addBtn.hidden = true; addBtn.disabled = true; }
   const list = productsCache.filter(p => {
-    const gameMatch = activeStoreGame === "honor" ? p.__game === "honor" : !p.__game;
-    const regionMatch = activeStoreGame === "honor" ? true : (activeGemRegion === "global"
-      ? !p.__gemRegion
-      : p.__gemRegion === activeGemRegion);
-    const categoryMatch = getProductCategory(p) === activeProductCategory;
+    const gameMatch = activeStoreGame === "mlbb" ? !p.__game : p.__game === activeStoreGame;
+    const regionMatch = (activeStoreGame === "mlbb" && activeGemRegion !== "global")
+      ? p.__gemRegion === activeGemRegion : (activeStoreGame === "mlbb" ? !p.__gemRegion : true);
+    const categoryMatch = activeStoreGame !== "mlbb"
+      ? activeProductCategory === "gems"
+      : getProductCategory(p) === activeProductCategory;
     const priceAvailable = p.__unavailable === true || getPrice(p, provider) != null;
     return gameMatch && regionMatch && categoryMatch && priceAvailable &&
       (!productSearchTerm || productTitle(p).toLowerCase().includes(productSearchTerm));
   });
-  if (activeProductCategory === "gems") list.sort((a,b) => Number(a.diamonds || 0) - Number(b.diamonds || 0));
+  if (activeProductCategory === "gems") {
+    if (activeStoreGame === "mlbb") list.sort((a,b) => Number(a.diamonds || 0) - Number(b.diamonds || 0));
+    else list.sort((a,b) => Number(a.__sortOrder ?? 0) - Number(b.__sortOrder ?? 0));
+  }
   if (!list.length) {
     box.textContent = "لا توجد منتجات متاحة لهذه الطريقة حالياً.";
     setMessage("productsMsg", "");
@@ -2785,15 +2854,17 @@ function renderProducts() {
     const imageWrap = document.createElement("div");
     imageWrap.className = "product-gem-image";
     const image = document.createElement("img");
-    image.src = p.__game === "honor" ? (
+    image.src = p.__image || (p.__game === "honor" ? (
       Number(p.diamonds) <= 23 ? "images/honor-token-1.png" :
       Number(p.diamonds) <= 240 ? "images/honor-token-2.png" :
       Number(p.diamonds) <= 560 ? "images/honor-token-3.png" :
       Number(p.diamonds) <= 1200 ? "images/honor-token-4.png" :
       Number(p.diamonds) <= 4000 ? "images/honor-token-5.png" : "images/honor-token-6.png"
     ) : (activeProductCategory === "fanframe" ? "images/big-fans.png" :
-      (activeProductCategory === "gems" && Number(p.diamonds) > 0 ? getGemTierImage(p) : productImageData(p)));
+      (activeProductCategory === "gems" && Number(p.diamonds) > 0 ? getGemTierImage(p) : productImageData(p))));
     image.alt = productTitle(p);
+    if (p.__image) image.classList.add("game-product-image");
+    if (p.__game === "genshin") card.classList.add("genshin-unavailable-card");
     image.loading = "lazy";
     image.decoding = "async";
     imageWrap.appendChild(image);
@@ -4039,6 +4110,11 @@ el("addToCartBtn").addEventListener("click", () => {
 
 el("openGems").addEventListener("click", () => openGemRegion("global"));
 el("honorOfKingsToggle")?.addEventListener("click", openHonorKings);
+const zenithGameTitles = {pubg:"PUBG Mobile",genshin:"Genshin Impact",wuthering:"Wuthering Waves",hsr:"Honkai: Star Rail",zzz:"Zenless Zone Zero",identity:"Identity V",yalla:"Yalla Ludo"};
+document.querySelectorAll("[data-zenith-game]").forEach(button => button.addEventListener("click", () => {
+  const game = button.dataset.zenithGame;
+  openZenithGame(game, zenithGameTitles[game] || game);
+}));
 el("mobileLegendsToggle").addEventListener("click", () => {
   hideCustomerPanels(); el("mlbbCategoryPanel").hidden = false; saveActivePage("mlbb"); setActiveNav("navHome");
   el("mlbbCategoryPanel").scrollIntoView({behavior:"smooth",block:"start"});
@@ -4073,7 +4149,7 @@ el("verifiedSquadCategory").addEventListener("click", () => {
 });
 el("backHome").addEventListener("click", () => {
   hideCustomerPanels();
-  if (activeStoreGame === "honor") {
+  if (activeStoreGame !== "mlbb") {
     el("homePanel").hidden = false;
     saveActivePage("home");
     setActiveNav("navHome");
@@ -4329,6 +4405,42 @@ db.auth.onAuthStateChange(() => {
     await loadAdminOrders();
   }, 0);
 });
+
+// Lightweight, seamless app ticker: continuous motion plus finger/mouse dragging.
+(function installZenithAppsTicker(){
+  const viewport = document.querySelector(".zenithAppsSection");
+  const track = viewport?.querySelector(".zenithAppsTrack");
+  const firstSet = track?.querySelector(".zenithAppsSet");
+  if (!viewport || !track || !firstSet) return;
+  let offset = 0, width = 0, last = 0, dragging = false, pointerStart = 0, offsetStart = 0;
+  const speed = 21;
+  const measure = () => { width = firstSet.getBoundingClientRect().width; if (width > 0) offset %= width; };
+  const tick = now => {
+    if (!last) last = now;
+    const dt = Math.min(40, now - last); last = now;
+    if (!dragging && width > 0) offset = (offset + speed * dt / 1000) % width;
+    track.style.transform = `translate3d(${-offset}px,0,0)`;
+    requestAnimationFrame(tick);
+  };
+  measure(); window.addEventListener("resize", measure, {passive:true});
+  if (window.ResizeObserver) new ResizeObserver(measure).observe(firstSet);
+  viewport.addEventListener("pointerdown", event => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    dragging = true; pointerStart = event.clientX; offsetStart = offset;
+    viewport.classList.add("isDragging");
+    try { viewport.setPointerCapture(event.pointerId); } catch (_) {}
+  });
+  viewport.addEventListener("pointermove", event => {
+    if (!dragging || !width) return;
+    const delta = pointerStart - event.clientX;
+    offset = ((offsetStart + delta) % width + width) % width;
+    track.style.transform = `translate3d(${-offset}px,0,0)`;
+  });
+  const release = () => { if (!dragging) return; dragging = false; viewport.classList.remove("isDragging"); };
+  viewport.addEventListener("pointerup", release);
+  viewport.addEventListener("pointercancel", release);
+  requestAnimationFrame(tick);
+})();
 
 // Remember the current scroll position across reloads / leaving and returning to this tab.
 // Session-scoped storage avoids persisting sensitive form contents or account data.
