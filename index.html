@@ -1696,26 +1696,130 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
 
 <style>
 
-/* Zenith home game banners + lightweight app ticker */
-.zenithGameBannerGrid{display:grid!important;grid-template-columns:1fr!important;gap:12px!important;align-items:stretch}
-.zenithGameBannerGroup{display:block!important;min-width:0!important;border:0!important;padding:0!important;background:transparent!important;box-shadow:none!important}
-.zenithGameBannerGrid .gameBannerCard{position:relative!important;isolation:isolate!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:13px!important;width:100%!important;min-width:0!important;min-height:0!important;height:auto!important;aspect-ratio:16/9!important;max-height:190px!important;padding:16px!important;overflow:hidden!important;text-align:right!important;border:1px solid rgba(255,255,255,.18)!important;border-radius:18px!important;background-color:#101827!important;background-image:linear-gradient(90deg,rgba(3,8,18,.88),rgba(3,8,18,.35) 65%,rgba(3,8,18,.16)),var(--game-banner)!important;background-size:cover!important;background-position:center!important;box-shadow:0 8px 22px rgba(0,0,0,.22)!important;color:#fff!important}
-.zenithGameBannerGrid .gameBannerCard .gameTileImage{position:relative!important;z-index:2!important;display:block!important;width:clamp(48px,12vw,72px)!important;height:clamp(48px,12vw,72px)!important;flex:0 0 clamp(48px,12vw,72px)!important;object-fit:contain!important;border-radius:15px!important;background:rgba(8,14,25,.72)!important;padding:4px!important;box-shadow:0 3px 14px rgba(0,0,0,.28)!important}
-.zenithGameBannerGrid .gameBannerCard .gameTileName{position:relative!important;z-index:2!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:5px!important;min-width:0!important;text-align:right!important;color:#fff!important;font-size:clamp(16px,4vw,22px)!important;font-weight:900!important;line-height:1.25!important;text-shadow:0 2px 9px rgba(0,0,0,.8)!important}
-.zenithGameBannerGrid .gameBannerCard .gameComingSoonLabel{font-size:12px!important;color:#dbeafe!important;font-weight:700!important}
-.zenithGameBannerGrid .gameBannerCard .gameBannerShade{position:absolute;z-index:1;inset:0;pointer-events:none;background:linear-gradient(0deg,rgba(0,0,0,.22),transparent 55%)}
-.zenithGameBannerGrid .comingSoonGame{opacity:1!important;filter:none!important;cursor:not-allowed!important}
-.zenithGameBannerGrid .comingSoonGame .gameTileName,.zenithGameBannerGrid .comingSoonGame .gameComingSoonLabel{color:#fff!important}
-.zenithAppsSection{position:relative;overflow:hidden;margin:17px 0 12px;padding:10px 0;border-radius:16px;background:rgba(9,18,32,.58);border:1px solid rgba(110,170,235,.18);mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
-.zenithAppsTrack{display:flex;width:max-content;animation:zenithAppsDrift 42s linear infinite;will-change:transform}
-.zenithAppsSet{display:flex;flex:0 0 auto;align-items:center;gap:19px;padding:0 10px}
-.zenithAppsSet img{display:block;width:clamp(42px,11vw,58px);height:clamp(42px,11vw,58px);object-fit:contain;filter:drop-shadow(0 0 7px rgba(93,174,255,.28));animation:zenithAppGlow 4.8s ease-in-out infinite alternate}
-.zenithAppsSet img:nth-child(3n){animation-delay:-1.6s}.zenithAppsSet img:nth-child(3n + 1){animation-delay:-3.1s}
-@keyframes zenithAppsDrift{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@keyframes zenithAppGlow{from{filter:drop-shadow(0 0 3px rgba(93,174,255,.18))}to{filter:drop-shadow(0 0 10px rgba(93,174,255,.58))}}
-@media(min-width:700px){.zenithGameBannerGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.zenithGameBannerGrid .gameBannerCard{max-height:210px!important}}
-@media(prefers-reduced-motion:reduce){.zenithAppsTrack,.zenithAppsSet img{animation:none!important}.zenithAppsSection{mask-image:none}}
+/* Zenith home game banners + seamless app ticker */
+#homePanel .zenithGameBannerGrid{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:12px!important;
+  align-items:stretch!important;
+}
+#homePanel .zenithGameBannerGroup{
+  display:block!important;
+  min-width:0!important;
+  border:0!important;
+  padding:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+#homePanel .zenithGameBannerGrid .gameBannerCard{
+  position:relative!important;
+  isolation:isolate!important;
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:13px!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  height:auto!important;
+  aspect-ratio:16/9!important;
+  max-height:190px!important;
+  padding:16px!important;
+  overflow:hidden!important;
+  text-align:right!important;
+  border:1px solid rgba(255,255,255,.2)!important;
+  border-radius:18px!important;
+  background-color:#101827!important;
+  background-image:linear-gradient(90deg,rgba(3,8,18,.82),rgba(3,8,18,.28) 66%,rgba(3,8,18,.12)),var(--game-banner)!important;
+  background-size:cover!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+  box-shadow:0 8px 22px rgba(0,0,0,.22)!important;
+  color:#fff!important;
+}
+#homePanel .zenithGameBannerGrid .gameBannerCard .gameTileImage{
+  position:relative!important;z-index:2!important;display:block!important;
+  width:clamp(48px,12vw,72px)!important;height:clamp(48px,12vw,72px)!important;
+  flex:0 0 clamp(48px,12vw,72px)!important;object-fit:contain!important;
+  border-radius:15px!important;background:rgba(8,14,25,.72)!important;
+  padding:4px!important;box-shadow:0 3px 14px rgba(0,0,0,.28)!important;
+}
+#homePanel .zenithGameBannerGrid .gameBannerCard .gameTileName{
+  position:relative!important;z-index:2!important;display:flex!important;
+  flex-direction:column!important;align-items:flex-start!important;gap:5px!important;
+  min-width:0!important;width:auto!important;text-align:right!important;
+  color:#fff!important;font-size:clamp(16px,4vw,22px)!important;
+  font-weight:900!important;line-height:1.25!important;
+  text-shadow:0 2px 9px rgba(0,0,0,.8)!important;
+}
+#homePanel .zenithGameBannerGrid .gameBannerCard .gameComingSoonLabel{
+  font-size:12px!important;color:#dbeafe!important;font-weight:700!important;
+}
+#homePanel .zenithGameBannerGrid .gameBannerCard .gameBannerShade{
+  position:absolute;z-index:1;inset:0;pointer-events:none;
+  background:linear-gradient(0deg,rgba(0,0,0,.22),transparent 55%);
+}
+#homePanel .zenithGameBannerGrid .comingSoonGame{
+  opacity:1!important;filter:none!important;cursor:not-allowed!important;
+}
+#homePanel .zenithGameBannerGrid .comingSoonGame .gameTileName,
+#homePanel .zenithGameBannerGrid .comingSoonGame .gameComingSoonLabel{color:#fff!important}
 
+.zenithAppsSection{
+  position:relative;isolation:isolate;overflow:hidden;
+  margin:13px 0 17px;padding:10px 0;border-radius:16px;
+  background:rgba(9,18,32,.58);
+  border:1px solid rgba(110,170,235,.2);
+  box-shadow:0 0 18px rgba(65,155,255,.09);
+  direction:ltr;
+  mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);
+}
+/* A softly pulsing light stays beside the strip instead of travelling with the icons. */
+.zenithAppsSection::before{
+  content:"";position:absolute;z-index:3;pointer-events:none;
+  left:7%;right:7%;top:1px;height:2px;border-radius:50%;
+  background:linear-gradient(90deg,transparent,rgba(104,190,255,.9),rgba(190,225,255,.95),rgba(104,190,255,.9),transparent);
+  box-shadow:0 0 8px 2px rgba(72,166,255,.42),0 0 20px 4px rgba(72,166,255,.2);
+  opacity:.72;animation:zenithStripLight 3.2s ease-in-out infinite alternate;
+}
+.zenithAppsTrack{
+  display:flex;width:max-content;direction:ltr;
+  animation:zenithAppsDrift 42s linear infinite;
+  will-change:transform;
+}
+.zenithAppsSet{
+  display:flex;flex:0 0 auto;align-items:center;gap:19px;
+  padding:0 10px;direction:ltr;
+}
+.zenithAppsSet img{
+  display:block;width:clamp(42px,11vw,58px);height:clamp(42px,11vw,58px);
+  flex:0 0 auto;object-fit:contain;
+  filter:drop-shadow(0 0 7px rgba(93,174,255,.28));
+  animation:zenithAppGlow 4.8s ease-in-out infinite alternate;
+}
+.zenithAppsSet img:nth-child(3n){animation-delay:-1.6s}
+.zenithAppsSet img:nth-child(3n + 1){animation-delay:-3.1s}
+@keyframes zenithAppsDrift{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(-50%,0,0)}
+}
+@keyframes zenithAppGlow{
+  from{filter:drop-shadow(0 0 3px rgba(93,174,255,.18))}
+  to{filter:drop-shadow(0 0 10px rgba(93,174,255,.58))}
+}
+@keyframes zenithStripLight{
+  from{opacity:.38;filter:brightness(.8)}
+  to{opacity:1;filter:brightness(1.35)}
+}
+@media(min-width:700px){
+  #homePanel .zenithGameBannerGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #homePanel .zenithGameBannerGrid .gameBannerCard{max-height:210px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .zenithAppsTrack,.zenithAppsSet img,.zenithAppsSection::before{animation:none!important}
+  .zenithAppsSection{mask-image:none}
+}
 </style>
 </head>
 <body>
@@ -1773,6 +1877,24 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
     <div class="homeSearchWrap" id="homeSearchWrap" hidden>
       <input id="homeSearch" type="search" placeholder="ابحث عن لعبة..." aria-label="ابحث عن لعبة">
     </div>
+    <section class="zenithAppsSection" aria-label="تطبيقاتنا المفضلة">
+      <div class="zenithAppsTrack">
+        <div class="zenithAppsSet">
+          <img src="images/instagram.png" alt="Instagram" loading="lazy">
+          <img src="images/telegram.png" alt="Telegram" loading="lazy">
+          <img src="images/gemini.png" alt="Gemini" loading="lazy">
+          <img src="images/chatgpt.png" alt="ChatGPT" loading="lazy">
+          <img src="images/netflix.png" alt="Netflix" loading="lazy">
+          <img src="images/spotify.png" alt="Spotify" loading="lazy">
+          <img src="images/youtube.png" alt="YouTube" loading="lazy">
+          <img src="images/capcut.png" alt="CapCut" loading="lazy">
+          <img src="images/picsart.png" alt="Picsart" loading="lazy">
+        </div>
+        <div class="zenithAppsSet" aria-hidden="true">
+          <img src="images/instagram.png" alt="" loading="lazy"><img src="images/telegram.png" alt="" loading="lazy"><img src="images/gemini.png" alt="" loading="lazy"><img src="images/chatgpt.png" alt="" loading="lazy"><img src="images/netflix.png" alt="" loading="lazy"><img src="images/spotify.png" alt="" loading="lazy"><img src="images/youtube.png" alt="" loading="lazy"><img src="images/capcut.png" alt="" loading="lazy"><img src="images/picsart.png" alt="" loading="lazy">
+        </div>
+      </div>
+    </section>
     <div class="homeCategoryGrid gameCategoryGrid zenithGameBannerGrid">
       <section class="gameGroupCard zenithGameBannerGroup" id="mobileLegendsGroup">
         <button type="button" class="homeCategory gameMainCategory gameBannerCard" id="mobileLegendsToggle" aria-expanded="false" style="--game-banner:url('images/Teal Feathered Fantasy Warrior.png')">
@@ -1803,24 +1925,7 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
       <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile gameBannerCard" disabled style="--game-banner:url('images/banner-yalla-ludo.jpg')"><img class="gameTileImage" src="images/yalla-ludo.png" alt="Yalla Ludo"><span class="gameTileName">Yalla Ludo<small class="gameComingSoonLabel">قريباً...</small></span><span class="gameBannerShade" aria-hidden="true"></span></button>
       <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile gameBannerCard" disabled style="--game-banner:url('images/banner-free-fire.jpg')"><img class="gameTileImage" src="images/free-fire.png" alt="Free Fire"><span class="gameTileName">Free Fire<small class="gameComingSoonLabel">قريباً...</small></span><span class="gameBannerShade" aria-hidden="true"></span></button>
     </div>
-    <section class="zenithAppsSection" aria-label="تطبيقاتنا المفضلة">
-      <div class="zenithAppsTrack">
-        <div class="zenithAppsSet">
-          <img src="images/instagram.png" alt="Instagram" loading="lazy">
-          <img src="images/telegram.png" alt="Telegram" loading="lazy">
-          <img src="images/gemini.png" alt="Gemini" loading="lazy">
-          <img src="images/chatgpt.png" alt="ChatGPT" loading="lazy">
-          <img src="images/netflix.png" alt="Netflix" loading="lazy">
-          <img src="images/spotify.png" alt="Spotify" loading="lazy">
-          <img src="images/youtube.png" alt="YouTube" loading="lazy">
-          <img src="images/capcut.png" alt="CapCut" loading="lazy">
-          <img src="images/picsart.png" alt="Picsart" loading="lazy">
-        </div>
-        <div class="zenithAppsSet" aria-hidden="true">
-          <img src="images/instagram.png" alt="" loading="lazy"><img src="images/telegram.png" alt="" loading="lazy"><img src="images/gemini.png" alt="" loading="lazy"><img src="images/chatgpt.png" alt="" loading="lazy"><img src="images/netflix.png" alt="" loading="lazy"><img src="images/spotify.png" alt="" loading="lazy"><img src="images/youtube.png" alt="" loading="lazy"><img src="images/capcut.png" alt="" loading="lazy"><img src="images/picsart.png" alt="" loading="lazy">
-        </div>
-      </div>
-    </section>
+
     <div class="homeTrust"><span>🛡️ دفع آمن</span><span>⚡ إرسال سريع وفوري</span><span>🎧 دعم فني</span></div>
   <section class="faqSection" id="faqSection" aria-labelledby="faqTitle">
     <h2 id="faqTitle">الأسئلة الشائعة</h2>
