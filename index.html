@@ -1597,7 +1597,7 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
 
 
 <style id="zenith-membership-inner-art-and-white-caption-final">
-/* Membership tile: the custom poster is the only outer artwork; membership.png stays contained inside it. */
+/* Membership tile: retain the custom poster as its background and show membership.png as the inner artwork. */
 #mlbbSubcategories #membershipPlaceholder,
 #mlbbCategoryPanel #mlbbPageMembership {
   position:relative!important;
@@ -1820,18 +1820,32 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
   .zenithAppsTrack,.zenithAppsSet img,.zenithAppsSection::before{animation:none!important}
   .zenithAppsSection{mask-image:none}
 }
+</style>
 
-.zenithAppsHeading{display:flex;align-items:center;justify-content:center;gap:8px;margin:8px 0 2px;color:#eaf5ff;font-size:16px;font-weight:900;text-shadow:0 0 12px rgba(75,165,255,.32)}
-.zenithAppsFire{display:inline-block;filter:hue-rotate(165deg) saturate(1.8) drop-shadow(0 0 7px rgba(64,157,255,.75));animation:zenithBlueFire 1.8s ease-in-out infinite alternate}
-@keyframes zenithBlueFire{from{transform:translateY(1px) scale(.94);filter:hue-rotate(165deg) saturate(1.7) drop-shadow(0 0 4px #329cff)}to{transform:translateY(-2px) scale(1.06);filter:hue-rotate(165deg) saturate(2.1) drop-shadow(0 0 11px #329cff)}}
+<style id="zenith-staged-games-preview-fixes">
+/* Preview-only game package cards are intentionally not selectable. */
+#products .product.product-unavailable{cursor:not-allowed!important;opacity:.78}
+#products .product.product-unavailable .price{font-size:12px!important;color:#a8b0bc!important;white-space:normal}
+#products .product.product-preview-only{cursor:default!important;pointer-events:none!important;transform:none!important}
+#products .product.product-preview-only:hover{transform:none!important;border-color:#2a3d55!important;box-shadow:0 4px 13px #0003!important}
+#products .product.product-preview-only .selected-mark{display:none!important}
+#products .product.product-unavailable img{filter:grayscale(1)!important;opacity:.32!important}
+#products .product.product-unavailable .price{color:#a8b0bc!important;background:#202733!important;border-color:#46505d!important}
+#products .product.product-preview-only .muted{color:#a8c9e6!important}
+.zenithAppsHeading{display:flex;align-items:center;justify-content:center;gap:9px;margin:4px 0 8px;color:#eaf5ff;font-size:15px;font-weight:900;text-shadow:0 0 12px #4ba9ff55}
+.zenithBlueFlame{position:relative;display:inline-block;width:18px;height:22px;flex:0 0 18px}
+.zenithBlueFlame::before,.zenithBlueFlame::after{content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);border-radius:65% 35% 60% 40%;transform-origin:50% 100%}
+.zenithBlueFlame::before{width:14px;height:20px;background:linear-gradient(0deg,#0876ff 0%,#28c7ff 58%,#c4f5ff 100%);box-shadow:0 0 8px #168fff,0 0 17px #168fff99;animation:zenithFlameRise .72s ease-in-out infinite alternate}
+.zenithBlueFlame::after{width:6px;height:12px;bottom:1px;background:linear-gradient(0deg,#d8fbff,#fff);filter:blur(.3px);animation:zenithFlameCore .52s ease-in-out infinite alternate}
+@keyframes zenithFlameRise{0%{transform:translateX(-50%) rotate(-9deg) scale(.9,.92);border-radius:55% 45% 65% 35%}100%{transform:translateX(-50%) rotate(8deg) scale(1.04,1.12);border-radius:42% 58% 48% 52%}}
+@keyframes zenithFlameCore{0%{transform:translateX(-50%) scaleY(.8)}100%{transform:translateX(-50%) scaleY(1.18)}}
 .zenithAppsSection{touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
-.zenithAppsSection.isDragging{cursor:grabbing}
-.zenithAppsTrack{animation:none!important;transform:translate3d(0,0,0);will-change:transform}
-.zenithAppsSet img{animation:none!important;filter:drop-shadow(0 0 5px rgba(93,174,255,.25))}
-#homePanel .zenithGameBannerGrid .gameBannerCard{background-image:linear-gradient(90deg,rgba(3,8,18,.46),rgba(3,8,18,.12) 62%,rgba(3,8,18,.04)),var(--game-banner)!important}
-#homePanel .zenithGameBannerGrid .gameBannerCard .gameBannerShade{background:linear-gradient(0deg,rgba(0,0,0,.12),transparent 58%)!important}
-.product-gem-image img.game-product-image{object-fit:contain!important}
-.product.product-unavailable,.product.genshin-unavailable-card{filter:grayscale(1);opacity:.72}
+.zenithAppsSection.is-dragging{cursor:grabbing}
+.zenithAppsSet .zenithAppLink{display:block;flex:0 0 auto;width:clamp(42px,11vw,58px);height:clamp(42px,11vw,58px);padding:0;margin:0;border:0;background:transparent;box-shadow:none;min-height:0}
+.zenithAppsSet .zenithAppLink img{width:100%;height:100%;object-fit:contain;pointer-events:none}
+.zenithAppsSet .zenithAppLink:focus-visible{outline:2px solid #69baff;outline-offset:4px;border-radius:12px}
+#serviceAppPage{min-height:50vh}
+@media(prefers-reduced-motion:reduce){.zenithBlueFlame::before,.zenithBlueFlame::after{animation:none!important}}
 </style>
 </head>
 <body>
@@ -1889,19 +1903,19 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
     <div class="homeSearchWrap" id="homeSearchWrap" hidden>
       <input id="homeSearch" type="search" placeholder="ابحث عن لعبة..." aria-label="ابحث عن لعبة">
     </div>
-    <div class="zenithAppsHeading"><span>خدمات المتجر</span><span class="zenithAppsFire" aria-hidden="true">🔥</span></div>
-    <section class="zenithAppsSection" aria-label="خدمات المتجر والتطبيقات">
-      <div class="zenithAppsTrack">
+    <div class="zenithAppsHeading"><span class="zenithBlueFlame" aria-hidden="true">🔥</span><span>خدمات المتجر</span></div>
+    <section class="zenithAppsSection" id="zenithAppsSection" aria-label="خدمات المتجر">
+      <div class="zenithAppsTrack" id="zenithAppsTrack">
         <div class="zenithAppsSet">
-          <img src="images/instagram.png" alt="Instagram" loading="lazy">
-          <img src="images/telegram.png" alt="Telegram" loading="lazy">
-          <img src="images/gemini.png" alt="Gemini" loading="lazy">
-          <img src="images/chatgpt.png" alt="ChatGPT" loading="lazy">
-          <img src="images/netflix.png" alt="Netflix" loading="lazy">
-          <img src="images/spotify.png" alt="Spotify" loading="lazy">
-          <img src="images/youtube.png" alt="YouTube" loading="lazy">
-          <img src="images/capcut.png" alt="CapCut" loading="lazy">
-          <img src="images/picsart.png" alt="Picsart" loading="lazy">
+          <button class="zenithAppLink" type="button" data-app="Instagram" aria-label="Instagram"><img src="images/instagram.png" alt="Instagram" loading="lazy"></button>
+          <button class="zenithAppLink" type="button" data-app="Telegram" aria-label="Telegram"><img src="images/telegram.png" alt="Telegram" loading="lazy"></button>
+          <button class="zenithAppLink" type="button" data-app="Gemini" aria-label="Gemini"><img src="images/gemini.png" alt="Gemini" loading="lazy"></button>
+          <button class="zenithAppLink" type="button" data-app="ChatGPT" aria-label="ChatGPT"><img src="images/chatgpt.png" alt="ChatGPT" loading="lazy"></button>
+          <button class="zenithAppLink" type="button" data-app="Netflix" aria-label="Netflix"><img src="images/netflix.png" alt="Netflix" loading="lazy"></button>
+          <button class="zenithAppLink" type="button" data-app="Spotify" aria-label="Spotify"><img src="images/spotify.png" alt="Spotify" loading="lazy"></button>
+          <button class="zenithAppLink" type="button" data-app="YouTube" aria-label="YouTube"><img src="images/youtube.png" alt="YouTube" loading="lazy"></button>
+          <button class="zenithAppLink" type="button" data-app="CapCut" aria-label="CapCut"><img src="images/capcut.png" alt="CapCut" loading="lazy"></button>
+          <button class="zenithAppLink" type="button" data-app="Picsart" aria-label="Picsart"><img src="images/picsart.png" alt="Picsart" loading="lazy"></button>
         </div>
         <div class="zenithAppsSet" aria-hidden="true">
           <img src="images/instagram.png" alt="" loading="lazy"><img src="images/telegram.png" alt="" loading="lazy"><img src="images/gemini.png" alt="" loading="lazy"><img src="images/chatgpt.png" alt="" loading="lazy"><img src="images/netflix.png" alt="" loading="lazy"><img src="images/spotify.png" alt="" loading="lazy"><img src="images/youtube.png" alt="" loading="lazy"><img src="images/capcut.png" alt="" loading="lazy"><img src="images/picsart.png" alt="" loading="lazy">
@@ -1922,20 +1936,20 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
 <button type="button" class="homeCategory diamondsFullCategory regionGemCategory" id="mlbbRegionPhilippines" data-gem-region="philippines"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن فلبيني</small></span><span class="categoryArrow">←</span></button>
 <button type="button" class="homeCategory diamondsFullCategory regionGemCategory" id="mlbbRegionSingapore" data-gem-region="singapore"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن سنغافوري</small></span><span class="categoryArrow">←</span></button>
 <button type="button" class="homeCategory membershipPlaceholder fanFrameHomeCategory" id="fanFrameCategory" aria-label="إطار كبير المعجبين"><img class="fanFrameHomeImage" src="images/Picsart_26-11-11_21-22-28-621.png" alt="إطار كبير المعجبين"><span class="categoryText"><strong>إطار كبير المعجبين</strong></span><span class="categoryArrow">←</span></button>
-<button type="button" class="homeCategory membershipPlaceholder" id="membershipPlaceholder"><img class="mlbbCategoryImage" src="images/IMG_20261112_124322_063.png" alt="العضوية المميزة"><span class="categoryText"><strong>العضوية المميزة</strong></span><span class="categoryArrow">←</span></button>
+<button type="button" class="homeCategory membershipPlaceholder" id="membershipPlaceholder"><img class="mlbbCategoryImage" src="images/membership.png" alt="العضوية المميزة"><span class="categoryText"><strong>العضوية المميزة</strong></span><span class="categoryArrow">←</span></button>
 <button type="button" class="homeCategory membershipPlaceholder" id="verifiedSquadCategory"><span class="categoryText"><strong>فرقة موثقة</strong><small>قريباً</small></span><span class="categoryArrow">←</span></button>
 <button type="button" class="homeCategory diamondsFullCategory regionGemCategory unavailableRegionTile" id="mlbbRegionTurkey" data-gem-region="turkey" disabled aria-disabled="true"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن تركي</small></span><span class="categoryArrow">←</span></button>
 <button type="button" class="homeCategory diamondsFullCategory regionGemCategory unavailableRegionTile" id="mlbbRegionRussia" data-gem-region="russia" disabled aria-disabled="true"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن روسي</small></span><span class="categoryArrow">←</span></button>
 </div>
       </section>
       <button type="button" class="homeCategory gameMainCategory gameBannerCard" id="honorOfKingsToggle" style="--game-banner:url('images/honor-of-kings-1uz5g.png')"><img class="gameTileImage" src="images/honor-of-kings.png" alt="Honor of Kings"><span class="gameTileName">Honor of Kings</span><span class="gameBannerShade" aria-hidden="true"></span></button>
-      <button type="button" class="homeCategory gameMainCategory gameBannerCard" data-zenith-game="pubg" style="--game-banner:url('images/banner-pubg-mobile.jpg')"><img class="gameTileImage" src="images/pubg-mobile.png" alt="PUBG Mobile"><span class="gameTileName">PUBG Mobile</span><span class="gameBannerShade" aria-hidden="true"></span></button>
-      <button type="button" class="homeCategory gameMainCategory gameBannerCard" data-zenith-game="genshin" style="--game-banner:url('images/banner-genshin-impact.jpg')"><img class="gameTileImage" src="images/genshin-impact.png" alt="Genshin Impact"><span class="gameTileName">Genshin Impact</span><span class="gameBannerShade" aria-hidden="true"></span></button>
-      <button type="button" class="homeCategory gameMainCategory gameBannerCard" data-zenith-game="wuthering" style="--game-banner:url('images/banner-wuthering-waves.jpg')"><img class="gameTileImage" src="images/wuthering-waves.png" alt="Wuthering Waves"><span class="gameTileName">Wuthering Waves</span><span class="gameBannerShade" aria-hidden="true"></span></button>
-      <button type="button" class="homeCategory gameMainCategory gameBannerCard" data-zenith-game="hsr" style="--game-banner:url('images/banner-honkai-star-rail.jpg')"><img class="gameTileImage" src="images/honkai-star-rail.png" alt="Honkai: Star Rail"><span class="gameTileName">Honkai: Star Rail</span><span class="gameBannerShade" aria-hidden="true"></span></button>
-      <button type="button" class="homeCategory gameMainCategory gameBannerCard" data-zenith-game="zzz" style="--game-banner:url('images/banner-zenless-zone-zero.jpg')"><img class="gameTileImage" src="images/zenless-zone-zero.png" alt="Zenless Zone Zero"><span class="gameTileName">Zenless Zone Zero</span><span class="gameBannerShade" aria-hidden="true"></span></button>
-      <button type="button" class="homeCategory gameMainCategory gameBannerCard" data-zenith-game="identity" style="--game-banner:url('images/banner-identity-v.jpg')"><img class="gameTileImage" src="images/identity-v.png" alt="Identity V"><span class="gameTileName">Identity V</span><span class="gameBannerShade" aria-hidden="true"></span></button>
-      <button type="button" class="homeCategory gameMainCategory gameBannerCard" data-zenith-game="yalla" style="--game-banner:url('images/banner-yalla-ludo.jpg')"><img class="gameTileImage" src="images/yalla-ludo.png" alt="Yalla Ludo"><span class="gameTileName">Yalla Ludo</span><span class="gameBannerShade" aria-hidden="true"></span></button>
+      <button type="button" class="homeCategory gameMainCategory gameBannerCard" id="pubgMobileToggle" style="--game-banner:url('images/banner-pubg-mobile.jpg')"><img class="gameTileImage" src="images/pubg-mobile.png" alt="PUBG Mobile"><span class="gameTileName">PUBG Mobile</span><span class="gameBannerShade" aria-hidden="true"></span></button>
+      <button type="button" class="homeCategory gameMainCategory gameBannerCard" id="genshinImpactToggle" style="--game-banner:url('images/banner-genshin-impact.jpg')"><img class="gameTileImage" src="images/genshin-impact.png" alt="Genshin Impact"><span class="gameTileName">Genshin Impact</span><span class="gameBannerShade" aria-hidden="true"></span></button>
+      <button type="button" class="homeCategory gameMainCategory gameBannerCard" id="wutheringWavesToggle" style="--game-banner:url('images/banner-wuthering-waves.jpg')"><img class="gameTileImage" src="images/wuthering-waves.png" alt="Wuthering Waves"><span class="gameTileName">Wuthering Waves</span><span class="gameBannerShade" aria-hidden="true"></span></button>
+      <button type="button" class="homeCategory gameMainCategory gameBannerCard" id="honkaiStarRailToggle" style="--game-banner:url('images/banner-honkai-star-rail.jpg')"><img class="gameTileImage" src="images/honkai-star-rail.png" alt="Honkai: Star Rail"><span class="gameTileName">Honkai: Star Rail</span><span class="gameBannerShade" aria-hidden="true"></span></button>
+      <button type="button" class="homeCategory gameMainCategory gameBannerCard" id="zenlessZoneZeroToggle" style="--game-banner:url('images/banner-zenless-zone-zero.jpg')"><img class="gameTileImage" src="images/zenless-zone-zero.png" alt="Zenless Zone Zero"><span class="gameTileName">Zenless Zone Zero</span><span class="gameBannerShade" aria-hidden="true"></span></button>
+      <button type="button" class="homeCategory gameMainCategory gameBannerCard" id="identityVToggle" style="--game-banner:url('images/banner-identity-v.jpg')"><img class="gameTileImage" src="images/identity-v.png" alt="Identity V"><span class="gameTileName">Identity V</span><span class="gameBannerShade" aria-hidden="true"></span></button>
+      <button type="button" class="homeCategory gameMainCategory gameBannerCard" id="yallaLudoToggle" style="--game-banner:url('images/banner-yalla-ludo.jpg')"><img class="gameTileImage" src="images/yalla-ludo.png" alt="Yalla Ludo"><span class="gameTileName">Yalla Ludo</span><span class="gameBannerShade" aria-hidden="true"></span></button>
       <button type="button" class="homeCategory comingSoonGame gameMainCategory comingSoonGameTile gameBannerCard" disabled style="--game-banner:url('images/banner-free-fire.jpg')"><img class="gameTileImage" src="images/free-fire.png" alt="Free Fire"><span class="gameTileName">Free Fire<small class="gameComingSoonLabel">قريباً...</small></span><span class="gameBannerShade" aria-hidden="true"></span></button>
     </div>
 
@@ -1968,6 +1982,11 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
 
 
 
+  <section class="panel" id="serviceAppPage" hidden>
+    <button type="button" class="secondary backBtn" id="serviceAppBack">← الرئيسية</button>
+    <h2 id="serviceAppTitle"></h2>
+  </section>
+
   <section class="panel mlbbCategoryPage" id="mlbbCategoryPanel" hidden>
     <button type="button" class="secondary" id="backFromMlbb" aria-label="العودة للرئيسية" title="الرئيسية">←</button>
     <div class="mlbbTitleRow">
@@ -1978,7 +1997,7 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
     <div class="mlbbPageGrid">
       <button type="button" class="homeCategory diamondsFullCategory regionGemCategory" id="mlbbPageGems" data-gem-region="global"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن عالمي</small></span><span class="categoryArrow">←</span></button><button type="button" class="homeCategory diamondsFullCategory regionGemCategory" id="mlbbPageRegionIndonesia"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن اندونيسي</small></span><span class="categoryArrow">←</span></button><button type="button" class="homeCategory diamondsFullCategory regionGemCategory" id="mlbbPageRegionMalaysia"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن ماليزي</small></span><span class="categoryArrow">←</span></button><button type="button" class="homeCategory diamondsFullCategory regionGemCategory" id="mlbbPageRegionPhilippines"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن فلبيني</small></span><span class="categoryArrow">←</span></button><button type="button" class="homeCategory diamondsFullCategory regionGemCategory" id="mlbbPageRegionSingapore"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن سنغافوري</small></span><span class="categoryArrow">←</span></button>
       <button type="button" class="homeCategory fanFrameHomeCategory" id="mlbbPageFanFrame"><img class="fanFrameHomeImage" src="images/Picsart_26-11-11_21-22-28-621.png" alt="إطار كبير المعجبين"><span class="categoryText"><strong>إطار كبير المعجبين</strong></span><span class="categoryArrow">←</span></button>
-      <button type="button" class="homeCategory" id="mlbbPageMembership"><img class="mlbbCategoryImage" src="images/IMG_20261112_124322_063.png" alt="العضوية المميزة"><span class="categoryText"><strong>العضوية المميزة</strong></span><span class="categoryArrow">←</span></button>
+      <button type="button" class="homeCategory" id="mlbbPageMembership"><img class="mlbbCategoryImage" src="images/membership.png" alt="العضوية المميزة"><span class="categoryText"><strong>العضوية المميزة</strong></span><span class="categoryArrow">←</span></button>
       <button type="button" class="homeCategory" id="mlbbPageVerified"><span class="categoryText"><strong>فرقة موثقة</strong><small>قريباً</small></span><span class="categoryArrow">←</span></button>
 <button disabled aria-disabled="true" type="button" class="homeCategory diamondsFullCategory regionGemCategory unavailableRegionTile" id="mlbbPageRegionTurkey"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن تركي</small></span><span class="categoryArrow">←</span></button>
 <button disabled aria-disabled="true" type="button" class="homeCategory diamondsFullCategory regionGemCategory unavailableRegionTile" id="mlbbPageRegionRussia"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن روسي</small></span><span class="categoryArrow">←</span></button>
@@ -2014,7 +2033,8 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
       <option value="mastercard">ماستركارد</option>
       <option value="asiacell">آسياسيل</option>
     </select>
-    <div class="muted">اختر طريقة التسعير؛ طريقة الدفع تُحدد بشكل منفصل عند الشراء.</div>
+    <div class="muted" id="pricingHint">اختر طريقة التسعير؛ طريقة الدفع تُحدد بشكل منفصل عند الشراء.</div>
+    <div class="notice stagedGameInstructions" id="stagedGameInstructions" hidden></div>
     <div id="products" class="grid">
       <p class="msg">جارٍ تحميل المنتجات...</p>
     </div>
@@ -2414,28 +2434,41 @@ function renderCart() {
   let count = 0, total = 0;
   const resolved = cartItems.map((item, index) => ({item,index,product:productsCache.find(p => String(p.id) === String(item.id))})).filter(x => x.product);
   resolved.forEach(({item,index,product}) => {
-    const price = getPrice(product, item.provider) ?? 0; count += Number(item.qty); total += price * Number(item.qty);
+    const price = getPrice(product, item.provider);
+    const validForCheckout = price != null && !product.__unavailable && !product.__pendingSupabase && !product.__previewOnly;
+    count += Number(item.qty);
+    if (validForCheckout) total += price * Number(item.qty);
     const row = document.createElement("article"); row.className = "cartItem";
     const details = document.createElement("div"); const title = document.createElement("h3"); title.textContent = productTitle(product);
-    const meta = document.createElement("div"); meta.className = "muted"; meta.textContent = money(price) + " للقطعة · " + (item.provider === "asiacell" ? "آسياسيل" : "ماستركارد");
+    const meta = document.createElement("div"); meta.className = "muted"; meta.textContent = (price == null ? "السعر غير متوفر لهذه الطريقة" : money(price) + " للقطعة") + " · " + (item.provider === "asiacell" ? "آسياسيل" : "ماستركارد");
     const actions = document.createElement("div"); actions.className = "cartItemActions";
     const qty = document.createElement("div"); qty.className = "cartQty";
     const minus = document.createElement("button"); minus.type = "button"; minus.textContent = "−"; minus.setAttribute("aria-label","تقليل الكمية"); minus.addEventListener("click", () => changeCartQty(index,-1));
     const amount = document.createElement("strong"); amount.textContent = String(item.qty);
     const plus = document.createElement("button"); plus.type = "button"; plus.textContent = "+"; plus.setAttribute("aria-label","زيادة الكمية"); plus.addEventListener("click", () => changeCartQty(index,1));
     qty.append(minus,amount,plus); const remove = document.createElement("button"); remove.type = "button"; remove.className = "cartRemove"; remove.textContent = "حذف"; remove.addEventListener("click", () => removeCartItem(index));
-    actions.append(qty,remove); details.append(title,meta,actions); const lineTotal = document.createElement("strong"); lineTotal.textContent = money(price * Number(item.qty)); row.append(details,lineTotal); box.appendChild(row);
+    actions.append(qty,remove); details.append(title,meta,actions); const lineTotal = document.createElement("strong"); lineTotal.textContent = validForCheckout ? money(price * Number(item.qty)) : "—"; row.append(details,lineTotal); box.appendChild(row);
   });
   const hasItems = resolved.length > 0; el("cartEmpty").hidden = hasItems; el("cartSummary").hidden = !hasItems;
   el("cartCount").textContent = String(count); el("cartTotal").textContent = money(total);
+  const allCartLinesValid = cartItems.length > 0 && resolved.length === cartItems.length && resolved.every(({item,product}) => {
+    const price = getPrice(product, item.provider);
+    return price != null && !product.__unavailable && !product.__pendingSupabase && !product.__previewOnly;
+  });
   const checkoutButton = el("cartCheckoutBtn");
-  if (checkoutButton) { checkoutButton.hidden = !hasItems; checkoutButton.disabled = !hasItems; }
+  if (checkoutButton) { checkoutButton.hidden = !hasItems; checkoutButton.disabled = !allCartLinesValid; }
 }
 function showCart() {
   hideCustomerPanels(); el("cartPanel").hidden = false; saveActivePage("cart"); setActiveNav("navCart"); renderCart(); el("cartPanel").scrollIntoView({behavior:"smooth",block:"start"});
 }
 el("cartCheckoutBtn").addEventListener("click", () => {
-  const first = cartItems.find(item => productsCache.some(product => String(product.id) === String(item.id)));
+  const invalidLine = cartItems.find(item => {
+    const product = productsCache.find(candidate => String(candidate.id) === String(item.id));
+    const price = product ? getPrice(product, item.provider) : null;
+    return !product || price == null || product.__unavailable || product.__pendingSupabase || product.__previewOnly;
+  });
+  if (invalidLine) { renderCart(); return; }
+  const first = cartItems[0];
   if (!first) { renderCart(); return; }
   const product = productsCache.find(item => String(item.id) === String(first.id));
   checkoutCartItemId = "cart";
@@ -2464,18 +2497,25 @@ function setMessage(id, message, type="") {
 function productTitle(p) {
   return p.name || (p.product_type === "weekly" ? "الاشتراك الأسبوعي" : `${p.diamonds || ""} جوهرة`);
 }
+function normalizeProductPrice(value) {
+  if (value === null || value === undefined || value === "") return null;
+  const normalized = typeof value === "string" ? value.replace(/[،,٬\s]/g, "") : value;
+  const amount = Number(normalized);
+  return Number.isFinite(amount) && amount > 0 ? amount : null;
+}
 function getPrice(p, provider) {
-  if (p && p.__gemRegion && p.__regionalPrice === true) {
-    return provider === "mastercard" ? p.price_mastercard_iqd : p.price_asiacell_iqd;
+  if (!p) return null;
+  if (p.__gemRegion && p.__regionalPrice === true) {
+    return normalizeProductPrice(provider === "mastercard" ? p.price_mastercard_iqd : p.price_asiacell_iqd);
   }
-  const masterPrice = Number(p?.price_mastercard_iqd);
-  const asiaPrice = Number(p?.price_asiacell_iqd);
+  const masterPrice = normalizeProductPrice(p.price_mastercard_iqd);
+  const asiaPrice = normalizeProductPrice(p.price_asiacell_iqd);
   // إذا كان سعر ماستركارد 4,750 وآسيا سيل 5,000، نرفع آسيا سيل فقط إلى 5,250.
   if (masterPrice === 4750 && asiaPrice === 5000 && provider === "asiacell") return 5250;
   if (isWeeklySubscriptionProduct(p)) {
     return provider === "mastercard" ? 2500 : 2750;
   }
-  return provider === "mastercard" ? p.price_mastercard_iqd : p.price_asiacell_iqd;
+  return provider === "mastercard" ? masterPrice : asiaPrice;
 }
 function getWeeklyOldPrice(provider) {
   return provider === "mastercard" ? 3000 : 3250;
@@ -2488,14 +2528,29 @@ function isWeeklySubscriptionProduct(p) {
 
 async function loadProducts() {
   const box = el("products");
-  box.innerHTML = '<p class="msg">جارٍ تحميل المنتجات...</p>';
-  const {data, error} = await db.from("products")
-    .select("id,name,diamonds,product_type,price_mastercard_iqd,price_asiacell_iqd,active")
-    .eq("active", true).order("id");
-  if (error) {
-    box.innerHTML = "";
-    setMessage("productsMsg", "تعذر تحميل المنتجات: " + error.message, "error");
-    return;
+  if (box) box.innerHTML = '<p class="msg">جارٍ تحميل المنتجات...</p>';
+  // لا تجعل تعطل الشبكة أو رفض طلب Supabase يمنع إنشاء كتالوج المعاينة.
+  // ننتظر مدة محدودة ثم نكمل عرض الباقات المحلية مع إبقاء خطأ الاتصال واضحاً في السجل.
+  let data = [];
+  let databaseLoadError = null;
+  let productQueryTimer = null;
+  try {
+    const query = db.from("products")
+      .select("id,name,diamonds,product_type,price_mastercard_iqd,price_asiacell_iqd,active")
+      .eq("active", true).order("id");
+    const result = await Promise.race([
+      query,
+      new Promise((_, reject) => {
+        productQueryTimer = setTimeout(() => reject(new Error("انتهت مهلة تحميل المنتجات من قاعدة البيانات")), 12000);
+      })
+    ]);
+    if (result?.error) throw result.error;
+    data = Array.isArray(result?.data) ? result.data.filter(p => p && p.id != null) : [];
+  } catch (error) {
+    databaseLoadError = error;
+    console.error("تعذر تحميل منتجات Supabase؛ سيتم عرض كتالوج المعاينة", error);
+  } finally {
+    if (productQueryTimer) clearTimeout(productQueryTimer);
   }
   // باقات واجهة مؤقتة: تظهر للتنسيق والمعاينة الآن، ويُفعّل شراؤها بعد إضافتها إلى Supabase.
   const stagedGemPackages = [
@@ -2511,7 +2566,7 @@ async function loadProducts() {
     .map(([diamonds, mastercard, asiacell]) => ({
       id: null, name: `${diamonds} جوهرة`, diamonds, product_type: "gems",
       price_mastercard_iqd: mastercard, price_asiacell_iqd: asiacell,
-      active: true, __pendingSupabase: true
+      active: true, __pendingSupabase: true, __previewOnly: true
     }));
   const regionalProduct = (region, name, type, mastercard, asiacell, extra={}) => ({
     id: null, name, product_type: type, diamonds: extra.diamonds || 0,
@@ -2600,47 +2655,108 @@ async function loadProducts() {
   const honorProducts = honorTokenRows.map(([tokens, mastercard, asiacell]) => ({
     id: null, name: `${tokens} توكن`, diamonds: tokens, product_type: "gems",
     price_mastercard_iqd: mastercard, price_asiacell_iqd: asiacell, active: true,
-    __pendingSupabase: true, __game: "honor"
+    __pendingSupabase: true, __previewOnly: true, __game: "honor"
   }));
-  // New game packages are staged in the storefront until matching Supabase product rows exist.
-  // Each image is assigned in descending package order; where fewer images exist, each supplied
-  // image is shared by a consecutive group of packages rather than inventing missing artwork.
-  const stagedGameRows = [];
-  const addStagedGame = (game, rows, imageFiles, imageMode="tier") => {
-    const count = rows.length;
-    rows.forEach((row, index) => {
-      const [name, mastercard, asiacell, type="gems", unavailable=false, imageOverride=null] = row;
-      let imageIndex = Math.min(imageFiles.length - 1, Math.floor(index * imageFiles.length / count));
-      if (imageMode === "fixed") imageIndex = Math.min(index, imageFiles.length - 1);
-      stagedGameRows.push({id:null,name,diamonds:Number((String(name).match(/[0-9,]+/)||[0])[0].replace(/,/g,""))||0,
-        product_type:type,price_mastercard_iqd:mastercard,price_asiacell_iqd:asiacell,active:true,
-        __pendingSupabase:!unavailable,__unavailable:unavailable,__game:game,__image:imageOverride || imageFiles[imageIndex],__sortOrder:index});
+
+  // Game packages shown for preview only. These records never enter Supabase,
+  // and their cards are deliberately non-interactive until a later integration.
+  const stagedRows = [];
+  const addStaged = (game, rows) => rows.forEach(([name, mastercard, asiacell, image, unavailable=false], stageOrder) => {
+    const amount = Number((String(name).match(/[0-9,]+/) || ["0"])[0].replace(/,/g, "")) || 0;
+    stagedRows.push({
+      id: null, name, diamonds: amount, product_type: "gems",
+      price_mastercard_iqd: mastercard, price_asiacell_iqd: asiacell,
+      active: true, __pendingSupabase: true, __game: game,
+      __previewOnly: true, __previewImage: image, __unavailable: unavailable,
+      __stageOrder: stageOrder
     });
-  };
-  addStagedGame("wuthering", [
-    ["الاشتراك الشهري",9000,10000,"monthly",false,"images/wuthering-monthly.png"], ["8080 كرستالة",150000,165000,"gems",false,"images/wuthering-crystal-1.png"], ["4480 كرستالة",94000,106000,"gems",false,"images/wuthering-crystal-2.png"], ["3880 كرستالة",77000,85000,"gems",false,"images/wuthering-crystal-3.png"], ["2240 كرستالة",47000,53000,"gems",false,"images/wuthering-crystal-4.png"], ["1090 كرستالة",25000,28000,"gems",false,"images/wuthering-crystal-3.png"], ["330 كرستالة",9000,10000,"gems",false,"images/wuthering-crystal-4.png"], ["60 كرستالة",2250,2500,"gems",false,"images/wuthering-crystal-4.png"]
-  ], ["images/wuthering-monthly.png","images/wuthering-crystal-1.png","images/wuthering-crystal-2.png","images/wuthering-crystal-3.png","images/wuthering-crystal-4.png"]);
-  addStagedGame("identity", [
-    ["مجموعة مجال الذاكرة",18500,21000,"special",false,"images/identity-memory-domain.png"], ["مجموعة الإلهام",2500,2750,"special",false,"images/identity-inspiration.png"], ["7000 Echoes",170000,188000,"gems",false,"images/identity-echoes-1.png"], ["4666 Echoes",117000,130000,"gems",false,"images/identity-echoes-1.png"], ["3498 Echoes",86500,96000,"gems",false,"images/identity-echoes-2.png"], ["2333 Echoes",58500,65000,"gems",false,"images/identity-echoes-3.png"], ["1100 Echoes",31000,35000,"gems",false,"images/identity-echoes-4.png"], ["758 Echoes",19000,21000,"gems",false,"images/identity-echoes-4.png"], ["323 Echoes",9500,11000,"gems",false,"images/identity-echoes-5.png"], ["194 Echoes",6000,7000,"gems",false,"images/identity-echoes-6.png"]
-  ], ["images/identity-memory-domain.png","images/identity-inspiration.png","images/identity-echoes-1.png","images/identity-echoes-2.png","images/identity-echoes-3.png","images/identity-echoes-4.png","images/identity-echoes-5.png","images/identity-echoes-6.png"],"fixed");
-  addStagedGame("zzz", [
-    ["عضوية Inter-Knot",10000,11000,"monthly",false,"images/zzz-inter-knot.png"], ["8080 Monochrome",182500,200000,"gems",false,"images/zzz-monochrome-1.png"], ["4480 Monochrome",109000,120000,"gems",false,"images/zzz-monochrome-2.png"], ["3880 Monochrome",92500,104000,"gems",false,"images/zzz-monochrome-3.png"], ["2240 Monochrome",54500,60000,"gems",false,"images/zzz-monochrome-4.png"], ["1090 Monochrome",27500,30000,"gems",false,"images/zzz-monochrome-5.png"], ["330 Monochrome",10000,11000,"gems",false,"images/zzz-monochrome-6.png"], ["60 Monochrome",2500,2750,"gems",false,"images/zzz-monochrome-6.png"]
-  ], ["images/zzz-inter-knot.png","images/zzz-monochrome-1.png","images/zzz-monochrome-2.png","images/zzz-monochrome-3.png","images/zzz-monochrome-4.png","images/zzz-monochrome-5.png","images/zzz-monochrome-6.png"],"fixed");
-  addStagedGame("hsr", [
-    ["تصريح الإمداد السريع",10000,11000,"monthly",false,"images/hsr-supply-pass.png"], ["8080 شظية",182500,200000,"gems",false,"images/hsr-shard-1.png"], ["4480 شظية",109000,120000,"gems",false,"images/hsr-shard-2.png"], ["3880 شظية",92500,103000,"gems",false,"images/hsr-shard-2.png"], ["2240 شظية",54500,60000,"gems",false,"images/hsr-shard-2.png"], ["1090 شظية",28000,31000,"gems",false,"images/hsr-shard-3.png"], ["330 شظية",10000,11000,"gems",false,"images/hsr-shard-3.png"], ["60 شظية",2250,2500,"gems",false,"images/hsr-shard-3.png"]
-  ], ["images/hsr-supply-pass.png","images/hsr-shard-1.png","images/hsr-shard-2.png","images/hsr-shard-3.png"]);
-  addStagedGame("yalla", [
-    ["27,640 جوهرة",100000,112000,"gems",false,"images/yalla-gems-1.png"], ["9,973,990 ذهب",100000,112000,"gems",false,"images/yalla-gold-1.png"], ["13,580 جوهرة",54500,62000,"gems",false,"images/yalla-gems-1.png"], ["3,666,470 ذهب",54500,62000,"gems",false,"images/yalla-gold-1.png"], ["5,150 جوهرة",22000,25000,"gems",false,"images/yalla-gems-2.png"], ["1,463,320 ذهب",22000,25000,"gems",false,"images/yalla-gold-2.png"], ["2,320 جوهرة",11000,13000,"gems",false,"images/yalla-gems-2.png"], ["22,370 ذهب",11000,13000,"gems",false,"images/yalla-gold-2.png"], ["830 جوهرة",5500,6000,"gems",false,"images/yalla-gems-2.png"], ["68,500 ذهب",5500,null,"gems",false,"images/yalla-gold-2.png"]
-  ], ["images/yalla-gems-1.png","images/yalla-gems-2.png","images/yalla-gold-1.png","images/yalla-gold-2.png"],"fixed");
-  addStagedGame("pubg", [
-    ["8100 شدة",155000,172000],["3850 شدة",75000,83000],["1800 شدة",38500,42000],["852 شدة",23500,26000],["660 شدة",16000,18000],["500 شدة",14000,16000],["325 شدة",8000,9000],["248 شدة",7250,8000],["144 شدة",5000,5500],["96 شدة",3250,3500],["60 شدة",2000,2250],["48 شدة",1750,2000],["24 شدة",1000,1000]
-  ], ["images/pubg-uc-1.png","images/pubg-uc-2.png","images/pubg-uc-3.png","images/pubg-uc-4.png","images/pubg-uc-5.png","images/pubg-uc-6.png"]);
-  addStagedGame("genshin", [
-    ["8080 بلورة",null,null,"gems",true],["4480 بلورة",null,null,"gems",true],["3880 بلورة",null,null,"gems",true],["2240 بلورة",null,null,"gems",true],["1090 بلورة",null,null,"gems",true],["330 بلورة",null,null,"gems",true],["60 بلورة",null,null,"gems",true]
-  ], ["images/genshin-crystal-1.png","images/genshin-crystal-2.png","images/genshin-crystal-3.png","images/genshin-crystal-4.png"]);
-  productsCache = [...(data || []), ...previewPackages, ...regional, ...honorProducts, ...stagedGameRows];
+  });
+
+  addStaged("pubg", [
+    ["8100 شدة",155000,172000,"images/pubg-uc-6.png"],
+    ["3850 شدة",75000,83000,"images/pubg-uc-5.png"],
+    ["1800 شدة",38500,42000,"images/pubg-uc-4.png"],
+    ["852 شدة",23500,26000,"images/pubg-uc-3.png"],
+    ["660 شدة",16000,18000,"images/pubg-uc-3.png"],
+    ["500 شدة",14000,16000,"images/pubg-uc-2.png"],
+    ["325 شدة",8000,9000,"images/pubg-uc-2.png"],
+    ["248 شدة",7250,8000,"images/pubg-uc-2.png"],
+    ["144 شدة",5000,5500,"images/pubg-uc-1.png"],
+    ["96 شدة",3250,3500,"images/pubg-uc-1.png"],
+    ["60 شدة",2000,2250,"images/pubg-uc-1.png"],
+    ["48 شدة",1750,2000,"images/pubg-uc-1.png"],
+    ["24 شدة",1000,1000,"images/pubg-uc-1.png"]
+  ]);
+  addStaged("genshin", [
+    ["8080 بلورة",null,null,"images/genshin-crystal-4.png",true],
+    ["4480 بلورة",null,null,"images/genshin-crystal-4.png",true],
+    ["3880 بلورة",null,null,"images/genshin-crystal-3.png",true],
+    ["2240 بلورة",null,null,"images/genshin-crystal-3.png",true],
+    ["1090 بلورة",null,null,"images/genshin-crystal-2.png",true],
+    ["330 بلورة",null,null,"images/genshin-crystal-1.png",true],
+    ["60 بلورة",null,null,"images/genshin-crystal-1.png",true]
+  ]);
+  addStaged("wuthering", [
+    ["الاشتراك الشهري",9000,10000,"images/wuthering-monthly.png"],
+    ["8080 كرستالة",150000,165000,"images/wuthering-crystal-4.png"],
+    ["4480 كرستالة",94000,106000,"images/wuthering-crystal-4.png"],
+    ["3880 كرستالة",77000,85000,"images/wuthering-crystal-3.png"],
+    ["2240 كرستالة",47000,53000,"images/wuthering-crystal-3.png"],
+    ["1090 كرستالة",25000,28000,"images/wuthering-crystal-2.png"],
+    ["330 كرستالة",9000,10000,"images/wuthering-crystal-1.png"],
+    ["60 كرستالة",2250,2500,"images/wuthering-crystal-1.png"]
+  ]);
+  addStaged("hsr", [
+    ["تصريح الإمداد السريع",10000,11000,"images/hsr-supply-pass.png"],
+    ["8080 شظية",182500,200000,"images/hsr-shard-3.png"],
+    ["4480 شظية",109000,120000,"images/hsr-shard-3.png"],
+    ["3880 شظية",92500,103000,"images/hsr-shard-2.png"],
+    ["2240 شظية",54500,60000,"images/hsr-shard-2.png"],
+    ["1090 شظية",28000,31000,"images/hsr-shard-2.png"],
+    ["330 شظية",10000,11000,"images/hsr-shard-1.png"],
+    ["60 شظية",2250,2500,"images/hsr-shard-1.png"]
+  ]);
+  addStaged("zzz", [
+    ["عضوية Inter-Knot",10000,11000,"images/zzz-inter-knot.png"],
+    ["8080 Monochrome",182500,200000,"images/zzz-monochrome-6.png"],
+    ["4480 Monochrome",109000,120000,"images/zzz-monochrome-5.png"],
+    ["3880 Monochrome",92500,104000,"images/zzz-monochrome-4.png"],
+    ["2240 Monochrome",54500,60000,"images/zzz-monochrome-3.png"],
+    ["1090 Monochrome",27500,30000,"images/zzz-monochrome-2.png"],
+    ["330 Monochrome",10000,11000,"images/zzz-monochrome-1.png"],
+    ["60 Monochrome",2500,2750,"images/zzz-monochrome-1.png"]
+  ]);
+  addStaged("identity", [
+    ["مجموعة مجال الذاكرة",18500,21000,"images/identity-memory-domain.png"],
+    ["مجموعة الإلهام",2500,2750,"images/identity-inspiration.png"],
+    ["7000 Echoes",170000,188000,"images/identity-echoes-6.png"],
+    ["4666 Echoes",117000,130000,"images/identity-echoes-5.png"],
+    ["3498 Echoes",86500,96000,"images/identity-echoes-4.png"],
+    ["2333 Echoes",58500,65000,"images/identity-echoes-3.png"],
+    ["1100 Echoes",31000,35000,"images/identity-echoes-2.png"],
+    ["758 Echoes",19000,21000,"images/identity-echoes-1.png"],
+    ["323 Echoes",9500,11000,"images/identity-echoes-1.png"],
+    ["194 Echoes",6000,7000,"images/identity-echoes-1.png"]
+  ]);
+  addStaged("yalla", [
+    ["27,640 جوهرة",100000,112000,"images/yalla-gems-2.png"],
+    ["13,580 جوهرة",54500,62000,"images/yalla-gems-2.png"],
+    ["5,150 جوهرة",22000,25000,"images/yalla-gems-1.png"],
+    ["2,320 جوهرة",11000,13000,"images/yalla-gems-1.png"],
+    ["830 جوهرة",5500,6000,"images/yalla-gems-1.png"],
+    ["9,973,990 ذهب",100000,112000,"images/yalla-gold-2.png"],
+    ["3,666,470 ذهب",54500,62000,"images/yalla-gold-2.png"],
+    ["1,463,320 ذهب",22000,25000,"images/yalla-gold-1.png"],
+    ["22,370 ذهب",11000,13000,"images/yalla-gold-1.png"],
+    ["68,500 ذهب",5500,6000,"images/yalla-gold-1.png"]
+  ]);
+
+  productsCache = [...data, ...previewPackages, ...regional, ...honorProducts, ...stagedRows];
   renderProducts();
   renderPopularProducts();
+  if (databaseLoadError) {
+    setMessage("productsMsg", "تعذر الاتصال بقاعدة بيانات المنتجات حالياً؛ تظهر باقات المعاينة، أما الباقات الفعلية فتحتاج عودة الاتصال.", "error");
+  }
   if (el("myOrdersPanel") && !el("myOrdersPanel").hidden) loadMyOrders();
 }
 
@@ -2684,7 +2800,12 @@ function productImageData(p) {
 
 function getGemTierImage(product) {
   const gemProducts = productsCache
-    .filter(p => getProductCategory(p) === "gems" && Number(p.diamonds) > 0)
+    .filter(p => {
+      if (getProductCategory(p) !== "gems" || Number(p.diamonds) <= 0) return false;
+      if (product?.__game) return p.__game === product.__game;
+      if (product?.__gemRegion) return p.__gemRegion === product.__gemRegion;
+      return !p.__game && !p.__gemRegion;
+    })
     .sort((a,b) => Number(a.diamonds) - Number(b.diamonds));
   if (product?.__game === "honor" && Number(product.diamonds) === 6400) {
     const highestHonor = productsCache.find(p => p?.__game === "honor" && Number(p.diamonds) === 8000);
@@ -2697,6 +2818,7 @@ function getGemTierImage(product) {
 }
 
 function getProductCategory(p) {
+  if (p && p.__previewOnly === true) return "gems";
   const name = String(p.name || "").trim().toLowerCase();
   const type = String(p.product_type || "").trim().toLowerCase();
   const text = (name + " " + type).replace(/[ـ\s]+/g, " ");
@@ -2719,6 +2841,8 @@ function isWeeklySubscriptionProduct(product) {
 }
 function openGemRegion(region) {
   activeStoreGame = "mlbb";
+  if (el("stagedGameInstructions")) el("stagedGameInstructions").hidden = true;
+  if (el("pricingHint")) el("pricingHint").textContent = "اختر طريقة التسعير؛ طريقة الدفع تُحدد بشكل منفصل عند الشراء.";
   el("productsPanel")?.classList.remove("honor-mode");
   activeGemRegion = region || "global";
   try { localStorage.setItem("zenithstore:activeGemRegion:" + location.pathname, activeGemRegion); } catch (_) {}
@@ -2728,24 +2852,35 @@ function openGemRegion(region) {
   setProductCategory("gems");
   showGemProducts();
 }
-function openZenithGame(game, title) {
+function openStagedGame(game, title) {
   activeStoreGame = game;
   activeGemRegion = "global";
-  el("productsPanel")?.classList.toggle("honor-mode", game === "honor");
   productSearchTerm = "";
   if (el("productSearch")) el("productSearch").value = "";
   if (el("productSearchWrap")) el("productSearchWrap").hidden = true;
+  el("productsPanel")?.classList.remove("honor-mode");
+  activeProductCategory = "gems";
   setProductCategory("gems");
-  showGemProducts();
   const crumb = el("mlbbRegionBreadcrumb");
-  if (crumb) crumb.textContent = title;
+  if (crumb) crumb.textContent = title + " — الباقات المتاحة";
   const heading = el("productsPanel")?.querySelector(":scope > h2");
   if (heading) heading.textContent = "باقات " + title;
-  const back = el("backHome");
-  if (back) back.textContent = "← رجوع";
+  const popular = el("productsPanel")?.querySelector(".popularSection");
+  if (popular) popular.hidden = true;
+  const tabs = el("productsPanel")?.querySelector(".productCategoryTabs");
+  if (tabs) tabs.hidden = true;
+  const pricingHint = el("pricingHint");
+  if (pricingHint) pricingHint.textContent = "اختر ماستركارد أو آسياسيل لعرض السعر فقط.";
+  // Keep the old notice container hidden: no ID, login, or account-data requirements are shown here.
+  const note = el("stagedGameInstructions");
+  if (note) { note.textContent = ""; note.hidden = true; }
+  showGemProducts();
 }
 function openHonorKings() {
   activeStoreGame = "honor";
+  if (el("stagedGameInstructions")) { el("stagedGameInstructions").textContent = ""; el("stagedGameInstructions").hidden = true; }
+  if (el("pricingHint")) el("pricingHint").textContent = "اختر ماستركارد أو آسياسيل لعرض سعر التوكنز.";
+
   el("productsPanel")?.classList.add("honor-mode");
   activeGemRegion = "global";
   productSearchTerm = "";
@@ -2781,10 +2916,10 @@ function setProductCategory(category) {
   const regionBreadcrumb = el("mlbbRegionBreadcrumb");
   if (regionBreadcrumb) regionBreadcrumb.textContent = "Mobile Legends - الريجن " + (regionLabels[activeGemRegion] || "العالمي");
   const popular = el("productsPanel").querySelector(".popularSection");
-  if (popular) popular.hidden = category !== "gems" || activeGemRegion !== "global";
-  // التصنيفات الأربعة تظهر في صفحة الجواهر فقط، ولا تظهر عند فتح العضوية أو الإطار.
+  if (popular) popular.hidden = activeStoreGame !== "mlbb" || category !== "gems" || activeGemRegion !== "global";
+  // التصنيفات الأربعة خاصة بصفحة Mobile Legends فقط.
   const categoryTabs = el("productsPanel").querySelector(".productCategoryTabs");
-  if (categoryTabs) categoryTabs.hidden = category === "membership" || category === "fanframe";
+  if (categoryTabs) categoryTabs.hidden = activeStoreGame !== "mlbb" || category === "membership" || category === "fanframe";
   renderProducts();
 }
 document.querySelectorAll(".productCategoryTab").forEach(button => {
@@ -2804,6 +2939,9 @@ window.addEventListener("scroll", () => {
   document.querySelectorAll(".productInfoButton[aria-expanded='true']").forEach(node => node.setAttribute("aria-expanded", "false"));
 }, {passive:true});
 
+function stagedGameRowsIndex(product) {
+  return Number(product.__stageOrder ?? productsCache.indexOf(product));
+}
 function renderProducts() {
   renderCart();
   const box = el("products");
@@ -2815,38 +2953,69 @@ function renderProducts() {
   selectedProvider = provider;
   if (continueBtn) { continueBtn.hidden = true; continueBtn.disabled = true; }
   const addBtn = el("addToCartBtn"); if (addBtn) { addBtn.hidden = true; addBtn.disabled = true; }
+  if (activeStoreGame !== "mlbb" && activeStoreGame !== "honor") {
+    if (continueBtn) continueBtn.hidden = true;
+    if (addBtn) addBtn.hidden = true;
+  }
   const list = productsCache.filter(p => {
-    const gameMatch = activeStoreGame === "mlbb" ? !p.__game : p.__game === activeStoreGame;
-    const regionMatch = (activeStoreGame === "mlbb" && activeGemRegion !== "global")
-      ? p.__gemRegion === activeGemRegion : (activeStoreGame === "mlbb" ? !p.__gemRegion : true);
-    const categoryMatch = activeStoreGame !== "mlbb"
-      ? activeProductCategory === "gems"
-      : getProductCategory(p) === activeProductCategory;
-    const priceAvailable = p.__unavailable === true || getPrice(p, provider) != null;
-    return gameMatch && regionMatch && categoryMatch && priceAvailable &&
+    const gameMatch = activeStoreGame === "mlbb"
+      ? !p.__game
+      : p.__game === activeStoreGame;
+    const regionMatch = activeStoreGame === "honor" ? true : (activeGemRegion === "global"
+      ? !p.__gemRegion
+      : p.__gemRegion === activeGemRegion);
+    const categoryMatch = getProductCategory(p) === activeProductCategory;
+    // Keep the product visible even when this provider has no configured price.
+    // Availability is handled on the card below, not by removing the product from the list.
+    return gameMatch && regionMatch && categoryMatch &&
       (!productSearchTerm || productTitle(p).toLowerCase().includes(productSearchTerm));
   });
   if (activeProductCategory === "gems") {
-    if (activeStoreGame === "mlbb") list.sort((a,b) => Number(a.diamonds || 0) - Number(b.diamonds || 0));
-    else list.sort((a,b) => Number(a.__sortOrder ?? 0) - Number(b.__sortOrder ?? 0));
+    if (activeStoreGame === "yalla") {
+      const gems = list.filter(p => /جوهرة|gem/i.test(String(p.name || "")))
+        .sort((a,b) => Number(a.diamonds || 0) - Number(b.diamonds || 0));
+      const gold = list.filter(p => /ذهب|gold/i.test(String(p.name || "")))
+        .sort((a,b) => Number(a.diamonds || 0) - Number(b.diamonds || 0));
+      const alternating = [];
+      for (let i = 0; i < Math.max(gems.length, gold.length); i++) {
+        if (gems[i]) alternating.push(gems[i]);
+        if (gold[i]) alternating.push(gold[i]);
+      }
+      list.splice(0, list.length, ...alternating);
+    } else {
+      // Sort all games from the smallest package to the largest without changing product records.
+      list.sort((a,b) => Number(a.diamonds || 0) - Number(b.diamonds || 0));
+    }
   }
   if (!list.length) {
     box.textContent = "لا توجد منتجات متاحة لهذه الطريقة حالياً.";
     setMessage("productsMsg", "");
     return;
   }
+  const productFragment = document.createDocumentFragment();
   list.forEach(p => {
     const price = getPrice(p, provider);
+    const missingProviderPrice = price == null;
+    const unavailableForProvider = p.__unavailable === true || missingProviderPrice;
     const card = document.createElement("article");
     card.className = "product";
     if (activeProductCategory === "gems") card.classList.add("gem-product-card");
     if (activeProductCategory === "fanframe") card.classList.add("fanframe-large-card");
     if (activeProductCategory === "twilight") card.classList.add("twilight-large-card");
-    if (p.__unavailable) card.classList.add("product-unavailable");
-    card.tabIndex = p.__unavailable ? -1 : 0;
-    card.setAttribute("role", "button");
-    card.setAttribute("aria-pressed", "false");
-    card.setAttribute("aria-label", "اختيار " + productTitle(p));
+    if (unavailableForProvider) card.classList.add("product-unavailable");
+    const previewOnly = p.__previewOnly === true;
+    card.tabIndex = (unavailableForProvider || previewOnly) ? -1 : 0;
+    if (!previewOnly && !unavailableForProvider) {
+      card.setAttribute("role", "button");
+      card.setAttribute("aria-pressed", "false");
+      card.setAttribute("aria-label", "اختيار " + productTitle(p));
+    } else if (previewOnly) {
+      card.classList.add("product-preview-only");
+      card.setAttribute("aria-label", "معاينة " + productTitle(p));
+    } else {
+      card.setAttribute("aria-disabled", "true");
+      card.setAttribute("aria-label", productTitle(p) + " — السعر غير متوفر لهذه الطريقة");
+    }
     const mark = document.createElement("span");
     mark.className = "selected-mark";
     mark.textContent = "✓";
@@ -2854,7 +3023,7 @@ function renderProducts() {
     const imageWrap = document.createElement("div");
     imageWrap.className = "product-gem-image";
     const image = document.createElement("img");
-    image.src = p.__image || (p.__game === "honor" ? (
+    image.src = p.__previewImage || (p.__game === "honor" ? (
       Number(p.diamonds) <= 23 ? "images/honor-token-1.png" :
       Number(p.diamonds) <= 240 ? "images/honor-token-2.png" :
       Number(p.diamonds) <= 560 ? "images/honor-token-3.png" :
@@ -2863,8 +3032,6 @@ function renderProducts() {
     ) : (activeProductCategory === "fanframe" ? "images/big-fans.png" :
       (activeProductCategory === "gems" && Number(p.diamonds) > 0 ? getGemTierImage(p) : productImageData(p))));
     image.alt = productTitle(p);
-    if (p.__image) image.classList.add("game-product-image");
-    if (p.__game === "genshin") card.classList.add("genshin-unavailable-card");
     image.loading = "lazy";
     image.decoding = "async";
     imageWrap.appendChild(image);
@@ -2874,6 +3041,8 @@ function renderProducts() {
     priceEl.className = "price";
     if (p.__unavailable) {
       priceEl.textContent = "غير متوفر";
+    } else if (missingProviderPrice) {
+      priceEl.textContent = "السعر غير متوفر لهذه الطريقة";
     } else if (isWeeklySubscriptionProduct(p) && !p.__regionalPrice) {
       const oldPrice = document.createElement("del");
       oldPrice.className = "weeklyOldPrice";
@@ -2889,6 +3058,7 @@ function renderProducts() {
       const name = String(p.name || "").toLowerCase();
       const type = String(p.product_type || "").toLowerCase();
       const amount = Number(p.diamonds || 0);
+      if (activeStoreGame === "wuthering" && /شهري|monthly/.test(name + " " + type)) return "";
       if (type === "weekly" || /الاشتراك الأسبوعي|الاشتراك الاسبوعي|weekly subscription/.test(name)) return "ستحصل مباشرة على 80 جوهرة و20 كل يوم لمدة 7 أيام، المجموع 220 جوهرة، تنجز 100 جوهرة في مهام الشحن.";
       if (/الباقة الأسبوعية|الباقة الاسبوعية|weekly pack|weekly bundle/.test(name + " " + type)) return "ستحصل على 55 جوهرة و20 نجوم فجر و2 قطع مظاهر نادرة و1 بطاقة مضاعفة الذهب";
       if (type === "monthly" || /شهري|monthly/.test(name + " " + type)) return "ستحصل على 275 جوهرة و180 نجوم فجر و10 قطع مظاهر نادرة و1 بطاقة مضاعفة الذهب";
@@ -2922,12 +3092,13 @@ function renderProducts() {
     }
     const note = document.createElement("div");
     note.className = "muted";
-    note.textContent = p.__unavailable ? "" : (p.__pendingSupabase
-      ? "سيتم تفعيل الشراء بعد ربط الباقة"
-      : (provider === "mastercard" ? "ماستركارد" : "آسياسيل"));
+    note.textContent = unavailableForProvider ? "" : (previewOnly
+      ? "عرض فقط — سيتم ربطها لاحقاً"
+      : (p.__pendingSupabase ? "سيتم تفعيل الشراء بعد ربط الباقة"
+      : (provider === "mastercard" ? "ماستركارد" : "آسياسيل")));
     if (p.__pendingSupabase) card.classList.add("product-pending-setup");
     const choose = () => {
-      if (p.__unavailable) return;
+      if (unavailableForProvider) return;
       if (p.__pendingSupabase) {
         setMessage("productsMsg", "هذه الباقة مضافة للواجهة حالياً، وسيتم تفعيل شرائها بعد إضافتها إلى قاعدة البيانات.", "info");
         return;
@@ -2944,18 +3115,23 @@ function renderProducts() {
       const addBtn = el("addToCartBtn"); if (addBtn) { addBtn.hidden = false; addBtn.disabled = false; }
       setMessage("productsMsg", "تم اختيار " + productTitle(p) + " — " + money(price), "success");
     };
-    card.addEventListener("click", choose);
-    card.addEventListener("keydown", event => {
-      if (event.key === "Enter" || event.key === " ") { event.preventDefault(); choose(); }
-    });
+    if (!previewOnly && !unavailableForProvider) {
+      card.addEventListener("click", choose);
+      card.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") { event.preventDefault(); choose(); }
+      });
+    }
     const streak = document.createElement("span");
     streak.className = "light-streak";
     streak.setAttribute("aria-hidden", "true");
     card.append(streak, mark, imageWrap, h, priceEl, note);
     if (infoButton) card.appendChild(infoButton);
-    box.appendChild(card);
+    productFragment.appendChild(card);
   });
-  setMessage("productsMsg", "اضغط على البطاقة لاختيار الباقة، ثم اضغط متابعة لإتمام الطلب.");
+  box.appendChild(productFragment);
+  setMessage("productsMsg", activeStoreGame === "mlbb" || activeStoreGame === "honor"
+    ? "اختر طريقة التسعير لعرض أسعار الباقات."
+    : "هذه الباقات للعرض فقط حالياً، وسيتم ربطها لاحقاً.");
 }
 function renderPopularProducts() {
   const box = el("popularProducts");
@@ -3469,24 +3645,34 @@ function getCheckoutSummary() {
   const zoneId = el("zoneId").value.trim();
   let total = 0;
   let providers = [];
+  let invalidProducts = false;
   if (checkoutCartItemId === "cart") {
     cartItems.forEach(line => {
       const product = productsCache.find(p => String(p.id) === String(line.id));
-      if (!product) return;
-      total += Number(getPrice(product, line.provider) || 0) * Number(line.qty || 1);
+      const price = product ? getPrice(product, line.provider) : null;
+      if (!product || price == null || product.__unavailable || product.__pendingSupabase || product.__previewOnly) {
+        invalidProducts = true;
+        return;
+      }
+      total += price * Number(line.qty || 1);
       if (!providers.includes(line.provider)) providers.push(line.provider);
     });
   } else if (selectedProduct && selectedProvider) {
-    total = Number(getPrice(selectedProduct, selectedProvider) || 0);
+    const price = getPrice(selectedProduct, selectedProvider);
+    if (price == null || selectedProduct.__unavailable || selectedProduct.__pendingSupabase || selectedProduct.__previewOnly) invalidProducts = true;
+    else total = price;
     providers = [selectedProvider];
   }
   const methodNames = providers.map(provider => provider === "asiacell" ? "آسياسيل" : "MasterCard/VisaCard");
-  return {playerId, zoneId, total, method: methodNames.length > 1 ? methodNames.join(" + ") : (methodNames[0] || "—")};
+  return {playerId, zoneId, total, invalidProducts, method: methodNames.length > 1 ? methodNames.join(" + ") : (methodNames[0] || "—")};
 }
 function openOrderConfirmModal() {
   const summary = getCheckoutSummary();
   if (!summary.playerId || (activeStoreGame !== "honor" && !summary.zoneId)) {
     setMessage("orderMsg", activeStoreGame === "honor" ? "أدخل UID أولاً." : "أدخل Player ID وZone ID أولاً.", "error"); return false;
+  }
+  if (summary.invalidProducts) {
+    setMessage("orderMsg", "توجد باقة في السلة لا يتوفر لها سعر صالح لطريقة الدفع المختارة أو لم تُفعّل في قاعدة البيانات. احذفها أو اختر باقة متاحة.", "error"); return false;
   }
   if (!summary.total || !Number.isFinite(summary.total)) {
     setMessage("orderMsg", "تعذر حساب سعر الطلب. ارجع واختر الباقة من جديد.", "error"); return false;
@@ -4027,7 +4213,7 @@ function saveActivePage(page, trackNavigation = true) {
 }
 function hideCustomerPanels() {
   if (el("accountPanel")) el("accountPanel").hidden = true;
-  ["homePanel", "mlbbCategoryPanel", "productsPanel", "cartPanel", "customerWalletPanel", "myOrdersPanel", "purchasePanel", "termsPanel", "policyPanel", "supportPanel"].forEach(id => {
+  ["homePanel", "serviceAppPage", "mlbbCategoryPanel", "productsPanel", "cartPanel", "customerWalletPanel", "myOrdersPanel", "purchasePanel", "termsPanel", "policyPanel", "supportPanel"].forEach(id => {
     const node = el(id); if (node) node.hidden = true;
   });
 }
@@ -4051,7 +4237,7 @@ function showGemProducts() {
   hideCustomerPanels();
   document.querySelectorAll(".bottomNav button").forEach(b => b.classList.remove("active"));
   el("productsPanel").hidden = false;
-  el("productsPanel").scrollIntoView({behavior:"smooth", block:"start"});
+  el("productsPanel").scrollIntoView({behavior:"auto", block:"start"});
 }
 el("navHome").addEventListener("click", () => {
   hideCustomerPanels();
@@ -4110,12 +4296,21 @@ el("addToCartBtn").addEventListener("click", () => {
 
 el("openGems").addEventListener("click", () => openGemRegion("global"));
 el("honorOfKingsToggle")?.addEventListener("click", openHonorKings);
-const zenithGameTitles = {pubg:"PUBG Mobile",genshin:"Genshin Impact",wuthering:"Wuthering Waves",hsr:"Honkai: Star Rail",zzz:"Zenless Zone Zero",identity:"Identity V",yalla:"Yalla Ludo"};
-document.querySelectorAll("[data-zenith-game]").forEach(button => button.addEventListener("click", () => {
-  const game = button.dataset.zenithGame;
-  openZenithGame(game, zenithGameTitles[game] || game);
-}));
+[
+  ["pubgMobileToggle","pubg","PUBG Mobile"],
+  ["genshinImpactToggle","genshin","Genshin Impact"],
+  ["wutheringWavesToggle","wuthering","Wuthering Waves"],
+  ["honkaiStarRailToggle","hsr","Honkai: Star Rail"],
+  ["zenlessZoneZeroToggle","zzz","Zenless Zone Zero"],
+  ["identityVToggle","identity","Identity V"],
+  ["yallaLudoToggle","yalla","Yalla Ludo"]
+].forEach(([id,game,title]) => {
+  const button = el(id);
+  if (button) button.addEventListener("click", () => openStagedGame(game,title));
+});
 el("mobileLegendsToggle").addEventListener("click", () => {
+  activeStoreGame = "mlbb";
+  el("productsPanel")?.classList.remove("honor-mode");
   hideCustomerPanels(); el("mlbbCategoryPanel").hidden = false; saveActivePage("mlbb"); setActiveNav("navHome");
   el("mlbbCategoryPanel").scrollIntoView({behavior:"smooth",block:"start"});
 });
@@ -4135,6 +4330,8 @@ const regionalPageButtons = [
 ];
 regionalPageButtons.forEach(([id, region]) => { const button = el(id); if (button) button.addEventListener("click", () => openGemRegion(region)); });
 function showHomeProductCategory(category) {
+  activeStoreGame = "mlbb";
+  el("productsPanel")?.classList.remove("honor-mode");
   activeGemRegion = "global";
   try { localStorage.setItem("zenithstore:activeGemRegion:" + location.pathname, "global"); } catch (_) {}
   setProductCategory(category);
@@ -4188,6 +4385,16 @@ function closeMainMenu() {
 el("menuHome").addEventListener("click", () => { closeMainMenu(); el("navHome").click(); });
 el("menuCart").addEventListener("click", () => { closeMainMenu(); showCart(); });
 el("menuSearch").addEventListener("click", () => { closeMainMenu(); el("navSearch").click(); });
+document.querySelectorAll(".zenithAppLink").forEach(button => button.addEventListener("click", () => {
+  const title = button.dataset.app || "خدمات المتجر";
+  hideCustomerPanels();
+  el("serviceAppTitle").textContent = title;
+  el("serviceAppPage").hidden = false;
+  saveActivePage("service-app");
+  setActiveNav("");
+  el("serviceAppPage").scrollIntoView({behavior:"smooth",block:"start"});
+}));
+el("serviceAppBack")?.addEventListener("click", () => el("navHome").click());
 
 
 
@@ -4405,42 +4612,6 @@ db.auth.onAuthStateChange(() => {
     await loadAdminOrders();
   }, 0);
 });
-
-// Lightweight, seamless app ticker: continuous motion plus finger/mouse dragging.
-(function installZenithAppsTicker(){
-  const viewport = document.querySelector(".zenithAppsSection");
-  const track = viewport?.querySelector(".zenithAppsTrack");
-  const firstSet = track?.querySelector(".zenithAppsSet");
-  if (!viewport || !track || !firstSet) return;
-  let offset = 0, width = 0, last = 0, dragging = false, pointerStart = 0, offsetStart = 0;
-  const speed = 21;
-  const measure = () => { width = firstSet.getBoundingClientRect().width; if (width > 0) offset %= width; };
-  const tick = now => {
-    if (!last) last = now;
-    const dt = Math.min(40, now - last); last = now;
-    if (!dragging && width > 0) offset = (offset + speed * dt / 1000) % width;
-    track.style.transform = `translate3d(${-offset}px,0,0)`;
-    requestAnimationFrame(tick);
-  };
-  measure(); window.addEventListener("resize", measure, {passive:true});
-  if (window.ResizeObserver) new ResizeObserver(measure).observe(firstSet);
-  viewport.addEventListener("pointerdown", event => {
-    if (event.pointerType === "mouse" && event.button !== 0) return;
-    dragging = true; pointerStart = event.clientX; offsetStart = offset;
-    viewport.classList.add("isDragging");
-    try { viewport.setPointerCapture(event.pointerId); } catch (_) {}
-  });
-  viewport.addEventListener("pointermove", event => {
-    if (!dragging || !width) return;
-    const delta = pointerStart - event.clientX;
-    offset = ((offsetStart + delta) % width + width) % width;
-    track.style.transform = `translate3d(${-offset}px,0,0)`;
-  });
-  const release = () => { if (!dragging) return; dragging = false; viewport.classList.remove("isDragging"); };
-  viewport.addEventListener("pointerup", release);
-  viewport.addEventListener("pointercancel", release);
-  requestAnimationFrame(tick);
-})();
 
 // Remember the current scroll position across reloads / leaving and returning to this tab.
 // Session-scoped storage avoids persisting sensitive form contents or account data.
@@ -6483,9 +6654,48 @@ html[data-theme="light"] #homePanel #faqSection * {
 #mlbbCategoryPanel #mlbbPageFanFrame > .categoryArrow {display:none!important;}
 </style>
 
-</body>
-</html>
 
+<script id="zenith-apps-drag-script">
+(function(){
+  const section=document.getElementById("zenithAppsSection");
+  const track=document.getElementById("zenithAppsTrack");
+  if(!section||!track) return;
+  let animation=null, startX=0, startTime=0, dragging=false, moved=false;
+  const getAnimation=()=>track.getAnimations().find(a=>a.effect && a.playState!=="finished");
+  section.addEventListener("pointerdown",event=>{
+    if(event.pointerType==="mouse" && event.button!==0) return;
+    animation=getAnimation();
+    if(!animation) return;
+    dragging=true; moved=false; startX=event.clientX;
+    startTime=Number(animation.currentTime)||0;
+    animation.pause();
+    section.classList.add("is-dragging");
+    try{section.setPointerCapture(event.pointerId);}catch(_){}
+  });
+  section.addEventListener("pointermove",event=>{
+    if(!dragging||!animation) return;
+    const dx=event.clientX-startX;
+    if(Math.abs(dx)>4) moved=true;
+    const width=Math.max(1,track.scrollWidth/2);
+    const duration=42000;
+    let next=startTime-(dx/width)*duration;
+    next=((next%duration)+duration)%duration;
+    animation.currentTime=next;
+  });
+  const finish=()=>{
+    if(!dragging) return;
+    dragging=false; section.classList.remove("is-dragging");
+    if(animation) animation.play();
+    animation=null;
+  };
+  section.addEventListener("pointerup",finish);
+  section.addEventListener("pointercancel",finish);
+  section.addEventListener("lostpointercapture",finish);
+  section.addEventListener("click",event=>{
+    if(moved){event.preventDefault();event.stopPropagation();moved=false;}
+  },true);
+})();
+</script>
 <style id="zenith-hok-and-transparent-sections">
 html[data-theme="light"] #faqSection,
 html[data-theme="light"] #faqSection .faqItem,
@@ -6509,7 +6719,7 @@ html[data-theme="light"] #mlbbCategoryPanel .homeCategory .categoryText small {c
 
 
 <style id="zenith-membership-outer-artwork-and-fanframe-caption-final">
-/* Outer artwork for the membership tile; membership.png remains the centered inner artwork. */
+/* Outer artwork for the membership tile; membership.png is the centered inner artwork. */
 #mlbbSubcategories #membershipPlaceholder,
 #mlbbCategoryPanel #mlbbPageMembership {
   position:relative!important;
@@ -6579,13 +6789,24 @@ html[data-theme="light"] #mlbbCategoryPanel .homeCategory .categoryText small {c
 </style>
 
 
-<style id="zenith-membership-remove-duplicate-inner-image">
-/* Keep only the large outer membership artwork; remove the duplicate small image layered over it. */
-#mlbbSubcategories #membershipPlaceholder > .mlbbCategoryImage,
-#mlbbCategoryPanel #mlbbPageMembership > .mlbbCategoryImage {
-  display:none!important;
-  visibility:hidden!important;
-  opacity:0!important;
-  content:none!important;
+<style id="zenith-final-requested-fixes-20261113">
+/* The flame is the requested 🔥 emoji, tinted blue with a tiny upward movement. */
+.zenithBlueFlame{
+  display:inline-block!important;position:relative!important;width:auto!important;height:auto!important;
+  flex:0 0 auto!important;font-size:18px!important;line-height:1!important;
+  filter:hue-rotate(190deg) saturate(1.55) brightness(1.12) drop-shadow(0 0 5px rgba(35,150,255,.75));
+  transform-origin:50% 100%;animation:zenithEmojiFlameRise 1.15s ease-in-out infinite!important;
 }
+.zenithBlueFlame::before,.zenithBlueFlame::after{content:none!important;display:none!important}
+@keyframes zenithEmojiFlameRise{
+  0%,100%{transform:translateY(0) scale(1)}
+  50%{transform:translateY(-1.2px) scale(1.025)}
+}
+/* The original card glow remains available on the selected card; idle cards do not animate. */
+#products .product:not(.selected)::before{animation:none!important;filter:none!important;will-change:auto!important}
+#products .product:not(.selected){transition:border-color .1s ease,background-color .1s ease!important}
+@media(prefers-reduced-motion:reduce){.zenithBlueFlame{animation:none!important}}
 </style>
+
+</body>
+</html>
