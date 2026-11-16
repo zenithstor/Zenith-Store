@@ -2010,6 +2010,7 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
   <section class="panel mlbbCategoryPage freeFireCategoryPage" id="freeFireCategoryPanel" hidden>
     <button type="button" class="secondary" id="backFromFreeFire" aria-label="العودة للرئيسية" title="الرئيسية">←</button>
     <div class="mlbbTitleRow">
+      <img class="mlbbTitleImage" src="images/free-fire.png" alt="Free Fire">
       <h2 class="mlbbPageTitle">Free Fire</h2>
     </div>
     <p class="muted">اختر الريجن الذي تريد شحنه</p>
@@ -2771,8 +2772,8 @@ async function loadProducts() {
     ["9,973,990 ذهب",100000,112000,"images/yalla-gold-2.png"],
     ["3,666,470 ذهب",54500,62000,"images/yalla-gold-2.png"],
     ["1,463,320 ذهب",22000,25000,"images/yalla-gold-1.png"],
-    ["22,370 ذهب",11000,13000,"images/yalla-gold-1.png"],
-    ["68,500 ذهب",5500,6000,"images/yalla-gold-1.png"]
+    ["22,370 ذهب",13000,11000,"images/yalla-gold-1.png"],
+    ["68,500 ذهب",6000,5500,"images/yalla-gold-1.png"]
   ]);
 
   // Free Fire catalogue: preview-only until the products are intentionally added to Supabase.
@@ -7050,7 +7051,7 @@ html[data-theme="light"] #mlbbCategoryPanel .homeCategory .categoryText small {c
 .zenithFlameOuter{animation:zenithFlameOuter .23s ease-in-out infinite alternate!important}
 .zenithFlameInner{animation:zenithFlameInner .19s ease-in-out infinite alternate!important}
 .zenithFlameSparks{animation:zenithSparksRise .58s linear infinite!important}
-@media(max-width:420px){#freeFireCategoryPanel .freeFireRegionPageGrid{grid-template-columns:1fr!important}}
+@media(max-width:520px){#freeFireCategoryPanel .freeFireRegionPageGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}#freeFireCategoryPanel .freeFireRegionTile{min-height:112px!important;padding:10px!important}}
 </style>
 
 
@@ -7059,6 +7060,31 @@ html[data-theme="light"] #mlbbCategoryPanel .homeCategory .categoryText small {c
 .zenithFlameEmoji{display:block!important;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif!important;font-size:31px!important;line-height:1!important;filter:hue-rotate(190deg) saturate(2.25) brightness(1.13) drop-shadow(0 0 4px #159fff) drop-shadow(0 0 9px #087bffcc)!important;transform-origin:50% 90%!important;animation:zenithEmojiFireFlicker .24s ease-in-out infinite alternate!important}
 @keyframes zenithEmojiFireFlicker{0%{transform:translateY(1px) rotate(-5deg) scale(.94,.97)}45%{transform:translateY(-1px) rotate(3deg) scale(1.05,1.08)}100%{transform:translateY(0) rotate(-2deg) scale(.98,1.12)}}
 @media(prefers-reduced-motion:reduce){.zenithFlameEmoji{animation:none!important}}
+</style>
+
+
+
+<style id="zenith-final-ui-adjustments">
+/* Free Fire region page follows the Mobile Legends category-page layout. */
+#freeFireCategoryPanel .freeFireRegionPageGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;align-items:stretch!important}
+#freeFireCategoryPanel .freeFireRegionTile{min-height:125px!important;padding:14px!important}
+#freeFireCategoryPanel .mlbbTitleRow{display:block;position:relative;margin:16px 0 6px;direction:rtl}
+#freeFireCategoryPanel .mlbbTitleImage{display:block;object-fit:cover}
+#freeFireCategoryPanel .mlbbPageTitle{margin:18px 0 6px!important}
+#freeFireCategoryPanel .freeFireRegionTile .freeFireRegionImage{width:54px;height:48px;object-fit:contain;flex:0 0 54px}
+#navHome>span{font-size:16px!important;line-height:1!important}
+
+/* A clearly visible, blue-tinted 🔥 glyph with an irregular, continuous burning flicker. */
+.zenithBlueFlame{position:relative!important;width:34px!important;height:40px!important;flex:0 0 34px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;overflow:visible!important}
+.zenithBlueFlame::before,.zenithBlueFlame::after{content:none!important;display:none!important}
+.zenithFlameEmoji{position:relative!important;z-index:2!important;display:block!important;visibility:visible!important;opacity:1!important;font-size:32px!important;line-height:1!important;filter:hue-rotate(190deg) saturate(2.8) brightness(1.25) drop-shadow(0 0 3px #7ceaff) drop-shadow(0 0 8px #159fff) drop-shadow(0 0 14px #087bff)!important;transform-origin:50% 90%!important;animation:zenithRealBurn 0.22s steps(2,end) infinite alternate!important}
+.zenithFlameSparks{position:absolute!important;inset:0!important;z-index:3!important;pointer-events:none!important}
+.zenithFlameSparks::before,.zenithFlameSparks::after{content:""!important;position:absolute!important;bottom:8px!important;width:3px!important;height:3px!important;border-radius:50%!important;background:#8deaff!important;box-shadow:0 0 6px 2px #159fff!important;animation:zenithSparksUp 0.8s linear infinite!important}
+.zenithFlameSparks::before{left:7px!important}
+.zenithFlameSparks::after{right:6px!important;animation-delay:.37s!important}
+@keyframes zenithRealBurn{0%{transform:translateY(1px) rotate(-7deg) scale(.92,.96)}22%{transform:translateY(-1px) rotate(4deg) scale(1.04,1.08)}48%{transform:translateY(0) rotate(-3deg) scale(.98,1.13)}73%{transform:translateY(-2px) rotate(6deg) scale(1.07,1.02)}100%{transform:translateY(1px) rotate(-5deg) scale(.95,1.1)}}
+@keyframes zenithSparksUp{0%{transform:translateY(0) scale(.7);opacity:0}20%{opacity:1}100%{transform:translateY(-22px) translateX(3px) scale(.2);opacity:0}}
+@media(prefers-reduced-motion:reduce){.zenithFlameEmoji,.zenithFlameSparks::before,.zenithFlameSparks::after{animation:none!important}}
 </style>
 
 </body>
