@@ -1875,7 +1875,7 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
       <div id="authMsg" class="msg" aria-live="polite"></div>
     </div>
     <div class="menuLinks" id="menuLinks">
-      <button type="button" class="secondary" id="menuHome">⌂ القائمة الرئيسية</button>
+      <button type="button" class="secondary" id="menuHome"><svg class="menuHomeHouseIcon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5M5.5 9.5V21h13V9.5M9.5 21v-7h5v7"/></svg><span>القائمة الرئيسية</span></button>
       <button type="button" class="secondary" id="menuWallet" hidden><span class="menuActionIcon walletSvgIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2.5"/><path d="M3 9h18M16 14h2"/><path d="M6 6V4.8A1.8 1.8 0 0 1 7.8 3H19"/></svg></span> محفظتي</button>
       <button type="button" class="secondary" id="menuCart"><span class="menuActionIcon cartSvgIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.4L22 8H6"/><circle cx="10" cy="20" r="1.2"/><circle cx="18" cy="20" r="1.2"/></svg></span> السلة</button>
       <button type="button" class="secondary" id="menuMyOrders"><span class="menuActionIcon receiptSvgIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><g transform="rotate(7 12 12)"><path d="M6 3.5h9l3 3V21l-2-1.2L14 21l-2-1.2L10 21l-2-1.2L6 21z"/><path d="M14.5 3.8V7h3.2M9 11h6M9 14.5h6"/></g></svg></span> الطلبات</button>
@@ -1892,7 +1892,6 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
       <img class="heroPoster posterSlide" src="images/second-poster.png" alt="إعلان متجر زينيث">
       <img class="heroPoster posterSlide" src="main-poster.png" alt="إعلان متجر زينيث لشحن الجواهر في موبايل ليجندز">
       <div class="heroCopy">
-        <button type="button" id="openGems" class="heroButton">تصفح الباقات <span>←</span></button>
       </div>
     </div>
     <div class="posterDots" id="homePosterDots" aria-label="التنقل بين الإعلانات">
@@ -1904,27 +1903,7 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
       <input id="homeSearch" type="search" placeholder="ابحث عن لعبة..." aria-label="ابحث عن لعبة">
     </div>
     <div class="zenithAppsHeading"><span class="zenithBlueFlame" aria-hidden="true">
-      <svg class="zenithFlameSvg" viewBox="0 0 32 40" role="presentation" focusable="false">
-        <defs>
-          <filter id="zenithFlameWarp" x="-35%" y="-25%" width="170%" height="160%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.035 0.075" numOctaves="2" seed="8" result="noise">
-              <animate attributeName="baseFrequency" values="0.035 0.075;0.055 0.11;0.03 0.065;0.035 0.075" dur="1.15s" repeatCount="indefinite"/>
-              <animate attributeName="seed" values="8;13;5;8" dur="1.7s" repeatCount="indefinite"/>
-            </feTurbulence>
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.8" xChannelSelector="R" yChannelSelector="G">
-              <animate attributeName="scale" values="1.5;3.5;2;4;1.5" dur=".9s" repeatCount="indefinite"/>
-            </feDisplacementMap>
-          </filter>
-          <linearGradient id="zenithFlameBlue" x1="0" y1="1" x2="0.3" y2="0">
-            <stop offset="0" stop-color="#0752d9"/><stop offset=".42" stop-color="#087fff"/><stop offset=".76" stop-color="#39cfff"/><stop offset="1" stop-color="#d9fbff"/>
-          </linearGradient>
-          <linearGradient id="zenithFlameCoreBlue" x1="0" y1="1" x2="0" y2="0">
-            <stop offset="0" stop-color="#43aaff"/><stop offset=".7" stop-color="#d9fbff"/><stop offset="1" stop-color="#fff"/>
-          </linearGradient>
-        </defs>
-        <path class="zenithFlameOuter" d="M16 1.5C17.4 7.2 22.1 9.2 22.1 15.1c2.1-1.9 3.2-4.4 3.2-7.1 5.3 6.1 6.1 11.5 5.2 17.2C29.2 34 23.5 39 15.9 39 7.1 39 1.5 33.2 1.5 25.1c0-6.3 3.6-11.7 9.3-16.8-.2 4.6 1.1 7.3 3.1 9.1C15.1 12.2 15.6 7 16 1.5Z" fill="url(#zenithFlameBlue)" filter="url(#zenithFlameWarp)"/>
-        <path class="zenithFlameInner" d="M17.1 17.2c.6 3.3 4.4 5.4 4.4 9.6 0 4.2-2.4 7.2-5.8 7.2-3.7 0-6-2.8-6-6.2 0-2.7 1.3-5.1 3.7-7.7.1 2.2.8 3.5 1.8 4.2.4-2.3 1.1-4.5 1.9-7.1Z" fill="url(#zenithFlameCoreBlue)"/>
-      </svg><span class="zenithFlameSparks"></span></span><span>خدمات المتجر</span></div>
+      <span class="zenithFlameEmoji" aria-hidden="true">🔥</span><span class="zenithFlameSparks"></span></span><span>خدمات المتجر</span></div>
     <section class="zenithAppsSection" id="zenithAppsSection" aria-label="خدمات المتجر">
       <div class="zenithAppsTrack" id="zenithAppsTrack">
         <div class="zenithAppsSet">
@@ -1973,16 +1952,7 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
       <button type="button" class="homeCategory gameMainCategory gameBannerCard" id="yallaLudoToggle" style="--game-banner:url('images/banner-yalla-ludo.jpg')"><img class="gameTileImage" src="images/yalla-ludo.png" alt="Yalla Ludo"><span class="gameTileName">Yalla Ludo</span><span class="gameBannerShade" aria-hidden="true"></span></button>
       <section class="gameGroupCard zenithGameBannerGroup" id="freeFireGroup">
         <button type="button" class="homeCategory gameMainCategory gameBannerCard" id="freeFireToggle" aria-expanded="false" style="--game-banner:url('images/banner-free-fire.jpg')"><img class="gameTileImage" src="images/free-fire.png" alt="Free Fire"><span class="gameTileName">Free Fire</span><span class="gameBannerShade" aria-hidden="true"></span></button>
-        <div class="mlbbSubcategories freeFireRegions" id="freeFireSubcategories" hidden>
-          <button type="button" class="homeCategory diamondsFullCategory regionGemCategory" data-freefire-region="global"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small class="freeFireRegionCaption">ريجن شرق أوسط</small></span><span class="categoryArrow">←</span></button>
-          <button type="button" class="homeCategory diamondsFullCategory regionGemCategory" data-freefire-region="europe"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small class="freeFireRegionCaption">ريجن أوروبي</small></span><span class="categoryArrow">←</span></button>
-          <button type="button" class="homeCategory diamondsFullCategory regionGemCategory" data-freefire-region="turkey"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small class="freeFireRegionCaption">ريجن تركي</small></span><span class="categoryArrow">←</span></button>
-          <button type="button" class="homeCategory diamondsFullCategory regionGemCategory comingSoonGame unavailableRegionTile" disabled aria-disabled="true"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن برازيلي — قريباً</small></span><span class="categoryArrow">←</span></button>
-          <button type="button" class="homeCategory diamondsFullCategory regionGemCategory comingSoonGame unavailableRegionTile" disabled aria-disabled="true"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن إندونيسي — قريباً</small></span><span class="categoryArrow">←</span></button>
-          <button type="button" class="homeCategory diamondsFullCategory regionGemCategory comingSoonGame unavailableRegionTile" disabled aria-disabled="true"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن ماليزي — قريباً</small></span><span class="categoryArrow">←</span></button>
-          <button type="button" class="homeCategory diamondsFullCategory regionGemCategory comingSoonGame unavailableRegionTile" disabled aria-disabled="true"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن سنغافوري — قريباً</small></span><span class="categoryArrow">←</span></button>
-          <button type="button" class="homeCategory diamondsFullCategory regionGemCategory comingSoonGame unavailableRegionTile" disabled aria-disabled="true"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن فلبيني — قريباً</small></span><span class="categoryArrow">←</span></button>
-        </div>
+
       </section>
     </div>
 
@@ -2035,6 +2005,24 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
 <button disabled aria-disabled="true" type="button" class="homeCategory diamondsFullCategory regionGemCategory unavailableRegionTile" id="mlbbPageRegionTurkey"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small class="freeFireRegionCaption">ريجن تركي</small></span><span class="categoryArrow">←</span></button>
 <button disabled aria-disabled="true" type="button" class="homeCategory diamondsFullCategory regionGemCategory unavailableRegionTile" id="mlbbPageRegionRussia"><img class="mlbbCategoryImage" src="images/diamonds.png" alt="الجواهر"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن روسي</small></span><span class="categoryArrow">←</span></button>
 </div>
+  </section>
+
+  <section class="panel mlbbCategoryPage freeFireCategoryPage" id="freeFireCategoryPanel" hidden>
+    <button type="button" class="secondary" id="backFromFreeFire" aria-label="العودة للرئيسية" title="الرئيسية">←</button>
+    <div class="mlbbTitleRow">
+      <h2 class="mlbbPageTitle">Free Fire</h2>
+    </div>
+    <p class="muted">اختر الريجن الذي تريد شحنه</p>
+    <div class="mlbbPageGrid freeFireRegionPageGrid">
+      <button type="button" class="homeCategory diamondsFullCategory regionGemCategory freeFireRegionTile" data-freefire-region="global"><img class="freeFireRegionImage" src="images/free-fire-region.png" alt="" loading="lazy" onerror="this.remove()"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small class="freeFireRegionCaption">ريجن شرق أوسط</small></span><span class="categoryArrow">←</span></button>
+      <button type="button" class="homeCategory diamondsFullCategory regionGemCategory freeFireRegionTile" data-freefire-region="europe"><img class="freeFireRegionImage" src="images/free-fire-region.png" alt="" loading="lazy" onerror="this.remove()"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small class="freeFireRegionCaption">ريجن أوروبي</small></span><span class="categoryArrow">←</span></button>
+      <button type="button" class="homeCategory diamondsFullCategory regionGemCategory freeFireRegionTile" data-freefire-region="turkey"><img class="freeFireRegionImage" src="images/free-fire-region.png" alt="" loading="lazy" onerror="this.remove()"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small class="freeFireRegionCaption">ريجن تركي</small></span><span class="categoryArrow">←</span></button>
+      <button type="button" class="homeCategory diamondsFullCategory regionGemCategory comingSoonGame unavailableRegionTile" disabled aria-disabled="true"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن برازيلي — قريباً</small></span></button>
+      <button type="button" class="homeCategory diamondsFullCategory regionGemCategory comingSoonGame unavailableRegionTile" disabled aria-disabled="true"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن إندونيسي — قريباً</small></span></button>
+      <button type="button" class="homeCategory diamondsFullCategory regionGemCategory comingSoonGame unavailableRegionTile" disabled aria-disabled="true"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن ماليزي — قريباً</small></span></button>
+      <button type="button" class="homeCategory diamondsFullCategory regionGemCategory comingSoonGame unavailableRegionTile" disabled aria-disabled="true"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن سنغافوري — قريباً</small></span></button>
+      <button type="button" class="homeCategory diamondsFullCategory regionGemCategory comingSoonGame unavailableRegionTile" disabled aria-disabled="true"><span class="categoryText"><strong>باقات شحن الجواهر</strong><small>ريجن فلبيني — قريباً</small></span></button>
+    </div>
   </section>
 
   <section class="panel" id="productsPanel" hidden>
@@ -2802,12 +2790,14 @@ async function loadProducts() {
       id:null, name:`${diamonds} جوهرة`, diamonds, product_type:"gems",
       price_mastercard_iqd:mastercard, price_asiacell_iqd:asiacell, active:true,
       __pendingSupabase:true, __previewOnly:true, __game:"freefire",
-      __gemRegion:region === "global" ? undefined : region, __stageOrder:index
+      __gemRegion:region === "global" ? undefined : region, __regionalPrice:true, __stageOrder:index
     }));
-    stagedRows.push(
-      {id:null,name:"عضوية أسبوعية",diamonds:0,product_type:"weekly",price_mastercard_iqd:4000,price_asiacell_iqd:5000,active:true,__pendingSupabase:true,__previewOnly:true,__game:"freefire",__gemRegion:region === "global" ? undefined : region,__stageOrder:rows.length},
-      {id:null,name:"عضوية شهرية",diamonds:0,product_type:"monthly",price_mastercard_iqd:16500,price_asiacell_iqd:18000,active:true,__pendingSupabase:true,__previewOnly:true,__game:"freefire",__gemRegion:region === "global" ? undefined : region,__stageOrder:rows.length+1}
-    );
+    if (region !== "global") {
+      stagedRows.push(
+        {id:null,name:"عضوية أسبوعية",diamonds:0,product_type:"weekly",price_mastercard_iqd:4000,price_asiacell_iqd:5000,active:true,__pendingSupabase:true,__previewOnly:true,__game:"freefire",__gemRegion:region,__regionalPrice:true,__stageOrder:rows.length},
+        {id:null,name:"عضوية شهرية",diamonds:0,product_type:"monthly",price_mastercard_iqd:16500,price_asiacell_iqd:18000,active:true,__pendingSupabase:true,__previewOnly:true,__game:"freefire",__gemRegion:region,__regionalPrice:true,__stageOrder:rows.length+1}
+      );
+    }
   };
   addFreeFireRegion("global", freeFireMiddleEast);
   addFreeFireRegion("europe", freeFireEurope);
@@ -2838,6 +2828,12 @@ const ZENITH_PRODUCT_IMAGES = {
   ultimate: "images/gem-ultimate.png"
 };
 function productImageData(p) {
+  if (p?.__game === "freefire") {
+    const type = String(p.product_type || "").toLowerCase();
+    if (type === "weekly") return "images/free-fire-weekly-membership.png";
+    if (type === "monthly") return "images/free-fire-monthly-membership.png";
+    return "";
+  }
   const name = String(p.name || "").trim().toLowerCase();
   const type = String(p.product_type || "").trim().toLowerCase();
   const text = (name + " " + type).replace(/[ـ\s]+/g, " ");
@@ -2866,7 +2862,7 @@ function getGemTierImage(product) {
       .filter(p => p?.__game === "freefire" && getProductCategory(p) === "gems" && Number(p.diamonds) > 0 && (p.__gemRegion || "global") === (product.__gemRegion || "global"))
       .sort((a,b) => Number(a.diamonds) - Number(b.diamonds));
     const index = freeFireProducts.findIndex(p => p === product);
-    const fiveImages = [ZENITH_PRODUCT_IMAGES.single, ZENITH_PRODUCT_IMAGES.double, ZENITH_PRODUCT_IMAGES.group, ZENITH_PRODUCT_IMAGES.chest, ZENITH_PRODUCT_IMAGES.ultimate];
+    const fiveImages = ["images/free-fire-gems-1.png", "images/free-fire-gems-2.png", "images/free-fire-gems-3.png", "images/free-fire-gems-4.png", "images/free-fire-gems-5.png"];
     return fiveImages[Math.min(4, Math.floor(Math.max(0,index) * fiveImages.length / Math.max(1,freeFireProducts.length)))];
   }
   const gemProducts = productsCache
@@ -3150,16 +3146,18 @@ function renderProducts() {
     image.alt = productTitle(p);
     image.loading = "lazy";
     image.decoding = "async";
+    image.onerror = () => { image.remove(); imageWrap.classList.add("no-product-image"); };
     imageWrap.appendChild(image);
     const h = document.createElement("h3");
     h.textContent = productTitle(p);
+    if (p?.__game === "freefire" && (p.product_type === "weekly" || p.product_type === "monthly")) h.classList.add("freeFireMembershipTitle");
     const priceEl = document.createElement("div");
     priceEl.className = "price";
     if (p.__unavailable) {
       priceEl.textContent = "غير متوفر";
     } else if (missingProviderPrice) {
       priceEl.textContent = "السعر غير متوفر لهذه الطريقة";
-    } else if (isWeeklySubscriptionProduct(p) && !p.__regionalPrice) {
+    } else if (isWeeklySubscriptionProduct(p) && !p.__regionalPrice && p.__game !== "freefire") {
       const oldPrice = document.createElement("del");
       oldPrice.className = "weeklyOldPrice";
       oldPrice.textContent = money(getWeeklyOldPrice(provider));
@@ -3268,7 +3266,7 @@ function renderPopularProducts() {
     const info = document.createElement("span");
     const title = document.createElement("strong"); title.textContent = productTitle(product);
     const price = document.createElement("small");
-    if (isWeeklySubscriptionProduct(product)) {
+    if (isWeeklySubscriptionProduct(product) && product.__game !== "freefire") {
       price.className = "popularWeeklyDiscount";
       const oldPrice = document.createElement("del");
       oldPrice.textContent = money(getWeeklyOldPrice(el("provider").value));
@@ -4330,7 +4328,7 @@ function saveActivePage(page, trackNavigation = true) {
 }
 function hideCustomerPanels() {
   if (el("accountPanel")) el("accountPanel").hidden = true;
-  ["homePanel", "serviceAppPage", "mlbbCategoryPanel", "productsPanel", "cartPanel", "customerWalletPanel", "myOrdersPanel", "purchasePanel", "termsPanel", "policyPanel", "supportPanel"].forEach(id => {
+  ["homePanel", "serviceAppPage", "mlbbCategoryPanel", "freeFireCategoryPanel", "productsPanel", "cartPanel", "customerWalletPanel", "myOrdersPanel", "purchasePanel", "termsPanel", "policyPanel", "supportPanel"].forEach(id => {
     const node = el(id); if (node) node.hidden = true;
   });
 }
@@ -4411,17 +4409,21 @@ el("addToCartBtn").addEventListener("click", () => {
   addProductToCart(selectedProduct, selectedProvider || el("provider").value);
 });
 
-el("openGems").addEventListener("click", () => openGemRegion("global"));
+if (el("openGems")) el("openGems").addEventListener("click", () => openGemRegion("global"));
 el("honorOfKingsToggle")?.addEventListener("click", openHonorKings);
 const freeFireToggle = el("freeFireToggle");
 if (freeFireToggle) freeFireToggle.addEventListener("click", () => {
-  const regions = el("freeFireSubcategories");
-  const opening = !!regions?.hidden;
-  if (regions) regions.hidden = !opening;
-  freeFireToggle.setAttribute("aria-expanded", String(opening));
+  activeStoreGame = "freefire";
+  try { localStorage.setItem(activeStoreGameStorageKey, "freefire"); } catch (_) {}
+  hideCustomerPanels();
+  el("freeFireCategoryPanel").hidden = false;
+  saveActivePage("freefire-regions");
+  setActiveNav("navHome");
+  el("freeFireCategoryPanel").scrollIntoView({behavior:"smooth",block:"start"});
 });
+el("backFromFreeFire")?.addEventListener("click", () => el("navHome").click());
 const freeFireRegionTitles = {global:"ريجن شرق أوسط",europe:"ريجن أوروبي",turkey:"ريجن تركي"};
-document.querySelectorAll("#freeFireSubcategories [data-freefire-region]").forEach(button => {
+document.querySelectorAll("#freeFireCategoryPanel [data-freefire-region]").forEach(button => {
   button.addEventListener("click", () => openFreeFireRegion(button.dataset.freefireRegion, freeFireRegionTitles[button.dataset.freefireRegion] || "الريجن"));
 });
 
@@ -7004,11 +7006,7 @@ html[data-theme="light"] #mlbbCategoryPanel .homeCategory .categoryText small {c
 
 
 <style id="zenith-freefire-region-layout">
-#freeFireSubcategories[hidden]{display:none!important}
-#freeFireSubcategories{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:9px;padding-top:9px;border-top:1px solid var(--border)}
-#freeFireSubcategories .homeCategory{width:100%;min-width:0;min-height:82px;padding:8px}
-#freeFireSubcategories .comingSoonGame{opacity:1!important;filter:grayscale(1)!important;cursor:not-allowed!important}
-@media(max-width:420px){#freeFireSubcategories{gap:7px}#freeFireSubcategories .homeCategory{min-height:82px;padding:8px 6px}}
+#freeFireSubcategories{display:none!important}
 </style>
 
 <style id="zenith-clarified-flame-region-membership-and-pricing">
@@ -7024,14 +7022,45 @@ html[data-theme="light"] #mlbbCategoryPanel .homeCategory .categoryText small {c
 @keyframes zenithFlameInner{from{transform:scale(.9,.9) translateY(1px);opacity:.85}to{transform:scale(1.08,1.12) translateY(-1px);opacity:1}}
 @keyframes zenithSparksRise{0%{transform:translateY(8px);opacity:0}20%{opacity:1}100%{transform:translateY(-17px);opacity:0}}
 /* Region name is a small white strip directly below the gem-package heading. */
-#freeFireSubcategories .categoryText{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:5px!important}
-#freeFireSubcategories .categoryText strong{display:block!important}
-#freeFireSubcategories .freeFireRegionCaption{display:inline-block!important;width:max-content!important;max-width:100%!important;padding:3px 8px!important;border-radius:5px!important;background:#fff!important;color:#15253a!important;font-size:10px!important;font-weight:900!important;line-height:1.25!important;box-shadow:0 1px 4px #0003!important}
+#freeFireSubcategories{display:none!important}
 /* Remove the separate product artwork from the outer Mobile Legends membership tile only. */
 #mlbbSubcategories #membershipPlaceholder > .mlbbCategoryImage,
 #mlbbCategoryPanel #mlbbPageMembership > .mlbbCategoryImage{display:none!important;visibility:hidden!important}
 /* Every newly opened game or region starts with Mastercard pricing, regardless of the last visit. */
 </style>
+
+<style id="zenith-freefire-dedicated-page-and-assets-v2">
+#freeFireCategoryPanel .freeFireRegionPageGrid{grid-template-columns:1fr!important;gap:10px!important}
+#freeFireCategoryPanel .freeFireRegionTile{min-height:88px!important;padding:13px 14px!important}
+#freeFireCategoryPanel .freeFireRegionImage{width:54px!important;height:54px!important;flex:0 0 54px!important;object-fit:contain!important;background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
+#freeFireCategoryPanel .freeFireRegionTile .categoryText{gap:7px!important}
+#freeFireCategoryPanel .freeFireRegionTile .categoryText strong{font-size:16px!important}
+#freeFireCategoryPanel .freeFireRegionTile .freeFireRegionCaption{display:inline-flex!important;align-items:center!important;min-height:22px!important;padding:4px 10px!important;background:#fff!important;color:#15253a!important;border-radius:5px!important;font-size:11px!important;font-weight:900!important;line-height:1!important;width:max-content!important}
+#freeFireCategoryPanel .comingSoonGame{background:linear-gradient(145deg,#e7e9ed,#c9cdd4)!important;color:#59616b!important}
+#freeFireCategoryPanel .comingSoonGame .categoryText strong,#freeFireCategoryPanel .comingSoonGame .categoryText small{color:#59616b!important}
+#freeFireCategoryPanel .freeFireRegionTile .categoryArrow{flex:0 0 34px}
+#freeFireCategoryPanel .freeFireRegionTile .freeFireRegionImage:not([src]){display:none!important}
+.menuLinks #menuHome{gap:12px!important}
+.menuHomeHouseIcon{width:31px!important;height:31px!important;flex:0 0 31px!important;fill:none!important;stroke:currentColor!important;stroke-width:2.15!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+#products .product .product-gem-image.no-product-image{display:none!important}
+#products .product .product-gem-image img[src$="free-fire-gems-1.png"],#products .product .product-gem-image img[src$="free-fire-gems-2.png"],#products .product .product-gem-image img[src$="free-fire-gems-3.png"],#products .product .product-gem-image img[src$="free-fire-gems-4.png"],#products .product .product-gem-image img[src$="free-fire-gems-5.png"],#products .product .product-gem-image img[src$="free-fire-weekly-membership.png"],#products .product .product-gem-image img[src$="free-fire-monthly-membership.png"]{object-fit:contain}
+#products .product h3.freeFireMembershipTitle{display:inline-block;width:max-content;max-width:100%;padding:4px 10px;border-radius:5px;background:#fff;color:#14243a!important;font-size:13px;font-weight:900}
+.zenithBlueFlame{width:29px!important;height:36px!important;flex-basis:29px!important}
+.zenithFlameSvg{filter:drop-shadow(0 0 4px #159fff) drop-shadow(0 0 10px #087bffcc)!important;animation:zenithFlameBody .29s ease-in-out infinite alternate!important}
+.zenithFlameOuter{animation:zenithFlameOuter .23s ease-in-out infinite alternate!important}
+.zenithFlameInner{animation:zenithFlameInner .19s ease-in-out infinite alternate!important}
+.zenithFlameSparks{animation:zenithSparksRise .58s linear infinite!important}
+@media(max-width:420px){#freeFireCategoryPanel .freeFireRegionPageGrid{grid-template-columns:1fr!important}}
+</style>
+
+
+<style id="zenith-native-blue-fire-emoji">
+.zenithBlueFlame{width:34px!important;height:38px!important;flex:0 0 34px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;overflow:visible!important}
+.zenithFlameEmoji{display:block!important;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif!important;font-size:31px!important;line-height:1!important;filter:hue-rotate(190deg) saturate(2.25) brightness(1.13) drop-shadow(0 0 4px #159fff) drop-shadow(0 0 9px #087bffcc)!important;transform-origin:50% 90%!important;animation:zenithEmojiFireFlicker .24s ease-in-out infinite alternate!important}
+@keyframes zenithEmojiFireFlicker{0%{transform:translateY(1px) rotate(-5deg) scale(.94,.97)}45%{transform:translateY(-1px) rotate(3deg) scale(1.05,1.08)}100%{transform:translateY(0) rotate(-2deg) scale(.98,1.12)}}
+@media(prefers-reduced-motion:reduce){.zenithFlameEmoji{animation:none!important}}
+</style>
+
 </body>
 
 
