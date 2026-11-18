@@ -1871,7 +1871,7 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
       <div class="brandImagePlaceholder"><img class="brandLogoDark" src="images/logo.png" alt="شعار ZenithStore"><img class="brandLogoLight" src="images/logo-black.png" alt="شعار ZenithStore"></div>
       <div class="brand brandStack"><span class="brandZenith">ZENITH</span><span class="brandStore">store</span></div>
     </div>
-    <div class="headerActions"><button type="button" class="themeToggle" id="themeToggle" aria-label="تفعيل الوضع النهاري" title="تبديل الوضع">☀</button><button type="button" class="menuBtn" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false"></button></div>
+    <div class="headerActions"><button type="button" class="themeToggle" id="themeToggle" aria-label="تفعيل الوضع النهاري" title="تبديل الوضع">☀</button><button type="button" class="headerAccountButton" id="headerAccountButton">حسابي</button><button type="button" class="menuBtn" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false" hidden></button></div>
   </div>
   <nav class="menuBox" id="mainMenu" hidden>
     <div class="menuAccountArea">
@@ -2185,27 +2185,35 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
     <form class="zenithChatForm" id="zenithChatForm"><input id="zenithChatInput" type="text" maxlength="500" autocomplete="off" placeholder="اكتب سؤالك هنا..." aria-label="اكتب سؤالك"><button type="submit">إرسال</button></form>
     <div class="zenithChatLimit" id="zenithChatLimit">محادثة مجانية — تُمسح تلقائياً بعد 24 ساعة.</div>
   </section>
-  <section class="panel" id="accountPanel" hidden>
+  <section class="panel zenithAccountPanel" id="accountPanel" hidden>
     <h2>حسابي</h2>
     <button type="button" class="secondary backBtn" id="accountBackHome">← الرئيسية</button>
     <div id="accountPanelMsg" class="msg" aria-live="polite">جارٍ تحميل بيانات الحساب...</div>
-    <div class="accountDetailsGrid">
-      <div class="accountDetail"><span>الاسم</span><strong id="accountFullName">—</strong></div>
-      <div class="accountDetail"><span>اسم المستخدم</span><strong id="accountUsername">—</strong></div>
-      <div class="accountDetail"><span>البريد الإلكتروني</span><strong id="accountEmail">—</strong></div>
-      <div class="accountDetail"><span>إجمالي الطلبات</span><strong id="accountOrderCount">—</strong></div>
-      <div class="accountDetail"><span>الرصيد الحالي</span><strong id="accountCurrentBalance">—</strong></div>
-      <div class="accountDetail"><span>إجمالي الرصيد المستخدم عبر آسياسيل</span><strong id="accountAsiacellUsed">—</strong></div>
-      <div class="accountDetail"><span>إجمالي الرصيد المستخدم عبر ماستركارد</span><strong id="accountMastercardUsed">—</strong></div>
-      <div class="accountDetail"><span>رمز دعوتك</span><strong id="accountInviteCode" dir="ltr">—</strong></div>
-      <div class="accountDetail"><span>نقاط زينيث</span><strong id="accountZenithPoints">—</strong></div>
-      <div class="accountDetail"><span>قيمة نقاطك</span><strong id="accountZenithPointsValue">—</strong></div>
-      <div class="accountDetail"><span>رصيد المحفظة (آسياسيل)</span><strong id="accountAsiacellBalance">—</strong></div>
-      <div class="accountDetail"><span>رصيد المحفظة (ماستركارد)</span><strong id="accountMastercardBalance">—</strong></div>
-      <div class="accountDetail"><span>عدد مستخدمي رمز دعوتك</span><strong id="accountInviteUsers">—</strong></div>
+    <div class="accountProfileEditor">
+      <div class="accountAvatarWrap"><img id="accountAvatarPreview" alt="الصورة الشخصية" src="" hidden><span id="accountAvatarFallback">Z</span></div>
+      <div class="accountProfileActions"><strong>الصورة الشخصية</strong><small>أضف صورة تظهر بجانب تقييماتك في الرئيسية</small><label class="accountAvatarChoose" for="accountAvatarFile">إضافة / تغيير الصورة</label><input id="accountAvatarFile" type="file" accept="image/*" hidden><div id="accountAvatarMsg" class="msg" aria-live="polite"></div></div>
     </div>
+    <div class="accountStatsGrid">
+      <div class="accountStat"><span>رصيد المحفظة (آسياسيل)</span><strong id="accountAsiacellBalance">—</strong></div>
+      <div class="accountStat"><span>رصيد المحفظة (ماستركارد)</span><strong id="accountMastercardBalance">—</strong></div>
+      <div class="accountStat"><span>رمز الدعوة</span><strong id="accountInviteCode" dir="ltr">—</strong></div>
+      <div class="accountStat"><span>النقاط</span><strong id="accountZenithPoints">—</strong></div>
+      <div class="accountStat"><span>إجمالي الطلبات</span><strong id="accountOrderCount">—</strong></div>
+      <div class="accountStat"><span>الرصيد المستخدم</span><strong id="accountTotalUsed">—</strong></div>
+    </div>
+    <div class="accountInformationCard">
+      <h3>معلومات الحساب</h3>
+      <div class="accountInfoRow"><span>اسم الحساب</span><strong id="accountFullName">—</strong></div>
+      <div class="accountInfoRow"><span>اسم المستخدم</span><strong id="accountUsername">—</strong></div>
+      <div class="accountInfoRow"><span>البريد الإلكتروني</span><strong id="accountEmail">—</strong></div>
+      <div class="accountInfoRow accountPhoneRow"><label for="accountPhoneInput">رقم الهاتف <small>(اختياري)</small></label><div><input id="accountPhoneInput" type="tel" inputmode="tel" maxlength="24" placeholder="أضف رقم هاتفك اختيارياً"><button type="button" id="saveAccountPhone">حفظ</button></div></div>
+      <div class="accountInfoRow"><span>قيمة نقاط زينيث</span><strong id="accountZenithPointsValue">—</strong></div>
+      <div class="accountInfoRow"><span>عدد الأشخاص الذين استخدموا رمز دعوتك</span><strong id="accountInviteUsers">—</strong></div>
+    </div>
+    <button type="button" class="accountLogoutButton" id="accountLogoutButton">تسجيل الخروج</button>
   </section>
 
+  <section class="panel" id="accountsMarketPanel" hidden><h2>الحسابات</h2><button type="button" class="secondary backBtn" id="accountsMarketBack">← رجوع</button><p class="muted">قسم الحسابات غير متاح للعرض حالياً. تواصل مع مساعد زينيث الذكي للاستفسار عن الحسابات المتوفرة.</p><button type="button" id="accountsMarketSupport">التواصل مع مساعد زينيث الذكي</button></section>
   <section class="panel" id="myOrdersPanel" hidden>
     <h2>طلباتي</h2>
 <button type="button" class="secondary backBtn" data-back>← رجوع</button>
@@ -2245,16 +2253,8 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
           <div class="checkoutSummaryRow"><span>الباقة المحددة</span><strong id="summaryPackage">—</strong></div>
           <div class="checkoutSummaryTotal"><span>إجمالي السعر</span><div><del id="summaryOldPrice" hidden></del><strong id="summaryFinalPrice">—</strong></div></div>
         </section>
-        <label class="zenithPointsChoice" for="checkoutUsePoints">
-          <input id="checkoutUsePoints" type="checkbox">
-          <span>استبدال نقاط زينيث ودفع الطلب بالكامل بالنقاط</span>
-        </label>
-        <div id="checkoutPointsInfo" class="muted">جارٍ تحميل رصيد نقاطك...</div>
       </div>
       <input id="paymentMethod" type="hidden" value="wallet">
-      <div id="walletInfo" class="notice">
-        <div class="muted">الدفع بآسياسيل يخصم من محفظة آسياسيل، والدفع بماستركارد يخصم من محفظة ماستركارد.</div>
-      </div>
       <button type="submit" id="submitOrderBtn">إتمام الطلب</button>
       <button type="button" class="secondary" id="cancelPurchase">إلغاء</button>
     </form>
@@ -2421,12 +2421,25 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
   </section>
 </main>
 <nav class="bottomNav" aria-label="التنقل الرئيسي">
-  <button type="button" id="navHome" class="active"><span>⌂</span>الرئيسية</button>
-  <button type="button" id="navSearch"><span>⌕</span>البحث</button>
-  <button type="button" id="navWallet"><span class="navWalletIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2.5"/><path d="M3 9h18M16 14h2"/><path d="M6 6V4.8A1.8 1.8 0 0 1 7.8 3H19"/></svg></span>محفظتي</button>
-  <button type="button" id="navOrders"><span class="navOrdersIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><g transform="rotate(7 12 12)"><path d="M6 3.5h9l3 3V21l-2-1.2L14 21l-2-1.2L10 21l-2-1.2L6 21z"/><path d="M14.5 3.8V7h3.2M9 11h6M9 14.5h6"/></g></svg></span>طلباتي</button>
-  <button type="button" id="navCart"><span class="navCartIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.4L22 8H6"/><circle cx="10" cy="20" r="1.2"/><circle cx="18" cy="20" r="1.2"/></svg></span>السلة</button>
+  <button type="button" id="navHome" class="active"><span class="navIcon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg></span><span class="navLabel">الرئيسية</span></button>
+  <button type="button" id="navWallet"><span class="navIcon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="15" rx="2.5"/><path d="M3 9h18M16 14h2M6 5V4a1 1 0 0 1 1-1h11"/></svg></span><span class="navLabel">محفظتي</span></button>
+  <button type="button" id="navOrders"><span class="navIcon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v5h4M9 12h7M9 16h7"/></svg></span><span class="navLabel">طلباتي</span></button>
+  <button type="button" id="navCart"><span class="navIcon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.4L22 8H6"/><circle cx="10" cy="20" r="1.2"/><circle cx="18" cy="20" r="1.2"/></svg></span><span class="navLabel">السلة</span></button>
+  <button type="button" id="navSections" aria-haspopup="dialog" aria-expanded="false"><span class="navIcon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="navLabel">الأقسام</span></button>
 </nav>
+<button type="button" id="navSearch" hidden aria-hidden="true" tabindex="-1"></button>
+<div class="sectionsSheetBackdrop" id="sectionsSheetBackdrop" hidden></div>
+<section class="sectionsSheet" id="sectionsSheet" role="dialog" aria-modal="true" aria-labelledby="sectionsSheetTitle" hidden>
+  <div class="sectionsSheetHandle"></div><h3 id="sectionsSheetTitle">الأقسام</h3>
+  <div class="sectionsGrid">
+    <button type="button" data-section-action="assistant"><span class="sectionTileIcon"><svg viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="13" rx="4"/><path d="M12 3v4M8 12h.01M16 12h.01M9 16h6M2 12h2M20 12h2"/></svg></span><strong>مساعد زينيث الذكي</strong></button>
+    <button type="button" data-section-action="accounts"><span class="sectionTileIcon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c.5-3.4 2.5-5 6-5s5.5 1.6 6 5M16 5a3 3 0 0 1 0 6M17 15c2.2.3 3.5 1.9 4 5"/></svg></span><strong>الحسابات</strong></button>
+    <button type="button" data-section-action="reviews"><span class="sectionTileIcon"><svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></span><strong>آراء العملاء</strong></button>
+    <button type="button" data-section-action="account"><span class="sectionTileIcon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 21c.8-3.8 3.3-5.7 7.5-5.7s6.7 1.9 7.5 5.7"/></svg></span><strong>حسابي</strong></button>
+    <button type="button" data-section-action="search"><span class="sectionTileIcon"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg></span><strong>البحث</strong></button>
+    <button type="button" data-section-action="back"><span class="sectionTileIcon"><svg viewBox="0 0 24 24"><path d="M9 5 2 12l7 7M3 12h12a6 6 0 0 1 6 6"/></svg></span><strong>الرجوع</strong></button>
+  </div>
+</section>
 <div id="orderToast" class="toastNotice" role="status" aria-live="assertive" hidden></div>
 <footer class="storeFooter">
   <div class="footerGroup">
@@ -2512,6 +2525,7 @@ async function verifyMlbbAccount() {
     name.className = "mlbbVerifiedName";
     name.textContent = verifiedMlbbAccount.nickname;
     msg.appendChild(name);
+    updateCheckoutSummaryUI();
   } catch (error) {
     clearMlbbVerification();
     const raw = String(error?.message || "");
@@ -3423,7 +3437,6 @@ function openPurchase(product, provider, fromHistory = false) {
   } catch (_) {}
   const price = getPrice(product, provider);
   resetCheckoutRewards();
-  loadCheckoutPointsInfo();
   el("selectedProductInfo").replaceChildren();
   const summaryText = document.createElement("div");
   summaryText.textContent = `${productTitle(product)} — ${money(price)} (${provider === "mastercard" ? "ماستركارد" : "آسياسيل"})`;
@@ -3459,8 +3472,6 @@ function openPurchase(product, provider, fromHistory = false) {
 function updatePaymentFields() {
   const payment = el("paymentMethod");
   if (payment) payment.value = "wallet";
-  const walletInfo = el("walletInfo");
-  if (walletInfo) walletInfo.hidden = false;
 }
 
 el("cancelPurchase").addEventListener("click", () => {
@@ -3677,6 +3688,8 @@ async function refreshSession() {
   el("accountStatus").textContent = user
     ? "تم تسجيل الدخول: " + user.email
     : "أنت تتصفح المتجر كزائر. سجّل الدخول حتى تتمكن من إرسال طلب.";
+  const headerAccountButton = el("headerAccountButton");
+  if (headerAccountButton) headerAccountButton.textContent = user ? ("@" + (user.user_metadata?.username || user.email?.split("@")[0] || "حسابي")) : "تسجيل الدخول";
   el("logout").hidden = !user;
   el("loginBtn").hidden = !!user;
   el("signup").hidden = !!user;
@@ -3691,6 +3704,7 @@ async function refreshSession() {
   if (error) setMessage("authMsg", error.message, "error");
   await loadMyOrders();
   await loadCustomerWallet();
+  if (el("headerAccountButton")) el("headerAccountButton").textContent = user ? ("@" + (user.user_metadata?.username || user.email?.split("@")[0] || "حسابي")) : "تسجيل الدخول";
 }
 
 el("loginForm").addEventListener("submit", async e => {
@@ -3772,15 +3786,6 @@ function resetCheckoutRewards() {
   activeCheckoutCodeType = null;
   if (el("checkoutCode")) el("checkoutCode").value = "";
   if (el("checkoutCodeMsg")) { el("checkoutCodeMsg").textContent = ""; el("checkoutCodeMsg").className = "msg"; }
-  if (el("checkoutUsePoints")) el("checkoutUsePoints").checked = false;
-}
-async function loadCheckoutPointsInfo() {
-  const box = el("checkoutPointsInfo");
-  if (!box) return;
-  const {data,error} = await db.rpc("get_zenith_account_summary");
-  if (error) { box.textContent = "تعذر تحميل نقاط زينيث حالياً."; return; }
-  checkoutPointsBalance = Number(data?.points || 0);
-  box.textContent = `رصيدك: ${checkoutPointsBalance.toFixed(2)} نقطة — قيمتها ${money(data?.points_value_iqd || 0)}. لا يمكن الدفع بالنقاط جزئياً.`;
 }
 el("applyCheckoutCode")?.addEventListener("click", async () => {
   const code = el("checkoutCode").value.trim().toUpperCase();
@@ -3805,13 +3810,6 @@ el("checkoutCode")?.addEventListener("input", () => {
   activeCheckoutCode = null; activeCheckoutCodeType = null;
   updateCheckoutSummaryUI();
   if (el("checkoutCodeMsg")) { el("checkoutCodeMsg").textContent = "اضغط تطبيق للتحقق من الرمز."; el("checkoutCodeMsg").className = "msg"; }
-});
-el("checkoutUsePoints")?.addEventListener("change", () => {
-  if (el("checkoutUsePoints").checked) {
-    setMessage("checkoutCodeMsg", activeCheckoutCodeType === "redemption"
-      ? "يمكن استخدام رمز الخصم مع النقاط؛ سيُحسب المطلوب بعد الخصم."
-      : "سيتم خصم كامل قيمة الطلب من نقاطك عند إرسال الطلب.", "success");
-  }
 });
 
 function explainOrderFailure(error) {
@@ -3857,8 +3855,7 @@ async function submitPurchaseOrder() {
       ? cartItems.map(line => ({product_id:Number(line.id), quantity:Number(line.qty || 1), provider:line.provider}))
       : [{product_id:Number(selectedProduct.id), quantity:1, provider:selectedProvider}];
     if (!items.length) throw new Error("السلة فارغة.");
-    const usePoints = !!el("checkoutUsePoints")?.checked;
-    const paymentMethod = usePoints ? "points" : el("paymentMethod").value;
+    const paymentMethod = el("paymentMethod").value;
     let proofPath = null;
     if (paymentMethod === "direct") {
       const file = el("proofFile").files[0];
@@ -3924,7 +3921,7 @@ function updateCheckoutSummaryUI() {
   const summary = getCheckoutSummary();
   const isHonor = activeStoreGame === "honor";
   const playerName = verifiedMlbbAccount && verifiedMlbbAccount.playerId === summary.playerId && verifiedMlbbAccount.zoneId === summary.zoneId ? verifiedMlbbAccount.nickname : "بانتظار التحقق";
-  const packageLabel = checkoutCartItemId === "cart" ? `${cartItems.length} باقة في السلة` : (selectedProduct ? productTitle(selectedProduct) : "—");
+  const packageLabel = checkoutCartItemId === "cart" ? `${cartItems.length} باقة في السلة` : (selectedProduct ? (Number(selectedProduct.diamonds) > 0 ? `${Number(selectedProduct.diamonds).toLocaleString("en-US")} جوهرة` : (isWeeklySubscriptionProduct(selectedProduct) ? "اشتراك أسبوعي" : productTitle(selectedProduct))) : "—");
   const discount = getCheckoutDiscountRate();
   const finalTotal = Math.max(0, Math.round(summary.total * (1-discount)));
   el("summaryGame").textContent = checkoutGameLabel();
@@ -4392,15 +4389,22 @@ async function loadPublicCustomerReviews() {
   box.replaceChildren();
   if (!reviews?.length) { box.textContent = "كن أول من يشاركنا رأيه بعد اكتمال طلبه."; return; }
   const userIds = [...new Set(reviews.map(review => review.user_id).filter(Boolean))];
-  const {data: profiles} = userIds.length ? await db.from("profiles").select("id,username").in("id", userIds) : {data:[]};
+  const [{data: profiles}, {data: publicProfiles}] = await Promise.all([
+    userIds.length ? db.from("profiles").select("id,username").in("id", userIds) : Promise.resolve({data:[]}),
+    userIds.length ? db.from("customer_public_profiles").select("user_id,avatar_url,username").in("user_id", userIds) : Promise.resolve({data:[]})
+  ]);
   const usernames = Object.fromEntries((profiles || []).map(profile => [profile.id, profile.username]));
+  const publicProfileMap = Object.fromEntries((publicProfiles || []).map(profile => [profile.user_id, profile]));
   const orderIds = reviews.map(review => review.order_id);
   const {data: items} = await db.from("order_items").select("order_id,product_name,diamonds,product_type,quantity").in("order_id", orderIds);
   const itemNames = {};
   (items || []).forEach(item => (itemNames[item.order_id] ||= []).push(item.product_name || (item.diamonds ? `${item.diamonds} جوهرة` : "اشتراك")));
   reviews.forEach(review => {
     const card = document.createElement("article"); card.className = "publicReviewCard";
-    const avatar = document.createElement("div"); avatar.className = "publicReviewAvatar"; avatar.textContent = (usernames[review.user_id] || "Z").slice(0,1).toUpperCase();
+    const avatar = document.createElement("div"); avatar.className = "publicReviewAvatar";
+    const avatarUrl = publicProfileMap[review.user_id]?.avatar_url;
+    if (avatarUrl) { const image = document.createElement("img"); image.src = avatarUrl; image.alt = "الصورة الشخصية للعميل"; image.loading = "lazy"; avatar.appendChild(image); }
+    else avatar.textContent = (usernames[review.user_id] || "Z").slice(0,1).toUpperCase();
     const body = document.createElement("div"); body.className = "publicReviewBody";
     const name = document.createElement("strong"); name.textContent = usernames[review.user_id] ? "@" + usernames[review.user_id] : "عميل زينيث";
     const caption = document.createElement("small"); caption.textContent = "رأي العميل";
@@ -4664,7 +4668,7 @@ function saveActivePage(page, trackNavigation = true) {
 }
 function hideCustomerPanels() {
   if (el("accountPanel")) el("accountPanel").hidden = true;
-  ["homePanel", "serviceAppPage", "mlbbCategoryPanel", "freeFireCategoryPanel", "productsPanel", "cartPanel", "customerWalletPanel", "myOrdersPanel", "purchasePanel", "termsPanel", "policyPanel", "supportPanel"].forEach(id => {
+  ["homePanel", "serviceAppPage", "mlbbCategoryPanel", "freeFireCategoryPanel", "productsPanel", "cartPanel", "customerWalletPanel", "myOrdersPanel", "purchasePanel", "accountsMarketPanel", "termsPanel", "policyPanel", "supportPanel"].forEach(id => {
     const node = el(id); if (node) node.hidden = true;
   });
 }
@@ -4700,9 +4704,40 @@ el("navHome").addEventListener("click", () => {
   document.querySelectorAll(".gameCategoryGrid .gameGroupCard, .gameCategoryGrid > .gameMainCategory").forEach(card => card.hidden = false);
   window.scrollTo({top:0, behavior:"smooth"});
 });
-el("navWallet").addEventListener("click", () => el("menuWallet").click());
-el("navOrders").addEventListener("click", () => el("menuMyOrders").click());
-el("navCart").addEventListener("click", showCart);
+el("navWallet").addEventListener("click", () => { closeSectionsSheet(); el("menuWallet").click(); });
+el("navOrders").addEventListener("click", () => { closeSectionsSheet(); el("menuMyOrders").click(); });
+el("navCart").addEventListener("click", () => { closeSectionsSheet(); showCart(); });
+
+function closeSectionsSheet() {
+  const sheet=el("sectionsSheet"), backdrop=el("sectionsSheetBackdrop");
+  if (!sheet || sheet.hidden) return;
+  sheet.classList.remove("isOpen"); backdrop.classList.remove("isOpen");
+  el("navSections").setAttribute("aria-expanded","false");
+  document.body.classList.remove("sections-sheet-open");
+  setTimeout(()=>{sheet.hidden=true;backdrop.hidden=true;},220);
+}
+function openSectionsSheet() {
+  const sheet=el("sectionsSheet"), backdrop=el("sectionsSheetBackdrop");
+  backdrop.hidden=false; sheet.hidden=false;
+  requestAnimationFrame(()=>{sheet.classList.add("isOpen");backdrop.classList.add("isOpen");});
+  el("navSections").setAttribute("aria-expanded","true");
+  document.body.classList.add("sections-sheet-open");
+}
+el("navSections")?.addEventListener("click",openSectionsSheet);
+el("sectionsSheetBackdrop")?.addEventListener("click",closeSectionsSheet);
+document.addEventListener("keydown",event=>{if(event.key==="Escape")closeSectionsSheet();});
+document.querySelectorAll("[data-section-action]").forEach(button=>button.addEventListener("click",()=>{
+  const action=button.dataset.sectionAction; closeSectionsSheet();
+  if(action==="assistant") { hideCustomerPanels(); el("supportPanel").hidden=false; saveActivePage("support"); el("supportPanel").scrollIntoView({behavior:"smooth",block:"start"}); return; }
+  if(action==="account") { el("menuAccount").click(); return; }
+  if(action==="search") { el("navSearch").click(); return; }
+  if(action==="reviews") { el("homePanel").hidden=false; hideCustomerPanels(); el("homePanel").hidden=false; saveActivePage("home"); setActiveNav(""); el("customerReviewsSection").scrollIntoView({behavior:"smooth",block:"center"}); return; }
+  if(action==="accounts") { hideCustomerPanels(); el("accountsMarketPanel").hidden=false; saveActivePage("accounts-market"); el("accountsMarketPanel").scrollIntoView({behavior:"smooth",block:"start"}); return; }
+  if(action==="back") { const previous=appNavigationStack.pop(); if(previous==="account") el("menuAccount").click(); else if(previous==="wallet") el("menuWallet").click(); else if(previous==="orders") el("menuMyOrders").click(); else if(previous==="cart") showCart(); else el("navHome").click(); }
+}));
+el("accountsMarketBack")?.addEventListener("click",()=>el("navHome").click());
+el("accountsMarketSupport")?.addEventListener("click",()=>{hideCustomerPanels();el("supportPanel").hidden=false;saveActivePage("support");el("supportPanel").scrollIntoView({behavior:"smooth",block:"start"});});
+
 function filterHomeGames() {
   const term = (el("homeSearch").value || "").trim().toLocaleLowerCase();
   document.querySelectorAll(".gameCategoryGrid .gameGroupCard").forEach(card => {
@@ -4843,7 +4878,7 @@ el("menuToggle").addEventListener("click", () => {
   el("menuToggle").classList.toggle("is-open", opening);
   el("menuToggle").setAttribute("aria-expanded", String(opening));
 });
-document.addEventListener('click',event=>{const menu=el('mainMenu'),toggle=el('menuToggle');if(menu&&!menu.hidden&&!menu.contains(event.target)&&!toggle?.contains(event.target))closeMainMenu();});
+document.addEventListener('click',event=>{const menu=el('mainMenu'),toggle=el('menuToggle'),account=el('headerAccountButton');if(menu&&!menu.hidden&&!menu.contains(event.target)&&!toggle?.contains(event.target)&&!account?.contains(event.target))closeMainMenu();});
 document.addEventListener('keydown',event=>{if(event.key==='Escape')closeMainMenu();});
 function closeMainMenu() {
   el("mainMenu").hidden = true;
@@ -4851,6 +4886,7 @@ function closeMainMenu() {
   el("menuToggle").setAttribute("aria-expanded", "false");
 }
 el("menuHome").addEventListener("click", () => { closeMainMenu(); el("navHome").click(); });
+el("menuSupport")?.addEventListener("click", () => { closeMainMenu(); hideCustomerPanels(); el("supportPanel").hidden=false; saveActivePage("support"); el("supportPanel").scrollIntoView({behavior:"smooth",block:"start"}); });
 el("menuCart").addEventListener("click", () => { closeMainMenu(); showCart(); });
 el("menuSearch").addEventListener("click", () => { closeMainMenu(); el("navSearch").click(); });
 document.querySelectorAll(".zenithAppLink").forEach(button => button.addEventListener("click", () => {
@@ -4876,46 +4912,92 @@ async function loadAccountPanel() {
   el("accountFullName").textContent = metadata.full_name || metadata.name || "غير متوفر في بيانات الحساب";
   el("accountUsername").textContent = metadata.username ? "@" + metadata.username : "غير متوفر في بيانات الحساب";
   el("accountEmail").textContent = user.email || "—";
-  const [ordersResult, walletResult, zenithResult] = await Promise.all([
+  el("accountPhoneInput").value = metadata.phone_number || "";
+  const [ordersResult, walletResult, zenithResult, profileResult] = await Promise.all([
     db.from("orders").select("id", {count:"exact", head:true}).eq("user_id", user.id),
     db.from("wallet_transactions").select("amount_iqd,wallet_provider").eq("user_id", user.id),
-    db.rpc("get_zenith_account_summary")
+    db.rpc("get_zenith_account_summary"),
+    db.from("customer_public_profiles").select("avatar_url").eq("user_id", user.id).maybeSingle()
   ]);
+  const profile = profileResult.data || {};
+  const avatarUrl = profile.avatar_url || metadata.avatar_url || "";
+  const avatar = el("accountAvatarPreview"), fallback = el("accountAvatarFallback");
+  if (avatarUrl) { avatar.src = avatarUrl; avatar.hidden = false; fallback.hidden = true; }
+  else { avatar.hidden = true; fallback.hidden = false; fallback.textContent = (metadata.username || metadata.full_name || "Z").slice(0,1).toUpperCase(); }
   if (!zenithResult.error) {
     const z = zenithResult.data || {};
     el("accountInviteCode").textContent = z.invite_code || "—";
     el("accountZenithPoints").textContent = Number(z.points || 0).toFixed(2) + " نقطة";
     el("accountZenithPointsValue").textContent = money(z.points_value_iqd || 0);
+    el("accountInviteUsers").textContent = Number(z.invite_users_count || 0).toLocaleString("en-US");
   } else {
     el("accountInviteCode").textContent = "تعذر التحميل";
     el("accountZenithPoints").textContent = "تعذر التحميل";
     el("accountZenithPointsValue").textContent = "تعذر التحميل";
+    el("accountInviteUsers").textContent = "تعذر التحميل";
   }
   el("accountOrderCount").textContent = ordersResult.error ? "تعذر التحميل" : Number(ordersResult.count || 0).toLocaleString("en-US");
   if (walletResult.error) {
-    el("accountCurrentBalance").textContent = "تعذر التحميل";
-    el("accountAsiacellUsed").textContent = "تعذر التحميل";
-    el("accountMastercardUsed").textContent = "تعذر التحميل";
-    msg.textContent = "تعذر تحميل بيانات المحفظة: " + walletResult.error.message;
-    msg.className = "msg error";
-    return;
+    el("accountAsiacellBalance").textContent = "تعذر التحميل";
+    el("accountMastercardBalance").textContent = "تعذر التحميل";
+    el("accountTotalUsed").textContent = "تعذر التحميل";
+    msg.textContent = "تعذر تحميل بيانات المحفظة: " + walletResult.error.message; msg.className = "msg error"; return;
   }
   const totals = (walletResult.data || []).reduce((acc, row) => {
     const provider = row.wallet_provider === "asiacell" ? "asiacell" : "mastercard";
     const amount = Number(row.amount_iqd || 0);
     acc.balance[provider] += amount;
-    if (amount < 0) acc.used[provider] += Math.abs(amount);
+    if (amount < 0) acc.used += Math.abs(amount);
     return acc;
-  }, {balance:{asiacell:0,mastercard:0},used:{asiacell:0,mastercard:0}});
-  el("accountCurrentBalance").textContent = money(totals.balance.asiacell + totals.balance.mastercard);
-  if (el("accountAsiacellBalance")) el("accountAsiacellBalance").textContent = money(totals.balance.asiacell);
-  if (el("accountMastercardBalance")) el("accountMastercardBalance").textContent = money(totals.balance.mastercard);
-  if (el("accountInviteUsers")) el("accountInviteUsers").textContent = Number((zenithResult.data || {}).invite_users_count || 0).toLocaleString("en-US");
-  el("accountAsiacellUsed").textContent = money(totals.used.asiacell);
-  el("accountMastercardUsed").textContent = money(totals.used.mastercard);
-  msg.textContent = ordersResult.error ? "تم تحميل بيانات الحساب والمحفظة، لكن تعذر عدّ الطلبات." : "تم تحميل بيانات حسابك الفعلية.";
-  msg.className = ordersResult.error ? "msg error" : "msg success";
+  }, {balance:{asiacell:0,mastercard:0},used:0});
+  el("accountAsiacellBalance").textContent = money(totals.balance.asiacell);
+  el("accountMastercardBalance").textContent = money(totals.balance.mastercard);
+  el("accountTotalUsed").textContent = money(totals.used);
+  msg.textContent = "تم تحميل بيانات حسابك الفعلية."; msg.className = "msg success";
 }
+
+async function saveAccountPhone() {
+  const button = el("saveAccountPhone"), phone = el("accountPhoneInput").value.trim();
+  if (phone && !/^[+0-9()\-\s]{7,24}$/.test(phone)) { setMessage("accountPanelMsg", "رقم الهاتف غير صحيح. أدخله بالأرقام مع إمكانية استخدام +.", "error"); return; }
+  button.disabled = true; button.textContent = "جارٍ الحفظ...";
+  try {
+    const {data,error} = await db.auth.updateUser({data:{phone_number:phone || null}});
+    if (error) throw error;
+    setMessage("accountPanelMsg", "تم حفظ رقم الهاتف بنجاح.", "success");
+  } catch (error) { setMessage("accountPanelMsg", error.message || "تعذر حفظ رقم الهاتف.", "error"); }
+  finally { button.disabled = false; button.textContent = "حفظ"; }
+}
+el("saveAccountPhone")?.addEventListener("click", saveAccountPhone);
+
+async function saveAccountAvatar(file) {
+  if (!file || !file.type.startsWith("image/")) { setMessage("accountAvatarMsg", "اختر ملف صورة صالحاً.", "error"); return; }
+  if (file.size > 8*1024*1024) { setMessage("accountAvatarMsg", "حجم الصورة يجب أن يكون أقل من 8 ميغابايت.", "error"); return; }
+  const {data:authData} = await db.auth.getUser(); const user = authData?.user;
+  if (!user) { setMessage("accountAvatarMsg", "سجّل الدخول أولاً.", "error"); return; }
+  setMessage("accountAvatarMsg", "جارٍ تجهيز الصورة ورفعها...");
+  try {
+    const image = new Image(), sourceUrl = URL.createObjectURL(file);
+    await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=reject;image.src=sourceUrl;});
+    const canvas = document.createElement("canvas"), size = 512; canvas.width=size; canvas.height=size;
+    const ctx = canvas.getContext("2d"), scale=Math.max(size/image.width,size/image.height), w=image.width*scale,h=image.height*scale;
+    ctx.drawImage(image,(size-w)/2,(size-h)/2,w,h); URL.revokeObjectURL(sourceUrl);
+    const blob = await new Promise(resolve=>canvas.toBlob(resolve,"image/webp",0.84));
+    if (!blob) throw new Error("تعذر تجهيز الصورة.");
+    const path = `${user.id}/avatar.webp`;
+    const {error:uploadError} = await db.storage.from("profile-avatars").upload(path,blob,{contentType:"image/webp",upsert:true,cacheControl:"3600"});
+    if (uploadError) throw uploadError;
+    const {data:publicData} = db.storage.from("profile-avatars").getPublicUrl(path);
+    const avatarUrl = publicData.publicUrl + "?v=" + Date.now();
+    const username = user.user_metadata?.username || "";
+    const {error:profileError} = await db.from("customer_public_profiles").upsert({user_id:user.id,username,avatar_url:avatarUrl,updated_at:new Date().toISOString()},{onConflict:"user_id"});
+    if (profileError) throw profileError;
+    const {error:metaError} = await db.auth.updateUser({data:{avatar_url:avatarUrl}});
+    if (metaError) throw metaError;
+    el("accountAvatarPreview").src=avatarUrl; el("accountAvatarPreview").hidden=false; el("accountAvatarFallback").hidden=true;
+    setMessage("accountAvatarMsg", "تم تحديث صورتك الشخصية.", "success");
+  } catch(error) { setMessage("accountAvatarMsg", error.message || "تعذر رفع الصورة. تأكد من تنفيذ ملف SQL المرفق.", "error"); }
+}
+el("accountAvatarFile")?.addEventListener("change",event=>{const file=event.target.files?.[0];if(file)saveAccountAvatar(file);event.target.value="";});
 
 el("menuAccount").addEventListener("click", async () => {
   const {data} = await db.auth.getSession();
@@ -4934,6 +5016,23 @@ el("menuAccount").addEventListener("click", async () => {
   await loadAccountPanel();
   el("accountPanel").scrollIntoView({behavior:"smooth",block:"start"});
 });
+
+el("headerAccountButton")?.addEventListener("click", async () => {
+  const {data} = await db.auth.getSession();
+  if (data?.session?.user) { el("menuAccount").click(); return; }
+  el("mainMenu").hidden = false;
+  el("loginForm").scrollIntoView({behavior:"smooth",block:"center"});
+});
+el("accountLogoutButton")?.addEventListener("click", async () => {
+  const {error} = await db.auth.signOut();
+  if (error) { setMessage("accountPanelMsg", error.message, "error"); return; }
+  el("accountPanel").hidden = true;
+  el("adminPanel").hidden = true;
+  applyRoleUI(false);
+  await refreshSession();
+  el("navHome").click();
+});
+
 el("accountBackHome").addEventListener("click", () => {
   el("accountPanel").hidden = true;
   el("navHome").click();
@@ -7135,102 +7234,3 @@ html[data-theme="light"] #homePanel #faqSection * {
   margin:0!important; padding:0!important; text-align:right!important;
   background:transparent!important; border:0!important; box-shadow:none!important;
 }
-#mlbbSubcategories #membershipPlaceholder > .categoryText strong,
-#mlbbCategoryPanel #mlbbPageMembership > .categoryText strong,
-#mlbbSubcategories #fanFrameCategory > .categoryText strong,
-#mlbbCategoryPanel #mlbbPageFanFrame > .categoryText strong {
-  display:inline-block!important; width:max-content!important; max-width:100%!important;
-  margin:0!important; padding:4px 9px!important; border:0!important;
-  border-radius:6px!important; background:#fff!important; color:#172235!important;
-  font-size:11px!important; line-height:1.25!important; font-weight:900!important;
-  opacity:1!important; text-shadow:none!important; -webkit-text-stroke:0!important;
-  box-shadow:0 1px 4px rgba(0,0,0,.22)!important;
-}
-#mlbbSubcategories #membershipPlaceholder > .categoryArrow,
-#mlbbCategoryPanel #mlbbPageMembership > .categoryArrow,
-#mlbbSubcategories #fanFrameCategory > .categoryArrow,
-#mlbbCategoryPanel #mlbbPageFanFrame > .categoryArrow {display:none!important;}
-</style>
-
-
-<script id="zenith-apps-drag-script">
-(function(){
-  const section=document.getElementById("zenithAppsSection");
-  const track=document.getElementById("zenithAppsTrack");
-  if(!section||!track) return;
-  let animation=null, startX=0, startTime=0, dragging=false, moved=false;
-  const getAnimation=()=>track.getAnimations().find(a=>a.effect && a.playState!=="finished");
-  section.addEventListener("pointerdown",event=>{
-    if(event.pointerType==="mouse" && event.button!==0) return;
-    animation=getAnimation();
-    if(!animation) return;
-    dragging=true; moved=false; startX=event.clientX;
-    startTime=Number(animation.currentTime)||0;
-    animation.pause();
-    section.classList.add("is-dragging");
-    try{section.setPointerCapture(event.pointerId);}catch(_){}
-  });
-  section.addEventListener("pointermove",event=>{
-    if(!dragging||!animation) return;
-    const dx=event.clientX-startX;
-    if(Math.abs(dx)>4) moved=true;
-    const width=Math.max(1,track.scrollWidth/2);
-    const duration=42000;
-    let next=startTime-(dx/width)*duration;
-    next=((next%duration)+duration)%duration;
-    animation.currentTime=next;
-  });
-  const finish=()=>{
-    if(!dragging) return;
-    dragging=false; section.classList.remove("is-dragging");
-    if(animation) animation.play();
-    animation=null;
-  };
-  section.addEventListener("pointerup",finish);
-  section.addEventListener("pointercancel",finish);
-  section.addEventListener("lostpointercapture",finish);
-  section.addEventListener("click",event=>{
-    if(moved){event.preventDefault();event.stopPropagation();moved=false;}
-  },true);
-})();
-
-loadPublicCustomerReviews().catch(error => console.warn("Public reviews unavailable", error));
-</script>
-<style id="zenith-hok-and-transparent-sections">
-html[data-theme="light"] #faqSection,
-html[data-theme="light"] #faqSection .faqItem,
-html[data-theme="light"] #faqSection .faqQuestion,
-html[data-theme="light"] #faqSection .faqAnswer,
-html[data-theme="light"] #faqSection .faqSubtitle,
-html[data-theme="light"] #faqSection .faqAnswer p {
-  background:transparent!important;background-color:transparent!important;background-image:none!important;box-shadow:none!important;
-}
-html[data-theme="light"] #faqSection .faqItem,html[data-theme="light"] #faqSection .faqQuestion {border-color:transparent!important}
-html[data-theme="light"] #mlbbCategoryPanel,
-html[data-theme="light"] #mlbbCategoryPanel .mlbbPageGrid,
-html[data-theme="light"] #mlbbCategoryPanel .homeCategory {
-  background:transparent!important;background-color:transparent!important;box-shadow:none!important;
-}
-html[data-theme="light"] #mlbbCategoryPanel .homeCategory {border-color:#c5d8e8!important}
-html[data-theme="light"] #mlbbCategoryPanel .homeCategory .categoryText strong,
-html[data-theme="light"] #mlbbCategoryPanel .homeCategory .categoryText small {color:#142238!important;text-shadow:none!important}
-#honorOfKingsToggle .gameTileImage {object-fit:contain!important;filter:none!important}
-</style>
-
-
-<style id="zenith-membership-outer-artwork-and-fanframe-caption-final">
-/* Outer artwork for the membership tile; membership.png is the centered inner artwork. */
-#mlbbSubcategories #membershipPlaceholder,
-#mlbbCategoryPanel #mlbbPageMembership {
-  position:relative!important;
-  overflow:hidden!important;
-  isolation:isolate!important;
-}
-#mlbbSubcategories #membershipPlaceholder::before,
-#mlbbCategoryPanel #mlbbPageMembership::before {
-  content:""!important;
-  display:block!important;
-  position:absolute!important;
-  inset:0!important;
-  z-index:0!important;
-  backg
