@@ -2277,10 +2277,12 @@ html[data-theme="light"] .checkoutOrderDetails .checkoutSummaryTotal strong span
     <h2>حسابي</h2>
     <button type="button" class="secondary backBtn" id="accountBackHome">← الرئيسية</button>
     <div id="accountPanelMsg" class="msg" aria-live="polite">جارٍ تحميل بيانات الحساب...</div>
-    <div class="accountProfileEditor">
-      <div class="accountAvatarWrap"><img id="accountAvatarPreview" alt="الصورة الشخصية" src="" hidden><span id="accountAvatarFallback">Z</span></div>
-      <div class="accountProfileActions"><strong>الصورة الشخصية</strong><small>أضف صورة تظهر بجانب تقييماتك في الرئيسية</small><label class="accountAvatarChoose" for="accountAvatarFile">إضافة / تغيير الصورة</label><input id="accountAvatarFile" type="file" accept="image/*" hidden><div id="accountAvatarMsg" class="msg" aria-live="polite"></div></div>
+    <div class="accountProfileEditor accountProfileEditorCentered">
+      <button type="button" class="accountAvatarWrap" id="accountAvatarButton" aria-label="تغيير الصورة الشخصية"><img id="accountAvatarPreview" alt="الصورة الشخصية" src="" hidden><span id="accountAvatarFallback">Z</span></button>
+      <input id="accountAvatarFile" type="file" accept="image/*" hidden>
+      <div id="accountAvatarMsg" class="msg" aria-live="polite"></div>
     </div>
+    <div class="zenithAvatarPreviewOverlay" id="zenithAvatarPreviewOverlay" hidden><button type="button" id="closeAvatarPreview" aria-label="إغلاق">×</button><img id="zenithAvatarPreviewImage" alt="الصورة الشخصية بالحجم الكامل"></div>
     <div class="accountStatsGrid">
       <div class="accountStat"><span>رصيد المحفظة (آسياسيل)</span><strong id="accountAsiacellBalance">—</strong></div>
       <div class="accountStat"><span>رصيد المحفظة (ماستركارد)</span><strong id="accountMastercardBalance">—</strong></div>
@@ -2291,7 +2293,8 @@ html[data-theme="light"] .checkoutOrderDetails .checkoutSummaryTotal strong span
     </div>
     <div class="accountInformationCard">
       <h3>معلومات الحساب</h3>
-      <div class="accountInfoRow"><span>اسم الحساب</span><strong id="accountFullName">—</strong></div>
+      <div class="accountInfoRow accountDisplayNameRow"><span>اسم الحساب</span><div class="accountDisplayNameValue"><strong id="accountFullName">—</strong><button type="button" id="editAccountNameBtn" aria-label="تعديل اسم الحساب">تعديل</button></div></div>
+      <div class="accountNameEditor" id="accountNameEditor" hidden><input id="accountNameInput" type="text" maxlength="32" placeholder="اكتب اسم الحساب الجديد"><button type="button" id="saveAccountNameBtn">حفظ الاسم</button><small id="accountNameCooldown"></small></div>
       <div class="accountInfoRow"><span>اسم المستخدم</span><strong id="accountUsername">—</strong></div>
       <div class="accountInfoRow"><span>البريد الإلكتروني</span><strong id="accountEmail">—</strong></div>
       <div class="accountInfoRow accountPhoneRow">
@@ -4379,7 +4382,7 @@ async function loadAdminOrders() {
       : {data:[],error:null};
     const userIds = [...new Set(rows.map(o=>o.user_id).filter(Boolean))];
     const {data: profiles, error: profilesError} = userIds.length
-      ? await withAdminTimeout(db.from("profiles").select("id,username").in("id", userIds), "تحميل أسماء الزبائن")
+      ? await withAdminTimeout(db.from("profiles").select("id,username,display_name").in("id", userIds), "تحميل أسماء الزبائن")
       : {data:[],error:null};
     const itemsByOrder = {};
     (itemRows||[]).forEach(x=>(itemsByOrder[x.order_id] ||= []).push(x));
@@ -4506,9 +4509,9 @@ async function loadPublicCustomerReviews(limit = 3, targetId = "publicCustomerRe
   const userIds = [...new Set(reviews.map(review => review.user_id).filter(Boolean))];
   const [{data: profiles}, {data: publicProfiles}] = await Promise.all([
     userIds.length ? db.from("profiles").select("id,username").in("id", userIds) : Promise.resolve({data:[]}),
-    userIds.length ? db.from("customer_public_profiles").select("user_id,avatar_url,username").in("user_id", userIds) : Promise.resolve({data:[]})
+    userIds.length ? db.from("customer_public_profiles").select("user_id,avatar_url,username,display_name").in("user_id", userIds) : Promise.resolve({data:[]})
   ]);
-  const usernames = Object.fromEntries((profiles || []).map(profile => [profile.id, profile.username]));
+  const profileMap = Object.fromEntries((profiles || []).map(profile => [profile.id, profile]));
   const publicProfileMap = Object.fromEntries((publicProfiles || []).map(profile => [profile.user_id, profile]));
   const orderIds = reviews.map(review => review.order_id);
   const {data: items} = await db.from("order_items").select("order_id,product_name,diamonds,product_type,quantity").in("order_id", orderIds);
@@ -4518,15 +4521,19 @@ async function loadPublicCustomerReviews(limit = 3, targetId = "publicCustomerRe
     const card = document.createElement("article"); card.className = "publicReviewCard";
     const avatar = document.createElement("div"); avatar.className = "publicReviewAvatar";
     const avatarUrl = publicProfileMap[review.user_id]?.avatar_url;
+    const publicProfile = publicProfileMap[review.user_id] || {};
+    const profile = profileMap[review.user_id] || {};
+    const displayName = publicProfile.display_name || profile.display_name || publicProfile.username || profile.username || "عميل زينيث";
     if (avatarUrl) { const image = document.createElement("img"); image.src = avatarUrl; image.alt = "الصورة الشخصية للعميل"; image.loading = "lazy"; avatar.appendChild(image); }
-    else avatar.textContent = (usernames[review.user_id] || "Z").slice(0,1).toUpperCase();
+    else avatar.textContent = displayName.slice(0,1).toUpperCase();
     const body = document.createElement("div"); body.className = "publicReviewBody";
-    const name = document.createElement("strong"); name.textContent = usernames[review.user_id] ? "@" + usernames[review.user_id] : "عميل زينيث";
-    const caption = document.createElement("small"); caption.textContent = "رأي العميل";
+    const header = document.createElement("div"); header.className = "publicReviewHeader";
+    const name = document.createElement("strong"); name.textContent = displayName;
     const stars = document.createElement("div"); stars.className = "publicReviewStars"; stars.textContent = "★".repeat(review.rating) + "☆".repeat(5-review.rating);
+    header.append(name, stars);
     const comment = document.createElement("p"); comment.textContent = review.comment || "تجربة ممتازة، شكراً لثقتك بنا.";
     const complete = document.createElement("div"); complete.className = "publicReviewComplete"; complete.textContent = "✓ طلب مكتمل · " + ((itemNames[review.order_id] || ["طلب من المتجر"]).join("، "));
-    body.append(name, caption, stars, comment, complete); card.append(avatar, body); box.appendChild(card);
+    body.append(header, comment, complete); card.append(avatar, body); box.appendChild(card);
   });
 }
 
@@ -5036,6 +5043,12 @@ async function loadAccountPanel() {
   if (authError || !user) { msg.textContent = "سجّل الدخول أولاً لعرض بيانات حسابك."; return; }
   const metadata = user.user_metadata || {};
   el("accountFullName").textContent = metadata.full_name || metadata.name || "غير متوفر في بيانات الحساب";
+  el("accountNameInput").value = metadata.full_name || metadata.name || "";
+  el("accountNameEditor").hidden = true;
+  const nameChangedAt = metadata.name_changed_at ? new Date(metadata.name_changed_at) : null;
+  const nameWait = nameChangedAt ? Math.max(0, 7*24*60*60*1000 - (Date.now()-nameChangedAt.getTime())) : 0;
+  el("editAccountNameBtn").disabled = nameWait > 0;
+  el("accountNameCooldown").textContent = nameWait > 0 ? `يمكنك تغيير اسمك بعد ${Math.ceil(nameWait/86400000)} يوم.` : "يمكن تغيير اسم الحساب مرة واحدة كل 7 أيام.";
   el("accountUsername").textContent = metadata.username ? "@" + metadata.username : "غير متوفر في بيانات الحساب";
   el("accountEmail").textContent = user.email || "—";
   const savedPhone = metadata.phone_number || "";
@@ -5106,6 +5119,23 @@ el("addAccountPhone")?.addEventListener("click", () => {
   el("accountPhoneInput").focus();
 });
 
+el("editAccountNameBtn")?.addEventListener("click",()=>{if(el("editAccountNameBtn").disabled)return;el("accountNameEditor").hidden=false;el("accountNameInput").focus();});
+el("saveAccountNameBtn")?.addEventListener("click",async()=>{
+  const button=el("saveAccountNameBtn"), value=el("accountNameInput").value.trim();
+  if(value.length<2||value.length>32){setMessage("accountPanelMsg","اسم الحساب يجب أن يكون بين حرفين و32 حرفاً.","error");return;}
+  button.disabled=true;button.textContent="جارٍ الحفظ...";
+  try{
+    const {data,error}=await db.rpc("change_my_display_name",{p_display_name:value});
+    if(error)throw error;
+    const {data:authData}=await db.auth.getUser();
+    el("accountFullName").textContent=value;el("accountNameEditor").hidden=true;
+    el("accountNameCooldown").textContent="يمكنك تغيير اسم الحساب بعد 7 أيام.";el("editAccountNameBtn").disabled=true;
+    await updateHeaderAccountAvatar(authData?.user);
+    setMessage("accountPanelMsg","تم تحديث اسم الحساب.","success");
+  }catch(error){setMessage("accountPanelMsg",error.message||"تعذر تحديث اسم الحساب.","error");}
+  finally{button.disabled=false;button.textContent="حفظ الاسم";}
+});
+
 async function saveAccountAvatar(file) {
   if (!file || !file.type.startsWith("image/")) { setMessage("accountAvatarMsg", "اختر ملف صورة صالحاً.", "error"); return; }
   if (file.size > 8*1024*1024) { setMessage("accountAvatarMsg", "حجم الصورة يجب أن يكون أقل من 8 ميغابايت.", "error"); return; }
@@ -5126,16 +5156,37 @@ async function saveAccountAvatar(file) {
     const {data:publicData} = db.storage.from("profile-avatars").getPublicUrl(path);
     const avatarUrl = publicData.publicUrl + "?v=" + Date.now();
     const username = user.user_metadata?.username || "";
-    const {error:profileError} = await db.from("customer_public_profiles").upsert({user_id:user.id,username,avatar_url:avatarUrl,updated_at:new Date().toISOString()},{onConflict:"user_id"});
+    const {error:profileError} = await db.from("customer_public_profiles").upsert({user_id:user.id,username,display_name:user.user_metadata?.full_name || user.user_metadata?.name || "",avatar_url:avatarUrl,updated_at:new Date().toISOString()},{onConflict:"user_id"});
     if (profileError) throw profileError;
     const {error:metaError} = await db.auth.updateUser({data:{avatar_url:avatarUrl}});
     if (metaError) throw metaError;
     el("accountAvatarPreview").src=avatarUrl; el("accountAvatarPreview").hidden=false; el("accountAvatarFallback").hidden=true;
     await updateHeaderAccountAvatar({...user, user_metadata:{...(user.user_metadata||{}),avatar_url:avatarUrl}});
     setMessage("accountAvatarMsg", "تم تحديث صورتك الشخصية.", "success");
-  } catch(error) { setMessage("accountAvatarMsg", error.message || "تعذر رفع الصورة. تأكد من تنفيذ ملف SQL المرفق.", "error"); }
+  } catch(error) {
+    const detail = String(error?.message || "");
+    const friendly = /bucket.*not found|not found.*bucket/i.test(detail)
+      ? "Bucket profile-avatars غير موجود في مشروع Supabase المرتبط بالموقع. شغّل ملف SQL في مشروع jffcrqxpvaeteovcaetr ثم أعد المحاولة."
+      : (detail || "تعذر رفع الصورة. تحقق من سياسات Storage في Supabase.");
+    setMessage("accountAvatarMsg", friendly, "error");
+  }
 }
 el("accountAvatarFile")?.addEventListener("change",event=>{const file=event.target.files?.[0];if(file)saveAccountAvatar(file);event.target.value="";});
+const accountAvatarButton = el("accountAvatarButton");
+let avatarLongPressTimer = null, avatarLongPressTriggered = false;
+function showAvatarFullPreview(){
+  const src = el("accountAvatarPreview").hidden ? "" : el("accountAvatarPreview").src;
+  if (!src) { setMessage("accountAvatarMsg", "أضف صورة شخصية أولاً لعرضها بالحجم الكامل.", "error"); return; }
+  el("zenithAvatarPreviewImage").src = src;
+  el("zenithAvatarPreviewOverlay").hidden = false;
+}
+function cancelAvatarLongPress(){ if (avatarLongPressTimer) clearTimeout(avatarLongPressTimer); avatarLongPressTimer=null; }
+accountAvatarButton?.addEventListener("pointerdown",()=>{avatarLongPressTriggered=false;avatarLongPressTimer=setTimeout(()=>{avatarLongPressTriggered=true;showAvatarFullPreview();},550);});
+["pointerup","pointerleave","pointercancel"].forEach(type=>accountAvatarButton?.addEventListener(type,cancelAvatarLongPress));
+accountAvatarButton?.addEventListener("click",()=>{if(avatarLongPressTriggered){avatarLongPressTriggered=false;return;}el("accountAvatarFile").click();});
+el("closeAvatarPreview")?.addEventListener("click",()=>{el("zenithAvatarPreviewOverlay").hidden=true;});
+el("zenithAvatarPreviewOverlay")?.addEventListener("click",event=>{if(event.target===el("zenithAvatarPreviewOverlay"))el("zenithAvatarPreviewOverlay").hidden=true;});
+
 
 el("menuAccount").addEventListener("click", async () => {
   const {data} = await db.auth.getSession();
@@ -7832,6 +7883,71 @@ html[data-theme="light"] .sectionsSheet{background:linear-gradient(160deg,#f8fcf
  .sectionTileIcon svg{width:37px!important;height:37px!important}
 }
 @media(max-width:350px){.sectionsGrid button{min-height:118px!important}.sectionTileIcon{width:52px!important;height:52px!important;flex-basis:52px!important}.sectionTileIcon svg{width:33px!important;height:33px!important}}
+</style>
+
+
+<style id="zenith-theme-transparency-ios-final">
+/* Unified bold iOS-like system typography, without loading external fonts. */
+html,body,button,input,textarea,select{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",sans-serif!important;font-weight:650;letter-spacing:-.18px}
+button,strong,b,h1,h2,h3{font-weight:800!important}
+/* Account page inherits the dark Zenith theme; only the six statistic tiles stay solid and dark. */
+#accountPanel{background:transparent!important;color:var(--ink)!important}
+#accountPanel .accountProfileEditor,#accountPanel .accountInformationCard{background:rgba(7,15,27,.30)!important;border:1px solid rgba(111,163,207,.18)!important;box-shadow:none!important;color:var(--ink)!important;backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important}
+#accountPanel .accountStat{background:linear-gradient(145deg,rgba(8,17,31,.97),rgba(13,29,48,.97))!important;border:1px solid rgba(91,153,203,.28)!important;color:#f2f7ff!important;box-shadow:0 7px 22px rgba(0,0,0,.24)!important}
+#accountPanel .accountStat span{color:#9fb5cc!important}#accountPanel .accountStat strong{color:#f4f8ff!important}
+#accountPanel .accountInformationCard h3,#accountPanel .accountInfoRow,#accountPanel .accountInfoRow>strong{color:var(--ink)!important}
+#accountPanel .accountInfoRow{border-bottom-color:rgba(145,174,205,.18)!important}
+#accountPanel .accountInfoRow>span,#accountPanel .accountInfoRow>label{color:var(--muted)!important}
+#accountPanel .accountPhoneEditor[hidden]{display:none!important}
+#accountPanel .accountPhoneValue{display:flex!important;align-items:center!important}
+#accountPanel .accountPhoneRow input{background:rgba(5,13,25,.62)!important;border-color:rgba(118,158,198,.28)!important;color:var(--ink)!important}
+#accountPanel .accountPhoneRow button{background:rgba(239,64,55,.16)!important;color:#ff7770!important;border-color:rgba(239,64,55,.35)!important}
+.accountProfileEditorCentered{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:8px!important;padding:8px 0 16px!important;background:transparent!important;border:0!important;box-shadow:none!important}
+#accountPanel .accountAvatarWrap{width:94px!important;height:94px!important;flex:0 0 94px!important;border-radius:50%!important;overflow:hidden!important;padding:0!important;margin:0 auto!important;border:3px solid rgba(105,186,255,.75)!important;background:linear-gradient(145deg,#1c5f91,#101d32)!important;box-shadow:0 5px 20px #0005!important;cursor:pointer!important}
+#accountPanel .accountAvatarWrap img{width:100%!important;height:100%!important;object-fit:cover!important;border-radius:50%!important}
+#accountPanel .accountAvatarWrap span{font-size:30px!important;color:#fff!important}
+#accountPanel #accountAvatarMsg{margin:0!important;text-align:center!important;font-size:11px!important}
+.accountDisplayNameValue{display:flex;align-items:center;gap:8px;max-width:65%}
+.accountDisplayNameValue strong{max-width:100%!important}
+#editAccountNameBtn{width:auto!important;min-width:50px!important;margin:0!important;padding:5px 9px!important;border-radius:9px!important;background:rgba(239,64,55,.16)!important;border:1px solid rgba(239,64,55,.35)!important;color:#ff7770!important;font-size:11px!important}
+#editAccountNameBtn:disabled{opacity:.5!important}
+.accountNameEditor{display:flex;flex-wrap:wrap;gap:8px;padding:10px 0}
+.accountNameEditor[hidden]{display:none!important}
+.accountNameEditor input{flex:1 1 150px;min-width:0;background:rgba(5,13,25,.62)!important;color:var(--ink)!important;border:1px solid var(--border)!important}
+.accountNameEditor button{width:auto!important;margin:0!important;padding:9px 12px!important}
+.accountNameEditor small{width:100%;color:var(--muted);font-size:11px}
+.zenithAvatarPreviewOverlay[hidden]{display:none!important}
+.zenithAvatarPreviewOverlay{position:fixed;inset:0;z-index:2147483600;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(0,0,0,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.zenithAvatarPreviewOverlay img{max-width:min(92vw,620px);max-height:82vh;object-fit:contain;border-radius:14px;box-shadow:0 15px 55px #0009}
+.zenithAvatarPreviewOverlay button{position:absolute;top:calc(18px + env(safe-area-inset-top));right:18px;width:42px!important;height:42px!important;padding:0!important;border-radius:50%!important;background:#202b3a!important;color:#fff!important;font-size:28px!important}
+/* Checkout: remove opaque white panels; keep the whole checkout surface translucent. */
+#purchasePanel{background:rgba(6,14,26,.22)!important;color:var(--ink)!important;backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important}
+#purchasePanel .checkoutOrderSummary{background:rgba(7,16,29,.40)!important;border:1px solid rgba(110,165,211,.24)!important;color:var(--ink)!important;box-shadow:none!important;backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important}
+#purchasePanel .checkoutOrderSummary h3,#purchasePanel .checkoutSummaryRow,#purchasePanel .checkoutSummaryTotal,#purchasePanel .checkoutSummaryTotal>span{color:var(--ink)!important}
+#purchasePanel .checkoutSummaryRow span{color:var(--muted)!important}
+#purchasePanel .checkoutSummaryRow strong{color:var(--ink)!important}
+#purchasePanel .checkoutSummaryTotal strong{color:#ff7770!important}
+#purchasePanel .zenithCheckoutRewards{background:transparent!important;border:0!important}
+#orderConfirmOverlay .zenithConfirmCard,#reviewModalOverlay .zenithConfirmCard{background:rgba(7,16,30,.88)!important;border:1px solid rgba(105,165,210,.30)!important;color:#f4f8ff!important;backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important}
+#orderConfirmOverlay .zenithConfirmRows{background:rgba(255,255,255,.035)!important;border-color:rgba(130,166,201,.22)!important}
+#orderConfirmOverlay .zenithConfirmRow{border-bottom-color:rgba(130,166,201,.18)!important}
+#orderConfirmOverlay .zenithConfirmRow span{color:#a8bdd2!important}#orderConfirmOverlay .zenithConfirmRow strong{color:#fff!important}
+/* Review identity: customer display name beside avatar, stars aligned on the opposite side. */
+.publicReviewHeader{display:flex;align-items:center;justify-content:space-between;gap:10px;direction:rtl;width:100%}
+.publicReviewBody>strong{display:inline!important}
+.publicReviewBody>small{display:none!important}
+.publicReviewStars{flex:0 0 auto;direction:ltr;margin:0!important;white-space:nowrap;font-size:16px!important;letter-spacing:1px!important}
+.publicReviewCard{align-items:flex-start!important}
+/* Six navigation tiles are true square cards in Zenith red/black, not purple. */
+.sectionsSheet{background:rgba(5,13,25,.97)!important;border-color:rgba(239,64,55,.25)!important;backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important}
+.sectionsSheetHandle{background:#ef4037!important}
+.sectionsGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important}
+.sectionsGrid button{aspect-ratio:1/1!important;min-height:0!important;height:auto!important;padding:9px 5px!important;border-radius:18px!important;background:linear-gradient(145deg,#111c2d,#080f1b)!important;border:1px solid rgba(239,64,55,.22)!important;color:#f5f8ff!important;gap:9px!important}
+.sectionTileIcon{width:54px!important;height:54px!important;flex:0 0 54px!important;border-radius:15px!important;background:rgba(239,64,55,.16)!important;color:#ff7770!important}
+.sectionTileIcon svg{width:34px!important;height:34px!important}
+.sectionsGrid strong{color:#f5f8ff!important;font-size:inherit!important;line-height:1.35!important}
+.sectionsGrid button[data-section-action="back"] .sectionTileIcon{background:rgba(239,64,55,.22)!important;color:#ff7770!important}
+@media(max-width:420px){.sectionsGrid{gap:8px!important}.sectionsGrid button{padding:7px 3px!important;gap:7px!important}.sectionTileIcon{width:48px!important;height:48px!important;flex-basis:48px!important}.sectionTileIcon svg{width:30px!important;height:30px!important}}
 </style>
 
 </body>
