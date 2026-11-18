@@ -1857,6 +1857,10 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
 .zenithPointsChoice{display:flex!important;align-items:center;gap:9px;margin:12px 0 5px!important;font-weight:800}
 .zenithPointsChoice input{width:18px;height:18px;flex:0 0 auto;accent-color:#39a9ff}
 #checkoutPointsInfo{font-size:12px;line-height:1.7}
+.mlbbVerifyBox{margin:10px 0 14px;padding:11px;border:1px solid #315d82;border-radius:12px;background:rgba(12,31,52,.55)}
+.mlbbVerifyBox button{width:100%;margin:0!important}
+.mlbbVerifyBox .msg{margin:7px 0 0;min-height:0;font-size:13px;line-height:1.6}
+.mlbbVerifiedName{display:block;margin-top:5px;color:#55d99a;font-weight:900;direction:auto;unicode-bidi:plaintext}
 @media(max-width:380px){.zenithCheckoutCodeRow{gap:5px}.zenithCheckoutCodeRow button{min-width:66px;padding-inline:8px!important}}
 </style>
 </head>
@@ -2212,6 +2216,10 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
       <input id="playerId" inputmode="numeric" autocomplete="off" placeholder="أدخل Player ID" required>
       <label for="zoneId">Zone ID</label>
       <input id="zoneId" inputmode="numeric" autocomplete="off" placeholder="أدخل Zone ID" required>
+      <div id="mlbbVerifyBox" class="mlbbVerifyBox">
+        <button type="button" class="secondary" id="verifyMlbbAccount">تحقق من الحساب</button>
+        <div id="mlbbVerifyMsg" class="msg" aria-live="polite"></div>
+      </div>
       <div class="zenithCheckoutRewards">
         <label for="checkoutCode">هل لديك رمز استرداد أو دعوة؟</label>
         <div class="zenithCheckoutCodeRow">
@@ -2435,6 +2443,55 @@ let customerWalletLoadBusy = false;
 let activeCheckoutCode = null;
 let activeCheckoutCodeType = null;
 let checkoutPointsBalance = 0;
+let verifiedMlbbAccount = null;
+
+function clearMlbbVerification() {
+  verifiedMlbbAccount = null;
+  const message = el("mlbbVerifyMsg");
+  if (message) { message.textContent = ""; message.className = "msg"; }
+}
+
+async function verifyMlbbAccount() {
+  const playerId = el("playerId").value.trim();
+  const zoneId = el("zoneId").value.trim();
+  if (!/^\d+$/.test(playerId) || !/^\d+$/.test(zoneId)) {
+    clearMlbbVerification();
+    setMessage("mlbbVerifyMsg", "أدخل Player ID وZone ID بالأرقام فقط ثم أعد المحاولة.", "error");
+    return;
+  }
+  const button = el("verifyMlbbAccount");
+  button.disabled = true;
+  button.textContent = "جارٍ التحقق...";
+  setMessage("mlbbVerifyMsg", "نتحقق من بيانات الحساب لدى خادم اللعبة...");
+  try {
+    const {data, error} = await db.functions.invoke("mlbb-account-check", {body:{player_id:playerId, zone_id:zoneId}});
+    if (error) throw error;
+    if (!data || data.success !== true || !data.nickname) throw new Error(data?.message || "لم يتم العثور على الحساب. تأكد من Player ID وZone ID.");
+    verifiedMlbbAccount = {playerId, zoneId, nickname:String(data.nickname), checkedAt:Date.now()};
+    const msg = el("mlbbVerifyMsg");
+    msg.className = "msg success";
+    msg.replaceChildren(document.createTextNode("تم التحقق من الحساب بنجاح. اسم اللاعب: "));
+    const name = document.createElement("strong");
+    name.className = "mlbbVerifiedName";
+    name.textContent = verifiedMlbbAccount.nickname;
+    msg.appendChild(name);
+  } catch (error) {
+    clearMlbbVerification();
+    const raw = String(error?.message || "");
+    const friendly = /404|not found|ID not found/i.test(raw)
+      ? "لم نعثر على الحساب. تأكد من Player ID وZone ID."
+      : /401|API.?KEY|unauthorized/i.test(raw)
+        ? "خدمة التحقق غير مهيأة بشكل صحيح. يرجى المحاولة لاحقاً."
+        : /429|rate.?limit/i.test(raw)
+          ? "وصلت خدمة التحقق إلى الحد المؤقت. حاول بعد قليل."
+          : "تعذر التحقق حالياً. حاول مرة أخرى بعد قليل.";
+    setMessage("mlbbVerifyMsg", friendly, "error");
+    console.error("MLBB account verification failed:", error);
+  } finally {
+    button.disabled = false;
+    button.textContent = "تحقق من الحساب";
+  }
+}
 
 function applyRoleUI(isAdmin) {
   currentUserIsAdmin = isAdmin === true;
@@ -3347,6 +3404,9 @@ function openPurchase(product, provider, fromHistory = false) {
     el("selectedProductInfo").appendChild(specialNote);
   }
   const isHonorCheckout = activeStoreGame === "honor";
+  const isMlbbCheckout = activeStoreGame === "mlbb";
+  clearMlbbVerification();
+  el("mlbbVerifyBox").hidden = !isMlbbCheckout;
   const zoneLabel = document.querySelector('label[for="zoneId"]');
   if (zoneLabel) zoneLabel.hidden = isHonorCheckout;
   el("zoneId").hidden = isHonorCheckout;
@@ -3368,6 +3428,7 @@ function updatePaymentFields() {
 el("cancelPurchase").addEventListener("click", () => {
   el("purchasePanel").hidden = true;
   el("purchaseForm").reset();
+  clearMlbbVerification();
   updatePaymentFields();
   selectedProduct = null;
   selectedProvider = null;
@@ -3741,6 +3802,11 @@ async function submitPurchaseOrder() {
     setMessage("orderMsg", activeStoreGame === "honor" ? "أدخل UID." : "أدخل Player ID وZone ID.", "error");
     return;
   }
+  if (activeStoreGame === "mlbb" && (!verifiedMlbbAccount || verifiedMlbbAccount.playerId !== playerId || verifiedMlbbAccount.zoneId !== zoneId)) {
+    setMessage("orderMsg", "يجب التحقق من حساب Mobile Legends قبل إرسال الطلب.", "error");
+    closeOrderConfirmModal();
+    return;
+  }
 
   const submitBtn = el("submitOrderBtn");
   submitBtn.disabled = true;
@@ -3783,6 +3849,7 @@ async function submitPurchaseOrder() {
       "success");
     el("purchaseForm").reset();
     resetCheckoutRewards();
+    clearMlbbVerification();
     updatePaymentFields();
     await loadMyOrders();
     if (checkoutCartItemId === "cart") {
@@ -3839,6 +3906,11 @@ function openOrderConfirmModal() {
   if (!summary.playerId || (activeStoreGame !== "honor" && !summary.zoneId)) {
     setMessage("orderMsg", activeStoreGame === "honor" ? "أدخل UID أولاً." : "أدخل Player ID وZone ID أولاً.", "error"); return false;
   }
+  if (activeStoreGame === "mlbb" && (!verifiedMlbbAccount || verifiedMlbbAccount.playerId !== summary.playerId || verifiedMlbbAccount.zoneId !== summary.zoneId)) {
+    setMessage("orderMsg", "تحقق من حساب Mobile Legends أولاً بالضغط على زر «تحقق من الحساب».", "error");
+    el("mlbbVerifyBox").scrollIntoView({behavior:"smooth",block:"center"});
+    return false;
+  }
   if (summary.invalidProducts) {
     setMessage("orderMsg", "توجد باقة في السلة لا يتوفر لها سعر صالح لطريقة الدفع المختارة أو لم تُفعّل في قاعدة البيانات. احذفها أو اختر باقة متاحة.", "error"); return false;
   }
@@ -3886,6 +3958,9 @@ function showOrderSuccessAnimation() {
     setTimeout(() => { overlay.hidden = true; overlay.setAttribute("aria-hidden", "true"); }, 420);
   }, 2000);
 }
+el("verifyMlbbAccount").addEventListener("click", verifyMlbbAccount);
+el("playerId").addEventListener("input", clearMlbbVerification);
+el("zoneId").addEventListener("input", clearMlbbVerification);
 el("purchaseForm").addEventListener("submit", event => {
   event.preventDefault();
   openOrderConfirmModal();
