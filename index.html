@@ -1935,6 +1935,17 @@ html[data-theme="light"] .checkoutOrderDetails .checkoutSummaryTotal strong span
 .sectionsSheetBackdrop{backdrop-filter:blur(9px)!important;-webkit-backdrop-filter:blur(9px)!important;background:rgba(0,0,0,.48)!important}
 @media(max-width:420px){.checkoutOrderSummary{padding:15px 13px!important;border-radius:22px!important}.checkoutOrderDetails .orderDetailCell{padding:10px 2px!important}.checkoutOrderDetails .orderDetailCell small{font-size:12px!important}.checkoutOrderDetails .orderDetailCell strong{font-size:13px!important}.zenithCustomerReviews .customerReviewsTitleRow h2{font-size:21px!important}#allCustomerReviews{font-size:10px!important;padding:4px!important}.sectionsSheet{max-height:34vh!important}}
 </style>
+
+<style id="zenith-final-avatar-reviews-confirm-fixes">
+/* Restore the original membership category poster; keep product artwork inside product cards only. */
+#mlbbSubcategories #membershipPlaceholder > .mlbbCategoryImage,
+#mlbbCategoryPanel #mlbbPageMembership > .mlbbCategoryImage{display:none!important;}
+
+.headerAccountButton{width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;padding:0!important;border-radius:50%!important;overflow:hidden!important;display:grid!important;place-items:center!important;background:rgba(35,31,72,.95)!important;border:1.5px solid rgba(150,130,255,.7)!important;color:#eee9ff!important}
+.headerAccountButton img{width:100%;height:100%;object-fit:cover;border-radius:50%}.headerAccountButton span{font-size:23px;line-height:1}
+#allCustomerReviewsPanel{padding-bottom:24px}.zenithConfirmRows{display:grid;gap:8px}.zenithConfirmRow{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}.zenithConfirmRow strong{text-align:left;overflow-wrap:anywhere;max-width:62%}
+.reviewStatsCard{display:none!important}
+</style>
 </head>
 <body>
 <header>
@@ -1943,7 +1954,7 @@ html[data-theme="light"] .checkoutOrderDetails .checkoutSummaryTotal strong span
       <div class="brandImagePlaceholder"><img class="brandLogoDark" src="images/logo.png" alt="شعار ZenithStore"><img class="brandLogoLight" src="images/logo-black.png" alt="شعار ZenithStore"></div>
       <div class="brand brandStack"><span class="brandZenith">ZENITH</span><span class="brandStore">store</span></div>
     </div>
-    <div class="headerActions"><button type="button" class="themeToggle" id="themeToggle" aria-label="تفعيل الوضع النهاري" title="تبديل الوضع">☀</button><button type="button" class="headerAccountButton" id="headerAccountButton">حسابي</button><button type="button" class="menuBtn" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false" hidden></button></div>
+    <div class="headerActions"><button type="button" class="themeToggle" id="themeToggle" aria-label="تفعيل الوضع النهاري" title="تبديل الوضع">☀</button><button type="button" class="headerAccountButton" id="headerAccountButton" aria-label="الحساب"><img id="headerAccountAvatar" alt="" hidden><span id="headerAccountFallback" aria-hidden="true">♙</span></button><button type="button" class="menuBtn" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false" hidden></button></div>
   </div>
   <nav class="menuBox" id="mainMenu" hidden>
     <div class="menuAccountArea">
@@ -2044,10 +2055,14 @@ html[data-theme="light"] .checkoutOrderDetails .checkoutSummaryTotal strong span
 
     
   <section class="zenithCustomerReviews" id="customerReviewsSection">
-    <div class="reviewStatsCard" aria-live="polite"><div class="reviewStatsStars" aria-label="خمس نجوم">★★★★★</div><div class="reviewStatsCount"><strong id="reviewTotalCount">0</strong><span>تقييم داخل الموقع</span></div></div>
     <div class="customerReviewsEyebrow">آراء العملاء</div>
     <div class="customerReviewsTitleRow"><h2>تقييمات عملاء ZENITH</h2><button type="button" id="allCustomerReviews">جميع التقييمات <span aria-hidden="true">←</span></button></div>
     <div id="publicCustomerReviews" class="publicCustomerReviews"><p class="muted">آراء عملائنا تظهر هنا بعد مراجعتها واعتمادها.</p></div>
+  </section>
+  <section class="panel" id="allCustomerReviewsPanel" hidden>
+    <h2>جميع تقييمات العملاء</h2>
+    <button type="button" class="secondary backBtn" id="allReviewsBack">← رجوع</button>
+    <div id="allPublicCustomerReviews" class="publicCustomerReviews"><p class="muted">جارٍ تحميل التقييمات...</p></div>
   </section>
   <section class="faqSection" id="faqSection" aria-labelledby="faqTitle">
     <h2 id="faqTitle">الأسئلة الشائعة</h2>
@@ -2303,7 +2318,7 @@ html[data-theme="light"] .checkoutOrderDetails .checkoutSummaryTotal strong span
   <section class="panel" id="purchasePanel" hidden>
     <h2>إتمام الطلب</h2>
 <button type="button" class="secondary backBtn" data-back>← رجوع</button>
-    <div id="selectedProductInfo" class="notice"></div>
+    <div id="selectedProductInfo" class="notice" hidden></div>
     <form id="purchaseForm">
       <label for="playerId">Player ID</label>
       <input id="playerId" inputmode="numeric" autocomplete="off" placeholder="أدخل Player ID" required>
@@ -3761,14 +3776,28 @@ async function loadCustomerWallet() {
   }
 }
 
+async function updateHeaderAccountAvatar(user) {
+  const image = el("headerAccountAvatar"), fallback = el("headerAccountFallback"), button = el("headerAccountButton");
+  if (!image || !fallback || !button) return;
+  let avatarUrl = user?.user_metadata?.avatar_url || "";
+  if (user?.id) {
+    try {
+      const {data} = await db.from("customer_public_profiles").select("avatar_url").eq("user_id", user.id).maybeSingle();
+      avatarUrl = data?.avatar_url || avatarUrl;
+    } catch (_) {}
+  }
+  if (user && avatarUrl) { image.src = avatarUrl; image.hidden = false; fallback.hidden = true; }
+  else { image.hidden = true; fallback.hidden = false; fallback.textContent = user ? (user.user_metadata?.username || user.email || "Z").slice(0,1).toUpperCase() : "♙"; }
+  button.setAttribute("aria-label", user ? "فتح حسابي" : "تسجيل الدخول");
+}
+
 async function refreshSession() {
   const {data, error} = await db.auth.getSession();
   const user = data?.session?.user;
   el("accountStatus").textContent = user
     ? "تم تسجيل الدخول: " + user.email
     : "أنت تتصفح المتجر كزائر. سجّل الدخول حتى تتمكن من إرسال طلب.";
-  const headerAccountButton = el("headerAccountButton");
-  if (headerAccountButton) headerAccountButton.textContent = user ? ("@" + (user.user_metadata?.username || user.email?.split("@")[0] || "حسابي")) : "تسجيل الدخول";
+  await updateHeaderAccountAvatar(user);
   el("logout").hidden = !user;
   el("loginBtn").hidden = !!user;
   el("signup").hidden = !!user;
@@ -3783,7 +3812,7 @@ async function refreshSession() {
   if (error) setMessage("authMsg", error.message, "error");
   await loadMyOrders();
   await loadCustomerWallet();
-  if (el("headerAccountButton")) el("headerAccountButton").textContent = user ? ("@" + (user.user_metadata?.username || user.email?.split("@")[0] || "حسابي")) : "تسجيل الدخول";
+  await updateHeaderAccountAvatar(user);
 }
 
 el("loginForm").addEventListener("submit", async e => {
@@ -4067,11 +4096,17 @@ function openOrderConfirmModal() {
     setMessage("orderMsg", "لا يمكن جمع باقات آسياسيل وماستركارد في طلب واحد. أتمم كل طريقة دفع بطلب مستقل.", "error"); return false;
   }
   const rows = el("orderConfirmRows"); rows.replaceChildren();
-  const verifiedName = verifiedMlbbAccount?.nickname || "غير متحقق";
+  const verifiedName = verifiedMlbbAccount?.nickname || (activeStoreGame === "honor" ? "غير متحقق" : "غير متحقق");
   const finalTotal = Math.max(0, Math.round(summary.total * (1-getCheckoutDiscountRate())));
+  const productLabel = checkoutCartItemId === "cart"
+    ? cartItems.map(line => { const product = productsCache.find(p => String(p.id) === String(line.id)); return `${product ? productTitle(product) : "منتج"}${Number(line.qty || 1) > 1 ? ` × ${Number(line.qty || 1)}` : ""}`; }).join("، ")
+    : (selectedProduct ? (Number(selectedProduct.diamonds) > 0 ? `${Number(selectedProduct.diamonds).toLocaleString("en-US")} جوهرة` : productTitle(selectedProduct)) : "—");
   rows.append(
-    orderConfirmValue("اسم الحساب", verifiedName),
-    orderConfirmValue("السعر الإجمالي بعد الخصم", money(finalTotal))
+    orderConfirmValue("Player ID", summary.playerId),
+    orderConfirmValue("Zone ID", activeStoreGame === "honor" ? "غير مطلوب" : summary.zoneId),
+    orderConfirmValue("اسم اللاعب", verifiedName),
+    orderConfirmValue("المنتج", productLabel),
+    orderConfirmValue("إجمالي السعر بعد الخصم", money(finalTotal))
   );
   el("orderConfirmOverlay").hidden = false;
   el("orderConfirmOverlay").setAttribute("aria-hidden", "false");
@@ -4460,12 +4495,12 @@ el("submitReviewBtn").addEventListener("click", async () => {
   }
 });
 
-async function loadPublicCustomerReviews() {
-  const box = el("publicCustomerReviews");
+async function loadPublicCustomerReviews(limit = 3, targetId = "publicCustomerReviews") {
+  const box = el(targetId);
   if (!box) return;
-  const {data: reviews, error, count} = await db.from("customer_reviews").select("id,rating,comment,created_at,user_id,order_id", {count:"exact"}).eq("status", "approved").order("created_at", {ascending:false}).limit(100);
-  if (error) { box.textContent = "تعذر تحميل التقييمات حالياً."; el("reviewTotalCount").textContent = "—"; return; }
-  el("reviewTotalCount").textContent = Number(count ?? reviews?.length ?? 0).toLocaleString("en-US");
+  box.textContent = "جارٍ تحميل التقييمات...";
+  const {data: reviews, error} = await db.from("customer_reviews").select("id,rating,comment,created_at,user_id,order_id").eq("status", "approved").order("created_at", {ascending:false}).limit(limit);
+  if (error) { box.textContent = "تعذر تحميل التقييمات حالياً: " + error.message; console.error("Public customer reviews query failed", error); return; }
   box.replaceChildren();
   if (!reviews?.length) { box.textContent = "كن أول من يشاركنا رأيه بعد اكتمال طلبه."; return; }
   const userIds = [...new Set(reviews.map(review => review.user_id).filter(Boolean))];
@@ -4495,9 +4530,16 @@ async function loadPublicCustomerReviews() {
   });
 }
 
-el("allCustomerReviews")?.addEventListener("click", () => {
-  el("publicCustomerReviews")?.scrollIntoView({behavior:"smooth", block:"start"});
+el("allCustomerReviews")?.addEventListener("click", async () => {
+  hideCustomerPanels();
+  el("homePanel").hidden = true;
+  el("allCustomerReviewsPanel").hidden = false;
+  saveActivePage("all-reviews");
+  setActiveNav("");
+  await loadPublicCustomerReviews(300, "allPublicCustomerReviews");
+  el("allCustomerReviewsPanel").scrollIntoView({behavior:"smooth", block:"start"});
 });
+el("allReviewsBack")?.addEventListener("click", () => el("navHome").click());
 
 async function loadAdminCustomerReviews() {
   if (!currentUserIsAdmin) return;
@@ -4522,7 +4564,7 @@ async function loadAdminCustomerReviews() {
     if (row.status === "pending") {
       const actions = document.createElement("div"); actions.className = "actions";
       const approve = document.createElement("button"); approve.type = "button"; approve.textContent = "تأكيد النشر";
-      approve.addEventListener("click", async () => { approve.disabled = true; const {error} = await db.from("customer_reviews").update({status:"approved", reviewed_at:new Date().toISOString()}).eq("id", row.id); if (error) { setMessage("adminReviewsMsg", "تعذر نشر التقييم: "+error.message, "error"); approve.disabled = false; return; } await loadAdminCustomerReviews(); await loadPublicCustomerReviews(); });
+      approve.addEventListener("click", async () => { approve.disabled = true; const {error} = await db.from("customer_reviews").update({status:"approved", reviewed_at:new Date().toISOString()}).eq("id", row.id); if (error) { setMessage("adminReviewsMsg", "تعذر نشر التقييم: "+error.message, "error"); approve.disabled = false; return; } await loadAdminCustomerReviews(); await loadPublicCustomerReviews(); if (!el("allCustomerReviewsPanel").hidden) await loadPublicCustomerReviews(300, "allPublicCustomerReviews"); });
       const reject = document.createElement("button"); reject.type = "button"; reject.className = "danger"; reject.textContent = "رفض";
       reject.addEventListener("click", async () => { if (!confirm("تأكيد رفض هذا التقييم؟")) return; reject.disabled = true; const {error} = await db.from("customer_reviews").update({status:"rejected", reviewed_at:new Date().toISOString()}).eq("id", row.id); if (error) { setMessage("adminReviewsMsg", "تعذر رفض التقييم: "+error.message, "error"); reject.disabled = false; return; } await loadAdminCustomerReviews(); });
       actions.append(approve, reject); card.append(actions);
@@ -4752,7 +4794,7 @@ function saveActivePage(page, trackNavigation = true) {
 }
 function hideCustomerPanels() {
   if (el("accountPanel")) el("accountPanel").hidden = true;
-  ["homePanel", "serviceAppPage", "mlbbCategoryPanel", "freeFireCategoryPanel", "productsPanel", "cartPanel", "customerWalletPanel", "myOrdersPanel", "purchasePanel", "accountsMarketPanel", "termsPanel", "policyPanel", "supportPanel"].forEach(id => {
+  ["homePanel", "serviceAppPage", "mlbbCategoryPanel", "freeFireCategoryPanel", "productsPanel", "cartPanel", "customerWalletPanel", "myOrdersPanel", "purchasePanel", "accountsMarketPanel", "allCustomerReviewsPanel", "termsPanel", "policyPanel", "supportPanel"].forEach(id => {
     const node = el(id); if (node) node.hidden = true;
   });
 }
@@ -5011,6 +5053,7 @@ async function loadAccountPanel() {
   const avatar = el("accountAvatarPreview"), fallback = el("accountAvatarFallback");
   if (avatarUrl) { avatar.src = avatarUrl; avatar.hidden = false; fallback.hidden = true; }
   else { avatar.hidden = true; fallback.hidden = false; fallback.textContent = (metadata.username || metadata.full_name || "Z").slice(0,1).toUpperCase(); }
+  await updateHeaderAccountAvatar(user);
   if (!zenithResult.error) {
     const z = zenithResult.data || {};
     el("accountInviteCode").textContent = z.invite_code || "—";
@@ -5088,6 +5131,7 @@ async function saveAccountAvatar(file) {
     const {error:metaError} = await db.auth.updateUser({data:{avatar_url:avatarUrl}});
     if (metaError) throw metaError;
     el("accountAvatarPreview").src=avatarUrl; el("accountAvatarPreview").hidden=false; el("accountAvatarFallback").hidden=true;
+    await updateHeaderAccountAvatar({...user, user_metadata:{...(user.user_metadata||{}),avatar_url:avatarUrl}});
     setMessage("accountAvatarMsg", "تم تحديث صورتك الشخصية.", "success");
   } catch(error) { setMessage("accountAvatarMsg", error.message || "تعذر رفع الصورة. تأكد من تنفيذ ملف SQL المرفق.", "error"); }
 }
@@ -7328,3 +7372,470 @@ html[data-theme="light"] #homePanel #faqSection * {
   margin:0!important; padding:0!important; text-align:right!important;
   background:transparent!important; border:0!important; box-shadow:none!important;
 }
+#mlbbSubcategories #membershipPlaceholder > .categoryText strong,
+#mlbbCategoryPanel #mlbbPageMembership > .categoryText strong,
+#mlbbSubcategories #fanFrameCategory > .categoryText strong,
+#mlbbCategoryPanel #mlbbPageFanFrame > .categoryText strong {
+  display:inline-block!important; width:max-content!important; max-width:100%!important;
+  margin:0!important; padding:4px 9px!important; border:0!important;
+  border-radius:6px!important; background:#fff!important; color:#172235!important;
+  font-size:11px!important; line-height:1.25!important; font-weight:900!important;
+  opacity:1!important; text-shadow:none!important; -webkit-text-stroke:0!important;
+  box-shadow:0 1px 4px rgba(0,0,0,.22)!important;
+}
+#mlbbSubcategories #membershipPlaceholder > .categoryArrow,
+#mlbbCategoryPanel #mlbbPageMembership > .categoryArrow,
+#mlbbSubcategories #fanFrameCategory > .categoryArrow,
+#mlbbCategoryPanel #mlbbPageFanFrame > .categoryArrow {display:none!important;}
+</style>
+
+
+<script id="zenith-apps-drag-script">
+(function(){
+  const section=document.getElementById("zenithAppsSection");
+  const track=document.getElementById("zenithAppsTrack");
+  if(!section||!track) return;
+  let animation=null, startX=0, startTime=0, dragging=false, moved=false;
+  const getAnimation=()=>track.getAnimations().find(a=>a.effect && a.playState!=="finished");
+  section.addEventListener("pointerdown",event=>{
+    if(event.pointerType==="mouse" && event.button!==0) return;
+    animation=getAnimation();
+    if(!animation) return;
+    dragging=true; moved=false; startX=event.clientX;
+    startTime=Number(animation.currentTime)||0;
+    animation.pause();
+    section.classList.add("is-dragging");
+    try{section.setPointerCapture(event.pointerId);}catch(_){}
+  });
+  section.addEventListener("pointermove",event=>{
+    if(!dragging||!animation) return;
+    const dx=event.clientX-startX;
+    if(Math.abs(dx)>4) moved=true;
+    const width=Math.max(1,track.scrollWidth/2);
+    const duration=42000;
+    let next=startTime-(dx/width)*duration;
+    next=((next%duration)+duration)%duration;
+    animation.currentTime=next;
+  });
+  const finish=()=>{
+    if(!dragging) return;
+    dragging=false; section.classList.remove("is-dragging");
+    if(animation) animation.play();
+    animation=null;
+  };
+  section.addEventListener("pointerup",finish);
+  section.addEventListener("pointercancel",finish);
+  section.addEventListener("lostpointercapture",finish);
+  section.addEventListener("click",event=>{
+    if(moved){event.preventDefault();event.stopPropagation();moved=false;}
+  },true);
+})();
+
+loadPublicCustomerReviews().catch(error => console.warn("Public reviews unavailable", error));
+</script>
+<style id="zenith-hok-and-transparent-sections">
+html[data-theme="light"] #faqSection,
+html[data-theme="light"] #faqSection .faqItem,
+html[data-theme="light"] #faqSection .faqQuestion,
+html[data-theme="light"] #faqSection .faqAnswer,
+html[data-theme="light"] #faqSection .faqSubtitle,
+html[data-theme="light"] #faqSection .faqAnswer p {
+  background:transparent!important;background-color:transparent!important;background-image:none!important;box-shadow:none!important;
+}
+html[data-theme="light"] #faqSection .faqItem,html[data-theme="light"] #faqSection .faqQuestion {border-color:transparent!important}
+html[data-theme="light"] #mlbbCategoryPanel,
+html[data-theme="light"] #mlbbCategoryPanel .mlbbPageGrid,
+html[data-theme="light"] #mlbbCategoryPanel .homeCategory {
+  background:transparent!important;background-color:transparent!important;box-shadow:none!important;
+}
+html[data-theme="light"] #mlbbCategoryPanel .homeCategory {border-color:#c5d8e8!important}
+html[data-theme="light"] #mlbbCategoryPanel .homeCategory .categoryText strong,
+html[data-theme="light"] #mlbbCategoryPanel .homeCategory .categoryText small {color:#142238!important;text-shadow:none!important}
+#honorOfKingsToggle .gameTileImage {object-fit:contain!important;filter:none!important}
+</style>
+
+
+<style id="zenith-membership-outer-artwork-and-fanframe-caption-final">
+/* Outer artwork for the membership tile; membership.png is the centered inner artwork. */
+#mlbbSubcategories #membershipPlaceholder,
+#mlbbCategoryPanel #mlbbPageMembership {
+  position:relative!important;
+  overflow:hidden!important;
+  isolation:isolate!important;
+}
+#mlbbSubcategories #membershipPlaceholder::before,
+#mlbbCategoryPanel #mlbbPageMembership::before {
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:0!important;
+  background-image:url("images/IMG_20261112_124322_063.png")!important;
+  background-position:center!important;
+  background-size:cover!important;
+  background-repeat:no-repeat!important;
+  pointer-events:none!important;
+}
+#mlbbSubcategories #membershipPlaceholder > .mlbbCategoryImage,
+#mlbbCategoryPanel #mlbbPageMembership > .mlbbCategoryImage {
+  position:absolute!important;
+  inset:5px 8px 25px!important;
+  display:block!important;
+  width:calc(100% - 16px)!important;
+  height:calc(100% - 30px)!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:none!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:0!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  z-index:1!important;
+}
+#mlbbSubcategories #membershipPlaceholder > .categoryText,
+#mlbbCategoryPanel #mlbbPageMembership > .categoryText {
+  position:absolute!important;
+  right:8px!important;
+  left:auto!important;
+  top:auto!important;
+  bottom:5px!important;
+  z-index:2!important;
+  width:auto!important;
+  max-width:calc(100% - 16px)!important;
+  margin:0!important;
+  padding:0!important;
+  text-align:right!important;
+}
+/* Override the older rule that accidentally pinned the fan-frame caption to the top. */
+#mlbbSubcategories #fanFrameCategory > .categoryText,
+#mlbbCategoryPanel #mlbbPageFanFrame > .categoryText {
+  position:absolute!important;
+  top:auto!important;
+  bottom:5px!important;
+  right:8px!important;
+  left:auto!important;
+  z-index:3!important;
+  display:block!important;
+  width:auto!important;
+  max-width:calc(100% - 16px)!important;
+  margin:0!important;
+  padding:0!important;
+  text-align:right!important;
+}
+</style>
+
+
+<style id="zenith-final-requested-fixes-20261113">
+/* Brighter game banners: preserve the artwork while reducing the dark overlay. */
+#homePanel .zenithGameBannerGrid .gameBannerCard{
+  background-image:linear-gradient(90deg,rgba(3,8,18,.34),rgba(3,8,18,.12) 66%,rgba(3,8,18,.04)),var(--game-banner)!important;
+  background-color:#172b42!important;
+  background-blend-mode:normal!important;
+}
+#homePanel .zenithGameBannerGrid .gameBannerCard .gameBannerShade{
+  background:linear-gradient(0deg,rgba(0,0,0,.08),transparent 62%)!important;
+}
+#homePanel .zenithGameBannerGrid .gameBannerCard .gameTileImage{
+  background:rgba(8,14,25,.46)!important;
+}
+/* Animated blue flame: layered flame tongues and rising sparks, no emoji glyph. */
+.zenithBlueFlame{
+  position:relative!important;display:inline-block!important;width:24px!important;height:28px!important;
+  flex:0 0 24px!important;font-size:0!important;line-height:0!important;color:transparent!important;
+  isolation:isolate!important;overflow:visible!important;transform-origin:50% 100%!important;
+  filter:drop-shadow(0 0 5px rgba(24,139,255,.7))!important;
+}
+.zenithBlueFlame::before,.zenithBlueFlame::after{
+  content:""!important;display:block!important;position:absolute!important;bottom:1px!important;left:50%!important;
+  transform:translateX(-50%)!important;transform-origin:50% 100%!important;pointer-events:none!important;
+}
+.zenithBlueFlame::before{
+  width:19px!important;height:25px!important;
+  background:radial-gradient(ellipse at 50% 78%,#e8ffff 0 8%,#7ce7ff 18%,#269dff 42%,#0757d7 70%,rgba(0,63,180,0) 76%)!important;
+  clip-path:polygon(50% 0,61% 21%,86% 39%,79% 61%,100% 76%,83% 100%,16% 100%,0 78%,20% 59%,18% 42%,38% 25%)!important;
+  filter:blur(.35px)!important;animation:zenithRealFlame 620ms ease-in-out infinite alternate!important;
+  box-shadow:0 0 13px rgba(0,145,255,.7)!important;
+}
+.zenithBlueFlame::after{
+  width:9px!important;height:15px!important;bottom:1px!important;
+  background:linear-gradient(0deg,#fff 0%,#c9fbff 35%,#59caff 72%,rgba(50,160,255,0) 100%)!important;
+  clip-path:polygon(50% 0,72% 32%,100% 68%,78% 100%,19% 100%,0 70%,30% 36%)!important;
+  filter:blur(.45px)!important;animation:zenithFlameCore 390ms ease-in-out infinite alternate!important;
+}
+.zenithFlameSparks{
+  position:absolute!important;inset:0!important;pointer-events:none!important;
+  background:
+    radial-gradient(circle,rgba(190,245,255,.98) 0 1px,transparent 1.7px) 3px 13px/8px 13px no-repeat,
+    radial-gradient(circle,rgba(65,174,255,.98) 0 1.2px,transparent 1.9px) 17px 17px/8px 12px no-repeat,
+    radial-gradient(circle,rgba(220,250,255,.95) 0 .9px,transparent 1.6px) 10px 8px/7px 12px no-repeat,
+    radial-gradient(circle,rgba(40,143,255,.9) 0 1px,transparent 1.7px) 20px 7px/7px 12px no-repeat;
+  animation:zenithSparksRise 1.05s linear infinite!important;
+}
+@keyframes zenithRealFlame{
+  0%{transform:translateX(-50%) rotate(-5deg) scale(.9,.92);filter:blur(.5px) brightness(.92)}
+  45%{transform:translateX(-48%) rotate(3deg) scale(1.04,1.08);filter:blur(.2px) brightness(1.16)}
+  100%{transform:translateX(-52%) rotate(7deg) scale(.96,1.13);filter:blur(.4px) brightness(1.08)}
+}
+@keyframes zenithFlameCore{
+  0%{transform:translateX(-50%) scale(.82,.86);opacity:.82}
+  100%{transform:translateX(-48%) scale(1.12,1.14);opacity:1}
+}
+@keyframes zenithSparksRise{
+  0%{transform:translateY(7px);opacity:.25}
+  35%{opacity:1}
+  100%{transform:translateY(-15px);opacity:0}
+}
+/* Remove the information marker only from Wuthering Waves monthly membership. */
+#products .product.wuthering-monthly-no-info .productInfoButton{display:none!important}
+#products .product:not(.selected)::before{animation:none!important;filter:none!important;will-change:auto!important}
+#products .product:not(.selected){transition:border-color .1s ease,background-color .1s ease!important}
+@media(prefers-reduced-motion:reduce){.zenithBlueFlame::before,.zenithBlueFlame::after,.zenithFlameSparks{animation:none!important}}
+</style>
+
+
+<style id="zenith-freefire-region-layout">
+#freeFireSubcategories{display:none!important}
+</style>
+
+<style id="zenith-clarified-flame-region-membership-and-pricing">
+/* Emoji-like blue flame: animated inner/outer flame silhouette plus upward sparks. */
+.zenithBlueFlame{position:relative!important;display:inline-block!important;width:25px!important;height:31px!important;flex:0 0 25px!important;overflow:visible!important}
+.zenithBlueFlame::before,.zenithBlueFlame::after{display:none!important;content:none!important}
+.zenithFlameSvg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 0 3px #159fff) drop-shadow(0 0 7px #087bff99);transform-origin:50% 90%;animation:zenithFlameBody .43s ease-in-out infinite alternate}
+.zenithFlameOuter{transform-origin:50% 100%;animation:zenithFlameOuter .34s ease-in-out infinite alternate}
+.zenithFlameInner{transform-origin:50% 100%;animation:zenithFlameInner .27s ease-in-out infinite alternate}
+.zenithFlameSparks{position:absolute!important;inset:-5px -3px 0!important;pointer-events:none!important;background:radial-gradient(circle,#dffaff 0 1px,transparent 1.8px) 3px 20px/7px 14px no-repeat,radial-gradient(circle,#61caff 0 1.2px,transparent 2px) 20px 22px/8px 14px no-repeat,radial-gradient(circle,#e8fcff 0 .8px,transparent 1.6px) 13px 16px/7px 13px no-repeat,radial-gradient(circle,#258fff 0 1px,transparent 1.8px) 24px 13px/7px 14px no-repeat;animation:zenithSparksRise .72s linear infinite!important}
+@keyframes zenithFlameBody{from{transform:rotate(-2deg) scale(.96,.97)}to{transform:rotate(2deg) scale(1.04,1.06)}}
+@keyframes zenithFlameOuter{from{opacity:.9;transform:scaleX(.96) scaleY(.96)}to{opacity:1;transform:scaleX(1.04) scaleY(1.06)}}
+@keyframes zenithFlameInner{from{transform:scale(.9,.9) translateY(1px);opacity:.85}to{transform:scale(1.08,1.12) translateY(-1px);opacity:1}}
+@keyframes zenithSparksRise{0%{transform:translateY(8px);opacity:0}20%{opacity:1}100%{transform:translateY(-17px);opacity:0}}
+/* Region name is a small white strip directly below the gem-package heading. */
+#freeFireSubcategories{display:none!important}
+/* Remove the separate product artwork from the outer Mobile Legends membership tile only. */
+#mlbbSubcategories #membershipPlaceholder > .mlbbCategoryImage,
+#mlbbCategoryPanel #mlbbPageMembership > .mlbbCategoryImage{display:none!important;visibility:hidden!important}
+/* Every newly opened game or region starts with Mastercard pricing, regardless of the last visit. */
+</style>
+
+<style id="zenith-freefire-dedicated-page-and-assets-v2">
+#freeFireCategoryPanel .freeFireRegionPageGrid{grid-template-columns:1fr!important;gap:10px!important}
+#freeFireCategoryPanel .freeFireRegionTile{min-height:88px!important;padding:13px 14px!important}
+#freeFireCategoryPanel .freeFireRegionImage{width:54px!important;height:54px!important;flex:0 0 54px!important;object-fit:contain!important;background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
+#freeFireCategoryPanel .freeFireRegionTile .categoryText{gap:7px!important}
+#freeFireCategoryPanel .freeFireRegionTile .categoryText strong{font-size:16px!important}
+#freeFireCategoryPanel .freeFireRegionTile .freeFireRegionCaption{display:inline-flex!important;align-items:center!important;min-height:22px!important;padding:4px 10px!important;background:#fff!important;color:#15253a!important;border-radius:5px!important;font-size:11px!important;font-weight:900!important;line-height:1!important;width:max-content!important}
+#freeFireCategoryPanel .comingSoonGame{background:linear-gradient(145deg,#e7e9ed,#c9cdd4)!important;color:#59616b!important}
+#freeFireCategoryPanel .comingSoonGame .categoryText strong,#freeFireCategoryPanel .comingSoonGame .categoryText small{color:#59616b!important}
+#freeFireCategoryPanel .freeFireRegionTile .categoryArrow{flex:0 0 34px}
+#freeFireCategoryPanel .freeFireRegionTile .freeFireRegionImage:not([src]){display:none!important}
+.menuLinks #menuHome{gap:12px!important}
+.menuHomeHouseIcon{width:31px!important;height:31px!important;flex:0 0 31px!important;fill:none!important;stroke:currentColor!important;stroke-width:2.15!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+#products .product .product-gem-image.no-product-image{display:none!important}
+#products .product .product-gem-image img[src$="free-fire-gems-1.png"],#products .product .product-gem-image img[src$="free-fire-gems-2.png"],#products .product .product-gem-image img[src$="free-fire-gems-3.png"],#products .product .product-gem-image img[src$="free-fire-gems-4.png"],#products .product .product-gem-image img[src$="free-fire-gems-5.png"],#products .product .product-gem-image img[src$="free-fire-weekly-membership.png"],#products .product .product-gem-image img[src$="free-fire-monthly-membership.png"]{object-fit:contain}
+#products .product h3.freeFireMembershipTitle{display:inline-block;width:max-content;max-width:100%;padding:4px 10px;border-radius:5px;background:#fff;color:#14243a!important;font-size:13px;font-weight:900}
+.zenithBlueFlame{width:29px!important;height:36px!important;flex-basis:29px!important}
+.zenithFlameSvg{filter:drop-shadow(0 0 4px #159fff) drop-shadow(0 0 10px #087bffcc)!important;animation:zenithFlameBody .29s ease-in-out infinite alternate!important}
+.zenithFlameOuter{animation:zenithFlameOuter .23s ease-in-out infinite alternate!important}
+.zenithFlameInner{animation:zenithFlameInner .19s ease-in-out infinite alternate!important}
+.zenithFlameSparks{animation:zenithSparksRise .58s linear infinite!important}
+@media(max-width:520px){#freeFireCategoryPanel .freeFireRegionPageGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}#freeFireCategoryPanel .freeFireRegionTile{min-height:112px!important;padding:10px!important}}
+</style>
+
+
+<style id="zenith-native-blue-fire-emoji">
+.zenithBlueFlame{width:34px!important;height:38px!important;flex:0 0 34px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;overflow:visible!important}
+.zenithFlameEmoji{display:block!important;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif!important;font-size:31px!important;line-height:1!important;filter:hue-rotate(190deg) saturate(2.25) brightness(1.13) drop-shadow(0 0 4px #159fff) drop-shadow(0 0 9px #087bffcc)!important;transform-origin:50% 90%!important;animation:zenithEmojiFireFlicker .24s ease-in-out infinite alternate!important}
+@keyframes zenithEmojiFireFlicker{0%{transform:translateY(1px) rotate(-5deg) scale(.94,.97)}45%{transform:translateY(-1px) rotate(3deg) scale(1.05,1.08)}100%{transform:translateY(0) rotate(-2deg) scale(.98,1.12)}}
+@media(prefers-reduced-motion:reduce){.zenithFlameEmoji{animation:none!important}}
+</style>
+
+
+
+<style id="zenith-final-ui-adjustments">
+/* Free Fire region page follows the Mobile Legends category-page layout. */
+#freeFireCategoryPanel .freeFireRegionPageGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;align-items:stretch!important}
+#freeFireCategoryPanel .freeFireRegionTile{min-height:125px!important;padding:14px!important}
+#freeFireCategoryPanel .mlbbTitleRow{display:block;position:relative;margin:16px 0 6px;direction:rtl}
+#freeFireCategoryPanel .mlbbTitleImage{display:block;object-fit:cover}
+#freeFireCategoryPanel .mlbbPageTitle{margin:18px 0 6px!important}
+#freeFireCategoryPanel .freeFireRegionTile .freeFireRegionImage{width:54px;height:48px;object-fit:contain;flex:0 0 54px}
+#navHome>span{font-size:16px!important;line-height:1!important}
+
+/* A clearly visible, blue-tinted 🔥 glyph with an irregular, continuous burning flicker. */
+.zenithBlueFlame{position:relative!important;width:34px!important;height:40px!important;flex:0 0 34px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;overflow:visible!important}
+.zenithBlueFlame::before,.zenithBlueFlame::after{content:none!important;display:none!important}
+.zenithFlameEmoji{position:relative!important;z-index:2!important;display:block!important;visibility:visible!important;opacity:1!important;font-size:32px!important;line-height:1!important;filter:hue-rotate(190deg) saturate(2.8) brightness(1.25) drop-shadow(0 0 3px #7ceaff) drop-shadow(0 0 8px #159fff) drop-shadow(0 0 14px #087bff)!important;transform-origin:50% 90%!important;animation:zenithRealBurn 0.22s steps(2,end) infinite alternate!important}
+.zenithFlameSparks{position:absolute!important;inset:0!important;z-index:3!important;pointer-events:none!important}
+.zenithFlameSparks::before,.zenithFlameSparks::after{content:""!important;position:absolute!important;bottom:8px!important;width:3px!important;height:3px!important;border-radius:50%!important;background:#8deaff!important;box-shadow:0 0 6px 2px #159fff!important;animation:zenithSparksUp 0.8s linear infinite!important}
+.zenithFlameSparks::before{left:7px!important}
+.zenithFlameSparks::after{right:6px!important;animation-delay:.37s!important}
+@keyframes zenithRealBurn{0%{transform:translateY(1px) rotate(-7deg) scale(.92,.96)}22%{transform:translateY(-1px) rotate(4deg) scale(1.04,1.08)}48%{transform:translateY(0) rotate(-3deg) scale(.98,1.13)}73%{transform:translateY(-2px) rotate(6deg) scale(1.07,1.02)}100%{transform:translateY(1px) rotate(-5deg) scale(.95,1.1)}}
+@keyframes zenithSparksUp{0%{transform:translateY(0) scale(.7);opacity:0}20%{opacity:1}100%{transform:translateY(-22px) translateX(3px) scale(.2);opacity:0}}
+@media(prefers-reduced-motion:reduce){.zenithFlameEmoji,.zenithFlameSparks::before,.zenithFlameSparks::after{animation:none!important}}
+</style>
+
+
+<style id="zenith-reviews-checkout-polish">
+.zenithCustomerReviews{margin:28px 0 24px;padding:18px 14px;border:1px solid rgba(88,155,210,.24);border-radius:18px;background:linear-gradient(145deg,rgba(13,31,52,.92),rgba(7,15,28,.88));}
+.customerReviewsEyebrow{font-size:12px;color:#8fcaff;font-weight:800;margin-bottom:3px}.zenithCustomerReviews h2{font-size:22px;margin:0 0 14px;font-weight:900}
+.publicCustomerReviews{display:grid;gap:11px}.publicReviewCard{display:flex;gap:12px;align-items:flex-start;padding:14px;border:1px solid rgba(116,157,197,.22);border-radius:15px;background:rgba(255,255,255,.035)}
+.publicReviewAvatar{width:46px;height:46px;flex:0 0 46px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#267bb8,#12375c);color:white;font-weight:900;font-size:19px}
+.publicReviewBody{min-width:0;flex:1}.publicReviewBody>strong{display:block;font-size:14px}.publicReviewBody>small{display:block;color:var(--muted);font-size:11px;margin-top:2px}.publicReviewStars{color:#ffc84b;letter-spacing:2px;font-size:17px;margin:4px 0}.publicReviewBody p,.adminReviewCard p{margin:5px 0 8px;line-height:1.8;overflow-wrap:anywhere}
+.publicReviewComplete{font-size:11px;color:#38c77a;font-weight:800}.reviewOrderButton{margin-top:12px!important;width:100%;background:linear-gradient(135deg,#126db0,#164a7b)!important;border:1px solid #3689c6!important;border-radius:11px!important;padding:10px!important}
+.reviewModalCard textarea{width:100%;resize:vertical;min-height:92px;padding:12px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--ink);font:inherit;margin-top:12px}
+.reviewStarsPicker{display:flex;direction:ltr;justify-content:center;gap:8px;margin:14px 0}.reviewStarsPicker button{width:43px;height:43px;padding:0;margin:0;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,200,75,.25);color:#6b7482;font-size:28px;box-shadow:none}.reviewStarsPicker button.isSelected{color:#ffc84b;background:rgba(255,200,75,.12);border-color:#dba83c}
+.adminReviewCard{padding:14px;margin:10px 0;border:1px solid var(--border);border-radius:14px;background:rgba(15,28,46,.8)}.adminReviewCard>strong{display:block}.adminReviewCard small{color:var(--muted)}
+#selectedProductInfo{display:none!important}.zenithCheckoutRewards{padding:15px;border:1px solid rgba(100,160,210,.28);border-radius:16px;background:rgba(11,27,45,.78);margin:14px 0}.zenithCheckoutRewards>label:first-child{display:block;font-weight:800;margin-bottom:9px}.zenithCheckoutCodeRow{display:flex;gap:8px;direction:ltr}.zenithCheckoutCodeRow input{min-width:0;flex:1}.zenithCheckoutCodeRow button{width:auto!important;min-width:78px}
+#checkoutUsePoints,.zenithPointsChoice,#checkoutPointsInfo{display:none!important}#walletInfo{display:none!important}#submitOrderBtn{border-radius:13px!important;min-height:48px!important;font-weight:900;letter-spacing:.1px;box-shadow:0 7px 18px rgba(20,115,190,.22)!important}
+#accountAsiacellBalance,#accountMastercardBalance,#accountInviteUsers{color:#8ecbff}
+.checkoutOrderSummary{margin-top:14px;padding:15px;border:1px solid rgba(105,186,255,.3);border-radius:16px;background:linear-gradient(145deg,rgba(16,38,62,.94),rgba(8,19,33,.96));box-shadow:0 8px 22px rgba(0,0,0,.13)}
+.checkoutOrderSummary h3{margin:0 0 10px;font-size:16px}.checkoutSummaryRow{display:flex;justify-content:space-between;gap:14px;padding:7px 0;border-bottom:1px solid rgba(140,175,205,.13);font-size:13px}.checkoutSummaryRow span{color:var(--muted)}.checkoutSummaryRow strong{text-align:left;overflow-wrap:anywhere}.checkoutSummaryTotal{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-top:12px;font-weight:900}.checkoutSummaryTotal>div{display:flex;align-items:center;gap:9px}.checkoutSummaryTotal del{font-size:12px;color:#f08b8b}.checkoutSummaryTotal strong{font-size:18px;color:#8ecbff}
+html[data-theme="light"] .checkoutOrderSummary{background:linear-gradient(145deg,#f6fbff,#eaf4fc)!important;border-color:#c8deef!important}
+html[data-theme="light"] .zenithCustomerReviews{background:linear-gradient(145deg,#f4f9fd,#eaf3fb)!important;border-color:#d2e1ee!important}
+html[data-theme="light"] .publicReviewCard,html[data-theme="light"] .adminReviewCard{background:#fff!important;border-color:#d7e3ee!important}
+</style>
+
+
+<style id="zenith-exact-redesign-v2">
+/* Header: replace the hamburger with a compact signed-in account chip. */
+#menuToggle{display:none!important}
+.headerActions{display:flex;align-items:center;gap:8px}
+.headerAccountButton{width:auto!important;min-width:76px;max-width:142px;height:34px!important;padding:0 12px!important;margin:0!important;border:1px solid rgba(105,186,255,.42)!important;border-radius:10px!important;background:rgba(17,45,72,.82)!important;color:#dceeff!important;font-size:12px!important;font-weight:850!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:none!important}
+/* Equal, legible bottom navigation icons and labels. */
+.bottomNav{grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:2px!important;padding:7px 5px calc(7px + env(safe-area-inset-bottom))!important}
+.bottomNav button{min-width:0!important;width:100%!important;height:54px!important;padding:4px 1px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;font-size:10px!important;line-height:1.2!important}
+.bottomNav .navIcon{width:24px!important;height:24px!important;flex:0 0 24px!important;display:flex!important;align-items:center!important;justify-content:center!important}
+.bottomNav .navIcon svg{width:22px!important;height:22px!important;display:block!important;fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+.bottomNav .navLabel{display:block!important;font-size:10px!important;line-height:1.15!important;white-space:nowrap}
+/* Sections bottom sheet and blurred backdrop. */
+.sectionsSheetBackdrop{position:fixed;inset:0;z-index:10020;background:rgba(1,6,15,.55);backdrop-filter:blur(8px);opacity:0;transition:opacity .22s ease}
+.sectionsSheetBackdrop.isOpen{opacity:1}
+.sectionsSheet{position:fixed;z-index:10021;left:0;right:0;bottom:0;max-width:680px;margin:0 auto;padding:10px 18px calc(22px + env(safe-area-inset-bottom));border:1px solid rgba(105,186,255,.25);border-bottom:0;border-radius:23px 23px 0 0;background:linear-gradient(160deg,#101f34,#07111f);box-shadow:0 -16px 48px #0008;transform:translateY(105%);transition:transform .26s cubic-bezier(.2,.8,.2,1)}
+.sectionsSheet.isOpen{transform:translateY(0)}
+.sectionsSheetHandle{width:42px;height:4px;border-radius:9px;background:#66809d;margin:0 auto 13px}.sectionsSheet h3{margin:0 0 14px;text-align:center;font-size:17px;font-weight:900}
+.sectionsGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.sectionsGrid button{min-width:0;min-height:98px;margin:0!important;padding:12px 5px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:9px!important;border:1px solid rgba(112,167,216,.2)!important;border-radius:15px!important;background:rgba(255,255,255,.045)!important;color:var(--ink)!important;box-shadow:none!important}
+.sectionTileIcon{width:30px;height:30px;display:grid;place-items:center;color:#8ecbff}.sectionTileIcon svg{width:27px;height:27px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.sectionsGrid strong{font-size:11px;line-height:1.5;text-align:center}
+body.sections-sheet-open{overflow:hidden}
+/* Account page: six compact stats, profile and simple information rows. */
+.accountProfileEditor{display:flex;align-items:center;gap:13px;padding:14px;margin:14px 0;border:1px solid var(--border);border-radius:16px;background:rgba(255,255,255,.035)}
+.accountAvatarWrap{width:68px;height:68px;flex:0 0 68px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:linear-gradient(145deg,#287db7,#102c4b);color:#fff;font-size:25px;font-weight:900;border:2px solid rgba(111,190,255,.55)}
+.accountAvatarWrap img{width:100%;height:100%;object-fit:cover}.accountProfileActions{display:flex;min-width:0;flex-direction:column;gap:5px}.accountProfileActions small{color:var(--muted);font-size:11px;line-height:1.5}.accountAvatarChoose{display:inline-flex;align-self:flex-start;padding:7px 11px;border-radius:9px;background:#174d78;color:#e8f5ff;font-size:11px;font-weight:800;cursor:pointer}
+.accountStatsGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:14px 0}
+.accountStat{min-width:0;min-height:76px;padding:11px 10px;border:1px solid rgba(105,186,255,.22);border-radius:13px;background:linear-gradient(145deg,rgba(17,43,68,.86),rgba(8,20,35,.94));display:flex;flex-direction:column;justify-content:space-between;gap:7px}
+.accountStat span{font-size:11px;line-height:1.5;color:var(--muted)}.accountStat strong{font-size:15px;color:#a9d9ff;overflow-wrap:anywhere}
+.accountInformationCard{padding:14px;border:1px solid var(--border);border-radius:16px;background:rgba(255,255,255,.025)}.accountInformationCard h3{margin:0 0 9px;font-size:15px}
+.accountInfoRow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(140,175,205,.12);font-size:12px}.accountInfoRow:last-child{border-bottom:0}.accountInfoRow>span,.accountInfoRow>label{color:var(--muted)}.accountInfoRow strong{text-align:left;overflow-wrap:anywhere;max-width:60%}.accountPhoneRow{display:block}.accountPhoneRow>div{display:flex;gap:8px;margin-top:7px}.accountPhoneRow input{min-width:0;flex:1;margin:0!important}.accountPhoneRow button{width:auto!important;min-width:65px;margin:0!important;padding:8px 12px!important}
+.accountLogoutButton{width:100%!important;margin-top:14px!important;background:linear-gradient(135deg,#c92e3c,#8f1727)!important;border:1px solid #e14b58!important;color:#fff!important;border-radius:12px!important;min-height:44px!important;font-weight:900!important}
+/* Checkout: concise button and clean summary/code area. */
+#selectedProductInfo{display:none!important}.zenithCheckoutRewards{display:flex;flex-direction:column;gap:0}.zenithCheckoutRewards>label:first-child{margin-bottom:8px}.checkoutOrderSummary{order:3}.zenithCheckoutCodeRow{order:2;direction:ltr}.zenithCheckoutRewards>#checkoutCodeMsg{order:4}
+#submitOrderBtn{width:auto!important;min-width:170px!important;max-width:240px!important;min-height:43px!important;padding:10px 24px!important;display:block!important;margin:15px auto 0!important;border-radius:12px!important;font-size:14px!important}
+#cancelPurchase{width:auto!important;min-width:110px!important;display:block!important;margin:9px auto 0!important}
+/* Review card avatars are actual customer profile images when available. */
+.publicReviewAvatar{overflow:hidden}.publicReviewAvatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+html[data-theme="light"] .sectionsSheet{background:linear-gradient(160deg,#f8fcff,#e8f3fc)!important;color:#16283a!important}html[data-theme="light"] .sectionsGrid button{background:#fff!important;color:#1c3044!important;border-color:#d3e3f0!important}html[data-theme="light"] .accountStat{background:linear-gradient(145deg,#f7fbff,#eaf4fc)!important;border-color:#d4e4f1!important}html[data-theme="light"] .accountStat strong{color:#176aa7!important}html[data-theme="light"] .accountProfileEditor,html[data-theme="light"] .accountInformationCard{background:#fff!important;border-color:#d8e4ee!important}html[data-theme="light"] .headerAccountButton{background:#e8f4ff!important;color:#176aa7!important;border-color:#c6e1f6!important}
+@media(min-width:600px){.accountStatsGrid{grid-template-columns:repeat(3,minmax(0,1fr))}.sectionsSheet{border-radius:23px 23px 0 0}}
+</style>
+<style id="zenith-account-checkout-reference-fix">
+/* Account page: compact two-column stat tiles, matching the supplied reference. */
+#accountPanel{background:#f3f1ec!important;color:#171717!important;border-radius:0!important;padding:18px 14px 28px!important}
+#accountPanel>h2{color:#171717!important;font-size:25px!important;font-weight:900!important;margin:4px 0 12px!important;text-align:right}
+#accountPanel #accountBackHome{display:none!important}
+#accountPanel .accountProfileEditor{background:#fff!important;border:1px solid #e7e4de!important;border-radius:20px!important;box-shadow:0 2px 7px #0000000a!important;margin:12px 0 14px!important;padding:12px!important}
+#accountPanel .accountAvatarWrap{width:62px!important;height:62px!important;flex-basis:62px!important;border-color:#e5e0d8!important;background:#e8e5df!important;color:#4a4a4a!important}
+#accountPanel .accountProfileActions strong{color:#222!important}#accountPanel .accountProfileActions small{color:#777!important}
+#accountPanel .accountAvatarChoose{background:#f3eeee!important;color:#a84d4d!important;border:1px solid #eadada!important}
+#accountPanel .accountStatsGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;margin:14px 0 20px!important}
+#accountPanel .accountStat{height:94px!important;min-height:94px!important;box-sizing:border-box!important;padding:13px 14px!important;border:1px solid #e9e6e0!important;border-radius:23px!important;background:#fff!important;box-shadow:0 2px 5px #0000000a!important;display:flex!important;flex-direction:column!important;align-items:flex-end!important;justify-content:space-between!important;gap:5px!important;text-align:right!important}
+#accountPanel .accountStat span{width:100%!important;color:#999!important;font-size:12px!important;line-height:1.5!important;text-align:right!important}
+#accountPanel .accountStat strong{width:100%!important;color:#171717!important;font-size:16px!important;font-weight:900!important;line-height:1.35!important;text-align:right!important;overflow-wrap:anywhere!important}
+#accountPanel .accountInformationCard{margin-top:0!important;padding:17px 16px!important;background:#fff!important;border:1px solid #e8e4dd!important;border-radius:20px!important;box-shadow:0 2px 6px #00000008!important;color:#222!important}
+#accountPanel .accountInformationCard h3{font-size:16px!important;font-weight:900!important;color:#222!important;text-align:right!important;margin:0 0 8px!important}
+#accountPanel .accountInfoRow{min-height:42px!important;box-sizing:border-box!important;display:flex!important;flex-direction:row!important;justify-content:space-between!important;align-items:center!important;gap:12px!important;padding:11px 0!important;border-bottom:1px solid #efede9!important;font-size:13px!important;color:#222!important}
+#accountPanel .accountInfoRow>span,#accountPanel .accountInfoRow>label{color:#888!important;text-align:right!important;flex:0 1 auto!important}
+#accountPanel .accountInfoRow>strong{color:#222!important;text-align:left!important;max-width:58%!important;font-weight:800!important;overflow-wrap:anywhere!important}
+#accountPanel .accountPhoneRow{display:block!important}#accountPanel .accountPhoneRow>div{display:flex!important;flex-direction:row!important;gap:8px!important;margin-top:8px!important}
+#accountPanel .accountPhoneRow input{background:#fafafa!important;border:1px solid #e5e1da!important;color:#222!important;border-radius:10px!important}
+#accountPanel .accountPhoneRow button{background:#eee!important;color:#333!important;border:1px solid #ddd!important;border-radius:10px!important}
+#accountPanel .accountLogoutButton{width:100%!important;max-width:none!important;margin:16px 0 0!important;min-height:48px!important;border-radius:13px!important;background:#d93636!important;border:1px solid #c72c2c!important;color:#fff!important;font-size:15px!important;font-weight:900!important;box-shadow:0 4px 10px #d9363620!important}
+/* Checkout summary follows the clean information-card language of order details. */
+#purchasePanel #selectedProductInfo{display:none!important}
+#purchasePanel .zenithCheckoutRewards{display:flex!important;flex-direction:column!important;gap:0!important;padding:0!important;margin:14px 0!important;border:0!important;background:transparent!important}
+#purchasePanel .zenithCheckoutRewards>label:first-child{order:0!important;margin:0 0 8px!important;color:var(--ink)!important;font-size:14px!important;font-weight:850!important;text-align:right!important}
+#purchasePanel .zenithCheckoutCodeRow{order:1!important;display:flex!important;flex-direction:row!important;direction:rtl!important;align-items:stretch!important;gap:8px!important}
+#purchasePanel .zenithCheckoutCodeRow input{flex:1 1 auto!important;min-width:0!important;border-radius:11px!important}
+#purchasePanel .zenithCheckoutCodeRow button{flex:0 0 82px!important;width:82px!important;min-width:82px!important;margin:0!important;border-radius:11px!important}
+#purchasePanel .checkoutOrderSummary{order:2!important;margin:12px 0 0!important;padding:16px!important;border:1px solid #e5e1da!important;border-radius:19px!important;background:#fff!important;color:#202020!important;box-shadow:0 3px 9px #0000000a!important}
+#purchasePanel .checkoutOrderSummary h3{color:#222!important;font-size:16px!important;font-weight:900!important;text-align:right!important;margin:0 0 8px!important}
+#purchasePanel .checkoutSummaryRow{display:flex!important;flex-direction:row!important;justify-content:space-between!important;align-items:center!important;gap:12px!important;padding:10px 0!important;border-bottom:1px solid #efede9!important;color:#222!important;font-size:13px!important}
+#purchasePanel .checkoutSummaryRow span{color:#858585!important;text-align:right!important}
+#purchasePanel .checkoutSummaryRow strong{color:#222!important;text-align:left!important;font-weight:800!important;max-width:60%!important;overflow-wrap:anywhere!important}
+#purchasePanel .checkoutSummaryTotal{padding-top:13px!important;color:#222!important}
+#purchasePanel .checkoutSummaryTotal>span{color:#222!important;font-size:14px!important;font-weight:900!important}
+#purchasePanel .checkoutSummaryTotal del{color:#999!important;font-size:13px!important}
+#purchasePanel .checkoutSummaryTotal strong{color:#c83232!important;font-size:18px!important;font-weight:950!important}
+#purchasePanel #checkoutCodeMsg{order:3!important;margin:7px 0 0!important}
+#purchasePanel #submitOrderBtn{width:auto!important;min-width:180px!important;max-width:220px!important;min-height:45px!important;margin:15px auto 0!important;padding:10px 25px!important;border-radius:12px!important;font-size:14px!important;font-weight:900!important}
+#purchasePanel #cancelPurchase{width:auto!important;min-width:110px!important;margin:9px auto 0!important}
+@media(max-width:360px){#accountPanel .accountStat{height:88px!important;min-height:88px!important;padding:11px!important}#accountPanel .accountStat span{font-size:11px!important}#accountPanel .accountStat strong{font-size:14px!important}}
+</style>
+
+
+
+<style id="zenith-sections-sheet-reference-style">
+/* Match the supplied purple bottom-sheet reference; keep the five-item bottom bar and labels unchanged. */
+.sectionsSheet{
+  max-height:60vh!important;
+  padding:18px 14px calc(16px + env(safe-area-inset-bottom))!important;
+  overflow-y:auto!important;
+  border:1px solid rgba(151,137,220,.24)!important;
+  border-bottom:0!important;
+  border-radius:42px 42px 0 0!important;
+  background:#17123d!important;
+  box-shadow:0 -16px 48px rgba(0,0,0,.55)!important;
+}
+.sectionsSheetHandle{width:44px!important;height:5px!important;margin:0 auto 28px!important;background:#514a79!important;border-radius:10px!important}
+.sectionsSheet h3{display:none!important}
+.sectionsGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important}
+.sectionsGrid button{
+  min-height:142px!important;
+  padding:14px 5px!important;
+  gap:12px!important;
+  border:0!important;
+  border-radius:25px 14px 25px 14px!important;
+  background:#09051f!important;
+  color:#f4f1ff!important;
+  box-shadow:none!important;
+}
+.sectionTileIcon{
+  width:66px!important;height:66px!important;flex:0 0 66px!important;
+  border-radius:23px 10px 23px 10px!important;
+  display:grid!important;place-items:center!important;
+  background:#393168!important;color:#eeeaff!important;
+}
+.sectionTileIcon svg{
+  width:42px!important;height:42px!important;
+  fill:none!important;stroke:currentColor!important;stroke-width:1.9!important;
+  stroke-linecap:round!important;stroke-linejoin:round!important;
+}
+/* Keep the existing Arabic label size; only improve icon size and contrast. */
+.sectionsGrid strong{font-size:inherit!important;color:#f4f1ff!important;line-height:1.45!important}
+.sectionsGrid button[data-section-action="back"] .sectionTileIcon{background:#342034!important;color:#f29ab6!important}
+.sectionsGrid button:active{transform:scale(.98)!important}
+.sectionsSheetBackdrop{background:rgba(3,1,13,.58)!important;backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important}
+@media(max-width:420px){
+ .sectionsSheet{max-height:60vh!important;padding-left:12px!important;padding-right:12px!important}
+ .sectionsGrid{gap:8px!important}
+ .sectionsGrid button{min-height:132px!important;padding:12px 3px!important;gap:10px!important}
+ .sectionTileIcon{width:58px!important;height:58px!important;flex-basis:58px!important}
+ .sectionTileIcon svg{width:37px!important;height:37px!important}
+}
+@media(max-width:350px){.sectionsGrid button{min-height:118px!important}.sectionTileIcon{width:52px!important;height:52px!important;flex-basis:52px!important}.sectionTileIcon svg{width:33px!important;height:33px!important}}
+</style>
+
+</body>
+
+
+
+</html>
