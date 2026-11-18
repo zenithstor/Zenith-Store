@@ -1971,6 +1971,11 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
     </div>
 
     <div class="homeTrust"><span>🛡️ دفع آمن</span><span>⚡ إرسال سريع وفوري</span><span>🎧 دعم فني</span></div>
+  <section class="zenithCustomerReviews" id="customerReviewsSection">
+    <div class="customerReviewsEyebrow">آراء العملاء</div>
+    <h2>تقييمات عملاء ZENITH</h2>
+    <div id="publicCustomerReviews" class="publicCustomerReviews"><p class="muted">آراء عملائنا تظهر هنا بعد مراجعتها واعتمادها.</p></div>
+  </section>
   <section class="faqSection" id="faqSection" aria-labelledby="faqTitle">
     <h2 id="faqTitle">الأسئلة الشائعة</h2>
     <p class="faqSubtitle">أسئلة ذات أجوبة قصيرة</p>
@@ -2195,6 +2200,9 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
       <div class="accountDetail"><span>رمز دعوتك</span><strong id="accountInviteCode" dir="ltr">—</strong></div>
       <div class="accountDetail"><span>نقاط زينيث</span><strong id="accountZenithPoints">—</strong></div>
       <div class="accountDetail"><span>قيمة نقاطك</span><strong id="accountZenithPointsValue">—</strong></div>
+      <div class="accountDetail"><span>رصيد المحفظة (آسياسيل)</span><strong id="accountAsiacellBalance">—</strong></div>
+      <div class="accountDetail"><span>رصيد المحفظة (ماستركارد)</span><strong id="accountMastercardBalance">—</strong></div>
+      <div class="accountDetail"><span>عدد مستخدمي رمز دعوتك</span><strong id="accountInviteUsers">—</strong></div>
     </div>
   </section>
 
@@ -2221,12 +2229,22 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
         <div id="mlbbVerifyMsg" class="msg" aria-live="polite"></div>
       </div>
       <div class="zenithCheckoutRewards">
-        <label for="checkoutCode">هل لديك رمز استرداد أو دعوة؟</label>
+        <label for="checkoutCode">هل لديك كوبون خصم أو رمز دعوة؟</label>
         <div class="zenithCheckoutCodeRow">
           <input id="checkoutCode" type="text" maxlength="24" autocomplete="off" autocapitalize="characters" placeholder="أدخل الرمز" dir="ltr">
           <button type="button" class="secondary" id="applyCheckoutCode">تطبيق</button>
         </div>
         <div id="checkoutCodeMsg" class="msg" aria-live="polite"></div>
+        <section class="checkoutOrderSummary" id="checkoutOrderSummary" aria-label="ملخص الطلب">
+          <h3>ملخص الطلب</h3>
+          <div class="checkoutSummaryRow"><span>اللعبة</span><strong id="summaryGame">—</strong></div>
+          <div class="checkoutSummaryRow"><span>Player ID</span><strong id="summaryPlayerId">—</strong></div>
+          <div class="checkoutSummaryRow"><span>Zone ID</span><strong id="summaryZoneId">—</strong></div>
+          <div class="checkoutSummaryRow"><span>الريجن</span><strong id="summaryRegion">—</strong></div>
+          <div class="checkoutSummaryRow"><span>اسم اللاعب</span><strong id="summaryPlayerName">بانتظار التحقق</strong></div>
+          <div class="checkoutSummaryRow"><span>الباقة المحددة</span><strong id="summaryPackage">—</strong></div>
+          <div class="checkoutSummaryTotal"><span>إجمالي السعر</span><div><del id="summaryOldPrice" hidden></del><strong id="summaryFinalPrice">—</strong></div></div>
+        </section>
         <label class="zenithPointsChoice" for="checkoutUsePoints">
           <input id="checkoutUsePoints" type="checkbox">
           <span>استبدال نقاط زينيث ودفع الطلب بالكامل بالنقاط</span>
@@ -2256,6 +2274,18 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
   <div id="orderSuccessOverlay" class="zenithSuccessOverlay" hidden aria-hidden="true">
     <div class="zenithSuccessCheck" aria-label="تم تأكيد الطلب">✓</div>
   </div>
+  <div id="reviewModalOverlay" class="zenithModalOverlay" hidden aria-hidden="true">
+    <section class="zenithConfirmCard reviewModalCard" role="dialog" aria-modal="true" aria-labelledby="reviewModalTitle">
+      <h3 id="reviewModalTitle">قيّم طلبك</h3>
+      <p class="muted" id="reviewOrderLabel">شاركنا رأيك بتجربتك مع ZenithStore</p>
+      <div class="reviewStarsPicker" id="reviewStarsPicker" role="group" aria-label="اختر عدد النجوم">
+        <button type="button" data-rating="1" aria-label="نجمة واحدة">★</button><button type="button" data-rating="2" aria-label="نجمتان">★</button><button type="button" data-rating="3" aria-label="ثلاث نجوم">★</button><button type="button" data-rating="4" aria-label="أربع نجوم">★</button><button type="button" data-rating="5" aria-label="خمس نجوم">★</button>
+      </div>
+      <textarea id="reviewComment" maxlength="600" rows="4" placeholder="اكتب تعليقك عن تجربتك (اختياري)"></textarea>
+      <div id="reviewSubmitMsg" class="msg" aria-live="polite"></div>
+      <div class="zenithConfirmActions"><button type="button" class="secondary" id="cancelReviewBtn">إلغاء</button><button type="button" id="submitReviewBtn">إرسال التقييم</button></div>
+    </section>
+  </div>
 
   <section class="panel" id="adminPanel" hidden>
     <h2>لوحة إدارة الطلبات</h2>
@@ -2280,6 +2310,13 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
       <summary>أرشيف طلبات الشحن (المكتملة والمرفوضة)</summary>
       <div id="adminArchivedOrders"></div>
     </details>
+    <hr style="border:0;border-top:1px solid #304562;margin:22px 0">
+    <h2>تقييمات العملاء</h2>
+    <p class="muted">راجع التعليقات قبل نشرها. التقييمات لا تظهر في الرئيسية إلا بعد موافقتك.</p>
+    <button type="button" class="secondary" id="refreshCustomerReviews">تحديث التقييمات</button>
+    <div id="adminReviewsMsg" class="msg" aria-live="polite"></div>
+    <div id="adminPendingReviews"></div>
+    <details class="adminArchive" style="margin-top:14px"><summary>التقييمات المنشورة والمرفوضة</summary><div id="adminReviewedReviews"></div></details>
 
     <hr style="border:0;border-top:1px solid #304562;margin:22px 0">
     <h2>طلبات إضافة رصيد المحفظة</h2>
@@ -3415,6 +3452,7 @@ function openPurchase(product, provider, fromHistory = false) {
   if (playerLabel) playerLabel.textContent = isHonorCheckout ? "UID" : "Player ID";
   el("playerId").placeholder = isHonorCheckout ? "أدخل UID" : "أدخل Player ID";
   el("purchasePanel").hidden = false;
+  updateCheckoutSummaryUI();
   setMessage("orderMsg", "");
   if (!fromHistory) el("purchasePanel").scrollIntoView({behavior:"smooth", block:"start"});
 }
@@ -3754,6 +3792,7 @@ el("applyCheckoutCode")?.addEventListener("click", async () => {
     if (!data?.valid) throw new Error(data?.message || "الرمز غير صالح");
     activeCheckoutCode = code;
     activeCheckoutCodeType = data.type;
+    updateCheckoutSummaryUI();
     setMessage("checkoutCodeMsg", data.type === "invite"
       ? `تم تفعيل رمز الدعوة بنجاح. صاحب الرمز: ${data.inviter_username || "مستخدم زينيث"}.`
       : "تم تفعيل رمز الاسترداد — سيُخصم 1.5% من إجمالي الطلب.", "success");
@@ -3764,6 +3803,7 @@ el("applyCheckoutCode")?.addEventListener("click", async () => {
 });
 el("checkoutCode")?.addEventListener("input", () => {
   activeCheckoutCode = null; activeCheckoutCodeType = null;
+  updateCheckoutSummaryUI();
   if (el("checkoutCodeMsg")) { el("checkoutCodeMsg").textContent = "اضغط تطبيق للتحقق من الرمز."; el("checkoutCodeMsg").className = "msg"; }
 });
 el("checkoutUsePoints")?.addEventListener("change", () => {
@@ -3869,6 +3909,36 @@ async function submitPurchaseOrder() {
   }
 }
 
+function getCheckoutDiscountRate() {
+  return activeCheckoutCodeType === "redemption" ? 0.015 : 0;
+}
+function checkoutGameLabel() {
+  return ({mlbb:"Mobile Legends",honor:"Honor of Kings",pubg:"PUBG Mobile",genshin:"Genshin Impact",freefire:"Free Fire"})[activeStoreGame] || activeStoreGame || "—";
+}
+function checkoutRegionLabel() {
+  const labels = {global:"عالمي",indonesia:"إندونيسي",malaysia:"ماليزي",philippines:"فلبيني",singapore:"سنغافوري",turkey:"تركي",russia:"روسي"};
+  return labels[activeGemRegion] || (selectedProduct?.__gemRegion ? labels[selectedProduct.__gemRegion] || selectedProduct.__gemRegion : "—");
+}
+function updateCheckoutSummaryUI() {
+  if (!el("checkoutOrderSummary")) return;
+  const summary = getCheckoutSummary();
+  const isHonor = activeStoreGame === "honor";
+  const playerName = verifiedMlbbAccount && verifiedMlbbAccount.playerId === summary.playerId && verifiedMlbbAccount.zoneId === summary.zoneId ? verifiedMlbbAccount.nickname : "بانتظار التحقق";
+  const packageLabel = checkoutCartItemId === "cart" ? `${cartItems.length} باقة في السلة` : (selectedProduct ? productTitle(selectedProduct) : "—");
+  const discount = getCheckoutDiscountRate();
+  const finalTotal = Math.max(0, Math.round(summary.total * (1-discount)));
+  el("summaryGame").textContent = checkoutGameLabel();
+  el("summaryPlayerId").textContent = summary.playerId || "—";
+  el("summaryZoneId").textContent = isHonor ? "غير مطلوب" : (summary.zoneId || "—");
+  el("summaryRegion").textContent = checkoutRegionLabel();
+  el("summaryPlayerName").textContent = playerName;
+  el("summaryPackage").textContent = packageLabel;
+  el("summaryFinalPrice").textContent = money(finalTotal);
+  const oldPrice = el("summaryOldPrice");
+  if (discount > 0 && summary.total > finalTotal) { oldPrice.hidden = false; oldPrice.textContent = money(summary.total); }
+  else { oldPrice.hidden = true; oldPrice.textContent = ""; }
+}
+
 function orderConfirmValue(label, value) {
   const row = document.createElement("div"); row.className = "zenithConfirmRow";
   const name = document.createElement("span"); name.textContent = label;
@@ -3921,14 +3991,11 @@ function openOrderConfirmModal() {
     setMessage("orderMsg", "لا يمكن جمع باقات آسياسيل وماستركارد في طلب واحد. أتمم كل طريقة دفع بطلب مستقل.", "error"); return false;
   }
   const rows = el("orderConfirmRows"); rows.replaceChildren();
+  const verifiedName = verifiedMlbbAccount?.nickname || "غير متحقق";
+  const finalTotal = Math.max(0, Math.round(summary.total * (1-getCheckoutDiscountRate())));
   rows.append(
-    orderConfirmValue(activeStoreGame === "honor" ? "UID" : "Player ID", summary.playerId),
-    ...(activeStoreGame === "honor" ? [] : [orderConfirmValue("Zone ID", summary.zoneId)]),
-    orderConfirmValue("طريقة الدفع", el("checkoutUsePoints")?.checked ? "نقاط زينيث" : summary.method),
-    orderConfirmValue("إجمالي السعر", money(summary.total)),
-    ...(activeCheckoutCode ? [orderConfirmValue(activeCheckoutCodeType === "invite" ? "رمز الدعوة" : "رمز الاسترداد", activeCheckoutCode)] : []),
-    ...(activeCheckoutCodeType === "redemption" ? [orderConfirmValue("خصم الرمز", "1.5% من إجمالي الطلب")] : []),
-    ...(el("checkoutUsePoints")?.checked ? [orderConfirmValue("النقاط المطلوبة تقريباً", (Math.ceil((summary.total * (activeCheckoutCodeType === "redemption" ? 0.985 : 1) / 24) * 100) / 100).toFixed(2) + " نقطة") ] : [])
+    orderConfirmValue("اسم الحساب", verifiedName),
+    orderConfirmValue("السعر الإجمالي بعد الخصم", money(finalTotal))
   );
   el("orderConfirmOverlay").hidden = false;
   el("orderConfirmOverlay").setAttribute("aria-hidden", "false");
@@ -3961,6 +4028,8 @@ function showOrderSuccessAnimation() {
 el("verifyMlbbAccount").addEventListener("click", verifyMlbbAccount);
 el("playerId").addEventListener("input", clearMlbbVerification);
 el("zoneId").addEventListener("input", clearMlbbVerification);
+el("playerId").addEventListener("input", updateCheckoutSummaryUI);
+el("zoneId").addEventListener("input", updateCheckoutSummaryUI);
 el("purchaseForm").addEventListener("submit", event => {
   event.preventDefault();
   openOrderConfirmModal();
@@ -4028,6 +4097,8 @@ async function loadMyOrders() {
       return;
     }
     const {data: orderItems} = await db.from("order_items").select("order_id,product_name,diamonds,product_type,quantity,unit_price_iqd,line_total_iqd").in("order_id", orders.map(o=>o.id));
+    const {data: existingReviews, error: existingReviewsError} = await db.from("customer_reviews").select("order_id,status").in("order_id", orders.map(o=>o.id));
+    const reviewedOrderIds = new Set((existingReviews || []).map(review => String(review.order_id)));
     const itemsByOrder = {};
     (orderItems || []).forEach(item => (itemsByOrder[item.order_id] ||= []).push(item));
 
@@ -4085,6 +4156,15 @@ async function loadMyOrders() {
       const date = document.createElement("p"); date.className = "orderDate";
       date.textContent = "تاريخ الطلب: " + (order.created_at ? new Date(order.created_at).toLocaleString("ar-IQ") : "—");
       card.append(title, timeline, details, date);
+      if (rawStatus === "completed") {
+        const reviewButton = document.createElement("button");
+        reviewButton.type = "button";
+        reviewButton.className = "reviewOrderButton";
+        reviewButton.textContent = reviewedOrderIds.has(String(order.id)) ? "تم إرسال تقييمك" : "قيّم طلبك";
+        reviewButton.disabled = reviewedOrderIds.has(String(order.id));
+        if (!reviewButton.disabled) reviewButton.addEventListener("click", () => openCustomerReview(order, productInfo));
+        card.appendChild(reviewButton);
+      }
       box.appendChild(card);
     }
   } finally {
@@ -4234,6 +4314,7 @@ async function loadAdminOrders() {
     if(productsError) message += " تعذر تحميل أسماء المنتجات: "+productsError.message;
     if(profilesError) message += " تعذر تحميل أسماء الزبائن: "+profilesError.message;
     setMessage("adminMsg",message,(itemsError||productsError||profilesError)?"error":"success");
+    await loadAdminCustomerReviews();
   } catch (loadError) {
     console.error("Admin orders load failed:", loadError);
     setMessage("adminMsg", "توقف تحميل طلبات الشحن: " + (loadError?.message || "خطأ غير معروف") , "error");
@@ -4242,6 +4323,129 @@ async function loadAdminOrders() {
     if(adminLoadQueued){adminLoadQueued=false;window.setTimeout(()=>{loadAdminOrders();if(currentUserIsAdmin)loadAdminDeposits();},0);}
   }
 }
+
+let activeReviewOrderId = null;
+let selectedReviewRating = 5;
+function setReviewRating(value) {
+  selectedReviewRating = Math.max(1, Math.min(5, Number(value) || 5));
+  document.querySelectorAll("#reviewStarsPicker button").forEach(button => {
+    const active = Number(button.dataset.rating) <= selectedReviewRating;
+    button.classList.toggle("isSelected", active);
+    button.setAttribute("aria-pressed", active ? "true" : "false");
+  });
+}
+function openCustomerReview(order, productLabel) {
+  activeReviewOrderId = order.id;
+  selectedReviewRating = 5;
+  el("reviewOrderLabel").textContent = `طلب #${order.id} · ${productLabel}`;
+  el("reviewComment").value = "";
+  setMessage("reviewSubmitMsg", "");
+  setReviewRating(5);
+  const overlay = el("reviewModalOverlay");
+  overlay.hidden = false; overlay.setAttribute("aria-hidden", "false");
+  requestAnimationFrame(() => overlay.classList.add("isVisible"));
+  document.body.classList.add("zenith-modal-open");
+}
+function closeCustomerReview() {
+  const overlay = el("reviewModalOverlay");
+  overlay.classList.remove("isVisible");
+  document.body.classList.remove("zenith-modal-open");
+  setTimeout(() => { overlay.hidden = true; overlay.setAttribute("aria-hidden", "true"); }, 220);
+}
+document.querySelectorAll("#reviewStarsPicker button").forEach(button => button.addEventListener("click", () => setReviewRating(button.dataset.rating)));
+el("cancelReviewBtn").addEventListener("click", closeCustomerReview);
+el("reviewModalOverlay").addEventListener("click", event => { if (event.target === el("reviewModalOverlay")) closeCustomerReview(); });
+el("submitReviewBtn").addEventListener("click", async () => {
+  const button = el("submitReviewBtn");
+  const comment = el("reviewComment").value.trim();
+  if (!activeReviewOrderId) return;
+  if (comment.length > 600) { setMessage("reviewSubmitMsg", "التعليق طويل جداً.", "error"); return; }
+  button.disabled = true; button.textContent = "جارٍ الإرسال...";
+  try {
+    const {data: authData, error: authError} = await db.auth.getUser();
+    const user = authData?.user;
+    if (authError || !user) throw new Error("سجّل الدخول أولاً.");
+    const {data: order, error: orderError} = await db.from("orders").select("id,status,user_id").eq("id", activeReviewOrderId).eq("user_id", user.id).maybeSingle();
+    if (orderError) throw orderError;
+    if (!order || String(order.status).toLowerCase() !== "completed") throw new Error("التقييم متاح للطلبات المكتملة فقط.");
+    const {error} = await db.from("customer_reviews").insert({order_id: activeReviewOrderId, user_id: user.id, rating: selectedReviewRating, comment, status: "pending"});
+    if (error) {
+      if (error.code === "23505") throw new Error("سبق وأرسلت تقييماً لهذا الطلب.");
+      throw error;
+    }
+    setMessage("reviewSubmitMsg", "وصل تقييمك إلى الإدارة للمراجعة. شكراً لمشاركتك!", "success");
+    button.textContent = "تم الإرسال";
+    setTimeout(closeCustomerReview, 1100);
+    await loadMyOrders();
+  } catch (error) {
+    setMessage("reviewSubmitMsg", error.message || "تعذر إرسال التقييم.", "error");
+  } finally {
+    button.disabled = false; if (button.textContent !== "تم الإرسال") button.textContent = "إرسال التقييم";
+  }
+});
+
+async function loadPublicCustomerReviews() {
+  const box = el("publicCustomerReviews");
+  if (!box) return;
+  const {data: reviews, error} = await db.from("customer_reviews").select("id,rating,comment,created_at,user_id,order_id").eq("status", "approved").order("created_at", {ascending:false}).limit(12);
+  if (error) { box.textContent = "تعذر تحميل التقييمات حالياً."; return; }
+  box.replaceChildren();
+  if (!reviews?.length) { box.textContent = "كن أول من يشاركنا رأيه بعد اكتمال طلبه."; return; }
+  const userIds = [...new Set(reviews.map(review => review.user_id).filter(Boolean))];
+  const {data: profiles} = userIds.length ? await db.from("profiles").select("id,username").in("id", userIds) : {data:[]};
+  const usernames = Object.fromEntries((profiles || []).map(profile => [profile.id, profile.username]));
+  const orderIds = reviews.map(review => review.order_id);
+  const {data: items} = await db.from("order_items").select("order_id,product_name,diamonds,product_type,quantity").in("order_id", orderIds);
+  const itemNames = {};
+  (items || []).forEach(item => (itemNames[item.order_id] ||= []).push(item.product_name || (item.diamonds ? `${item.diamonds} جوهرة` : "اشتراك")));
+  reviews.forEach(review => {
+    const card = document.createElement("article"); card.className = "publicReviewCard";
+    const avatar = document.createElement("div"); avatar.className = "publicReviewAvatar"; avatar.textContent = (usernames[review.user_id] || "Z").slice(0,1).toUpperCase();
+    const body = document.createElement("div"); body.className = "publicReviewBody";
+    const name = document.createElement("strong"); name.textContent = usernames[review.user_id] ? "@" + usernames[review.user_id] : "عميل زينيث";
+    const caption = document.createElement("small"); caption.textContent = "رأي العميل";
+    const stars = document.createElement("div"); stars.className = "publicReviewStars"; stars.textContent = "★".repeat(review.rating) + "☆".repeat(5-review.rating);
+    const comment = document.createElement("p"); comment.textContent = review.comment || "تجربة ممتازة، شكراً لثقتك بنا.";
+    const complete = document.createElement("div"); complete.className = "publicReviewComplete"; complete.textContent = "✓ طلب مكتمل · " + ((itemNames[review.order_id] || ["طلب من المتجر"]).join("، "));
+    body.append(name, caption, stars, comment, complete); card.append(avatar, body); box.appendChild(card);
+  });
+}
+
+async function loadAdminCustomerReviews() {
+  if (!currentUserIsAdmin) return;
+  const pendingBox = el("adminPendingReviews"), historyBox = el("adminReviewedReviews");
+  if (!pendingBox || !historyBox) return;
+  pendingBox.textContent = "جارٍ تحميل التقييمات...";
+  const {data: rows, error} = await withAdminTimeout(db.from("customer_reviews").select("id,order_id,user_id,rating,comment,status,created_at").order("created_at", {ascending:false}).limit(300), "تحميل تقييمات العملاء");
+  if (error) { pendingBox.textContent = "تعذر تحميل التقييمات: " + error.message; setMessage("adminReviewsMsg", "تأكد من تنفيذ SQL الخاص بجدول customer_reviews.", "error"); return; }
+  pendingBox.replaceChildren(); historyBox.replaceChildren();
+  const ids = [...new Set((rows || []).map(row => row.user_id).filter(Boolean))];
+  const {data: profiles} = ids.length ? await db.from("profiles").select("id,username").in("id", ids) : {data:[]};
+  const names = Object.fromEntries((profiles || []).map(profile => [profile.id, profile.username]));
+  const pending = (rows || []).filter(row => row.status === "pending");
+  const history = (rows || []).filter(row => row.status !== "pending");
+  const render = (row, target) => {
+    const card = document.createElement("article"); card.className = "adminReviewCard";
+    const title = document.createElement("strong"); title.textContent = `طلب #${row.order_id} · ${names[row.user_id] ? "@"+names[row.user_id] : "عميل"}`;
+    const stars = document.createElement("div"); stars.className = "publicReviewStars"; stars.textContent = "★".repeat(row.rating) + "☆".repeat(5-row.rating);
+    const comment = document.createElement("p"); comment.textContent = row.comment || "بدون تعليق نصي";
+    const state = document.createElement("small"); state.textContent = row.status === "approved" ? "منشور" : row.status === "rejected" ? "مرفوض" : "بانتظار المراجعة";
+    card.append(title, stars, comment, state);
+    if (row.status === "pending") {
+      const actions = document.createElement("div"); actions.className = "actions";
+      const approve = document.createElement("button"); approve.type = "button"; approve.textContent = "تأكيد النشر";
+      approve.addEventListener("click", async () => { approve.disabled = true; const {error} = await db.from("customer_reviews").update({status:"approved", reviewed_at:new Date().toISOString()}).eq("id", row.id); if (error) { setMessage("adminReviewsMsg", "تعذر نشر التقييم: "+error.message, "error"); approve.disabled = false; return; } await loadAdminCustomerReviews(); await loadPublicCustomerReviews(); });
+      const reject = document.createElement("button"); reject.type = "button"; reject.className = "danger"; reject.textContent = "رفض";
+      reject.addEventListener("click", async () => { if (!confirm("تأكيد رفض هذا التقييم؟")) return; reject.disabled = true; const {error} = await db.from("customer_reviews").update({status:"rejected", reviewed_at:new Date().toISOString()}).eq("id", row.id); if (error) { setMessage("adminReviewsMsg", "تعذر رفض التقييم: "+error.message, "error"); reject.disabled = false; return; } await loadAdminCustomerReviews(); });
+      actions.append(approve, reject); card.append(actions);
+    }
+    target.append(card);
+  };
+  if (!pending.length) pendingBox.textContent = "لا توجد تقييمات بانتظار المراجعة."; else pending.forEach(row => render(row, pendingBox));
+  if (!history.length) historyBox.textContent = "لا توجد تقييمات منشورة أو مرفوضة."; else history.forEach(row => render(row, historyBox));
+  setMessage("adminReviewsMsg", `تقييمات بانتظار المراجعة: ${pending.length} · أخرى: ${history.length}`, "success");
+}
+el("refreshCustomerReviews")?.addEventListener("click", loadAdminCustomerReviews);
 
 async function loadAdminDeposits() {
   if (!currentUserIsAdmin) { setMessage("adminDepositsMsg", "تعذر تحميل الإيداعات: لم يتم تأكيد صلاحية الأدمن بعد.", "error"); return; }
@@ -4704,6 +4908,9 @@ async function loadAccountPanel() {
     return acc;
   }, {balance:{asiacell:0,mastercard:0},used:{asiacell:0,mastercard:0}});
   el("accountCurrentBalance").textContent = money(totals.balance.asiacell + totals.balance.mastercard);
+  if (el("accountAsiacellBalance")) el("accountAsiacellBalance").textContent = money(totals.balance.asiacell);
+  if (el("accountMastercardBalance")) el("accountMastercardBalance").textContent = money(totals.balance.mastercard);
+  if (el("accountInviteUsers")) el("accountInviteUsers").textContent = Number((zenithResult.data || {}).invite_users_count || 0).toLocaleString("en-US");
   el("accountAsiacellUsed").textContent = money(totals.used.asiacell);
   el("accountMastercardUsed").textContent = money(totals.used.mastercard);
   msg.textContent = ordersResult.error ? "تم تحميل بيانات الحساب والمحفظة، لكن تعذر عدّ الطلبات." : "تم تحميل بيانات حسابك الفعلية.";
@@ -6986,6 +7193,8 @@ html[data-theme="light"] #homePanel #faqSection * {
     if(moved){event.preventDefault();event.stopPropagation();moved=false;}
   },true);
 })();
+
+loadPublicCustomerReviews().catch(error => console.warn("Public reviews unavailable", error));
 </script>
 <style id="zenith-hok-and-transparent-sections">
 html[data-theme="light"] #faqSection,
@@ -7024,213 +7233,4 @@ html[data-theme="light"] #mlbbCategoryPanel .homeCategory .categoryText small {c
   position:absolute!important;
   inset:0!important;
   z-index:0!important;
-  background-image:url("images/IMG_20261112_124322_063.png")!important;
-  background-position:center!important;
-  background-size:cover!important;
-  background-repeat:no-repeat!important;
-  pointer-events:none!important;
-}
-#mlbbSubcategories #membershipPlaceholder > .mlbbCategoryImage,
-#mlbbCategoryPanel #mlbbPageMembership > .mlbbCategoryImage {
-  position:absolute!important;
-  inset:5px 8px 25px!important;
-  display:block!important;
-  width:calc(100% - 16px)!important;
-  height:calc(100% - 30px)!important;
-  min-width:0!important;
-  min-height:0!important;
-  max-width:none!important;
-  max-height:none!important;
-  margin:0!important;
-  padding:0!important;
-  object-fit:contain!important;
-  object-position:center!important;
-  z-index:1!important;
-}
-#mlbbSubcategories #membershipPlaceholder > .categoryText,
-#mlbbCategoryPanel #mlbbPageMembership > .categoryText {
-  position:absolute!important;
-  right:8px!important;
-  left:auto!important;
-  top:auto!important;
-  bottom:5px!important;
-  z-index:2!important;
-  width:auto!important;
-  max-width:calc(100% - 16px)!important;
-  margin:0!important;
-  padding:0!important;
-  text-align:right!important;
-}
-/* Override the older rule that accidentally pinned the fan-frame caption to the top. */
-#mlbbSubcategories #fanFrameCategory > .categoryText,
-#mlbbCategoryPanel #mlbbPageFanFrame > .categoryText {
-  position:absolute!important;
-  top:auto!important;
-  bottom:5px!important;
-  right:8px!important;
-  left:auto!important;
-  z-index:3!important;
-  display:block!important;
-  width:auto!important;
-  max-width:calc(100% - 16px)!important;
-  margin:0!important;
-  padding:0!important;
-  text-align:right!important;
-}
-</style>
-
-
-<style id="zenith-final-requested-fixes-20261113">
-/* Brighter game banners: preserve the artwork while reducing the dark overlay. */
-#homePanel .zenithGameBannerGrid .gameBannerCard{
-  background-image:linear-gradient(90deg,rgba(3,8,18,.34),rgba(3,8,18,.12) 66%,rgba(3,8,18,.04)),var(--game-banner)!important;
-  background-color:#172b42!important;
-  background-blend-mode:normal!important;
-}
-#homePanel .zenithGameBannerGrid .gameBannerCard .gameBannerShade{
-  background:linear-gradient(0deg,rgba(0,0,0,.08),transparent 62%)!important;
-}
-#homePanel .zenithGameBannerGrid .gameBannerCard .gameTileImage{
-  background:rgba(8,14,25,.46)!important;
-}
-/* Animated blue flame: layered flame tongues and rising sparks, no emoji glyph. */
-.zenithBlueFlame{
-  position:relative!important;display:inline-block!important;width:24px!important;height:28px!important;
-  flex:0 0 24px!important;font-size:0!important;line-height:0!important;color:transparent!important;
-  isolation:isolate!important;overflow:visible!important;transform-origin:50% 100%!important;
-  filter:drop-shadow(0 0 5px rgba(24,139,255,.7))!important;
-}
-.zenithBlueFlame::before,.zenithBlueFlame::after{
-  content:""!important;display:block!important;position:absolute!important;bottom:1px!important;left:50%!important;
-  transform:translateX(-50%)!important;transform-origin:50% 100%!important;pointer-events:none!important;
-}
-.zenithBlueFlame::before{
-  width:19px!important;height:25px!important;
-  background:radial-gradient(ellipse at 50% 78%,#e8ffff 0 8%,#7ce7ff 18%,#269dff 42%,#0757d7 70%,rgba(0,63,180,0) 76%)!important;
-  clip-path:polygon(50% 0,61% 21%,86% 39%,79% 61%,100% 76%,83% 100%,16% 100%,0 78%,20% 59%,18% 42%,38% 25%)!important;
-  filter:blur(.35px)!important;animation:zenithRealFlame 620ms ease-in-out infinite alternate!important;
-  box-shadow:0 0 13px rgba(0,145,255,.7)!important;
-}
-.zenithBlueFlame::after{
-  width:9px!important;height:15px!important;bottom:1px!important;
-  background:linear-gradient(0deg,#fff 0%,#c9fbff 35%,#59caff 72%,rgba(50,160,255,0) 100%)!important;
-  clip-path:polygon(50% 0,72% 32%,100% 68%,78% 100%,19% 100%,0 70%,30% 36%)!important;
-  filter:blur(.45px)!important;animation:zenithFlameCore 390ms ease-in-out infinite alternate!important;
-}
-.zenithFlameSparks{
-  position:absolute!important;inset:0!important;pointer-events:none!important;
-  background:
-    radial-gradient(circle,rgba(190,245,255,.98) 0 1px,transparent 1.7px) 3px 13px/8px 13px no-repeat,
-    radial-gradient(circle,rgba(65,174,255,.98) 0 1.2px,transparent 1.9px) 17px 17px/8px 12px no-repeat,
-    radial-gradient(circle,rgba(220,250,255,.95) 0 .9px,transparent 1.6px) 10px 8px/7px 12px no-repeat,
-    radial-gradient(circle,rgba(40,143,255,.9) 0 1px,transparent 1.7px) 20px 7px/7px 12px no-repeat;
-  animation:zenithSparksRise 1.05s linear infinite!important;
-}
-@keyframes zenithRealFlame{
-  0%{transform:translateX(-50%) rotate(-5deg) scale(.9,.92);filter:blur(.5px) brightness(.92)}
-  45%{transform:translateX(-48%) rotate(3deg) scale(1.04,1.08);filter:blur(.2px) brightness(1.16)}
-  100%{transform:translateX(-52%) rotate(7deg) scale(.96,1.13);filter:blur(.4px) brightness(1.08)}
-}
-@keyframes zenithFlameCore{
-  0%{transform:translateX(-50%) scale(.82,.86);opacity:.82}
-  100%{transform:translateX(-48%) scale(1.12,1.14);opacity:1}
-}
-@keyframes zenithSparksRise{
-  0%{transform:translateY(7px);opacity:.25}
-  35%{opacity:1}
-  100%{transform:translateY(-15px);opacity:0}
-}
-/* Remove the information marker only from Wuthering Waves monthly membership. */
-#products .product.wuthering-monthly-no-info .productInfoButton{display:none!important}
-#products .product:not(.selected)::before{animation:none!important;filter:none!important;will-change:auto!important}
-#products .product:not(.selected){transition:border-color .1s ease,background-color .1s ease!important}
-@media(prefers-reduced-motion:reduce){.zenithBlueFlame::before,.zenithBlueFlame::after,.zenithFlameSparks{animation:none!important}}
-</style>
-
-
-<style id="zenith-freefire-region-layout">
-#freeFireSubcategories{display:none!important}
-</style>
-
-<style id="zenith-clarified-flame-region-membership-and-pricing">
-/* Emoji-like blue flame: animated inner/outer flame silhouette plus upward sparks. */
-.zenithBlueFlame{position:relative!important;display:inline-block!important;width:25px!important;height:31px!important;flex:0 0 25px!important;overflow:visible!important}
-.zenithBlueFlame::before,.zenithBlueFlame::after{display:none!important;content:none!important}
-.zenithFlameSvg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 0 3px #159fff) drop-shadow(0 0 7px #087bff99);transform-origin:50% 90%;animation:zenithFlameBody .43s ease-in-out infinite alternate}
-.zenithFlameOuter{transform-origin:50% 100%;animation:zenithFlameOuter .34s ease-in-out infinite alternate}
-.zenithFlameInner{transform-origin:50% 100%;animation:zenithFlameInner .27s ease-in-out infinite alternate}
-.zenithFlameSparks{position:absolute!important;inset:-5px -3px 0!important;pointer-events:none!important;background:radial-gradient(circle,#dffaff 0 1px,transparent 1.8px) 3px 20px/7px 14px no-repeat,radial-gradient(circle,#61caff 0 1.2px,transparent 2px) 20px 22px/8px 14px no-repeat,radial-gradient(circle,#e8fcff 0 .8px,transparent 1.6px) 13px 16px/7px 13px no-repeat,radial-gradient(circle,#258fff 0 1px,transparent 1.8px) 24px 13px/7px 14px no-repeat;animation:zenithSparksRise .72s linear infinite!important}
-@keyframes zenithFlameBody{from{transform:rotate(-2deg) scale(.96,.97)}to{transform:rotate(2deg) scale(1.04,1.06)}}
-@keyframes zenithFlameOuter{from{opacity:.9;transform:scaleX(.96) scaleY(.96)}to{opacity:1;transform:scaleX(1.04) scaleY(1.06)}}
-@keyframes zenithFlameInner{from{transform:scale(.9,.9) translateY(1px);opacity:.85}to{transform:scale(1.08,1.12) translateY(-1px);opacity:1}}
-@keyframes zenithSparksRise{0%{transform:translateY(8px);opacity:0}20%{opacity:1}100%{transform:translateY(-17px);opacity:0}}
-/* Region name is a small white strip directly below the gem-package heading. */
-#freeFireSubcategories{display:none!important}
-/* Remove the separate product artwork from the outer Mobile Legends membership tile only. */
-#mlbbSubcategories #membershipPlaceholder > .mlbbCategoryImage,
-#mlbbCategoryPanel #mlbbPageMembership > .mlbbCategoryImage{display:none!important;visibility:hidden!important}
-/* Every newly opened game or region starts with Mastercard pricing, regardless of the last visit. */
-</style>
-
-<style id="zenith-freefire-dedicated-page-and-assets-v2">
-#freeFireCategoryPanel .freeFireRegionPageGrid{grid-template-columns:1fr!important;gap:10px!important}
-#freeFireCategoryPanel .freeFireRegionTile{min-height:88px!important;padding:13px 14px!important}
-#freeFireCategoryPanel .freeFireRegionImage{width:54px!important;height:54px!important;flex:0 0 54px!important;object-fit:contain!important;background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
-#freeFireCategoryPanel .freeFireRegionTile .categoryText{gap:7px!important}
-#freeFireCategoryPanel .freeFireRegionTile .categoryText strong{font-size:16px!important}
-#freeFireCategoryPanel .freeFireRegionTile .freeFireRegionCaption{display:inline-flex!important;align-items:center!important;min-height:22px!important;padding:4px 10px!important;background:#fff!important;color:#15253a!important;border-radius:5px!important;font-size:11px!important;font-weight:900!important;line-height:1!important;width:max-content!important}
-#freeFireCategoryPanel .comingSoonGame{background:linear-gradient(145deg,#e7e9ed,#c9cdd4)!important;color:#59616b!important}
-#freeFireCategoryPanel .comingSoonGame .categoryText strong,#freeFireCategoryPanel .comingSoonGame .categoryText small{color:#59616b!important}
-#freeFireCategoryPanel .freeFireRegionTile .categoryArrow{flex:0 0 34px}
-#freeFireCategoryPanel .freeFireRegionTile .freeFireRegionImage:not([src]){display:none!important}
-.menuLinks #menuHome{gap:12px!important}
-.menuHomeHouseIcon{width:31px!important;height:31px!important;flex:0 0 31px!important;fill:none!important;stroke:currentColor!important;stroke-width:2.15!important;stroke-linecap:round!important;stroke-linejoin:round!important}
-#products .product .product-gem-image.no-product-image{display:none!important}
-#products .product .product-gem-image img[src$="free-fire-gems-1.png"],#products .product .product-gem-image img[src$="free-fire-gems-2.png"],#products .product .product-gem-image img[src$="free-fire-gems-3.png"],#products .product .product-gem-image img[src$="free-fire-gems-4.png"],#products .product .product-gem-image img[src$="free-fire-gems-5.png"],#products .product .product-gem-image img[src$="free-fire-weekly-membership.png"],#products .product .product-gem-image img[src$="free-fire-monthly-membership.png"]{object-fit:contain}
-#products .product h3.freeFireMembershipTitle{display:inline-block;width:max-content;max-width:100%;padding:4px 10px;border-radius:5px;background:#fff;color:#14243a!important;font-size:13px;font-weight:900}
-.zenithBlueFlame{width:29px!important;height:36px!important;flex-basis:29px!important}
-.zenithFlameSvg{filter:drop-shadow(0 0 4px #159fff) drop-shadow(0 0 10px #087bffcc)!important;animation:zenithFlameBody .29s ease-in-out infinite alternate!important}
-.zenithFlameOuter{animation:zenithFlameOuter .23s ease-in-out infinite alternate!important}
-.zenithFlameInner{animation:zenithFlameInner .19s ease-in-out infinite alternate!important}
-.zenithFlameSparks{animation:zenithSparksRise .58s linear infinite!important}
-@media(max-width:520px){#freeFireCategoryPanel .freeFireRegionPageGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}#freeFireCategoryPanel .freeFireRegionTile{min-height:112px!important;padding:10px!important}}
-</style>
-
-
-<style id="zenith-native-blue-fire-emoji">
-.zenithBlueFlame{width:34px!important;height:38px!important;flex:0 0 34px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;overflow:visible!important}
-.zenithFlameEmoji{display:block!important;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif!important;font-size:31px!important;line-height:1!important;filter:hue-rotate(190deg) saturate(2.25) brightness(1.13) drop-shadow(0 0 4px #159fff) drop-shadow(0 0 9px #087bffcc)!important;transform-origin:50% 90%!important;animation:zenithEmojiFireFlicker .24s ease-in-out infinite alternate!important}
-@keyframes zenithEmojiFireFlicker{0%{transform:translateY(1px) rotate(-5deg) scale(.94,.97)}45%{transform:translateY(-1px) rotate(3deg) scale(1.05,1.08)}100%{transform:translateY(0) rotate(-2deg) scale(.98,1.12)}}
-@media(prefers-reduced-motion:reduce){.zenithFlameEmoji{animation:none!important}}
-</style>
-
-
-
-<style id="zenith-final-ui-adjustments">
-/* Free Fire region page follows the Mobile Legends category-page layout. */
-#freeFireCategoryPanel .freeFireRegionPageGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;align-items:stretch!important}
-#freeFireCategoryPanel .freeFireRegionTile{min-height:125px!important;padding:14px!important}
-#freeFireCategoryPanel .mlbbTitleRow{display:block;position:relative;margin:16px 0 6px;direction:rtl}
-#freeFireCategoryPanel .mlbbTitleImage{display:block;object-fit:cover}
-#freeFireCategoryPanel .mlbbPageTitle{margin:18px 0 6px!important}
-#freeFireCategoryPanel .freeFireRegionTile .freeFireRegionImage{width:54px;height:48px;object-fit:contain;flex:0 0 54px}
-#navHome>span{font-size:16px!important;line-height:1!important}
-
-/* A clearly visible, blue-tinted 🔥 glyph with an irregular, continuous burning flicker. */
-.zenithBlueFlame{position:relative!important;width:34px!important;height:40px!important;flex:0 0 34px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;overflow:visible!important}
-.zenithBlueFlame::before,.zenithBlueFlame::after{content:none!important;display:none!important}
-.zenithFlameEmoji{position:relative!important;z-index:2!important;display:block!important;visibility:visible!important;opacity:1!important;font-size:32px!important;line-height:1!important;filter:hue-rotate(190deg) saturate(2.8) brightness(1.25) drop-shadow(0 0 3px #7ceaff) drop-shadow(0 0 8px #159fff) drop-shadow(0 0 14px #087bff)!important;transform-origin:50% 90%!important;animation:zenithRealBurn 0.22s steps(2,end) infinite alternate!important}
-.zenithFlameSparks{position:absolute!important;inset:0!important;z-index:3!important;pointer-events:none!important}
-.zenithFlameSparks::before,.zenithFlameSparks::after{content:""!important;position:absolute!important;bottom:8px!important;width:3px!important;height:3px!important;border-radius:50%!important;background:#8deaff!important;box-shadow:0 0 6px 2px #159fff!important;animation:zenithSparksUp 0.8s linear infinite!important}
-.zenithFlameSparks::before{left:7px!important}
-.zenithFlameSparks::after{right:6px!important;animation-delay:.37s!important}
-@keyframes zenithRealBurn{0%{transform:translateY(1px) rotate(-7deg) scale(.92,.96)}22%{transform:translateY(-1px) rotate(4deg) scale(1.04,1.08)}48%{transform:translateY(0) rotate(-3deg) scale(.98,1.13)}73%{transform:translateY(-2px) rotate(6deg) scale(1.07,1.02)}100%{transform:translateY(1px) rotate(-5deg) scale(.95,1.1)}}
-@keyframes zenithSparksUp{0%{transform:translateY(0) scale(.7);opacity:0}20%{opacity:1}100%{transform:translateY(-22px) translateX(3px) scale(.2);opacity:0}}
-@media(prefers-reduced-motion:reduce){.zenithFlameEmoji,.zenithFlameSparks::before,.zenithFlameSparks::after{animation:none!important}}
-</style>
-
-</body>
-
-
-
-</html>
+  backg
