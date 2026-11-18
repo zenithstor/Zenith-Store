@@ -1863,6 +1863,78 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
 .mlbbVerifiedName{display:block;margin-top:5px;color:#55d99a;font-weight:900;direction:auto;unicode-bidi:plaintext}
 @media(max-width:380px){.zenithCheckoutCodeRow{gap:5px}.zenithCheckoutCodeRow button{min-width:66px;padding-inline:8px!important}}
 </style>
+
+<style id="zenith-user-specification-final-pass">
+/* Account stats: six small, equal white cards like the supplied screenshot. */
+.accountStatsGrid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-auto-rows:minmax(76px,auto)!important;gap:10px!important;margin:14px 0 18px!important}
+.accountStat{min-width:0!important;min-height:76px!important;padding:11px 12px!important;display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:flex-start!important;gap:5px!important;border:1px solid #e7e7e7!important;border-radius:17px!important;background:#fff!important;color:#20242a!important;box-shadow:0 3px 10px rgba(0,0,0,.055)!important;text-align:right!important}
+.accountStat span{font-size:11px!important;line-height:1.5!important;color:#81858b!important;font-weight:700!important}
+.accountStat strong{font-size:15px!important;line-height:1.5!important;color:#171a20!important;overflow-wrap:anywhere!important}
+html[data-theme="dark"] .accountStat{background:#fff!important;color:#171a20!important;border-color:#e7e7e7!important}
+html[data-theme="dark"] .accountStat span{color:#81858b!important}html[data-theme="dark"] .accountStat strong{color:#171a20!important}
+/* Account information: large, clean, borderless label/value rows. */
+.accountInformationCard{margin:10px 0 14px!important;padding:5px 2px!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+.accountInformationCard h3{margin:0 0 12px!important;font-size:18px!important;font-weight:900!important}
+.accountInfoRow{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:14px!important;min-height:48px!important;padding:8px 2px!important;border:0!important;border-bottom:0!important;background:transparent!important}
+.accountInfoRow>span,.accountInfoRow>label{flex:0 0 auto!important;margin:0!important;color:var(--muted)!important;font-size:14px!important;font-weight:700!important}
+.accountInfoRow>strong{min-width:0!important;color:var(--ink)!important;font-size:15px!important;font-weight:800!important;text-align:left!important;overflow-wrap:anywhere!important}
+.accountPhoneValue{display:flex;align-items:center;gap:9px;min-width:0}
+.accountPhoneValue strong{font-size:15px;color:var(--ink);overflow-wrap:anywhere}
+#addAccountPhone{width:31px!important;min-width:31px!important;height:31px!important;min-height:31px!important;margin:0!important;padding:0!important;border-radius:50%!important;background:#ef4037!important;color:#fff!important;font-size:22px!important;line-height:1!important;display:grid!important;place-items:center!important;box-shadow:none!important}
+.accountPhoneEditor{display:flex;align-items:center;gap:7px;width:100%;margin-top:8px}
+.accountPhoneEditor[hidden]{display:none!important}
+.accountPhoneEditor input{flex:1;min-width:0;margin:0!important}
+.accountPhoneEditor button{width:auto!important;min-width:65px!important;margin:0!important;padding:10px 12px!important}
+.accountPhoneRow{flex-wrap:wrap!important}
+.accountLogoutButton{background:#e53935!important;color:#fff!important;border:1px solid #e53935!important;border-radius:12px!important;min-height:45px!important;font-weight:900!important}
+@media(max-width:390px){.accountStatsGrid{gap:8px!important}.accountStat{padding:9px!important;min-height:72px!important}.accountStat span{font-size:10px!important}.accountStat strong{font-size:13px!important}.accountInfoRow>span,.accountInfoRow>label{font-size:13px!important}.accountInfoRow>strong{font-size:14px!important}}
+/* Checkout: same outer order card and the same order-detail rows. */
+.checkoutOrderSummary{margin:14px 0 0!important;padding:18px 20px!important;border-radius:28px!important;background:#1b1530!important;border:1px solid #594579!important;box-shadow:0 8px 24px #09051355!important}
+.checkoutOrderSummary .orderTrackTitle{font-size:18px!important;margin:0 0 12px!important;color:var(--ink)!important}
+.checkoutOrderDetails{display:grid!important;grid-template-columns:1fr!important;gap:0!important;border-top:1px solid var(--border)!important;padding-top:10px!important}
+.checkoutOrderDetails .orderDetailCell{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:12px!important;min-width:0!important;padding:11px 4px!important;border:0!important;border-bottom:1px solid rgba(150,165,190,.2)!important;border-radius:0!important;background:transparent!important}
+.checkoutOrderDetails .orderDetailCell small{display:block!important;flex:0 0 auto!important;margin:0!important;color:var(--muted)!important;font-size:14px!important}
+.checkoutOrderDetails .orderDetailCell strong{display:flex!important;align-items:center!important;gap:9px!important;min-width:0!important;color:var(--ink)!important;font-size:15px!important;text-align:left!important;overflow-wrap:anywhere!important}
+.checkoutOrderDetails .checkoutSummaryTotal{padding-top:13px!important;border-bottom:0!important;font-weight:900!important}
+.checkoutOrderDetails .checkoutSummaryTotal strong span{font-size:18px!important;color:#8ecbff!important}
+.checkoutOrderDetails .checkoutSummaryTotal del{font-size:12px!important;color:#f08b8b!important;font-weight:700!important}
+html[data-theme="light"] .checkoutOrderSummary{background:#fff!important;border:1px solid #d4dfeb!important;box-shadow:0 6px 20px rgba(25,59,91,.08)!important}
+html[data-theme="light"] .checkoutOrderDetails .orderDetailCell{border-bottom-color:#e5ebf1!important}
+html[data-theme="light"] .checkoutOrderDetails .orderDetailCell small{color:#5e6d80!important}
+html[data-theme="light"] .checkoutOrderDetails .orderDetailCell strong{color:#142238!important}
+html[data-theme="light"] .checkoutOrderDetails .checkoutSummaryTotal strong span{color:#1268aa!important}
+.zenithCheckoutRewards{padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;margin:14px 0!important}
+.zenithCheckoutRewards>label:first-child{font-size:14px!important;margin:0 0 7px!important;color:var(--ink)!important}
+.zenithCheckoutCodeRow{direction:rtl!important;align-items:stretch!important;gap:7px!important}
+.zenithCheckoutCodeRow input{flex:1 1 auto!important;min-width:0!important;margin:0!important;min-height:43px!important}
+.zenithCheckoutCodeRow button{flex:0 0 76px!important;width:76px!important;min-width:76px!important;min-height:43px!important;margin:0!important;padding:8px!important;border-radius:10px!important}
+#submitOrderBtn{display:block!important;width:min(100%,260px)!important;min-height:43px!important;margin:14px auto 6px!important;padding:9px 18px!important;border-radius:12px!important;background:linear-gradient(100deg,#e83365,#f04470)!important;border:1px solid #f04470!important;color:#fff!important;font-size:15px!important;font-weight:900!important;box-shadow:0 5px 14px rgba(240,68,112,.2)!important}
+#cancelPurchase{display:block!important;width:min(100%,180px)!important;margin:5px auto!important}
+/* Reviews heading and five-star total card. */
+.zenithCustomerReviews{margin:24px 0!important;padding:16px 13px!important}
+.reviewStatsCard{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:82px;margin:0 0 15px;padding:10px;border:1px solid rgba(239,64,55,.2);border-radius:15px;background:rgba(255,255,255,.055)}
+.reviewStatsStars{direction:ltr;color:#f7bd35;font-size:25px;letter-spacing:4px;line-height:1.2}
+.reviewStatsCount{display:flex;align-items:center;gap:5px;color:var(--ink);font-size:12px}
+.reviewStatsCount strong{font-size:17px;font-weight:900}
+.customerReviewsEyebrow{color:#ef4037!important;font-size:13px!important;font-weight:900!important;margin:0 0 3px!important}
+.customerReviewsTitleRow{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 13px}
+.zenithCustomerReviews .customerReviewsTitleRow h2{margin:0!important;font-size:25px!important;line-height:1.4!important;font-weight:950!important}
+#allCustomerReviews{display:inline-flex!important;align-items:center;justify-content:center;gap:5px;width:auto!important;min-width:max-content!important;min-height:32px!important;margin:0!important;padding:5px 8px!important;border:0!important;background:transparent!important;color:#ef4037!important;box-shadow:none!important;font-size:11px!important;font-weight:800!important}
+#allCustomerReviews span{font-size:18px;line-height:1}
+/* Remove the requested trust strip completely and keep the six section tiles compact. */
+.homeTrust{display:none!important}
+.bottomNav .navIcon{width:22px!important;height:22px!important;flex:0 0 22px!important}
+.bottomNav .navIcon svg{width:19px!important;height:19px!important}
+.sectionsSheet{padding:8px 14px calc(12px + env(safe-area-inset-bottom))!important;max-height:34vh!important;overflow:auto!important}
+.sectionsSheet h3{margin:0 0 8px!important;font-size:15px!important}
+.sectionsGrid{gap:7px!important}
+.sectionsGrid button{min-height:66px!important;padding:7px 4px!important;gap:4px!important;border-radius:12px!important}
+.sectionTileIcon{width:24px!important;height:24px!important}
+.sectionTileIcon svg{width:21px!important;height:21px!important}
+.sectionsGrid strong{font-size:10px!important;line-height:1.3!important}
+.sectionsSheetBackdrop{backdrop-filter:blur(9px)!important;-webkit-backdrop-filter:blur(9px)!important;background:rgba(0,0,0,.48)!important}
+@media(max-width:420px){.checkoutOrderSummary{padding:15px 13px!important;border-radius:22px!important}.checkoutOrderDetails .orderDetailCell{padding:10px 2px!important}.checkoutOrderDetails .orderDetailCell small{font-size:12px!important}.checkoutOrderDetails .orderDetailCell strong{font-size:13px!important}.zenithCustomerReviews .customerReviewsTitleRow h2{font-size:21px!important}#allCustomerReviews{font-size:10px!important;padding:4px!important}.sectionsSheet{max-height:34vh!important}}
+</style>
 </head>
 <body>
 <header>
@@ -1970,10 +2042,11 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
       </section>
     </div>
 
-    <div class="homeTrust"><span>🛡️ دفع آمن</span><span>⚡ إرسال سريع وفوري</span><span>🎧 دعم فني</span></div>
+    
   <section class="zenithCustomerReviews" id="customerReviewsSection">
+    <div class="reviewStatsCard" aria-live="polite"><div class="reviewStatsStars" aria-label="خمس نجوم">★★★★★</div><div class="reviewStatsCount"><strong id="reviewTotalCount">0</strong><span>تقييم داخل الموقع</span></div></div>
     <div class="customerReviewsEyebrow">آراء العملاء</div>
-    <h2>تقييمات عملاء ZENITH</h2>
+    <div class="customerReviewsTitleRow"><h2>تقييمات عملاء ZENITH</h2><button type="button" id="allCustomerReviews">جميع التقييمات <span aria-hidden="true">←</span></button></div>
     <div id="publicCustomerReviews" class="publicCustomerReviews"><p class="muted">آراء عملائنا تظهر هنا بعد مراجعتها واعتمادها.</p></div>
   </section>
   <section class="faqSection" id="faqSection" aria-labelledby="faqTitle">
@@ -2206,7 +2279,11 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
       <div class="accountInfoRow"><span>اسم الحساب</span><strong id="accountFullName">—</strong></div>
       <div class="accountInfoRow"><span>اسم المستخدم</span><strong id="accountUsername">—</strong></div>
       <div class="accountInfoRow"><span>البريد الإلكتروني</span><strong id="accountEmail">—</strong></div>
-      <div class="accountInfoRow accountPhoneRow"><label for="accountPhoneInput">رقم الهاتف <small>(اختياري)</small></label><div><input id="accountPhoneInput" type="tel" inputmode="tel" maxlength="24" placeholder="أضف رقم هاتفك اختيارياً"><button type="button" id="saveAccountPhone">حفظ</button></div></div>
+      <div class="accountInfoRow accountPhoneRow">
+        <span>رقم الهاتف <small>(اختياري)</small></span>
+        <div class="accountPhoneValue"><strong id="accountPhoneDisplay">غير مضاف</strong><button type="button" id="addAccountPhone" aria-label="إضافة رقم الهاتف">+</button></div>
+        <div class="accountPhoneEditor" id="accountPhoneEditor" hidden><input id="accountPhoneInput" type="tel" inputmode="tel" maxlength="24" placeholder="أدخل رقم هاتفك اختيارياً"><button type="button" id="saveAccountPhone">حفظ</button></div>
+      </div>
       <div class="accountInfoRow"><span>قيمة نقاط زينيث</span><strong id="accountZenithPointsValue">—</strong></div>
       <div class="accountInfoRow"><span>عدد الأشخاص الذين استخدموا رمز دعوتك</span><strong id="accountInviteUsers">—</strong></div>
     </div>
@@ -2243,15 +2320,17 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
           <button type="button" class="secondary" id="applyCheckoutCode">تطبيق</button>
         </div>
         <div id="checkoutCodeMsg" class="msg" aria-live="polite"></div>
-        <section class="checkoutOrderSummary" id="checkoutOrderSummary" aria-label="ملخص الطلب">
-          <h3>ملخص الطلب</h3>
-          <div class="checkoutSummaryRow"><span>اللعبة</span><strong id="summaryGame">—</strong></div>
-          <div class="checkoutSummaryRow"><span>Player ID</span><strong id="summaryPlayerId">—</strong></div>
-          <div class="checkoutSummaryRow"><span>Zone ID</span><strong id="summaryZoneId">—</strong></div>
-          <div class="checkoutSummaryRow"><span>الريجن</span><strong id="summaryRegion">—</strong></div>
-          <div class="checkoutSummaryRow"><span>اسم اللاعب</span><strong id="summaryPlayerName">بانتظار التحقق</strong></div>
-          <div class="checkoutSummaryRow"><span>الباقة المحددة</span><strong id="summaryPackage">—</strong></div>
-          <div class="checkoutSummaryTotal"><span>إجمالي السعر</span><div><del id="summaryOldPrice" hidden></del><strong id="summaryFinalPrice">—</strong></div></div>
+        <section class="checkoutOrderSummary orderTrackCard" id="checkoutOrderSummary" aria-label="ملخص الطلب">
+          <h3 class="orderTrackTitle">ملخص الطلب</h3>
+          <div class="orderDetailsGrid checkoutOrderDetails">
+            <div class="orderDetailCell"><small>اللعبة</small><strong id="summaryGame">—</strong></div>
+            <div class="orderDetailCell"><small>Player ID</small><strong id="summaryPlayerId">—</strong></div>
+            <div class="orderDetailCell"><small>Zone ID</small><strong id="summaryZoneId">—</strong></div>
+            <div class="orderDetailCell"><small>الريجن</small><strong id="summaryRegion">—</strong></div>
+            <div class="orderDetailCell"><small>اسم اللاعب</small><strong id="summaryPlayerName">بانتظار التحقق</strong></div>
+            <div class="orderDetailCell"><small>الباقة المحددة</small><strong id="summaryPackage">—</strong></div>
+            <div class="orderDetailCell checkoutSummaryTotal"><small>إجمالي السعر</small><strong><del id="summaryOldPrice" hidden></del><span id="summaryFinalPrice">—</span></strong></div>
+          </div>
         </section>
       </div>
       <input id="paymentMethod" type="hidden" value="wallet">
@@ -4384,8 +4463,9 @@ el("submitReviewBtn").addEventListener("click", async () => {
 async function loadPublicCustomerReviews() {
   const box = el("publicCustomerReviews");
   if (!box) return;
-  const {data: reviews, error} = await db.from("customer_reviews").select("id,rating,comment,created_at,user_id,order_id").eq("status", "approved").order("created_at", {ascending:false}).limit(12);
-  if (error) { box.textContent = "تعذر تحميل التقييمات حالياً."; return; }
+  const {data: reviews, error, count} = await db.from("customer_reviews").select("id,rating,comment,created_at,user_id,order_id", {count:"exact"}).eq("status", "approved").order("created_at", {ascending:false}).limit(100);
+  if (error) { box.textContent = "تعذر تحميل التقييمات حالياً."; el("reviewTotalCount").textContent = "—"; return; }
+  el("reviewTotalCount").textContent = Number(count ?? reviews?.length ?? 0).toLocaleString("en-US");
   box.replaceChildren();
   if (!reviews?.length) { box.textContent = "كن أول من يشاركنا رأيه بعد اكتمال طلبه."; return; }
   const userIds = [...new Set(reviews.map(review => review.user_id).filter(Boolean))];
@@ -4414,6 +4494,10 @@ async function loadPublicCustomerReviews() {
     body.append(name, caption, stars, comment, complete); card.append(avatar, body); box.appendChild(card);
   });
 }
+
+el("allCustomerReviews")?.addEventListener("click", () => {
+  el("publicCustomerReviews")?.scrollIntoView({behavior:"smooth", block:"start"});
+});
 
 async function loadAdminCustomerReviews() {
   if (!currentUserIsAdmin) return;
@@ -4723,7 +4807,7 @@ function openSectionsSheet() {
   el("navSections").setAttribute("aria-expanded","true");
   document.body.classList.add("sections-sheet-open");
 }
-el("navSections")?.addEventListener("click",openSectionsSheet);
+el("navSections")?.addEventListener("click",()=>{ if (!el("sectionsSheet").hidden) closeSectionsSheet(); else openSectionsSheet(); });
 el("sectionsSheetBackdrop")?.addEventListener("click",closeSectionsSheet);
 document.addEventListener("keydown",event=>{if(event.key==="Escape")closeSectionsSheet();});
 document.querySelectorAll("[data-section-action]").forEach(button=>button.addEventListener("click",()=>{
@@ -4912,7 +4996,10 @@ async function loadAccountPanel() {
   el("accountFullName").textContent = metadata.full_name || metadata.name || "غير متوفر في بيانات الحساب";
   el("accountUsername").textContent = metadata.username ? "@" + metadata.username : "غير متوفر في بيانات الحساب";
   el("accountEmail").textContent = user.email || "—";
-  el("accountPhoneInput").value = metadata.phone_number || "";
+  const savedPhone = metadata.phone_number || "";
+  el("accountPhoneInput").value = savedPhone;
+  el("accountPhoneDisplay").textContent = savedPhone || "غير مضاف";
+  el("accountPhoneEditor").hidden = true;
   const [ordersResult, walletResult, zenithResult, profileResult] = await Promise.all([
     db.from("orders").select("id", {count:"exact", head:true}).eq("user_id", user.id),
     db.from("wallet_transactions").select("amount_iqd,wallet_provider").eq("user_id", user.id),
@@ -4963,11 +5050,18 @@ async function saveAccountPhone() {
   try {
     const {data,error} = await db.auth.updateUser({data:{phone_number:phone || null}});
     if (error) throw error;
+    el("accountPhoneDisplay").textContent = phone || "غير مضاف";
+    el("accountPhoneEditor").hidden = true;
     setMessage("accountPanelMsg", "تم حفظ رقم الهاتف بنجاح.", "success");
   } catch (error) { setMessage("accountPanelMsg", error.message || "تعذر حفظ رقم الهاتف.", "error"); }
   finally { button.disabled = false; button.textContent = "حفظ"; }
 }
 el("saveAccountPhone")?.addEventListener("click", saveAccountPhone);
+el("addAccountPhone")?.addEventListener("click", () => {
+  const editor = el("accountPhoneEditor");
+  editor.hidden = false;
+  el("accountPhoneInput").focus();
+});
 
 async function saveAccountAvatar(file) {
   if (!file || !file.type.startsWith("image/")) { setMessage("accountAvatarMsg", "اختر ملف صورة صالحاً.", "error"); return; }
