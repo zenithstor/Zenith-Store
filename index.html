@@ -1847,6 +1847,18 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
 #serviceAppPage{min-height:50vh}
 @media(prefers-reduced-motion:reduce){.zenithBlueFlame::before,.zenithBlueFlame::after{animation:none!important}}
 </style>
+<style id="zenith-checkout-rewards-style">
+.zenithCheckoutRewards{margin:14px 0;padding:13px;border:1px solid #315d82;border-radius:14px;background:rgba(12,31,52,.72)}
+.zenithCheckoutRewards>label:first-child{display:block;margin:0 0 8px;font-weight:800}
+.zenithCheckoutCodeRow{display:flex;gap:8px;align-items:stretch}
+.zenithCheckoutCodeRow input{flex:1;min-width:0;text-align:center;letter-spacing:1.5px;text-transform:uppercase}
+.zenithCheckoutCodeRow button{width:auto!important;min-width:78px;margin:0!important;white-space:nowrap}
+.zenithCheckoutRewards .msg{min-height:0;margin:6px 0;font-size:12px}
+.zenithPointsChoice{display:flex!important;align-items:center;gap:9px;margin:12px 0 5px!important;font-weight:800}
+.zenithPointsChoice input{width:18px;height:18px;flex:0 0 auto;accent-color:#39a9ff}
+#checkoutPointsInfo{font-size:12px;line-height:1.7}
+@media(max-width:380px){.zenithCheckoutCodeRow{gap:5px}.zenithCheckoutCodeRow button{min-width:66px;padding-inline:8px!important}}
+</style>
 </head>
 <body>
 <header>
@@ -1902,9 +1914,7 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
     <div class="homeSearchWrap" id="homeSearchWrap" hidden>
       <input id="homeSearch" type="search" placeholder="ابحث عن لعبة..." aria-label="ابحث عن لعبة">
     </div>
-    <div class="zenithAppsHeading"><span class="zenithBlueFlame" aria-hidden="true">
-      <span class="zenithFlameEmoji" aria-hidden="true">🔥</span><span class="zenithFlameSparks"></span></span><span>خدمات المتجر</span></div>
-    <section class="zenithAppsSection" id="zenithAppsSection" aria-label="خدمات المتجر">
+    <section class="zenithAppsSection" id="zenithAppsSection" aria-label="روابط التطبيقات">
       <div class="zenithAppsTrack" id="zenithAppsTrack">
         <div class="zenithAppsSet">
           <button class="zenithAppLink" type="button" data-app="Instagram" aria-label="Instagram"><img src="images/instagram.png" alt="Instagram" loading="lazy"></button>
@@ -2178,6 +2188,9 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
       <div class="accountDetail"><span>الرصيد الحالي</span><strong id="accountCurrentBalance">—</strong></div>
       <div class="accountDetail"><span>إجمالي الرصيد المستخدم عبر آسياسيل</span><strong id="accountAsiacellUsed">—</strong></div>
       <div class="accountDetail"><span>إجمالي الرصيد المستخدم عبر ماستركارد</span><strong id="accountMastercardUsed">—</strong></div>
+      <div class="accountDetail"><span>رمز دعوتك</span><strong id="accountInviteCode" dir="ltr">—</strong></div>
+      <div class="accountDetail"><span>نقاط زينيث</span><strong id="accountZenithPoints">—</strong></div>
+      <div class="accountDetail"><span>قيمة نقاطك</span><strong id="accountZenithPointsValue">—</strong></div>
     </div>
   </section>
 
@@ -2199,6 +2212,19 @@ html[data-theme="light"] .productInfoPopover,html[data-theme="light"] .productSp
       <input id="playerId" inputmode="numeric" autocomplete="off" placeholder="أدخل Player ID" required>
       <label for="zoneId">Zone ID</label>
       <input id="zoneId" inputmode="numeric" autocomplete="off" placeholder="أدخل Zone ID" required>
+      <div class="zenithCheckoutRewards">
+        <label for="checkoutCode">هل لديك رمز استرداد أو دعوة؟</label>
+        <div class="zenithCheckoutCodeRow">
+          <input id="checkoutCode" type="text" maxlength="24" autocomplete="off" autocapitalize="characters" placeholder="أدخل الرمز" dir="ltr">
+          <button type="button" class="secondary" id="applyCheckoutCode">تطبيق</button>
+        </div>
+        <div id="checkoutCodeMsg" class="msg" aria-live="polite"></div>
+        <label class="zenithPointsChoice" for="checkoutUsePoints">
+          <input id="checkoutUsePoints" type="checkbox">
+          <span>استبدال نقاط زينيث ودفع الطلب بالكامل بالنقاط</span>
+        </label>
+        <div id="checkoutPointsInfo" class="muted">جارٍ تحميل رصيد نقاطك...</div>
+      </div>
       <input id="paymentMethod" type="hidden" value="wallet">
       <div id="walletInfo" class="notice">
         <div class="muted">الدفع بآسياسيل يخصم من محفظة آسياسيل، والدفع بماستركارد يخصم من محفظة ماستركارد.</div>
@@ -2406,6 +2432,9 @@ let notificationPollBusy = false;
 let selectedWalletUser = null;
 let currentUserIsAdmin = false;
 let customerWalletLoadBusy = false;
+let activeCheckoutCode = null;
+let activeCheckoutCodeType = null;
+let checkoutPointsBalance = 0;
 
 function applyRoleUI(isAdmin) {
   currentUserIsAdmin = isAdmin === true;
@@ -3299,6 +3328,8 @@ function openPurchase(product, provider, fromHistory = false) {
     sessionStorage.setItem(selectedProviderStorageKey, String(provider || "mastercard"));
   } catch (_) {}
   const price = getPrice(product, provider);
+  resetCheckoutRewards();
+  loadCheckoutPointsInfo();
   el("selectedProductInfo").replaceChildren();
   const summaryText = document.createElement("div");
   summaryText.textContent = `${productTitle(product)} — ${money(price)} (${provider === "mastercard" ? "ماستركارد" : "آسياسيل"})`;
@@ -3637,6 +3668,51 @@ el("logout").addEventListener("click", async () => {
   el("menuToggle").setAttribute("aria-expanded", "true");
 });
 
+function resetCheckoutRewards() {
+  activeCheckoutCode = null;
+  activeCheckoutCodeType = null;
+  if (el("checkoutCode")) el("checkoutCode").value = "";
+  if (el("checkoutCodeMsg")) { el("checkoutCodeMsg").textContent = ""; el("checkoutCodeMsg").className = "msg"; }
+  if (el("checkoutUsePoints")) el("checkoutUsePoints").checked = false;
+}
+async function loadCheckoutPointsInfo() {
+  const box = el("checkoutPointsInfo");
+  if (!box) return;
+  const {data,error} = await db.rpc("get_zenith_account_summary");
+  if (error) { box.textContent = "تعذر تحميل نقاط زينيث حالياً."; return; }
+  checkoutPointsBalance = Number(data?.points || 0);
+  box.textContent = `رصيدك: ${checkoutPointsBalance.toFixed(2)} نقطة — قيمتها ${money(data?.points_value_iqd || 0)}. لا يمكن الدفع بالنقاط جزئياً.`;
+}
+el("applyCheckoutCode")?.addEventListener("click", async () => {
+  const code = el("checkoutCode").value.trim().toUpperCase();
+  if (!code) { setMessage("checkoutCodeMsg", "أدخل الرمز أولاً.", "error"); return; }
+  const button = el("applyCheckoutCode"); button.disabled = true; button.textContent = "جارٍ التحقق...";
+  try {
+    const {data,error} = await db.rpc("validate_zenith_checkout_code", {p_code:code});
+    if (error) throw error;
+    if (!data?.valid) throw new Error(data?.message || "الرمز غير صالح");
+    activeCheckoutCode = code;
+    activeCheckoutCodeType = data.type;
+    setMessage("checkoutCodeMsg", data.type === "invite"
+      ? `تم تفعيل رمز الدعوة بنجاح. صاحب الرمز: ${data.inviter_username || "مستخدم زينيث"}.`
+      : "تم تفعيل رمز الاسترداد — سيُخصم 1.5% من إجمالي الطلب.", "success");
+  } catch (error) {
+    activeCheckoutCode = null; activeCheckoutCodeType = null;
+    setMessage("checkoutCodeMsg", error?.message || "تعذر التحقق من الرمز.", "error");
+  } finally { button.disabled = false; button.textContent = "تطبيق"; }
+});
+el("checkoutCode")?.addEventListener("input", () => {
+  activeCheckoutCode = null; activeCheckoutCodeType = null;
+  if (el("checkoutCodeMsg")) { el("checkoutCodeMsg").textContent = "اضغط تطبيق للتحقق من الرمز."; el("checkoutCodeMsg").className = "msg"; }
+});
+el("checkoutUsePoints")?.addEventListener("change", () => {
+  if (el("checkoutUsePoints").checked) {
+    setMessage("checkoutCodeMsg", activeCheckoutCodeType === "redemption"
+      ? "يمكن استخدام رمز الخصم مع النقاط؛ سيُحسب المطلوب بعد الخصم."
+      : "سيتم خصم كامل قيمة الطلب من نقاطك عند إرسال الطلب.", "success");
+  }
+});
+
 function explainOrderFailure(error) {
   const raw = [error?.message, error?.details, error?.hint, error?.code]
     .filter(Boolean).join(" ");
@@ -3671,58 +3747,34 @@ async function submitPurchaseOrder() {
   submitBtn.textContent = "جارٍ إرسال الطلب...";
   try {
     let result;
-    if (isCartCheckout) {
-      const items = cartItems.map(line => ({product_id:Number(line.id), quantity:Number(line.qty || 1), provider:line.provider}));
-      if (!items.length) throw new Error("السلة فارغة.");
-      if (el("paymentMethod").value === "wallet") {
-        result = await db.rpc("create_wallet_cart_order", {p_items:items, p_player_id:playerId, p_zone_id:zoneId});
-      } else {
-        const file = el("proofFile").files[0];
-        if (!file) { setMessage("orderMsg", "ارفع صورة إثبات التحويل أولاً.", "error"); return; }
-        if (!file.type || !file.type.startsWith("image/")) { setMessage("orderMsg", "الملف لازم يكون صورة.", "error"); return; }
-        if (file.size > 5 * 1024 * 1024) { setMessage("orderMsg", "حجم الصورة أكبر من 5 ميغابايت. اختَر صورة أصغر.", "error"); return; }
-        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(-90) || "proof-image";
-        const proofPath = `${user.id}/${Date.now()}-${safeName}`;
-        const {error: uploadError} = await db.storage.from("payment-proofs").upload(proofPath, file, {contentType:file.type, upsert:false});
-        if (uploadError) throw new Error("تعذر رفع صورة الإثبات: " + uploadError.message);
-        result = await db.rpc("create_direct_cart_order", {p_items:items, p_player_id:playerId, p_zone_id:zoneId, p_proof_path:proofPath, p_transaction_ref:el("transactionRef").value.trim() || null});
-      }
-    } else if (el("paymentMethod").value === "wallet") {
-      result = await db.rpc("create_wallet_order", {
-        p_product_id: selectedProduct.id,
-        p_player_id: playerId,
-        p_zone_id: zoneId,
-        p_payment_provider: selectedProvider
-      });
-    } else {
+    const items = isCartCheckout
+      ? cartItems.map(line => ({product_id:Number(line.id), quantity:Number(line.qty || 1), provider:line.provider}))
+      : [{product_id:Number(selectedProduct.id), quantity:1, provider:selectedProvider}];
+    if (!items.length) throw new Error("السلة فارغة.");
+    const usePoints = !!el("checkoutUsePoints")?.checked;
+    const paymentMethod = usePoints ? "points" : el("paymentMethod").value;
+    let proofPath = null;
+    if (paymentMethod === "direct") {
       const file = el("proofFile").files[0];
-      if (!file) {
-        setMessage("orderMsg", "ارفع صورة إثبات التحويل أولاً.", "error");
-        return;
-      }
-      if (!file.type || !file.type.startsWith("image/")) {
-        setMessage("orderMsg", "الملف لازم يكون صورة.", "error");
-        return;
-      }
-      if (file.size > 5 * 1024 * 1024) {
-        setMessage("orderMsg", "حجم الصورة أكبر من 5 ميغابايت. اختَر صورة أصغر.", "error");
-        return;
-      }
+      if (!file) throw new Error("ارفع صورة إثبات التحويل أولاً.");
+      if (!file.type || !file.type.startsWith("image/")) throw new Error("الملف لازم يكون صورة.");
+      if (file.size > 5 * 1024 * 1024) throw new Error("حجم الصورة أكبر من 5 ميغابايت. اختَر صورة أصغر.");
       const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(-90) || "proof-image";
-      const proofPath = `${user.id}/${Date.now()}-${safeName}`;
-      const {error: uploadError} = await db.storage.from("payment-proofs").upload(
-        proofPath, file, {contentType: file.type, upsert: false}
-      );
+      proofPath = `${user.id}/${Date.now()}-${safeName}`;
+      const {error: uploadError} = await db.storage.from("payment-proofs").upload(proofPath, file, {contentType:file.type, upsert:false});
       if (uploadError) throw new Error("تعذر رفع صورة الإثبات: " + uploadError.message);
-      result = await db.rpc("create_direct_order", {
-        p_product_id: selectedProduct.id,
-        p_player_id: playerId,
-        p_zone_id: zoneId,
-        p_payment_provider: selectedProvider,
-        p_proof_path: proofPath,
-        p_transaction_ref: el("transactionRef").value.trim() || null
-      });
     }
+    const {data:orderData,error:orderError} = await db.rpc("create_zenith_order", {
+      p_items:items,
+      p_player_id:playerId,
+      p_zone_id:zoneId,
+      p_payment_method:paymentMethod,
+      p_payment_provider:items[0].provider || selectedProvider,
+      p_proof_path:proofPath,
+      p_transaction_ref:el("transactionRef")?.value.trim() || null,
+      p_checkout_code:activeCheckoutCode
+    });
+    result = {data:orderData,error:orderError};
 
     if (result.error) throw result.error;
     const orderId = result.data;
@@ -3730,6 +3782,7 @@ async function submitPurchaseOrder() {
       `تم استلام طلبك${orderId != null ? " رقم #" + orderId : ""}. حالة الطلب: قيد الانتظار، ولن يُعتبر الشحن مكتملاً إلا بعد معالجته.`,
       "success");
     el("purchaseForm").reset();
+    resetCheckoutRewards();
     updatePaymentFields();
     await loadMyOrders();
     if (checkoutCartItemId === "cart") {
@@ -3799,8 +3852,11 @@ function openOrderConfirmModal() {
   rows.append(
     orderConfirmValue(activeStoreGame === "honor" ? "UID" : "Player ID", summary.playerId),
     ...(activeStoreGame === "honor" ? [] : [orderConfirmValue("Zone ID", summary.zoneId)]),
-    orderConfirmValue("طريقة الدفع", summary.method),
-    orderConfirmValue("إجمالي السعر", money(summary.total))
+    orderConfirmValue("طريقة الدفع", el("checkoutUsePoints")?.checked ? "نقاط زينيث" : summary.method),
+    orderConfirmValue("إجمالي السعر", money(summary.total)),
+    ...(activeCheckoutCode ? [orderConfirmValue(activeCheckoutCodeType === "invite" ? "رمز الدعوة" : "رمز الاسترداد", activeCheckoutCode)] : []),
+    ...(activeCheckoutCodeType === "redemption" ? [orderConfirmValue("خصم الرمز", "1.5% من إجمالي الطلب")] : []),
+    ...(el("checkoutUsePoints")?.checked ? [orderConfirmValue("النقاط المطلوبة تقريباً", (Math.ceil((summary.total * (activeCheckoutCodeType === "redemption" ? 0.985 : 1) / 24) * 100) / 100).toFixed(2) + " نقطة") ] : [])
   );
   el("orderConfirmOverlay").hidden = false;
   el("orderConfirmOverlay").setAttribute("aria-hidden", "false");
@@ -4541,10 +4597,21 @@ async function loadAccountPanel() {
   el("accountFullName").textContent = metadata.full_name || metadata.name || "غير متوفر في بيانات الحساب";
   el("accountUsername").textContent = metadata.username ? "@" + metadata.username : "غير متوفر في بيانات الحساب";
   el("accountEmail").textContent = user.email || "—";
-  const [ordersResult, walletResult] = await Promise.all([
+  const [ordersResult, walletResult, zenithResult] = await Promise.all([
     db.from("orders").select("id", {count:"exact", head:true}).eq("user_id", user.id),
-    db.from("wallet_transactions").select("amount_iqd,wallet_provider").eq("user_id", user.id)
+    db.from("wallet_transactions").select("amount_iqd,wallet_provider").eq("user_id", user.id),
+    db.rpc("get_zenith_account_summary")
   ]);
+  if (!zenithResult.error) {
+    const z = zenithResult.data || {};
+    el("accountInviteCode").textContent = z.invite_code || "—";
+    el("accountZenithPoints").textContent = Number(z.points || 0).toFixed(2) + " نقطة";
+    el("accountZenithPointsValue").textContent = money(z.points_value_iqd || 0);
+  } else {
+    el("accountInviteCode").textContent = "تعذر التحميل";
+    el("accountZenithPoints").textContent = "تعذر التحميل";
+    el("accountZenithPointsValue").textContent = "تعذر التحميل";
+  }
   el("accountOrderCount").textContent = ordersResult.error ? "تعذر التحميل" : Number(ordersResult.count || 0).toLocaleString("en-US");
   if (walletResult.error) {
     el("accountCurrentBalance").textContent = "تعذر التحميل";
