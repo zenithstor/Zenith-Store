@@ -1946,6 +1946,18 @@ html[data-theme="light"] .checkoutOrderDetails .checkoutSummaryTotal strong span
 #allCustomerReviewsPanel{padding-bottom:24px}.zenithConfirmRows{display:grid;gap:8px}.zenithConfirmRow{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}.zenithConfirmRow strong{text-align:left;overflow-wrap:anywhere;max-width:62%}
 .reviewStatsCard{display:none!important}
 </style>
+
+<style id="zenith-review-avatar-round-performance-final">
+/* Keep all account and review avatars perfectly circular, never oval. */
+.headerAccountButton,.themeToggle{aspect-ratio:1/1!important;border-radius:50%!important;flex:0 0 auto!important;box-sizing:border-box!important}
+.headerAccountButton{width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;min-height:40px!important;max-height:40px!important}
+.headerAccountButton img{display:block!important;width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;aspect-ratio:1/1!important;object-fit:cover!important;border-radius:50%!important}
+.themeToggle{width:34px!important;min-width:34px!important;max-width:34px!important;height:34px!important;min-height:34px!important;max-height:34px!important}
+.publicReviewAvatar{width:46px!important;height:46px!important;min-width:46px!important;min-height:46px!important;flex:0 0 46px!important;aspect-ratio:1/1!important;overflow:hidden!important;border-radius:50%!important}
+.publicReviewAvatar img{display:block!important;width:100%!important;height:100%!important;aspect-ratio:1/1!important;object-fit:cover!important;border-radius:50%!important}
+@media(prefers-reduced-motion:reduce){.headerAccountButton,.themeToggle{transition:none!important;animation:none!important}}
+</style>
+
 </head>
 <body>
 <header>
@@ -3281,6 +3293,9 @@ document.addEventListener("click", event => {
   document.querySelectorAll(".productInfoButton[aria-expanded='true']").forEach(node => node.setAttribute("aria-expanded","false"));
 });
 window.addEventListener("scroll", () => {
+  // Avoid repeated full-document scans during ordinary scrolling.
+  const openPopover = document.querySelector(".productInfoPopover");
+  if (!openPopover) return;
   document.querySelectorAll(".productInfoPopover").forEach(node => node.remove());
   document.querySelectorAll(".productInfoButton[aria-expanded='true']").forEach(node => node.setAttribute("aria-expanded", "false"));
 }, {passive:true});
@@ -3813,9 +3828,7 @@ async function refreshSession() {
     el("menuToggle").setAttribute("aria-expanded", "false");
   }
   if (error) setMessage("authMsg", error.message, "error");
-  await loadMyOrders();
-  await loadCustomerWallet();
-  await updateHeaderAccountAvatar(user);
+  await Promise.all([loadMyOrders(), loadCustomerWallet()]);
 }
 
 el("loginForm").addEventListener("submit", async e => {
@@ -4210,9 +4223,14 @@ async function loadMyOrders() {
       setMessage("myOrdersMsg", "ما عندك طلبات حالياً.");
       return;
     }
-    const {data: orderItems} = await db.from("order_items").select("order_id,product_name,diamonds,product_type,quantity,unit_price_iqd,line_total_iqd").in("order_id", orders.map(o=>o.id));
-    const {data: existingReviews, error: existingReviewsError} = await db.from("customer_reviews").select("order_id,status").in("order_id", orders.map(o=>o.id));
-    const reviewedOrderIds = new Set((existingReviews || []).map(review => String(review.order_id)));
+    const [orderItemsResult, accountReviewResult] = await Promise.all([
+      db.from("order_items").select("order_id,product_name,diamonds,product_type,quantity,unit_price_iqd,line_total_iqd").in("order_id", orders.map(o=>o.id)),
+      db.from("customer_reviews").select("id").eq("user_id", user.id).limit(1).maybeSingle()
+    ]);
+    const orderItems = orderItemsResult.data || [];
+    const hasAccountReview = !!accountReviewResult.data;
+    const reviewCheckFailed = !!accountReviewResult.error;
+    if (reviewCheckFailed) console.warn("Could not check account review status", accountReviewResult.error);
     const itemsByOrder = {};
     (orderItems || []).forEach(item => (itemsByOrder[item.order_id] ||= []).push(item));
 
@@ -4274,8 +4292,8 @@ async function loadMyOrders() {
         const reviewButton = document.createElement("button");
         reviewButton.type = "button";
         reviewButton.className = "reviewOrderButton";
-        reviewButton.textContent = reviewedOrderIds.has(String(order.id)) ? "تم إرسال تقييمك" : "قيّم طلبك";
-        reviewButton.disabled = reviewedOrderIds.has(String(order.id));
+        reviewButton.textContent = reviewCheckFailed ? "تعذر التحقق من التقييم" : hasAccountReview ? "سبق أن قيّم حسابك" : "قيّم طلبك";
+        reviewButton.disabled = reviewCheckFailed || hasAccountReview;
         if (!reviewButton.disabled) reviewButton.addEventListener("click", () => openCustomerReview(order, productInfo));
         card.appendChild(reviewButton);
       }
@@ -4484,7 +4502,7 @@ el("submitReviewBtn").addEventListener("click", async () => {
     if (!order || String(order.status).toLowerCase() !== "completed") throw new Error("التقييم متاح للطلبات المكتملة فقط.");
     const {error} = await db.from("customer_reviews").insert({order_id: activeReviewOrderId, user_id: user.id, rating: selectedReviewRating, comment, status: "pending"});
     if (error) {
-      if (error.code === "23505") throw new Error("سبق وأرسلت تقييماً لهذا الطلب.");
+      if (error.code === "23505") throw new Error("هذا الحساب أرسل تقييماً من قبل؛ يسمح بتقييم واحد فقط لكل حساب.");
       throw error;
     }
     setMessage("reviewSubmitMsg", "وصل تقييمك إلى الإدارة للمراجعة. شكراً لمشاركتك!", "success");
@@ -4502,35 +4520,39 @@ async function loadPublicCustomerReviews(limit = 3, targetId = "publicCustomerRe
   const box = el(targetId);
   if (!box) return;
   box.textContent = "جارٍ تحميل التقييمات...";
-  const {data: reviews, error} = await db.from("customer_reviews").select("id,rating,comment,created_at,user_id,order_id").eq("status", "approved").order("created_at", {ascending:false}).limit(limit);
-  if (error) { box.textContent = "تعذر تحميل التقييمات حالياً: " + error.message; console.error("Public customer reviews query failed", error); return; }
+  const {data: reviews, error} = await db.rpc("get_public_customer_reviews", {p_limit: limit});
+  if (error) {
+    box.textContent = "تعذر تحميل التقييمات حالياً. تحقق من تنفيذ تحديث التقييمات في Supabase.";
+    console.error("Public customer reviews RPC failed", error);
+    return;
+  }
   box.replaceChildren();
-  if (!reviews?.length) { box.textContent = "كن أول من يشاركنا رأيه بعد اكتمال طلبه."; return; }
-  const userIds = [...new Set(reviews.map(review => review.user_id).filter(Boolean))];
-  const {data: publicProfiles, error: publicProfilesError} = userIds.length
-    ? await db.from("customer_public_profiles").select("user_id,avatar_url,username,display_name").in("user_id", userIds)
-    : {data:[],error:null};
-  if (publicProfilesError) console.warn("Public review profile lookup failed", publicProfilesError);
-  const publicProfileMap = Object.fromEntries((publicProfiles || []).map(profile => [profile.user_id, profile]));
-  const orderIds = reviews.map(review => review.order_id);
-  const {data: items} = await db.from("order_items").select("order_id,product_name,diamonds,product_type,quantity").in("order_id", orderIds);
-  const itemNames = {};
-  (items || []).forEach(item => (itemNames[item.order_id] ||= []).push(item.product_name || (item.diamonds ? `${item.diamonds} جوهرة` : "اشتراك")));
+  if (!reviews?.length) {
+    box.textContent = "لا توجد تقييمات معتمدة للعرض حالياً.";
+    return;
+  }
   reviews.forEach(review => {
     const card = document.createElement("article"); card.className = "publicReviewCard";
     const avatar = document.createElement("div"); avatar.className = "publicReviewAvatar";
-    const avatarUrl = publicProfileMap[review.user_id]?.avatar_url;
-    const publicProfile = publicProfileMap[review.user_id] || {};
-    const displayName = publicProfile.display_name || publicProfile.username || "عميل زينيث";
-    if (avatarUrl) { const image = document.createElement("img"); image.src = avatarUrl; image.alt = "الصورة الشخصية للعميل"; image.loading = "lazy"; avatar.appendChild(image); }
-    else avatar.textContent = displayName.slice(0,1).toUpperCase();
+    const avatarUrl = review.avatar_url || "";
+    const displayName = review.display_name || "عميل زينيث";
+    if (avatarUrl) {
+      const image = document.createElement("img");
+      image.src = avatarUrl; image.alt = "الصورة الشخصية للعميل";
+      image.loading = "lazy"; image.decoding = "async";
+      avatar.appendChild(image);
+    } else {
+      avatar.textContent = displayName.trim().slice(0,1).toUpperCase() || "Z";
+    }
     const body = document.createElement("div"); body.className = "publicReviewBody";
     const header = document.createElement("div"); header.className = "publicReviewHeader";
     const name = document.createElement("strong"); name.textContent = displayName;
-    const stars = document.createElement("div"); stars.className = "publicReviewStars"; stars.textContent = "★".repeat(review.rating) + "☆".repeat(5-review.rating);
+    const rating = Math.max(0, Math.min(5, Number(review.rating) || 0));
+    const stars = document.createElement("div"); stars.className = "publicReviewStars"; stars.textContent = "★".repeat(rating) + "☆".repeat(5-rating);
     header.append(stars, name);
     const comment = document.createElement("p"); comment.textContent = review.comment || "تجربة ممتازة، شكراً لثقتك بنا.";
-    const complete = document.createElement("div"); complete.className = "publicReviewComplete"; complete.textContent = "✓ طلب مكتمل · " + ((itemNames[review.order_id] || ["طلب من المتجر"]).join("، "));
+    const complete = document.createElement("div"); complete.className = "publicReviewComplete";
+    complete.textContent = "✓ طلب مكتمل · " + (review.product_names || "طلب من المتجر");
     body.append(header, comment, complete); card.append(avatar, body); box.appendChild(card);
   });
 }
@@ -4566,14 +4588,25 @@ async function loadAdminCustomerReviews() {
     const comment = document.createElement("p"); comment.textContent = row.comment || "بدون تعليق نصي";
     const state = document.createElement("small"); state.textContent = row.status === "approved" ? "منشور" : row.status === "rejected" ? "مرفوض" : "بانتظار المراجعة";
     card.append(title, stars, comment, state);
+    const actions = document.createElement("div"); actions.className = "actions";
     if (row.status === "pending") {
-      const actions = document.createElement("div"); actions.className = "actions";
       const approve = document.createElement("button"); approve.type = "button"; approve.textContent = "تأكيد النشر";
       approve.addEventListener("click", async () => { approve.disabled = true; const {error} = await db.from("customer_reviews").update({status:"approved", reviewed_at:new Date().toISOString()}).eq("id", row.id); if (error) { setMessage("adminReviewsMsg", "تعذر نشر التقييم: "+error.message, "error"); approve.disabled = false; return; } await loadAdminCustomerReviews(); await loadPublicCustomerReviews(); if (!el("allCustomerReviewsPanel").hidden) await loadPublicCustomerReviews(300, "allPublicCustomerReviews"); });
       const reject = document.createElement("button"); reject.type = "button"; reject.className = "danger"; reject.textContent = "رفض";
       reject.addEventListener("click", async () => { if (!confirm("تأكيد رفض هذا التقييم؟")) return; reject.disabled = true; const {error} = await db.from("customer_reviews").update({status:"rejected", reviewed_at:new Date().toISOString()}).eq("id", row.id); if (error) { setMessage("adminReviewsMsg", "تعذر رفض التقييم: "+error.message, "error"); reject.disabled = false; return; } await loadAdminCustomerReviews(); });
-      actions.append(approve, reject); card.append(actions);
+      actions.append(approve, reject);
     }
+    const remove = document.createElement("button"); remove.type = "button"; remove.className = "danger"; remove.textContent = "حذف التعليق";
+    remove.addEventListener("click", async () => {
+      if (!confirm("هل تريد حذف هذا التعليق نهائياً؟ لا يمكن التراجع عن الحذف.")) return;
+      remove.disabled = true;
+      const {error} = await db.from("customer_reviews").delete().eq("id", row.id);
+      if (error) { setMessage("adminReviewsMsg", "تعذر حذف التعليق: " + error.message, "error"); remove.disabled = false; return; }
+      await loadAdminCustomerReviews();
+      await loadPublicCustomerReviews();
+      if (!el("allCustomerReviewsPanel").hidden) await loadPublicCustomerReviews(300, "allPublicCustomerReviews");
+    });
+    actions.append(remove); card.append(actions);
     target.append(card);
   };
   if (!pending.length) pendingBox.textContent = "لا توجد تقييمات بانتظار المراجعة."; else pending.forEach(row => render(row, pendingBox));
@@ -5353,7 +5386,7 @@ setInterval(async () => {
     const signature = JSON.stringify(data.map(o => [String(o.id), String(o.status || "pending")]));
     if (signature !== myOrdersStatusSnapshot) await loadMyOrders();
   } catch (_) {}
-}, 15000);
+}, 45000);
   el("myOrdersPanel").querySelector("[data-back]").addEventListener("click", () => {
   saveActivePage("products");
   hideCustomerPanels();
