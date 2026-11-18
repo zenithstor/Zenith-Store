@@ -1954,7 +1954,7 @@ html[data-theme="light"] .checkoutOrderDetails .checkoutSummaryTotal strong span
       <div class="brandImagePlaceholder"><img class="brandLogoDark" src="images/logo.png" alt="شعار ZenithStore"><img class="brandLogoLight" src="images/logo-black.png" alt="شعار ZenithStore"></div>
       <div class="brand brandStack"><span class="brandZenith">ZENITH</span><span class="brandStore">store</span></div>
     </div>
-    <div class="headerActions"><button type="button" class="themeToggle" id="themeToggle" aria-label="تفعيل الوضع النهاري" title="تبديل الوضع">☀</button><button type="button" class="headerAccountButton" id="headerAccountButton" aria-label="الحساب"><img id="headerAccountAvatar" alt="" hidden><span id="headerAccountFallback" aria-hidden="true">♙</span></button><button type="button" class="menuBtn" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false" hidden></button></div>
+    <div class="headerActions"><button type="button" class="headerAccountButton" id="headerAccountButton" aria-label="الحساب"><img id="headerAccountAvatar" alt="" hidden><span id="headerAccountFallback" aria-hidden="true">♙</span></button><button type="button" class="themeToggle" id="themeToggle" aria-label="تفعيل الوضع النهاري" title="تبديل الوضع">☀</button><button type="button" class="menuBtn" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false" hidden></button></div>
   </div>
   <nav class="menuBox" id="mainMenu" hidden>
     <div class="menuAccountArea">
@@ -3779,11 +3779,11 @@ async function loadCustomerWallet() {
   }
 }
 
-async function updateHeaderAccountAvatar(user) {
+async function updateHeaderAccountAvatar(user, knownAvatarUrl = null) {
   const image = el("headerAccountAvatar"), fallback = el("headerAccountFallback"), button = el("headerAccountButton");
   if (!image || !fallback || !button) return;
-  let avatarUrl = user?.user_metadata?.avatar_url || "";
-  if (user?.id) {
+  let avatarUrl = knownAvatarUrl !== null ? (knownAvatarUrl || "") : (user?.user_metadata?.avatar_url || "");
+  if (knownAvatarUrl === null && user?.id) {
     try {
       const {data} = await db.from("customer_public_profiles").select("avatar_url").eq("user_id", user.id).maybeSingle();
       avatarUrl = data?.avatar_url || avatarUrl;
@@ -5064,17 +5064,7 @@ async function loadAccountPanel() {
   const avatar = el("accountAvatarPreview"), fallback = el("accountAvatarFallback");
   if (avatarUrl) { avatar.src = avatarUrl; avatar.hidden = false; fallback.hidden = true; }
   else { avatar.hidden = true; fallback.hidden = false; fallback.textContent = (metadata.username || metadata.full_name || "Z").slice(0,1).toUpperCase(); }
-  await updateHeaderAccountAvatar(user);
-  // Keep the public review identity in sync with the account profile.
-  try {
-    await db.from("customer_public_profiles").upsert({
-      user_id:user.id,
-      username:metadata.username || null,
-      display_name:metadata.full_name || metadata.name || null,
-      avatar_url:avatarUrl || null,
-      updated_at:new Date().toISOString()
-    }, {onConflict:"user_id"});
-  } catch (_) {}
+  await updateHeaderAccountAvatar(user, avatarUrl);
   if (!zenithResult.error) {
     const z = zenithResult.data || {};
     el("accountInviteCode").textContent = z.invite_code || "—";
@@ -5088,13 +5078,28 @@ async function loadAccountPanel() {
     el("accountInviteUsers").textContent = "تعذر التحميل";
   }
   el("accountOrderCount").textContent = ordersResult.error ? "تعذر التحميل" : Number(ordersResult.count || 0).toLocaleString("en-US");
+  let totals = walletTotalsResult.data || {};
   if (walletTotalsResult.error) {
-    el("accountAsiacellBalance").textContent = "تعذر التحميل";
-    el("accountMastercardBalance").textContent = "تعذر التحميل";
-    el("accountTotalUsed").textContent = "تعذر التحميل";
-    msg.textContent = "تعذر تحميل بيانات المحفظة: " + walletTotalsResult.error.message; msg.className = "msg error"; return;
+    // Temporary compatibility path while Supabase refreshes its RPC schema cache.
+    const fallback = await db.from("wallet_transactions")
+      .select("amount_iqd,wallet_provider").eq("user_id", user.id);
+    if (fallback.error) {
+      el("accountAsiacellBalance").textContent = "تعذر التحميل";
+      el("accountMastercardBalance").textContent = "تعذر التحميل";
+      el("accountTotalUsed").textContent = "تعذر التحميل";
+      msg.textContent = "تعذر تحميل بيانات المحفظة: " + fallback.error.message;
+      msg.className = "msg error"; return;
+    }
+    totals = (fallback.data || []).reduce((out, row) => {
+      const amount = Number(row.amount_iqd || 0);
+      if (String(row.wallet_provider || "").toLowerCase() === "asiacell") out.asiacell_balance += amount;
+      else out.mastercard_balance += amount;
+      if (amount < 0) out.total_used += Math.abs(amount);
+      return out;
+    }, {asiacell_balance:0, mastercard_balance:0, total_used:0});
+    msg.textContent = "تم تحميل أرصدة المحفظة بالطريقة الاحتياطية؛ حدّث دالة Supabase لاستعادة التحميل المختصر.";
+    msg.className = "msg";
   }
-  const totals = walletTotalsResult.data || {};
   el("accountAsiacellBalance").textContent = money(totals.asiacell_balance || 0);
   el("accountMastercardBalance").textContent = money(totals.mastercard_balance || 0);
   el("accountTotalUsed").textContent = money(totals.total_used || 0);
@@ -8005,6 +8010,34 @@ button,strong,b,h1,h2,h3{font-weight:800!important}
 @media(prefers-reduced-motion:reduce){
  .sectionsSheet,.sectionsSheetBackdrop{transition:none!important}
 }
+</style>
+
+
+<style id="zenith-user-requested-final-corrections">
+/* Header account shortcut: a clean circular avatar directly beside the theme control. */
+.headerActions{direction:ltr!important;display:flex!important;align-items:center!important;gap:7px!important}
+.headerAccountButton{width:34px!important;min-width:34px!important;max-width:34px!important;height:34px!important;padding:0!important;border-radius:50%!important;overflow:hidden!important;display:grid!important;place-items:center!important;background:var(--surface)!important;border:1px solid var(--border)!important;color:var(--blue)!important;box-shadow:none!important}
+.headerAccountButton img{width:100%!important;height:100%!important;object-fit:cover!important;border-radius:50%!important}
+.headerAccountButton span{font-size:19px!important;line-height:1!important}
+/* Only the three review headings are unboxed; review cards retain their previous design. */
+.zenithCustomerReviews{margin:28px 0 24px!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+.customerReviewsEyebrow{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
+.customerReviewsTitleRow{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
+.publicCustomerReviews{display:grid!important;gap:11px!important;margin:0!important;padding:0!important}
+.publicReviewCard{direction:rtl!important;display:flex!important;gap:12px!important;align-items:flex-start!important;padding:14px!important;border:1px solid rgba(116,157,197,.22)!important;border-radius:15px!important;background:rgba(255,255,255,.035)!important;box-shadow:none!important}
+.publicReviewAvatar{width:46px!important;height:46px!important;flex:0 0 46px!important;border-radius:50%!important;overflow:hidden!important}
+.publicReviewBody{min-width:0!important;flex:1!important;direction:rtl!important;text-align:right!important}
+.publicReviewHeader{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:10px!important;direction:ltr!important;width:100%!important}
+.publicReviewHeader strong{font-size:14px!important;font-weight:900!important}
+.publicReviewStars{flex:0 0 auto!important;direction:ltr!important;margin:0!important;white-space:nowrap!important;font-size:16px!important;letter-spacing:1px!important;color:#ffc84b!important}
+.publicReviewBody>small{display:none!important}
+/* Avoid costly blur/continuous paint work in the pages reported as laggy. */
+#accountPanel,#purchasePanel,#productsPanel,.accountInformationCard,.accountProfileEditor,.checkoutOrderSummary{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+#accountPanel::before,#purchasePanel::before,#productsPanel::before{animation:none!important;filter:none!important}
+#accountPanel *,#purchasePanel *{scroll-behavior:auto!important}
+#products .product,#accountPanel .accountStat,#purchasePanel .checkoutOrderSummary{will-change:auto!important;filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+#products .product::before,#products .product::after{animation:none!important;filter:none!important;will-change:auto!important}
+@media(prefers-reduced-motion:reduce){.headerAccountButton,.publicReviewCard{transition:none!important}}
 </style>
 
 </body>
