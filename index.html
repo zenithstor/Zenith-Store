@@ -4507,11 +4507,10 @@ async function loadPublicCustomerReviews(limit = 3, targetId = "publicCustomerRe
   box.replaceChildren();
   if (!reviews?.length) { box.textContent = "كن أول من يشاركنا رأيه بعد اكتمال طلبه."; return; }
   const userIds = [...new Set(reviews.map(review => review.user_id).filter(Boolean))];
-  const [{data: profiles}, {data: publicProfiles}] = await Promise.all([
-    userIds.length ? db.from("profiles").select("id,username").in("id", userIds) : Promise.resolve({data:[]}),
-    userIds.length ? db.from("customer_public_profiles").select("user_id,avatar_url,username,display_name").in("user_id", userIds) : Promise.resolve({data:[]})
-  ]);
-  const profileMap = Object.fromEntries((profiles || []).map(profile => [profile.id, profile]));
+  const {data: publicProfiles, error: publicProfilesError} = userIds.length
+    ? await db.from("customer_public_profiles").select("user_id,avatar_url,username,display_name").in("user_id", userIds)
+    : {data:[],error:null};
+  if (publicProfilesError) console.warn("Public review profile lookup failed", publicProfilesError);
   const publicProfileMap = Object.fromEntries((publicProfiles || []).map(profile => [profile.user_id, profile]));
   const orderIds = reviews.map(review => review.order_id);
   const {data: items} = await db.from("order_items").select("order_id,product_name,diamonds,product_type,quantity").in("order_id", orderIds);
@@ -4522,15 +4521,14 @@ async function loadPublicCustomerReviews(limit = 3, targetId = "publicCustomerRe
     const avatar = document.createElement("div"); avatar.className = "publicReviewAvatar";
     const avatarUrl = publicProfileMap[review.user_id]?.avatar_url;
     const publicProfile = publicProfileMap[review.user_id] || {};
-    const profile = profileMap[review.user_id] || {};
-    const displayName = publicProfile.display_name || profile.display_name || publicProfile.username || profile.username || "عميل زينيث";
+    const displayName = publicProfile.display_name || publicProfile.username || "عميل زينيث";
     if (avatarUrl) { const image = document.createElement("img"); image.src = avatarUrl; image.alt = "الصورة الشخصية للعميل"; image.loading = "lazy"; avatar.appendChild(image); }
     else avatar.textContent = displayName.slice(0,1).toUpperCase();
     const body = document.createElement("div"); body.className = "publicReviewBody";
     const header = document.createElement("div"); header.className = "publicReviewHeader";
     const name = document.createElement("strong"); name.textContent = displayName;
     const stars = document.createElement("div"); stars.className = "publicReviewStars"; stars.textContent = "★".repeat(review.rating) + "☆".repeat(5-review.rating);
-    header.append(name, stars);
+    header.append(stars, name);
     const comment = document.createElement("p"); comment.textContent = review.comment || "تجربة ممتازة، شكراً لثقتك بنا.";
     const complete = document.createElement("div"); complete.className = "publicReviewComplete"; complete.textContent = "✓ طلب مكتمل · " + ((itemNames[review.order_id] || ["طلب من المتجر"]).join("، "));
     body.append(header, comment, complete); card.append(avatar, body); box.appendChild(card);
@@ -4866,7 +4864,7 @@ document.querySelectorAll("[data-section-action]").forEach(button=>button.addEve
   if(action==="search") { el("navSearch").click(); return; }
   if(action==="reviews") { el("homePanel").hidden=false; hideCustomerPanels(); el("homePanel").hidden=false; saveActivePage("home"); setActiveNav(""); el("customerReviewsSection").scrollIntoView({behavior:"smooth",block:"center"}); return; }
   if(action==="accounts") { hideCustomerPanels(); el("accountsMarketPanel").hidden=false; saveActivePage("accounts-market"); el("accountsMarketPanel").scrollIntoView({behavior:"smooth",block:"start"}); return; }
-  if(action==="back") { const previous=appNavigationStack.pop(); if(previous==="account") el("menuAccount").click(); else if(previous==="wallet") el("menuWallet").click(); else if(previous==="orders") el("menuMyOrders").click(); else if(previous==="cart") showCart(); else el("navHome").click(); }
+  if(action==="back") { return; }
 }));
 el("accountsMarketBack")?.addEventListener("click",()=>el("navHome").click());
 el("accountsMarketSupport")?.addEventListener("click",()=>{hideCustomerPanels();el("supportPanel").hidden=false;saveActivePage("support");el("supportPanel").scrollIntoView({behavior:"smooth",block:"start"});});
@@ -5055,11 +5053,11 @@ async function loadAccountPanel() {
   el("accountPhoneInput").value = savedPhone;
   el("accountPhoneDisplay").textContent = savedPhone || "غير مضاف";
   el("accountPhoneEditor").hidden = true;
-  const [ordersResult, walletResult, zenithResult, profileResult] = await Promise.all([
+  const [ordersResult, walletTotalsResult, zenithResult, profileResult] = await Promise.all([
     db.from("orders").select("id", {count:"exact", head:true}).eq("user_id", user.id),
-    db.from("wallet_transactions").select("amount_iqd,wallet_provider").eq("user_id", user.id),
+    db.rpc("get_my_wallet_totals"),
     db.rpc("get_zenith_account_summary"),
-    db.from("customer_public_profiles").select("avatar_url").eq("user_id", user.id).maybeSingle()
+    db.from("customer_public_profiles").select("avatar_url,username,display_name").eq("user_id", user.id).maybeSingle()
   ]);
   const profile = profileResult.data || {};
   const avatarUrl = profile.avatar_url || metadata.avatar_url || "";
@@ -5067,6 +5065,16 @@ async function loadAccountPanel() {
   if (avatarUrl) { avatar.src = avatarUrl; avatar.hidden = false; fallback.hidden = true; }
   else { avatar.hidden = true; fallback.hidden = false; fallback.textContent = (metadata.username || metadata.full_name || "Z").slice(0,1).toUpperCase(); }
   await updateHeaderAccountAvatar(user);
+  // Keep the public review identity in sync with the account profile.
+  try {
+    await db.from("customer_public_profiles").upsert({
+      user_id:user.id,
+      username:metadata.username || null,
+      display_name:metadata.full_name || metadata.name || null,
+      avatar_url:avatarUrl || null,
+      updated_at:new Date().toISOString()
+    }, {onConflict:"user_id"});
+  } catch (_) {}
   if (!zenithResult.error) {
     const z = zenithResult.data || {};
     el("accountInviteCode").textContent = z.invite_code || "—";
@@ -5080,22 +5088,16 @@ async function loadAccountPanel() {
     el("accountInviteUsers").textContent = "تعذر التحميل";
   }
   el("accountOrderCount").textContent = ordersResult.error ? "تعذر التحميل" : Number(ordersResult.count || 0).toLocaleString("en-US");
-  if (walletResult.error) {
+  if (walletTotalsResult.error) {
     el("accountAsiacellBalance").textContent = "تعذر التحميل";
     el("accountMastercardBalance").textContent = "تعذر التحميل";
     el("accountTotalUsed").textContent = "تعذر التحميل";
-    msg.textContent = "تعذر تحميل بيانات المحفظة: " + walletResult.error.message; msg.className = "msg error"; return;
+    msg.textContent = "تعذر تحميل بيانات المحفظة: " + walletTotalsResult.error.message; msg.className = "msg error"; return;
   }
-  const totals = (walletResult.data || []).reduce((acc, row) => {
-    const provider = row.wallet_provider === "asiacell" ? "asiacell" : "mastercard";
-    const amount = Number(row.amount_iqd || 0);
-    acc.balance[provider] += amount;
-    if (amount < 0) acc.used += Math.abs(amount);
-    return acc;
-  }, {balance:{asiacell:0,mastercard:0},used:0});
-  el("accountAsiacellBalance").textContent = money(totals.balance.asiacell);
-  el("accountMastercardBalance").textContent = money(totals.balance.mastercard);
-  el("accountTotalUsed").textContent = money(totals.used);
+  const totals = walletTotalsResult.data || {};
+  el("accountAsiacellBalance").textContent = money(totals.asiacell_balance || 0);
+  el("accountMastercardBalance").textContent = money(totals.mastercard_balance || 0);
+  el("accountTotalUsed").textContent = money(totals.total_used || 0);
   msg.textContent = "تم تحميل بيانات حسابك الفعلية."; msg.className = "msg success";
 }
 
@@ -5128,6 +5130,16 @@ el("saveAccountNameBtn")?.addEventListener("click",async()=>{
     const {data,error}=await db.rpc("change_my_display_name",{p_display_name:value});
     if(error)throw error;
     const {data:authData}=await db.auth.getUser();
+    if (authData?.user) {
+      const {error:publicProfileError}=await db.from("customer_public_profiles").upsert({
+        user_id:authData.user.id,
+        username:authData.user.user_metadata?.username || null,
+        display_name:value,
+        avatar_url:authData.user.user_metadata?.avatar_url || null,
+        updated_at:new Date().toISOString()
+      },{onConflict:"user_id"});
+      if(publicProfileError) console.warn("Could not sync public review name",publicProfileError);
+    }
     el("accountFullName").textContent=value;el("accountNameEditor").hidden=true;
     el("accountNameCooldown").textContent="يمكنك تغيير اسم الحساب بعد 7 أيام.";el("editAccountNameBtn").disabled=true;
     await updateHeaderAccountAvatar(authData?.user);
@@ -5336,7 +5348,7 @@ setInterval(async () => {
     const signature = JSON.stringify(data.map(o => [String(o.id), String(o.status || "pending")]));
     if (signature !== myOrdersStatusSnapshot) await loadMyOrders();
   } catch (_) {}
-}, 5000);
+}, 15000);
   el("myOrdersPanel").querySelector("[data-back]").addEventListener("click", () => {
   saveActivePage("products");
   hideCustomerPanels();
@@ -5670,8 +5682,9 @@ updatePaymentFields();
     document.documentElement.classList.remove("zenith-restore-pending");
   }
 })();
-checkForNewAdminOrders();
-window.setInterval(checkForNewAdminOrders, 15000);
+window.setInterval(() => {
+  if (currentUserIsAdmin && !document.hidden) checkForNewAdminOrders();
+}, 60000);
 </script>
 
 <script id="zenith-poster-slider-script">
@@ -7948,6 +7961,50 @@ button,strong,b,h1,h2,h3{font-weight:800!important}
 .sectionsGrid strong{color:#f5f8ff!important;font-size:inherit!important;line-height:1.35!important}
 .sectionsGrid button[data-section-action="back"] .sectionTileIcon{background:rgba(239,64,55,.22)!important;color:#ff7770!important}
 @media(max-width:420px){.sectionsGrid{gap:8px!important}.sectionsGrid button{padding:7px 3px!important;gap:7px!important}.sectionTileIcon{width:48px!important;height:48px!important;flex-basis:48px!important}.sectionTileIcon svg{width:30px!important;height:30px!important}}
+</style>
+
+
+
+<style id="zenith-performance-reviews-sections-v2">
+/* Keep the review headings independent from the review list/cards. */
+.zenithCustomerReviews{
+  margin:26px 0 22px!important;padding:0!important;border:0!important;
+  border-radius:0!important;background:transparent!important;box-shadow:none!important;
+}
+.customerReviewsEyebrow{display:block!important;margin:0 0 3px!important;font-size:14px!important;font-weight:900!important;color:var(--accent,#ef4037)!important}
+.customerReviewsTitleRow{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;margin:0 0 13px!important;padding:0!important}
+.zenithCustomerReviews .customerReviewsTitleRow h2{margin:0!important;font-size:22px!important;font-weight:950!important}
+#allCustomerReviews{margin:0!important;padding:3px 0!important;background:transparent!important;border:0!important;box-shadow:none!important;color:var(--accent,#ef4037)!important;font-size:13px!important;font-weight:900!important}
+.publicCustomerReviews{display:grid!important;gap:10px!important;margin:0!important;padding:0!important}
+.publicReviewCard{direction:ltr!important;align-items:flex-start!important;padding:11px 0!important;border:0!important;border-bottom:1px solid rgba(145,160,180,.18)!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+.publicReviewAvatar{width:44px!important;height:44px!important;flex:0 0 44px!important;border-radius:50%!important;overflow:hidden!important}
+.publicReviewBody{direction:rtl!important;text-align:right!important}
+.publicReviewHeader{direction:ltr!important;display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:9px!important}
+.publicReviewHeader strong{direction:rtl!important;text-align:right!important;font-size:14px!important;font-weight:900!important}
+.publicReviewStars{direction:ltr!important;white-space:nowrap!important;margin:0!important;font-size:15px!important;letter-spacing:1px!important}
+.publicReviewBody>small{display:none!important}
+
+/* Reduce expensive effects in the three lag-prone areas without removing useful transitions. */
+#accountPanel,#purchasePanel,#productsPanel{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+#accountPanel *,#purchasePanel *{scroll-behavior:auto}
+#products .product{
+  animation:none!important;filter:none!important;backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;will-change:auto!important;
+  contain:layout paint!important;
+}
+#products .product::before,#products .product::after{animation:none!important;filter:none!important}
+#accountPanel .accountStat,#accountPanel .accountInfoCard,
+#purchasePanel .checkoutOrderSummary,#purchasePanel .checkoutOrderDetails{
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+  box-shadow:0 3px 12px rgba(0,0,0,.12)!important;
+}
+.sectionsSheet{transition:transform .24s ease,opacity .24s ease!important;will-change:transform,opacity!important}
+.sectionsSheet:not(.isOpen){transform:translateY(22px)!important;opacity:0!important;pointer-events:none!important}
+.sectionsSheet.isOpen{transform:translateY(0)!important;opacity:1!important}
+.sectionsSheetBackdrop{transition:opacity .24s ease!important}
+@media(prefers-reduced-motion:reduce){
+ .sectionsSheet,.sectionsSheetBackdrop{transition:none!important}
+}
 </style>
 
 </body>
