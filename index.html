@@ -1958,6 +1958,39 @@ html[data-theme="light"] .checkoutOrderDetails .checkoutSummaryTotal strong span
 @media(prefers-reduced-motion:reduce){.headerAccountButton,.themeToggle{transition:none!important;animation:none!important}}
 </style>
 
+
+<style id="zenith-independent-surfaces-and-reviews-final">
+/* Opaque sticky header: no transparency or glass effect. */
+header{background:#070b13!important;background-color:#070b13!important;opacity:1!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;}
+html[data-theme="light"] header{background:#fff!important;background-color:#fff!important;opacity:1!important;}
+/* Remove the oversized shared translucent glow behind unrelated sections. */
+.panel:not(.homePanel){position:relative!important;isolation:auto!important;overflow:visible!important;background:#0b1220!important;border:1px solid #26364d!important;border-radius:16px!important;box-shadow:0 5px 16px #0003!important;}
+.panel:not(.homePanel)::before{content:none!important;display:none!important;animation:none!important;}
+html[data-theme="light"] .panel:not(.homePanel){background:#fff!important;border-color:#d4dfeb!important;box-shadow:0 5px 16px #173b5b10!important;}
+.gameCategoryGrid .gameMainCategory,.gameGroupCard,.homeCategory{isolation:isolate;}
+.zenithCustomerReviews{background:transparent!important;border:0!important;box-shadow:none!important;padding:12px 0!important;}
+.zenithCustomerReviews::before{content:none!important;display:none!important;}
+.publicReviewCard{background:#101a2a!important;border:1px solid #293b52!important;border-radius:14px!important;}
+html[data-theme="light"] .publicReviewCard{background:#fff!important;border-color:#d4dfeb!important;}
+.faqSection{background:transparent!important;border:0!important;box-shadow:none!important;}
+.faqItem{margin:8px 0!important;padding:12px 13px!important;border:1px solid #293b52!important;border-radius:13px!important;background:#101a2a!important;}
+.faqItem:last-child{border-bottom:1px solid #293b52!important;}
+html[data-theme="light"] .faqItem{background:#fff!important;border-color:#d4dfeb!important;}
+/* Summary: average score, yellow stars, then total approved reviews. */
+.reviewStatsCard{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:14px!important;min-height:0!important;margin:0 0 14px!important;padding:12px 14px!important;background:#101a2a!important;border:1px solid #293b52!important;border-radius:14px!important;}
+html[data-theme="light"] .reviewStatsCard{background:#fff!important;border-color:#d4dfeb!important;}
+.reviewStatsAverage{font-size:30px!important;font-weight:950!important;line-height:1!important;color:var(--ink)!important;direction:ltr!important;}
+.reviewStatsDetails{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:3px!important;}
+.reviewStatsStars{direction:ltr!important;color:#ffc629!important;font-size:23px!important;letter-spacing:3px!important;line-height:1.1!important;}
+.reviewStatsCount{font-size:11px!important;color:var(--muted)!important;}
+.reviewStatsCount strong{font-size:13px!important;color:var(--ink)!important;}
+/* Keep review stars on the left and the customer name on the right in RTL cards. */
+.publicReviewHeader{direction:ltr!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;}
+.publicReviewHeader strong{direction:rtl!important;text-align:right!important;margin-left:auto!important;}
+.publicReviewStars{direction:ltr!important;order:0!important;margin:0!important;white-space:nowrap!important;}
+@media(max-width:420px){.reviewStatsAverage{font-size:27px!important}.reviewStatsStars{font-size:21px!important;letter-spacing:2px!important}}
+</style>
+
 </head>
 <body>
 <header>
@@ -2068,8 +2101,12 @@ html[data-theme="light"] .checkoutOrderDetails .checkoutSummaryTotal strong span
     
   <section class="zenithCustomerReviews" id="customerReviewsSection">
     <div class="customerReviewsEyebrow">آراء العملاء</div>
-    <div class="customerReviewsTitleRow"><h2>تقييمات عملاء ZENITH</h2><button type="button" id="allCustomerReviews">جميع التقييمات <span aria-hidden="true">←</span></button></div>
-    <div id="publicCustomerReviews" class="publicCustomerReviews"><p class="muted">آراء عملائنا تظهر هنا بعد مراجعتها واعتمادها.</p></div>
+     <div class="customerReviewsTitleRow"><h2>تقييمات عملاء ZENITH</h2><button type="button" id="allCustomerReviews">جميع التقييمات <span aria-hidden="true">←</span></button></div>
+     <div class="reviewStatsCard" id="reviewStatsCard" aria-live="polite">
+       <strong class="reviewStatsAverage" id="reviewStatsAverage">0.0</strong>
+       <div class="reviewStatsDetails"><div class="reviewStatsStars" aria-label="خمس نجوم">★★★★★</div><div class="reviewStatsCount">عدد التعليقات: <strong id="reviewStatsCount">0</strong></div></div>
+     </div>
+     <div id="publicCustomerReviews" class="publicCustomerReviews"><p class="muted">آراء عملائنا تظهر هنا بعد مراجعتها واعتمادها.</p></div>
   </section>
   <section class="panel" id="allCustomerReviewsPanel" hidden>
     <h2>جميع تقييمات العملاء</h2>
@@ -4516,45 +4553,56 @@ el("submitReviewBtn").addEventListener("click", async () => {
   }
 });
 
-async function loadPublicCustomerReviews(limit = 3, targetId = "publicCustomerReviews") {
+async function loadPublicCustomerReviews(limit = 1000, targetId = "publicCustomerReviews") {
   const box = el(targetId);
   if (!box) return;
   box.textContent = "جارٍ تحميل التقييمات...";
-  const {data: reviews, error} = await db.rpc("get_public_customer_reviews", {p_limit: limit});
-  if (error) {
-    box.textContent = "تعذر تحميل التقييمات حالياً. تحقق من تنفيذ تحديث التقييمات في Supabase.";
-    console.error("Public customer reviews RPC failed", error);
-    return;
-  }
-  box.replaceChildren();
-  if (!reviews?.length) {
-    box.textContent = "لا توجد تقييمات معتمدة للعرض حالياً.";
-    return;
-  }
-  reviews.forEach(review => {
-    const card = document.createElement("article"); card.className = "publicReviewCard";
-    const avatar = document.createElement("div"); avatar.className = "publicReviewAvatar";
-    const avatarUrl = review.avatar_url || "";
-    const displayName = review.display_name || "عميل زينيث";
-    if (avatarUrl) {
-      const image = document.createElement("img");
-      image.src = avatarUrl; image.alt = "الصورة الشخصية للعميل";
-      image.loading = "lazy"; image.decoding = "async";
-      avatar.appendChild(image);
-    } else {
-      avatar.textContent = displayName.trim().slice(0,1).toUpperCase() || "Z";
+  try {
+    const {data: reviews, error} = await db.rpc("get_public_customer_reviews", {p_limit: limit});
+    if (error) throw error;
+    const rows = Array.isArray(reviews) ? reviews : [];
+    if (targetId === "publicCustomerReviews") {
+      const averageEl = el("reviewStatsAverage"), countEl = el("reviewStatsCount");
+      const total = rows.length;
+      const average = total ? rows.reduce((sum, item) => sum + Math.max(0, Math.min(5, Number(item.rating) || 0)), 0) / total : 0;
+      if (averageEl) averageEl.textContent = average.toFixed(1);
+      if (countEl) countEl.textContent = String(total);
     }
-    const body = document.createElement("div"); body.className = "publicReviewBody";
-    const header = document.createElement("div"); header.className = "publicReviewHeader";
-    const name = document.createElement("strong"); name.textContent = displayName;
-    const rating = Math.max(0, Math.min(5, Number(review.rating) || 0));
-    const stars = document.createElement("div"); stars.className = "publicReviewStars"; stars.textContent = "★".repeat(rating) + "☆".repeat(5-rating);
-    header.append(stars, name);
-    const comment = document.createElement("p"); comment.textContent = review.comment || "تجربة ممتازة، شكراً لثقتك بنا.";
-    const complete = document.createElement("div"); complete.className = "publicReviewComplete";
-    complete.textContent = "✓ طلب مكتمل · " + (review.product_names || "طلب من المتجر");
-    body.append(header, comment, complete); card.append(avatar, body); box.appendChild(card);
-  });
+    box.replaceChildren();
+    if (!rows.length) {
+      box.textContent = "لا توجد تقييمات معتمدة للعرض حالياً.";
+      return;
+    }
+    const visibleRows = targetId === "publicCustomerReviews" ? rows.slice(0, 3) : rows;
+    visibleRows.forEach(review => {
+      const card = document.createElement("article"); card.className = "publicReviewCard";
+      const avatar = document.createElement("div"); avatar.className = "publicReviewAvatar";
+      const avatarUrl = review.avatar_url || "";
+      const displayName = review.display_name || "عميل زينيث";
+      if (avatarUrl) {
+        const image = document.createElement("img");
+        image.src = avatarUrl; image.alt = "الصورة الشخصية للعميل";
+        image.loading = "lazy"; image.decoding = "async";
+        image.onerror = () => { image.remove(); avatar.textContent = displayName.trim().slice(0,1).toUpperCase() || "Z"; };
+        avatar.appendChild(image);
+      } else {
+        avatar.textContent = displayName.trim().slice(0,1).toUpperCase() || "Z";
+      }
+      const body = document.createElement("div"); body.className = "publicReviewBody";
+      const header = document.createElement("div"); header.className = "publicReviewHeader";
+      const name = document.createElement("strong"); name.textContent = displayName;
+      const rating = Math.max(0, Math.min(5, Number(review.rating) || 0));
+      const stars = document.createElement("div"); stars.className = "publicReviewStars"; stars.textContent = "★".repeat(rating) + "☆".repeat(5-rating);
+      header.append(stars, name);
+      const comment = document.createElement("p"); comment.textContent = review.comment || "تجربة ممتازة، شكراً لثقتك بنا.";
+      const complete = document.createElement("div"); complete.className = "publicReviewComplete";
+      complete.textContent = "✓ طلب مكتمل · " + (review.product_names || "طلب من المتجر");
+      body.append(header, comment, complete); card.append(avatar, body); box.appendChild(card);
+    });
+  } catch (error) {
+    box.textContent = "تعذر تحميل التقييمات حالياً. حاول تحديث الصفحة بعد قليل.";
+    console.error("Public customer reviews RPC failed", error);
+  }
 }
 
 el("allCustomerReviews")?.addEventListener("click", async () => {
@@ -4563,7 +4611,7 @@ el("allCustomerReviews")?.addEventListener("click", async () => {
   el("allCustomerReviewsPanel").hidden = false;
   saveActivePage("all-reviews");
   setActiveNav("");
-  await loadPublicCustomerReviews(300, "allPublicCustomerReviews");
+  await loadPublicCustomerReviews(1000, "allPublicCustomerReviews");
   el("allCustomerReviewsPanel").scrollIntoView({behavior:"smooth", block:"start"});
 });
 el("allReviewsBack")?.addEventListener("click", () => el("navHome").click());
