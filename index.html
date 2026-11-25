@@ -71,8 +71,8 @@ header,
 [hidden] {
   display: none !important;
 }
-/* Keep the home panel from flashing while restoring the last section after refresh. */
-html.zenith-restore-pending #homePanel { visibility: hidden !important; }
+/* Do not hide the app during async startup: a slow connection must never leave a blank page. */
+html.zenith-restore-pending #homePanel { visibility: visible !important; }
 /* Orders must never appear below the home categories; show them only in the Orders view. */
 #homePanel:not([hidden]) ~ #myOrdersPanel { display: none !important; }
 
@@ -1238,7 +1238,7 @@ html[data-theme="light"] .gameCategoryGrid .gameTileName{color:#142238}
 }
 
 /* Keep the verified-squad section in the markup for later activation, but hide it temporarily. */
-#verifiedSquadCategory,#mlbbPageVerified{display:none!important}
+
 /* Four Mobile Legends sections: two equal wide horizontal cards per row. */
 .mlbbPageGrid{
   display:grid!important;
@@ -1350,7 +1350,7 @@ body.asiacell-deposit-open #depositEntryFields {
   transition:opacity .18s ease, transform .18s ease;
 }
 #zenithExitToast.isVisible { opacity:1; transform:translate(-50%,-4px); }
-html.zenith-restore-pending main { visibility:hidden !important; }
+html.zenith-restore-pending main { visibility:visible !important; }
 </style>
 
 
@@ -1991,6 +1991,55 @@ html[data-theme="light"] .reviewStatsCard{background:#fff!important;border-color
 @media(max-width:420px){.reviewStatsAverage{font-size:27px!important}.reviewStatsStars{font-size:21px!important;letter-spacing:2px!important}}
 </style>
 
+
+<style id="zenith-currency-wallet-styles">
+.zenithBalanceWrap{position:relative;display:flex;align-items:center}.zenithBalancePill{height:34px;min-width:78px;padding:0 9px;border-radius:18px!important;border:1px solid var(--border)!important;background:var(--surface)!important;color:var(--blue)!important;font-size:11px!important;font-weight:900!important;white-space:nowrap}.zenithBalancePopover{position:absolute;z-index:10050;top:calc(100% + 9px);left:0;width:180px;padding:12px;border:1px solid var(--border);border-radius:13px;background:var(--surface);box-shadow:0 10px 30px #0003;display:grid;gap:8px}.zenithBalancePopover[hidden]{display:none}.zenithBalancePopover select,.walletCurrencyPicker select{width:100%;padding:8px;border-radius:9px;border:1px solid var(--border);background:var(--surface);color:var(--text)}.zenithBalancePopover button{padding:8px;border-radius:9px}.walletCurrencyPicker{display:flex;align-items:center;gap:10px;margin:10px 0}.walletCurrencyPicker select{max-width:180px}.walletCurrencyCard{grid-column:1/-1}.walletCurrencyCard[hidden]{display:none!important}.walletAgentLink{display:inline-block;margin-top:10px;color:#fff;text-decoration:underline;font-size:12px}.checkoutPaymentChooser{margin:12px 0;padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--surface)}.checkoutPaymentOptions{display:flex;gap:15px;flex-wrap:wrap;margin:8px 0}.checkoutPaymentOptions label{display:flex;align-items:center;gap:6px}.checkoutPaymentChooser input[type=file]{width:100%;margin:7px 0}.walletBankCard:before,.walletBankCard:after{border-radius:50%!important;aspect-ratio:1/1!important}.walletCardChip{width:39px;height:39px;min-width:39px;border-radius:50%;aspect-ratio:1/1}
+@media(max-width:390px){.zenithBalancePill{min-width:67px;padding:0 6px;font-size:10px!important}.walletCurrencyPicker{flex-wrap:wrap}}
+</style>
+
+
+<style id="zenith-wallet-ui-refinements">
+.headerActions{gap:7px!important}.zenithBalanceWrap{order:3}.headerAccountButton{order:1}.themeToggle{order:2}.menuBtn{order:4}.zenithBalancePill{width:62px!important;min-width:62px!important;max-width:62px!important;height:32px!important;padding:0 4px!important;border-radius:18px!important;font-size:8px!important;letter-spacing:-.25px!important;overflow:hidden;text-overflow:clip}.zenithBalancePopover{left:50%;transform:translateX(-50%);top:calc(100% + 8px);width:172px;padding:10px;animation:walletChoicePop .2s ease both}.zenithBalancePopover[hidden]{display:none!important}.currencyChoiceGroup{display:flex;align-items:center;justify-content:center;gap:5px;padding:3px;border-radius:12px;background:var(--page);border:1px solid var(--border)}.currencyChoiceGroup button{flex:1;min-width:0;padding:7px 5px!important;border:1px solid transparent!important;border-radius:9px!important;background:transparent!important;color:var(--muted)!important;font-size:11px!important;font-weight:800!important;transition:background .2s ease,color .2s ease,transform .2s ease,border-color .2s ease}.currencyChoiceGroup button[aria-pressed="true"]{background:var(--blue)!important;color:#fff!important;border-color:var(--blue)!important;box-shadow:0 3px 10px #1685c533;transform:translateY(-1px)}.walletCurrencyPicker{margin:9px 0!important;animation:walletChoicePop .2s ease both}.walletCurrencyPicker[hidden]{display:none!important}.walletCurrencyPicker .currencyChoiceGroup{width:min(100%,330px)}@keyframes walletChoicePop{from{opacity:0;transform:translateY(-5px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}.walletCardChip{width:29px!important;height:29px!important;min-width:29px!important;max-width:29px!important;padding:0!important;display:grid!important;place-items:center!important;line-height:1!important;border-radius:50%!important;aspect-ratio:1/1!important;font-size:17px!important;position:absolute!important;top:14px!important;left:14px!important;right:auto!important}.walletCardChip.depositCardAddButton{display:grid!important}.checkoutDirectProviders{margin:8px 0 12px!important}.checkoutPaymentChooser #checkoutPaymentInfo{margin:8px 0;padding:12px}.checkoutPaymentChooser #checkoutAsiacellCardGroup{margin:8px 0;padding:10px;border:1px solid var(--border);border-radius:11px}.checkoutPaymentChooser #checkoutAsiacellCardNumber{width:100%;margin-top:6px}.checkoutPaymentChooser #proofFile{width:100%;margin:7px 0}.checkoutPaymentChooser #checkoutPaymentInfo[hidden],.checkoutPaymentChooser #checkoutAsiacellCardGroup[hidden]{display:none!important}
+@media(max-width:390px){.headerActions{gap:5px!important}.zenithBalancePill{width:59px!important;min-width:59px!important;max-width:59px!important;height:32px!important;font-size:8px!important}.zenithBalancePopover{left:auto;right:-36px;transform:none}}
+</style>
+<style id="zenith-wallet-size-and-product-grid-recovery">
+.headerActions{align-items:center!important}
+.zenithBalanceWrap{align-self:center!important;height:34px!important;display:flex!important;align-items:center!important}
+.zenithBalancePill{box-sizing:border-box!important;width:57px!important;min-width:57px!important;max-width:57px!important;height:34px!important;min-height:34px!important;max-height:34px!important;padding:0 3px!important;display:flex!important;align-items:center!important;justify-content:center!important;line-height:1!important;font-size:8px!important;white-space:nowrap!important;border-radius:18px!important}
+@media(max-width:390px){.zenithBalancePill{width:55px!important;min-width:55px!important;max-width:55px!important;height:34px!important;min-height:34px!important;max-height:34px!important;font-size:7.5px!important}}
+.walletBankCard .walletCardChip,.walletBankCard .walletCardChip.depositCardAddButton{appearance:none!important;-webkit-appearance:none!important;box-sizing:border-box!important;width:31px!important;height:31px!important;min-width:31px!important;min-height:31px!important;max-width:31px!important;max-height:31px!important;flex:0 0 31px!important;padding:0!important;margin:0!important;display:grid!important;place-items:center!important;border-radius:50%!important;aspect-ratio:1/1!important;line-height:1!important;text-align:center!important;font-size:20px!important;font-weight:500!important;position:absolute!important;top:13px!important;left:13px!important;right:auto!important}
+.walletBankCard .walletCardChip{transform:none!important}
+.walletBankCard .walletCardChip:active{transform:scale(.92)!important}
+</style>
+
+<style id="zenith-wallet-currency-picker-position">
+.walletPageHead{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:5px!important}
+.walletPageHead .walletCurrencyPicker{width:auto!important;margin:0 0 2px!important;align-self:flex-start!important}
+.walletPageHead .walletCurrencyPicker .currencyChoiceGroup{width:auto!important;max-width:100%!important;gap:3px!important;padding:2px!important;border-radius:9px!important}
+.walletPageHead .walletCurrencyPicker .currencyChoiceGroup button{width:auto!important;min-width:0!important;padding:4px 8px!important;margin:0!important;font-size:10px!important;line-height:1.2!important;border-radius:7px!important}
+.walletPageHead #walletChangeCurrency{width:auto!important;min-width:112px!important;margin:0!important;padding:7px 12px!important;font-size:12px!important;border-radius:10px!important}
+</style>
+
+<style id="zenith-requested-final-fixes">
+.walletPageHead{direction:rtl!important;align-items:flex-start!important;text-align:right!important}
+.walletPageHead>div:first-child{width:100%!important;align-self:stretch!important;text-align:right!important}
+.walletPageHead .walletEyebrow,.walletPageHead h2,.walletPageHead p{display:block!important;text-align:right!important;margin-right:0!important;margin-left:auto!important}
+.walletPageHead .walletCurrencyPicker{align-self:flex-start!important;margin:0 0 2px!important}
+.walletPageHead .walletCurrencyPicker .currencyChoiceGroup{display:flex!important;gap:3px!important;padding:2px!important}
+.walletPageHead .walletCurrencyPicker .currencyChoiceGroup button{width:auto!important;min-width:0!important;padding:4px 8px!important;margin:0!important;font-size:10px!important;line-height:1.2!important}
+.checkoutDirectModal{z-index:2147483105!important}
+.checkoutDirectModal .checkoutDirectModalCard{width:min(100%,430px)!important;max-height:82vh!important;overflow:auto!important;padding:18px!important}
+.checkoutDirectModal .checkoutDirectModalCard h3{text-align:center!important;margin:0 0 12px!important}
+.checkoutDirectModalClose{width:auto!important;min-width:78px!important;padding:7px 14px!important;margin:0 0 12px!important;font-size:12px!important}
+.checkoutDirectModal .depositPaymentCard{margin:8px 0 12px!important}
+.checkoutDirectModal #checkoutAsiacellCardGroup{padding:10px!important;margin:8px 0!important;border:1px solid var(--border)!important;border-radius:11px!important}
+.checkoutDirectModal #checkoutMastercardAmountGroup{padding:0!important;margin:8px 0!important}
+.checkoutDirectModal #checkoutAsiacellCardNumber,.checkoutDirectModal #checkoutMastercardAmount,.checkoutDirectModal #proofFile,.checkoutDirectModal #transactionRef{width:100%!important;margin:6px 0 10px!important}
+.checkoutDirectModal #proofFile{padding:10px!important}
+.checkoutDirectModal .depositAsiacellHelp{margin-top:8px!important}
+.checkoutDirectModal[hidden]{display:none!important}
+</style>
+
 </head>
 <body>
 <header>
@@ -1999,7 +2048,7 @@ html[data-theme="light"] .reviewStatsCard{background:#fff!important;border-color
       <div class="brandImagePlaceholder"><img class="brandLogoDark" src="images/logo.png" alt="شعار ZenithStore" decoding="async"><img class="brandLogoLight" src="images/logo-black.png" alt="شعار ZenithStore" decoding="async"></div>
       <div class="brand brandStack"><span class="brandZenith">ZENITH</span><span class="brandStore">store</span></div>
     </div>
-    <div class="headerActions"><button type="button" class="headerAccountButton" id="headerAccountButton" aria-label="الحساب"><img id="headerAccountAvatar" alt="" hidden><span id="headerAccountFallback" aria-hidden="true">♙</span></button><button type="button" class="themeToggle" id="themeToggle" aria-label="تفعيل الوضع النهاري" title="تبديل الوضع">☀</button><button type="button" class="menuBtn" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false" hidden></button></div>
+    <div class="headerActions"><button type="button" class="headerAccountButton" id="headerAccountButton" aria-label="الحساب"><img id="headerAccountAvatar" alt="" hidden><span id="headerAccountFallback" aria-hidden="true">♙</span></button><button type="button" class="themeToggle" id="themeToggle" aria-label="تفعيل الوضع النهاري" title="تبديل الوضع">☀</button><div class="zenithBalanceWrap"><button type="button" id="headerWalletBalance" class="zenithBalancePill" aria-expanded="false" aria-label="رصيد المحفظة">0 IQD</button><div id="headerWalletPopover" class="zenithBalancePopover" hidden><strong id="headerWalletFullBalance">0 IQD</strong><div class="currencyChoiceGroup headerCurrencyChoices" role="group" aria-label="اختيار العملة"><button type="button" data-wallet-currency="IQD" aria-pressed="true">IQD</button><button type="button" data-wallet-currency="SAR" aria-pressed="false">SAR</button><button type="button" data-wallet-currency="USD" aria-pressed="false">USD</button></div></div></div><button type="button" class="menuBtn" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false" hidden></button></div>
   </div>
   <nav class="menuBox" id="mainMenu" hidden>
     <div class="menuAccountArea">
@@ -2247,7 +2296,8 @@ html[data-theme="light"] .reviewStatsCard{background:#fff!important;border-color
   <section class="panel walletPage" id="customerWalletPanel" hidden>
     <div class="walletPageHead">
       <div><span class="walletEyebrow">ZENITH STORE</span><h2>المحفظة</h2><p class="muted">إدارة رصيدك وطلبات إضافة الأموال بكل سهولة.</p></div>
-      <button type="button" class="secondary walletBackHome" data-back aria-label="العودة للرئيسية">⌂ الرئيسية</button>
+    <div class="walletCurrencyPicker" id="walletCurrencyPicker" hidden><div class="currencyChoiceGroup" role="group" aria-label="اختيار عملة المحفظة"><button type="button" data-wallet-currency="IQD" aria-pressed="true">دينار IQD</button><button type="button" data-wallet-currency="SAR" aria-pressed="false">ريال SAR</button><button type="button" data-wallet-currency="USD" aria-pressed="false">دولار USD</button></div></div>
+      <button type="button" class="secondary walletBackHome" aria-label="تغيير العملة" id="walletChangeCurrency" aria-expanded="false">تغيير العملة</button>
     </div>
     <div class="walletCardsGrid" aria-label="أرصدة المحافظ">
       <article class="walletBankCard walletAsiacellCard">
@@ -2264,12 +2314,19 @@ html[data-theme="light"] .reviewStatsCard{background:#fff!important;border-color
         <strong id="customerMastercardBalance">جارٍ التحميل...</strong>
         <span class="walletCardType">MasterCard</span>
       </article>
+      <article class="walletBankCard walletCurrencyCard walletSarCard" id="walletSarCard" hidden>
+        <span class="walletCardBrand">ZENITH WALLET</span><small>الرصيد المتاح</small><strong id="customerSarBalance">0 SAR</strong><span class="walletCardType">الريال السعودي</span>
+        <a class="walletAgentLink" href="https://wa.me/966530747811" target="_blank" rel="noopener">التواصل مع وكيل السعودية لإضافة الرصيد</a>
+      </article>
+      <article class="walletBankCard walletCurrencyCard walletUsdCard" id="walletUsdCard" hidden>
+        <span class="walletCardBrand">ZENITH WALLET</span><button type="button" class="walletCardChip" id="addUsdDeposit">＋</button><small>الرصيد المتاح</small><strong id="customerUsdBalance">0 USD</strong><span class="walletCardType">الدولار الأمريكي · Binance</span>
+      </article>
     </div>
     <div class="walletCardsActions"><span class="muted">كل محفظة تُستخدم مع طريقة الدفع المطابقة لها.</span><button type="button" class="walletRefreshBtn" id="refreshCustomerWallet">↻ تحديث الأرصدة</button></div>
     <div id="customerWalletMsg" class="msg" aria-live="polite"></div>
     <section class="notice" aria-labelledby="depositHeading">
       <h3 id="depositHeading">إضافة رصيد للمحفظة</h3>
-      <div class="muted">اضغط علامة + في بطاقة آسياسيل أو ماستركارد لفتح نموذج إضافة الرصيد. لا يُضاف الرصيد إلا بعد مراجعة الإدارة.</div>
+      <div class="muted">الدينار عبر آسياسيل أو ماستركارد، الدولار عبر Binance مع إثبات التحويل ومراجعة الإدارة، والريال عبر وكيل السعودية على واتساب.</div>
       <form id="depositForm">
         <input id="depositProvider" type="hidden" value="" form="depositForm">
         <div id="depositEntryPlaceholder" aria-hidden="true"></div>
@@ -2287,6 +2344,7 @@ html[data-theme="light"] .reviewStatsCard{background:#fff!important;border-color
             <p class="depositAsiacellHelp" id="depositAsiacellTransferNote">إذا كان التحويل عن طريق رقم الهاتف يرجى التواصل مع دعم المتجر.</p>
           </div>
           <div id="depositProofGroup"><label for="depositProof">صورة إثبات الدفع</label><input id="depositProof" type="file" accept="image/*" form="depositForm"><button type="button" class="filePickBtn" id="chooseDepositProof">اختيار صورة الإثبات من الجهاز</button></div>
+          <div id="usdDepositInfo" class="notice" hidden><strong>تحويل الدولار عبر Binance</strong><p>حوّل المبلغ إلى رقم الحساب التالي:</p><div class="depositCardNumber">1239308153</div><p>أرفق صورة إثبات التحويل، وسيُضاف الرصيد بعد مراجعة الإدارة.</p></div>
           <button type="submit" id="submitDepositBtn" form="depositForm">إرسال طلب إضافة الرصيد</button>
         </div>
       </form>
@@ -2365,7 +2423,6 @@ html[data-theme="light"] .reviewStatsCard{background:#fff!important;border-color
     <h2>طلباتي</h2>
 <button type="button" class="secondary backBtn" data-back>← رجوع</button>
     <div class="muted">تابع حالة طلباتك وتاريخها من هنا.</div>
-    <button type="button" class="secondary" id="refreshMyOrders">تحديث طلباتي</button>
     <div id="myOrdersMsg" class="msg" aria-live="polite"></div>
     <div id="myOrdersList"></div>
   </section>
@@ -2403,6 +2460,7 @@ html[data-theme="light"] .reviewStatsCard{background:#fff!important;border-color
           </div>
         </section>
       </div>
+      <div class="checkoutPaymentChooser"><span>طريقة الدفع</span><div class="checkoutPaymentOptions"><label><input type="radio" name="checkoutPaymentChoice" value="wallet" checked> رصيد المحفظة</label><label><input type="radio" name="checkoutPaymentChoice" value="direct"> دفع مباشر</label></div><div id="directPaymentFields" hidden><p class="muted">اختر وسيلة الدفع لإظهار نافذة التحويل.</p><div class="checkoutPaymentOptions checkoutDirectProviders"><label><input type="radio" name="checkoutDirectProvider" value="asiacell"> آسياسيل</label><label><input type="radio" name="checkoutDirectProvider" value="mastercard"> ماستركارد</label></div><div id="checkoutDirectModal" class="zenithModalOverlay checkoutDirectModal" hidden aria-hidden="true"><section class="zenithConfirmCard checkoutDirectModalCard" role="dialog" aria-modal="true" aria-labelledby="checkoutDirectModalTitle"><h3 id="checkoutDirectModalTitle">بيانات الدفع المباشر</h3><button type="button" class="secondary checkoutDirectModalClose" id="closeCheckoutDirectModal">إلغاء</button><div id="checkoutPaymentInfo" class="notice depositPaymentCard" aria-live="polite" hidden></div><div id="checkoutAsiacellCardGroup" hidden><label for="checkoutAsiacellCardNumber">ادخل رقم الكارت فقط</label><input id="checkoutAsiacellCardNumber" type="text" inputmode="numeric" autocomplete="off" maxlength="24" pattern="[0-9]{10,24}" placeholder="رقم كارت آسياسيل"><p class="depositAsiacellHelp">إذا كان التحويل عن طريق رقم الهاتف يرجى التواصل مع دعم المتجر.</p></div><div id="checkoutMastercardAmountGroup" hidden><label for="checkoutMastercardAmount">المبلغ المراد تحويله (دينار عراقي)</label><input id="checkoutMastercardAmount" type="number" min="1" step="1" inputmode="numeric" placeholder="أدخل مبلغ التحويل"><label for="proofFile">صورة إثبات الدفع</label><input id="proofFile" type="file" accept="image/*"><label for="transactionRef">رقم التحويل (اختياري)</label><input id="transactionRef" type="text" maxlength="100" placeholder="رقم العملية أو مرجع التحويل"></div></section></div></div></div>
       <input id="paymentMethod" type="hidden" value="wallet">
       <button type="submit" id="submitOrderBtn">إتمام الطلب</button>
       <button type="button" class="secondary" id="cancelPurchase">إلغاء</button>
@@ -2473,6 +2531,7 @@ html[data-theme="light"] .reviewStatsCard{background:#fff!important;border-color
     <button type="button" class="secondary" id="refreshAdminDeposits">تحديث طلبات الإيداع</button>
     <div id="adminDepositsMsg" class="msg" aria-live="polite"></div>
     <div id="adminDepositsList"></div>
+    <h3>طلبات إيداع الدولار عبر Binance</h3><div id="adminUsdDepositsList" class="adminDepositsList"></div>
     <details class="adminArchive" style="margin-top:18px">
       <summary>أرشيف طلبات الإيداع (المقبولة والمرفوضة)</summary>
       <div id="adminArchivedDeposits"></div>
@@ -2490,16 +2549,16 @@ html[data-theme="light"] .reviewStatsCard{background:#fff!important;border-color
     <div id="walletManageBox" class="notice" hidden>
       <h3>الحساب المحدد</h3>
       <div id="walletUserInfo" class="muted"></div>
-      <div class="walletAdminBalances"><div>آسياسيل: <strong id="walletCurrentAsiacell">—</strong></div><div>Mastercard: <strong id="walletCurrentMastercard">—</strong></div></div>
+      <div class="walletAdminBalances"><div>آسياسيل: <strong id="walletCurrentAsiacell">—</strong></div><div>Mastercard: <strong id="walletCurrentMastercard">—</strong></div><div>ريال سعودي: <strong id="walletCurrentSar">0 SAR</strong></div><div>دولار: <strong id="walletCurrentUsd">0 USD</strong></div></div>
       <form id="walletAdjustForm">
         <label for="walletProvider">المحفظة المراد تعديلها</label>
-        <select id="walletProvider" required><option value="mastercard">Mastercard</option><option value="asiacell">آسياسيل</option></select>
+        <select id="walletProvider" required><option value="mastercard">Mastercard (IQD)</option><option value="asiacell">آسياسيل (IQD)</option><option value="SAR">ريال سعودي (SAR)</option><option value="USD">دولار أمريكي (USD)</option></select>
         <label for="walletAction">نوع العملية</label>
         <select id="walletAction" required>
           <option value="add">إضافة رصيد</option>
           <option value="deduct">خصم رصيد</option>
         </select>
-        <label for="walletAmount">المبلغ بالدينار العراقي</label>
+        <label for="walletAmount" id="walletAmountLabel">المبلغ بالدينار العراقي</label>
         <input id="walletAmount" type="number" min="1" step="1" inputmode="numeric" placeholder="مثال: 5000" required>
         <label for="walletReason">سبب العملية</label>
         <input id="walletReason" type="text" maxlength="250" placeholder="مثال: إضافة رصيد للزبون" required>
@@ -2719,6 +2778,13 @@ function applyRoleUI(isAdmin) {
 }
 
 const money = n => Number(n).toLocaleString("en-US") + " د.ع";
+function formatStorePrice(iqdValue) {
+  const value = Number(iqdValue);
+  if (!Number.isFinite(value)) return money(iqdValue);
+  if (zenithWalletCurrency === "USD") return `${(Math.floor(value / 1600 * 100 + 1e-9) / 100).toFixed(2).replace(/\.?0+$/, "") } USD`;
+  if (zenithWalletCurrency === "SAR") return `${(Math.floor(value / 380 * 100 + 1e-9) / 100).toFixed(2).replace(/\.?0+$/, "") } SAR`;
+  return money(value);
+}
 const el = id => document.getElementById(id);
 const CART_STORAGE_KEY = "zenithstore:shoppingCart:" + location.pathname;
 function loadCartItems() {
@@ -2748,7 +2814,7 @@ function renderCart() {
     if (validForCheckout) total += price * Number(item.qty);
     const row = document.createElement("article"); row.className = "cartItem";
     const details = document.createElement("div"); const title = document.createElement("h3"); title.textContent = productTitle(product);
-    const meta = document.createElement("div"); meta.className = "muted"; meta.textContent = (price == null ? "السعر غير متوفر لهذه الطريقة" : money(price) + " للقطعة") + " · " + (item.provider === "asiacell" ? "آسياسيل" : "ماستركارد");
+    const meta = document.createElement("div"); meta.className = "muted"; meta.textContent = (price == null ? "السعر غير متوفر لهذه الطريقة" : formatStorePrice(price) + " للقطعة") + " · " + (item.provider === "asiacell" ? "آسياسيل" : "ماستركارد");
     const actions = document.createElement("div"); actions.className = "cartItemActions";
     const qty = document.createElement("div"); qty.className = "cartQty";
     const minus = document.createElement("button"); minus.type = "button"; minus.textContent = "−"; minus.setAttribute("aria-label","تقليل الكمية"); minus.addEventListener("click", () => changeCartQty(index,-1));
@@ -2824,7 +2890,7 @@ function getPrice(p, provider) {
   // إذا كان سعر ماستركارد 4,750 وآسيا سيل 5,000، نرفع آسيا سيل فقط إلى 5,250.
   if (masterPrice === 4750 && asiaPrice === 5000 && provider === "asiacell") return 5250;
   if (isWeeklySubscriptionProduct(p)) {
-    return provider === "mastercard" ? 2500 : 2750;
+    return provider === "mastercard" ? 3000 : 3250;
   }
   return provider === "mastercard" ? masterPrice : asiaPrice;
 }
@@ -3447,16 +3513,8 @@ function renderProducts() {
       priceEl.textContent = "غير متوفر";
     } else if (missingProviderPrice) {
       priceEl.textContent = "السعر غير متوفر لهذه الطريقة";
-    } else if (isWeeklySubscriptionProduct(p) && !p.__regionalPrice && p.__game !== "freefire") {
-      const oldPrice = document.createElement("del");
-      oldPrice.className = "weeklyOldPrice";
-      oldPrice.textContent = money(getWeeklyOldPrice(provider));
-      const newPrice = document.createElement("span");
-      newPrice.className = "weeklyNewPrice";
-      newPrice.textContent = money(price);
-      priceEl.append(oldPrice, newPrice);
     } else {
-      priceEl.textContent = money(price);
+      priceEl.textContent = formatStorePrice(price);
     }
     const infoText = (() => {
       const name = String(p.name || "").toLowerCase();
@@ -3517,7 +3575,7 @@ function renderProducts() {
       selectedProvider = provider;
       if (continueBtn) { continueBtn.hidden = false; continueBtn.disabled = false; }
       const addBtn = el("addToCartBtn"); if (addBtn) { addBtn.hidden = false; addBtn.disabled = false; }
-      setMessage("productsMsg", "تم اختيار " + productTitle(p) + " — " + money(price), "success");
+      setMessage("productsMsg", "تم اختيار " + productTitle(p) + " — " + formatStorePrice(price), "success");
     };
     if (!previewOnly && !unavailableForProvider) {
       card.addEventListener("click", choose);
@@ -3556,16 +3614,7 @@ function renderPopularProducts() {
     const info = document.createElement("span");
     const title = document.createElement("strong"); title.textContent = productTitle(product);
     const price = document.createElement("small");
-    if (isWeeklySubscriptionProduct(product) && product.__game !== "freefire") {
-      price.className = "popularWeeklyDiscount";
-      const oldPrice = document.createElement("del");
-      oldPrice.textContent = money(getWeeklyOldPrice(el("provider").value));
-      const newPrice = document.createElement("strong");
-      newPrice.textContent = money(getPrice(product, el("provider").value));
-      price.append(oldPrice, newPrice);
-    } else {
-      price.textContent = money(getPrice(product, el("provider").value));
-    }
+    price.textContent = formatStorePrice(getPrice(product, el("provider").value));
     info.append(title, price); button.append(img, info);
     button.addEventListener("click", () => {
       showGemProducts();
@@ -3591,14 +3640,8 @@ function openPurchase(product, provider, fromHistory = false) {
   resetCheckoutRewards();
   el("selectedProductInfo").replaceChildren();
   const summaryText = document.createElement("div");
-  summaryText.textContent = `${productTitle(product)} — ${money(price)} (${provider === "mastercard" ? "ماستركارد" : "آسياسيل"})`;
+  summaryText.textContent = `${productTitle(product)} — ${formatStorePrice(price)} (${provider === "mastercard" ? "ماستركارد" : "آسياسيل"})`;
   el("selectedProductInfo").appendChild(summaryText);
-  if (isWeeklySubscriptionProduct(product)) {
-    const oldPrice = document.createElement("del");
-    oldPrice.className = "weeklyOldPrice purchaseOldPrice";
-    oldPrice.textContent = money(getWeeklyOldPrice(provider));
-    el("selectedProductInfo").appendChild(oldPrice);
-  }
   if (Number(product.diamonds) === 257) {
     const specialNote = document.createElement("div");
     specialNote.className = "productSpecialNote";
@@ -3621,14 +3664,70 @@ function openPurchase(product, provider, fromHistory = false) {
   setMessage("orderMsg", "");
   if (!fromHistory) el("purchasePanel").scrollIntoView({behavior:"smooth", block:"start"});
 }
+function renderCheckoutPaymentInfo() {
+  const target = el("checkoutPaymentInfo");
+  if (!target) return;
+  target.replaceChildren();
+  const choice = document.querySelector('input[name="checkoutDirectProvider"]:checked')?.value || "";
+  target.hidden = choice !== "mastercard";
+  if (!choice || choice === "asiacell") return;
+  const details = PAYMENT_DETAILS.mastercard;
+  const eyebrow = document.createElement("small"); eyebrow.className = "depositInfoEyebrow"; eyebrow.textContent = "بيانات التحويل المعتمدة";
+  const title = document.createElement("strong"); title.className = "depositInfoTitle"; title.textContent = choice === "mastercard" ? "حوّل المبلغ إلى بطاقة ماستركارد" : "حوّل المبلغ عبر آسياسيل";
+  const label = document.createElement("span"); label.className = "depositNumberLabel"; label.textContent = choice === "mastercard" ? "رقم البطاقة" : "رقم كارت آسياسيل";
+  const number = document.createElement("div"); number.className = "depositCardNumber"; number.textContent = details.number;
+  const copy = document.createElement("button"); copy.type = "button"; copy.className = "depositCopyNumber"; copy.textContent = "نسخ الرقم";
+  copy.addEventListener("click", async () => { try { await navigator.clipboard.writeText(details.number); copy.textContent = "تم نسخ الرقم ✓"; } catch (_) { copy.textContent = "انسخ الرقم يدوياً"; } });
+  const note = document.createElement("p"); note.className = "depositInfoNote"; note.textContent = "بعد إتمام التحويل، أرفق صورة واضحة لإثبات الدفع في المكان المخصص أدناه.";
+  target.append(eyebrow, label, number, title, copy, note);
+}
+
 function updatePaymentFields() {
   const payment = el("paymentMethod");
-  if (payment) payment.value = "wallet";
+  const selected = document.querySelector('input[name="checkoutPaymentChoice"]:checked');
+  if (payment) payment.value = selected?.value || "wallet";
+  const direct = payment?.value === "direct";
+  if (el("directPaymentFields")) el("directPaymentFields").hidden = !direct;
+  const provider = document.querySelector('input[name="checkoutDirectProvider"]:checked')?.value || "";
+  renderCheckoutPaymentInfo();
+  if (el("checkoutAsiacellCardGroup")) el("checkoutAsiacellCardGroup").hidden = !direct || provider !== "asiacell";
+  if (el("checkoutMastercardAmountGroup")) el("checkoutMastercardAmountGroup").hidden = !direct || provider !== "mastercard";
+  if (el("checkoutAsiacellCardNumber")) el("checkoutAsiacellCardNumber").required = !!direct && provider === "asiacell";
+  if (el("checkoutMastercardAmount")) el("checkoutMastercardAmount").required = !!direct && provider === "mastercard";
+  if (el("proofFile")) el("proofFile").required = !!direct && provider === "mastercard";
+  if (el("transactionRef")) el("transactionRef").placeholder = "رقم العملية أو مرجع التحويل";
+  document.querySelectorAll('input[name="checkoutDirectProvider"]').forEach(input => { input.required = !!direct; });
+  if (!direct || !provider) closeCheckoutDirectModal();
 }
+function openCheckoutDirectModal() {
+  const modal = el("checkoutDirectModal");
+  if (!modal) return;
+  modal.hidden = false;
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("zenith-modal-open");
+  requestAnimationFrame(() => modal.classList.add("isVisible"));
+  const provider = document.querySelector('input[name="checkoutDirectProvider"]:checked')?.value;
+  const focus = provider === "asiacell" ? el("checkoutAsiacellCardNumber") : el("checkoutMastercardAmount");
+  if (focus) setTimeout(() => focus.focus({preventScroll:true}), 80);
+}
+function closeCheckoutDirectModal() {
+  const modal = el("checkoutDirectModal");
+  if (!modal || modal.hidden) return;
+  modal.classList.remove("isVisible");
+  modal.setAttribute("aria-hidden", "true");
+  modal.hidden = true;
+  document.body.classList.remove("zenith-modal-open");
+}
+el("closeCheckoutDirectModal")?.addEventListener("click", closeCheckoutDirectModal);
+el("checkoutDirectModal")?.addEventListener("click", event => {
+  if (event.target === el("checkoutDirectModal")) closeCheckoutDirectModal();
+});
+
 
 el("cancelPurchase").addEventListener("click", () => {
   el("purchasePanel").hidden = true;
   el("purchaseForm").reset();
+  closeCheckoutDirectModal();
   clearMlbbVerification();
   updatePaymentFields();
   selectedProduct = null;
@@ -3663,7 +3762,23 @@ function renderPaymentInfo(targetId, provider) {
   const amountHelp = el("depositAmountHelp");
   if (amountHelp) amountHelp.textContent = "أدخل المبلغ الذي حولته حتى تتمكن الإدارة من مطابقته وإضافته للمحفظة.";
   target.hidden = provider !== "mastercard";
-  if (provider === "mastercard") {
+  if (provider === "binance") {
+    el("depositAmountGroup").hidden=false; el("depositAmount").required=true; el("depositProofGroup").hidden=false; el("depositProof").required=true; el("depositAsiacellCardGroup").hidden=true; el("depositAsiacellCardNumber").required=false;
+    target.hidden=false;
+    if(el("usdDepositInfo"))el("usdDepositInfo").hidden=true;
+    if(el("depositAmountHelp"))el("depositAmountHelp").textContent="أدخل مبلغ الدولار الذي حولته عبر Binance.";
+    const amountLabel=document.querySelector('label[for="depositAmount"]'); if(amountLabel)amountLabel.textContent="المبلغ المراد إضافته (دولار أمريكي)";
+    const eyebrow=document.createElement("small"); eyebrow.className="depositInfoEyebrow"; eyebrow.textContent="بيانات التحويل المعتمدة";
+    const title=document.createElement("strong"); title.className="depositInfoTitle"; title.textContent="حوّل المبلغ عبر Binance";
+    const label=document.createElement("span"); label.className="depositNumberLabel"; label.textContent="رقم حساب Binance";
+    const number=document.createElement("div"); number.className="depositCardNumber"; number.textContent="1239308153";
+    const copy=document.createElement("button"); copy.type="button"; copy.className="depositCopyNumber"; copy.textContent="نسخ الرقم";
+    copy.addEventListener("click",async()=>{try{await navigator.clipboard.writeText("1239308153");copy.textContent="تم نسخ الرقم ✓";}catch(_){copy.textContent="انسخ الرقم يدوياً";}});
+    const note=document.createElement("p"); note.className="depositInfoNote"; note.textContent="بعد إتمام التحويل، أرفق صورة واضحة لإثبات الدفع في المكان المخصص أدناه.";
+    target.append(eyebrow,label,number,title,copy,note);
+  } else if (provider === "mastercard") {
+    const amountLabel=document.querySelector('label[for="depositAmount"]'); if(amountLabel)amountLabel.textContent="المبلغ المراد إضافته (دينار عراقي)";
+    if(el("usdDepositInfo"))el("usdDepositInfo").hidden=true;
     const eyebrow = document.createElement("small"); eyebrow.className = "depositInfoEyebrow"; eyebrow.textContent = "بيانات التحويل المعتمدة";
     const title = document.createElement("strong"); title.className = "depositInfoTitle"; title.textContent = "حوّل المبلغ إلى بطاقة ماستركارد";
     const label = document.createElement("span"); label.className = "depositNumberLabel"; label.textContent = "رقم البطاقة";
@@ -3677,6 +3792,8 @@ function renderPaymentInfo(targetId, provider) {
     el("depositAsiacellCardNumber").required = false;
     const transactionGroup = el("depositTransactionGroup"); if (transactionGroup) transactionGroup.hidden = true;
   } else if (provider === "asiacell") {
+    const amountLabel=document.querySelector('label[for="depositAmount"]'); if(amountLabel)amountLabel.textContent="المبلغ المراد إضافته (دينار عراقي)";
+    if(el("usdDepositInfo"))el("usdDepositInfo").hidden=true;
     el("depositProofGroup").hidden = true; el("depositProof").required = false;
     el("depositAsiacellCardGroup").hidden = false;
     el("depositAsiacellCardNumber").required = true;
@@ -3747,12 +3864,14 @@ async function submitDepositRequest(e) {
   const user = authData?.user;
   if (authError || !user) { setMessage("depositMsg", "سجّل الدخول أولاً لإرسال طلب الإيداع.", "error"); return; }
   const provider = el("depositProvider").value;
+  const isUsd = provider === "binance";
   const amount = provider === "asiacell" ? null : Number(el("depositAmount").value);
   const file = el("depositProof").files[0];
   const asiacellCardNumber = el("depositAsiacellCardNumber").value.replace(/\D/g, "");
   if (!provider) { setMessage("depositMsg", "اختر طريقة الدفع أولاً.", "error"); return; }
+  if (provider === "binance" && (!Number.isFinite(amount) || amount <= 0 || amount > 1000000)) { setMessage("depositMsg", "أدخل مبلغ دولار صحيحاً.", "error"); return; }
   if (provider === "mastercard" && (!Number.isSafeInteger(amount) || amount < 1000 || amount > 10000000)) { setMessage("depositMsg", "أدخل مبلغاً صحيحاً بين 1,000 و10,000,000 دينار.", "error"); return; }
-  if (provider === "mastercard" && (!file || !file.type || !file.type.startsWith("image/"))) { setMessage("depositMsg", "ارفع صورة إثبات التحويل أولاً.", "error"); return; }
+  if ((provider === "mastercard" || isUsd) && (!file || !file.type || !file.type.startsWith("image/"))) { setMessage("depositMsg", "ارفع صورة إثبات التحويل أولاً.", "error"); return; }
   if (provider === "asiacell" && !/^[0-9]{10,24}$/.test(asiacellCardNumber)) { setMessage("depositMsg", "أدخل رقم كارت آسياسيل بشكل صحيح، بالأرقام فقط.", "error"); return; }
   if (file && file.size > 5 * 1024 * 1024) { setMessage("depositMsg", "حجم الصورة يجب ألا يتجاوز 5 ميغابايت.", "error"); return; }
   const btn = el("submitDepositBtn"); btn.disabled = true; btn.textContent = "جارٍ إرسال الطلب...";
@@ -3765,15 +3884,11 @@ async function submitDepositRequest(e) {
       if (uploadError) throw new Error("تعذر رفع الإثبات: " + uploadError.message);
     }
     // الطلب يُنشأ بحالة pending فقط؛ اعتماد الإيداع وإضافة الرصيد من صلاحية الإدارة.
-    const {data, error} = await db.from("deposits").insert({
-      user_id: user.id,
-      amount_iqd: amount,
-      payment_method: provider,
-      proof_path: proofPath,
-      transaction_ref: provider === "asiacell" ? asiacellCardNumber : null,
-      status: "pending"
-    }).select("id").single();
-    if (error) throw new Error("تم رفع الصورة لكن تعذر تسجيل طلب الإيداع في جدول deposits: " + error.message);
+    const depositPayload = isUsd
+      ? {user_id:user.id,currency_code:"USD",amount,proof_path:proofPath,payment_method:"binance",status:"pending"}
+      : {user_id:user.id,amount_iqd:amount,payment_method:provider,proof_path:proofPath,transaction_ref:provider === "asiacell" ? asiacellCardNumber : null,status:"pending"};
+    const {data, error} = await db.from(isUsd ? "wallet_currency_deposits" : "deposits").insert(depositPayload).select("id").single();
+    if (error) throw new Error("تم رفع الصورة لكن تعذر تسجيل طلب الإيداع: " + error.message);
     setMessage("depositMsg", `تم إرسال طلب إضافة الرصيد رقم #${data.id}. سيبقى قيد المراجعة ولن يُضاف الرصيد إلا بعد موافقة الإدارة.`, "success");
     el("depositForm").reset();
     el("depositAmountGroup").hidden = false;
@@ -3785,11 +3900,71 @@ async function submitDepositRequest(e) {
     restoreDepositEntryFields();
     el("depositEntryFields").hidden = true;
     el("depositAsiacellCardGroup").hidden = true;
-    await loadCustomerDeposits();
+    if (!isUsd) await loadCustomerDeposits();
   } catch (err) {
     setMessage("depositMsg", err?.message || "حدث خطأ أثناء إرسال الطلب.", "error");
   } finally { btn.disabled = false; btn.textContent = "إرسال طلب إضافة الرصيد"; }
 }
+
+let zenithWalletCurrency = "IQD";
+let zenithCurrencyBalances = {IQD:0,SAR:0,USD:0};
+function formatCurrencyBalance(value, currency) {
+  const digits = currency === "IQD" ? 0 : 2;
+  return `${Number(value || 0).toLocaleString("en-US", {minimumFractionDigits:digits, maximumFractionDigits:digits})} ${currency}`;
+}
+function applyWalletCurrency(currency) {
+  zenithWalletCurrency = ["IQD","SAR","USD"].includes(currency) ? currency : "IQD";
+  const iqd = zenithWalletCurrency === "IQD", sar = zenithWalletCurrency === "SAR", usd = zenithWalletCurrency === "USD";
+  document.querySelectorAll(".walletAsiacellCard,.walletMastercardCard").forEach(x=>x.hidden=!iqd);
+  if (el("walletSarCard")) el("walletSarCard").hidden=!sar;
+  if (el("walletUsdCard")) el("walletUsdCard").hidden=!usd;
+  document.querySelectorAll("[data-wallet-currency]").forEach(button=>button.setAttribute("aria-pressed",String(button.dataset.walletCurrency===zenithWalletCurrency)));
+  const balance = Number(zenithCurrencyBalances[zenithWalletCurrency] || 0);
+  if (el("headerWalletBalance")) el("headerWalletBalance").textContent = `${balance.toLocaleString("en-US",{maximumFractionDigits:0})}${zenithWalletCurrency}`;
+  if (el("headerWalletFullBalance")) el("headerWalletFullBalance").textContent = formatCurrencyBalance(balance, zenithWalletCurrency);
+  try { localStorage.setItem("zenith-wallet-currency", zenithWalletCurrency); } catch (_) {}
+}
+async function loadExtraCurrencyWallets(userId) {
+  const {data,error}=await db.from("wallet_currency_transactions").select("currency_code,amount").eq("user_id",userId);
+  if (error) throw error;
+  const extraBalances=(data||[]).reduce((o,r)=>{if(r.currency_code==="SAR"||r.currency_code==="USD")o[r.currency_code]+=Number(r.amount||0);return o;},{SAR:0,USD:0});
+  zenithCurrencyBalances.SAR=extraBalances.SAR; zenithCurrencyBalances.USD=extraBalances.USD;
+  if(el("customerSarBalance"))el("customerSarBalance").textContent=formatCurrencyBalance(zenithCurrencyBalances.SAR,"SAR");
+  if(el("customerUsdBalance"))el("customerUsdBalance").textContent=formatCurrencyBalance(zenithCurrencyBalances.USD,"USD");
+  applyWalletCurrency(zenithWalletCurrency);
+}
+document.querySelectorAll("[data-wallet-currency]").forEach(button=>button.addEventListener("click",()=>{applyWalletCurrency(button.dataset.walletCurrency);if(button.closest("#headerWalletPopover"))el("headerWalletPopover").hidden=false;if(!el("productsPanel").hidden){renderProducts();renderPopularProducts();}}));
+el("headerWalletBalance")?.addEventListener("click",()=>{const p=el("headerWalletPopover");p.hidden=!p.hidden;el("headerWalletBalance").setAttribute("aria-expanded",String(!p.hidden));});
+el("walletChangeCurrency")?.addEventListener("click",()=>{const picker=el("walletCurrencyPicker");picker.hidden=!picker.hidden;el("walletChangeCurrency").setAttribute("aria-expanded",String(!picker.hidden));});
+el("addUsdDeposit")?.addEventListener("click", event => {
+  const button = event.currentTarget;
+  closeAsiacellDepositModal();
+  el("depositProvider").value = "binance";
+  el("depositForm").reset();
+  depositEntryFields.hidden = false;
+  renderPaymentInfo("depositPaymentInfo", "binance");
+  setMessage("depositMsg", "");
+  depositModalBackdrop = document.createElement("div");
+  depositModalBackdrop.className = "depositModalBackdrop";
+  depositModalBackdrop.setAttribute("aria-hidden", "true");
+  document.body.appendChild(depositModalBackdrop);
+  document.body.appendChild(depositEntryFields);
+  document.body.classList.add("deposit-modal-open", "mastercard-deposit-open");
+  const plusRect = button.getBoundingClientRect();
+  requestAnimationFrame(() => {
+    const modalRect = depositEntryFields.getBoundingClientRect();
+    depositEntryFields.style.setProperty("--deposit-origin-x", (plusRect.left + plusRect.width / 2 - modalRect.left) + "px");
+    depositEntryFields.style.setProperty("--deposit-origin-y", (plusRect.top + plusRect.height / 2 - modalRect.top) + "px");
+    if (depositModalBackdrop) depositModalBackdrop.classList.add("isVisible");
+    if (el("depositAmount")) el("depositAmount").focus({preventScroll:true});
+  });
+});
+document.querySelectorAll('input[name="checkoutPaymentChoice"]').forEach(x=>x.addEventListener("change",()=>{updatePaymentFields();if(x.checked && x.value!=="direct")closeCheckoutDirectModal();else if(x.checked && x.value==="direct" && document.querySelector('input[name="checkoutDirectProvider"]:checked'))openCheckoutDirectModal();}));
+document.querySelectorAll('input[name="checkoutDirectProvider"]').forEach(x=>{
+  x.addEventListener("change",()=>{updatePaymentFields();if(x.checked && el("paymentMethod").value==="direct")openCheckoutDirectModal();});
+  x.addEventListener("click",()=>{if(x.checked && el("paymentMethod").value==="direct")openCheckoutDirectModal();});
+});
+try { const saved=localStorage.getItem("zenith-wallet-currency"); if(saved)zenithWalletCurrency=saved; } catch (_) {}
 
 async function loadCustomerWallet() {
   if (customerWalletLoadBusy) return;
@@ -3827,6 +4002,8 @@ async function loadCustomerWallet() {
     }, {asiacell:0, mastercard:0});
     el("customerAsiacellBalance").textContent = money(balances.asiacell);
     el("customerMastercardBalance").textContent = money(balances.mastercard);
+    zenithCurrencyBalances.IQD = balances.asiacell + balances.mastercard;
+    await loadExtraCurrencyWallets(user.id);
     setMessage("customerWalletMsg", "تم تحديث رصيد محفظتك.", "success");
     await loadCustomerDeposits();
   } finally {
@@ -4019,17 +4196,27 @@ async function submitPurchaseOrder() {
       ? cartItems.map(line => ({product_id:Number(line.id), quantity:Number(line.qty || 1), provider:line.provider}))
       : [{product_id:Number(selectedProduct.id), quantity:1, provider:selectedProvider}];
     if (!items.length) throw new Error("السلة فارغة.");
+    updatePaymentFields();
     const paymentMethod = el("paymentMethod").value;
     let proofPath = null;
+    const directProviderChoice = document.querySelector('input[name="checkoutDirectProvider"]:checked')?.value || "";
+    if (paymentMethod === "direct" && !directProviderChoice) throw new Error("اختر آسياسيل أو ماستركارد أولاً.");
+    const directProvider = directProviderChoice || "asiacell";
     if (paymentMethod === "direct") {
-      const file = el("proofFile").files[0];
-      if (!file) throw new Error("ارفع صورة إثبات التحويل أولاً.");
-      if (!file.type || !file.type.startsWith("image/")) throw new Error("الملف لازم يكون صورة.");
-      if (file.size > 5 * 1024 * 1024) throw new Error("حجم الصورة أكبر من 5 ميغابايت. اختَر صورة أصغر.");
-      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(-90) || "proof-image";
-      proofPath = `${user.id}/${Date.now()}-${safeName}`;
-      const {error: uploadError} = await db.storage.from("payment-proofs").upload(proofPath, file, {contentType:file.type, upsert:false});
-      if (uploadError) throw new Error("تعذر رفع صورة الإثبات: " + uploadError.message);
+      const asiacellCard = el("checkoutAsiacellCardNumber")?.value.replace(/\D/g, "") || "";
+      if (directProvider === "asiacell" && !/^[0-9]{10,24}$/.test(asiacellCard)) throw new Error("أدخل رقم كارت آسياسيل بشكل صحيح.");
+      if (directProvider === "mastercard") {
+        const transferAmount = Number(el("checkoutMastercardAmount")?.value);
+        if (!Number.isFinite(transferAmount) || transferAmount <= 0) throw new Error("أدخل مبلغ التحويل.");
+        const file = el("proofFile")?.files?.[0];
+        if (!file) throw new Error("ارفع صورة إثبات التحويل أولاً.");
+        if (!file.type || !file.type.startsWith("image/")) throw new Error("الملف لازم يكون صورة.");
+        if (file.size > 5 * 1024 * 1024) throw new Error("حجم الصورة أكبر من 5 ميغابايت. اختَر صورة أصغر.");
+        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(-90) || "proof-image";
+        proofPath = `${user.id}/${Date.now()}-${safeName}`;
+        const {error: uploadError} = await db.storage.from("payment-proofs").upload(proofPath, file, {contentType:file.type, upsert:false});
+        if (uploadError) throw new Error("تعذر رفع صورة الإثبات: " + uploadError.message);
+      }
     }
     const {data:orderData,error:orderError} = await db.rpc("create_zenith_order", {
       p_items:items,
@@ -4038,7 +4225,7 @@ async function submitPurchaseOrder() {
       p_payment_method:paymentMethod,
       p_payment_provider:items[0].provider || selectedProvider,
       p_proof_path:proofPath,
-      p_transaction_ref:el("transactionRef")?.value.trim() || null,
+      p_transaction_ref:paymentMethod === "direct" && directProvider === "asiacell" ? ("ASIACELL_CARD:" + (el("checkoutAsiacellCardNumber")?.value.replace(/\D/g, "") || "")) : paymentMethod === "direct" && directProvider === "mastercard" ? (["المبلغ المحوّل: " + Number(el("checkoutMastercardAmount")?.value || 0).toLocaleString("en-US") + " د.ع", el("transactionRef")?.value.trim()].filter(Boolean).join(" | ")) : (el("transactionRef")?.value.trim() || null),
       p_checkout_code:activeCheckoutCode
     });
     result = {data:orderData,error:orderError};
@@ -4049,6 +4236,8 @@ async function submitPurchaseOrder() {
       `تم استلام طلبك${orderId != null ? " رقم #" + orderId : ""}. حالة الطلب: قيد الانتظار، ولن يُعتبر الشحن مكتملاً إلا بعد معالجته.`,
       "success");
     el("purchaseForm").reset();
+    closeCheckoutDirectModal();
+    updatePaymentFields();
     resetCheckoutRewards();
     clearMlbbVerification();
     updatePaymentFields();
@@ -4283,7 +4472,8 @@ async function loadMyOrders() {
       title.textContent = `طلب #${order.id}`;
       const rawStatus = String(order.status || "pending").toLowerCase();
       const rejected = rawStatus === "rejected";
-      const paymentConfirmed = order.payment_method === "wallet" || rawStatus === "processing" || rawStatus === "completed";
+      const directPaymentPending = order.payment_method === "direct" && rawStatus === "pending";
+      const paymentConfirmed = !directPaymentPending && (order.payment_method === "wallet" || rawStatus === "processing" || rawStatus === "completed");
       const stage = rawStatus === "completed" ? 3 : paymentConfirmed ? 1 : 0;
       const timeline = document.createElement("div");
       timeline.className = "orderTimeline" + (rejected ? " isRejected" : "");
@@ -4300,7 +4490,7 @@ async function loadMyOrders() {
         const mark = document.createElement("span"); mark.className = "stepMark";
         if (rejected && i === 1) mark.textContent = "×";
         else if (rejected && i === 2) mark.innerHTML = `<svg class="stepHourglass stepHourglassBroken" viewBox="0 0 24 24" aria-label="توقف الطلب"><path d="M6 3h12M6 21h12M7 3c0 3.2 1.5 5.4 4.2 7.5M17 3c0 2.4-.9 4.2-2.7 5.8M7 21c0-2.8 1.3-4.8 3.5-6.7M17 21c0-2.8-1.3-4.8-3.5-6.7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="m12.8 8.2-2 3.1 2.1 1.4-2.2 3.1M14.6 10.4l-1.3 1.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-        else if (done) mark.textContent = "✓";
+        else if (done && !(i === 0 && order.payment_method === "direct" && rawStatus === "pending")) mark.textContent = "✓";
         else mark.innerHTML = '<svg class="stepHourglass" viewBox="0 0 24 24" aria-label="قيد الانتظار"><path d="M6 3h12M6 21h12M7 3c0 4 2 6 5 9-3 3-5 5-5 9m10-18c0 4-2 6-5 9 3 3 5 5 5 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 6h6l-3 4-3-4Zm0 12h6l-3-4-3 4Z" fill="currentColor" opacity=".65"/></svg>';
         const textLabel = document.createElement("small"); textLabel.textContent = label;
         const subLabel = document.createElement("span"); subLabel.className = "stepHint"; subLabel.textContent = hint;
@@ -4492,7 +4682,7 @@ async function loadAdminOrders() {
     setMessage("adminMsg", "توقف تحميل طلبات الشحن: " + (loadError?.message || "خطأ غير معروف") , "error");
   } finally {
     adminLoadInProgress=false;
-    if(adminLoadQueued){adminLoadQueued=false;window.setTimeout(()=>{loadAdminOrders();if(currentUserIsAdmin)loadAdminDeposits();},0);}
+    if(adminLoadQueued){adminLoadQueued=false;window.setTimeout(()=>{loadAdminOrders();if(currentUserIsAdmin){loadAdminDeposits();loadAdminUsdDeposits();}},0);}
   }
 }
 
@@ -4781,6 +4971,11 @@ el("walletSearchForm").addEventListener("submit", async e => {
     el("walletUserInfo").textContent = `اسم المستخدم: ${selectedWalletUser.username ? "@" + selectedWalletUser.username : "غير محدد"} | البريد: ${selectedWalletUser.user_email || email}`;
     el("walletCurrentAsiacell").textContent = money(selectedWalletUser.balance_asiacell_iqd || 0);
     el("walletCurrentMastercard").textContent = money(selectedWalletUser.balance_mastercard_iqd || 0);
+    const {data:currencyRows,error:currencyError}=await db.rpc("admin_get_currency_wallet_balances",{p_user_id:selectedWalletUser.user_id});
+    if(currencyError) throw currencyError;
+    const currencyTotals=Object.fromEntries((currencyRows||[]).map(x=>[x.currency_code,Number(x.balance||0)]));
+    el("walletCurrentSar").textContent=formatCurrencyBalance(currencyTotals.SAR||0,"SAR");
+    el("walletCurrentUsd").textContent=formatCurrencyBalance(currencyTotals.USD||0,"USD");
     el("walletManageBox").hidden = false;
     setMessage("walletSearchMsg", "تم العثور على الحساب. تأكد من اسم المستخدم قبل تنفيذ أي عملية.", "success");
   } catch (error) {
@@ -4790,6 +4985,7 @@ el("walletSearchForm").addEventListener("submit", async e => {
   }
 });
 
+el("walletProvider")?.addEventListener("change",()=>{const c=el("walletProvider").value;const l=el("walletAmountLabel");if(l)l.textContent=c==="SAR"?"المبلغ بالريال السعودي":c==="USD"?"المبلغ بالدولار الأمريكي":"المبلغ بالدينار العراقي";el("walletAmount").step=(c==="SAR"||c==="USD")?"0.01":"1";el("walletAmount").min=(c==="SAR"||c==="USD")?"0.01":"1";});
 el("walletAdjustForm").addEventListener("submit", async e => {
   e.preventDefault();
   if (!selectedWalletUser?.user_id) {
@@ -4799,8 +4995,9 @@ el("walletAdjustForm").addEventListener("submit", async e => {
   const amount = Number(el("walletAmount").value);
   const action = el("walletAction").value;
   const reason = el("walletReason").value.trim();
-  if (!Number.isSafeInteger(amount) || amount <= 0) {
-    setMessage("walletAdjustMsg", "أدخل مبلغاً صحيحاً بالدينار، أكبر من صفر.", "error");
+  const selectedCurrency=el("walletProvider").value;
+  if (!Number.isFinite(amount) || amount <= 0 || (selectedCurrency!="SAR" && selectedCurrency!="USD" && !Number.isSafeInteger(amount)) || (selectedCurrency==="SAR"||selectedCurrency==="USD") && Math.round(amount*100)!==amount*100) {
+    setMessage("walletAdjustMsg", "أدخل مبلغاً صحيحاً للعملة المحددة.", "error");
     return;
   }
   if (!reason) {
@@ -4818,14 +5015,27 @@ el("walletAdjustForm").addEventListener("submit", async e => {
     if (authError || !authData?.user) throw new Error("انتهت الجلسة. سجّل الدخول مجدداً.");
     const {data: isAdmin, error: adminError} = await db.rpc("is_admin");
     if (adminError || isAdmin !== true) throw new Error("هذه العملية متاحة للمشرف فقط.");
+    const selectedWallet=el("walletProvider").value;
+    if(selectedWallet==="SAR"||selectedWallet==="USD"){
+      const {error}=await db.rpc("admin_adjust_currency_wallet",{p_user_id:selectedWalletUser.user_id,p_currency_code:selectedWallet,p_amount:signedAmount,p_reason:reason});
+      if(error)throw error;
+      const {data:rows,error:readError}=await db.rpc("admin_get_currency_wallet_balances",{p_user_id:selectedWalletUser.user_id});
+      if(readError)throw readError;
+      const totals=Object.fromEntries((rows||[]).map(x=>[x.currency_code,Number(x.balance||0)]));
+      el("walletCurrentSar").textContent=formatCurrencyBalance(totals.SAR||0,"SAR");
+      el("walletCurrentUsd").textContent=formatCurrencyBalance(totals.USD||0,"USD");
+      el("walletAmount").value="";el("walletReason").value="";
+      setMessage("walletAdjustMsg",`نجحت العملية. رصيد ${selectedWallet}: ${formatCurrencyBalance(totals[selectedWallet]||0,selectedWallet)}.`,"success");
+      return;
+    }
     const {data, error} = await db.rpc("admin_adjust_wallet", {
       p_user_id: selectedWalletUser.user_id,
       p_amount_iqd: signedAmount,
       p_reason: reason,
-      p_wallet_provider: el("walletProvider").value
+      p_wallet_provider: selectedWallet
     });
     if (error) throw error;
-    if (el("walletProvider").value === "asiacell") selectedWalletUser.balance_asiacell_iqd = data;
+    if (selectedWallet === "asiacell") selectedWalletUser.balance_asiacell_iqd = data;
     else selectedWalletUser.balance_mastercard_iqd = data;
     el("walletCurrentAsiacell").textContent = money(selectedWalletUser.balance_asiacell_iqd || 0);
     el("walletCurrentMastercard").textContent = money(selectedWalletUser.balance_mastercard_iqd || 0);
@@ -4912,6 +5122,8 @@ el("depositAsiacellCardNumber").addEventListener("input", () => {
   field.value = field.value.replace(/\D/g, "").slice(0, 24);
 });
 el("depositForm").addEventListener("submit", submitDepositRequest);
+updatePaymentFields();
+applyWalletCurrency(zenithWalletCurrency);
 el("refreshDeposits").addEventListener("click", loadCustomerDeposits);
 
 const activePageStorageKey = "zenithstore:activePage:" + location.pathname;
@@ -5393,9 +5605,7 @@ el("menuWallet").addEventListener("click", async () => {
 
 el("refreshCustomerWallet").addEventListener("click", loadCustomerWallet);
   
-el("customerWalletPanel").querySelector("[data-back]").addEventListener("click", () => {
-  el("navHome").click();
-});
+
 
 
 el("menuMyOrders").addEventListener("click", async () => {
@@ -5451,7 +5661,15 @@ el("refreshOrders").addEventListener("click", async () => {
     btn.disabled = false;
   }
 });
-el("refreshAdminDeposits").addEventListener("click", loadAdminDeposits);
+async function loadAdminUsdDeposits(){
+ const box=el("adminUsdDepositsList");if(!box)return;box.textContent="جارٍ تحميل طلبات الدولار...";
+ const {data,error}=await db.from("wallet_currency_deposits").select("id,user_id,amount,proof_path,status,created_at").eq("status","pending").order("created_at",{ascending:true}).limit(50);
+ if(error){box.textContent="تعذر تحميل طلبات الدولار: "+error.message;return;}box.replaceChildren();
+ if(!data?.length){box.textContent="لا توجد طلبات دولار معلقة.";return;}
+ for(const row of data){const card=document.createElement("article");card.className="orderTrackCard";const title=document.createElement("strong");title.textContent=`طلب Binance #${row.id} · ${formatCurrencyBalance(row.amount,"USD")}`;const time=document.createElement("small");time.textContent=new Date(row.created_at).toLocaleString("ar-IQ");const proof=document.createElement("button");proof.type="button";proof.className="secondary";proof.textContent="عرض إثبات التحويل";proof.onclick=async()=>{const {data:signed,error}=await db.storage.from("payment-proofs").createSignedUrl(row.proof_path,300);if(error){setMessage("adminDepositsMsg",error.message,"error");return;}window.open(signed.signedUrl,"_blank","noopener");};const approve=document.createElement("button");approve.textContent="موافقة وإضافة الدولار";approve.onclick=async()=>{if(!confirm(`تأكيد استلام ${formatCurrencyBalance(row.amount,"USD")}؟`))return;approve.disabled=true;const {error}=await db.rpc("admin_review_currency_deposit",{p_deposit_id:row.id,p_approve:true,p_admin_note:null});if(error){setMessage("adminDepositsMsg",error.message,"error");approve.disabled=false;return;}await loadAdminUsdDeposits();};const reject=document.createElement("button");reject.className="danger";reject.textContent="رفض";reject.onclick=async()=>{if(!confirm(`رفض طلب الدولار #${row.id}؟`))return;reject.disabled=true;const {error}=await db.rpc("admin_review_currency_deposit",{p_deposit_id:row.id,p_approve:false,p_admin_note:"تم الرفض من الإدارة"});if(error){setMessage("adminDepositsMsg",error.message,"error");reject.disabled=false;return;}await loadAdminUsdDeposits();};card.append(title,time,proof,approve,reject);box.append(card);}
+}
+el("refreshAdminDeposits").addEventListener("click", async()=>{await loadAdminDeposits();await loadAdminUsdDeposits();});
+loadAdminUsdDeposits();
 
 el("clearAdminNotifications").addEventListener("click", () => {
   adminNotifications = [];
@@ -5459,7 +5677,7 @@ el("clearAdminNotifications").addEventListener("click", () => {
   el("orderToast").hidden = true;
 });
 
-el("refreshMyOrders").addEventListener("click", loadMyOrders);
+
 // Keep order progress synchronized while the customer is viewing My Orders; update the panel only, never reload the page.
 setInterval(async () => {
   if (document.hidden || !el("myOrdersPanel") || el("myOrdersPanel").hidden || myOrdersLoadInProgress) return;
