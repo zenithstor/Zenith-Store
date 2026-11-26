@@ -71,8 +71,8 @@ header,
 [hidden] {
   display: none !important;
 }
-/* Do not hide the app during async startup: a slow connection must never leave a blank page. */
-html.zenith-restore-pending #homePanel { visibility: visible !important; }
+/* Keep the app hidden until the saved page is restored; prevents a brief home-page flash. */
+html.zenith-restore-pending main, html.zenith-restore-pending .bottomNav { visibility: hidden !important; }
 /* Orders must never appear below the home categories; show them only in the Orders view. */
 #homePanel:not([hidden]) ~ #myOrdersPanel { display: none !important; }
 
@@ -1350,7 +1350,7 @@ body.asiacell-deposit-open #depositEntryFields {
   transition:opacity .18s ease, transform .18s ease;
 }
 #zenithExitToast.isVisible { opacity:1; transform:translate(-50%,-4px); }
-html.zenith-restore-pending main { visibility:visible !important; }
+html.zenith-restore-pending main, html.zenith-restore-pending .bottomNav { visibility:hidden !important; }
 </style>
 
 
@@ -1993,13 +1993,13 @@ html[data-theme="light"] .reviewStatsCard{background:#fff!important;border-color
 
 
 <style id="zenith-currency-wallet-styles">
-.zenithBalanceWrap{position:relative;display:flex;align-items:center}.zenithBalancePill{height:34px;min-width:78px;padding:0 9px;border-radius:18px!important;border:1px solid var(--border)!important;background:var(--surface)!important;color:var(--blue)!important;font-size:11px!important;font-weight:900!important;white-space:nowrap}.zenithBalancePopover{position:absolute;z-index:10050;top:calc(100% + 9px);left:0;width:180px;padding:12px;border:1px solid var(--border);border-radius:13px;background:var(--surface);box-shadow:0 10px 30px #0003;display:grid;gap:8px}.zenithBalancePopover[hidden]{display:none}.zenithBalancePopover select,.walletCurrencyPicker select{width:100%;padding:8px;border-radius:9px;border:1px solid var(--border);background:var(--surface);color:var(--text)}.zenithBalancePopover button{padding:8px;border-radius:9px}.walletCurrencyPicker{display:flex;align-items:center;gap:10px;margin:10px 0}.walletCurrencyPicker select{max-width:180px}.walletCurrencyCard{grid-column:1/-1}.walletCurrencyCard[hidden]{display:none!important}.walletAgentLink{display:inline-block;margin-top:10px;color:#fff;text-decoration:underline;font-size:12px}.checkoutPaymentChooser{margin:12px 0;padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--surface)}.checkoutPaymentOptions{display:flex;gap:15px;flex-wrap:wrap;margin:8px 0}.checkoutPaymentOptions label{display:flex;align-items:center;gap:6px}.checkoutPaymentChooser input[type=file]{width:100%;margin:7px 0}.walletBankCard:before,.walletBankCard:after{border-radius:50%!important;aspect-ratio:1/1!important}.walletCardChip{width:39px;height:39px;min-width:39px;border-radius:50%;aspect-ratio:1/1}
+.zenithBalanceWrap{position:relative;display:flex;align-items:center}.zenithBalancePill{height:34px;min-width:78px;padding:0 9px;border-radius:18px!important;border:1px solid var(--border)!important;background:var(--surface)!important;color:var(--blue)!important;font-size:11px!important;font-weight:900!important;white-space:nowrap}.zenithBalancePopover{position:absolute;z-index:10050;top:calc(100% + 9px);left:0;width:180px;padding:12px;border:1px solid var(--border);border-radius:13px;background:var(--surface);box-shadow:0 10px 30px #0003;display:grid;gap:8px}.zenithBalancePopover[hidden]{display:none}.zenithBalancePopover select,.walletCurrencyPicker select{width:100%;padding:8px;border-radius:9px;border:1px solid var(--border);background:var(--surface);color:var(--text)}.zenithBalancePopover button{padding:8px;border-radius:9px}.walletCurrencyPicker{display:flex;align-items:center;gap:10px;margin:10px 0}.walletCurrencyPicker select{max-width:180px}.walletCurrencyCard{grid-column:1/-1}.walletCurrencyCard:not(.walletSarCard):not(.walletUsdCard){grid-column:auto}.walletCurrencyCard[hidden]{display:none!important}.walletAgentLink{display:inline-block;margin-top:10px;color:#fff;text-decoration:underline;font-size:12px}.checkoutPaymentChooser{margin:12px 0;padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--surface)}.checkoutPaymentOptions{display:flex;gap:15px;flex-wrap:wrap;margin:8px 0}.checkoutPaymentOptions label{display:flex;align-items:center;gap:6px}.checkoutPaymentChooser input[type=file]{width:100%;margin:7px 0}.walletBankCard:before,.walletBankCard:after{border-radius:50%!important;aspect-ratio:1/1!important}.walletCardChip{width:39px;height:39px;min-width:39px;border-radius:50%;aspect-ratio:1/1}
 @media(max-width:390px){.zenithBalancePill{min-width:67px;padding:0 6px;font-size:10px!important}.walletCurrencyPicker{flex-wrap:wrap}}
 </style>
 
 
 <style id="zenith-wallet-ui-refinements">
-.headerActions{gap:7px!important}.zenithBalanceWrap{order:3}.headerAccountButton{order:1}.themeToggle{order:2}.menuBtn{order:4}.zenithBalancePill{width:62px!important;min-width:62px!important;max-width:62px!important;height:32px!important;padding:0 4px!important;border-radius:18px!important;font-size:8px!important;letter-spacing:-.25px!important;overflow:hidden;text-overflow:clip}.zenithBalancePopover{left:50%;transform:translateX(-50%);top:calc(100% + 8px);width:172px;padding:10px;animation:walletChoicePop .2s ease both}.zenithBalancePopover[hidden]{display:none!important}.currencyChoiceGroup{display:flex;align-items:center;justify-content:center;gap:5px;padding:3px;border-radius:12px;background:var(--page);border:1px solid var(--border)}.currencyChoiceGroup button{flex:1;min-width:0;padding:7px 5px!important;border:1px solid transparent!important;border-radius:9px!important;background:transparent!important;color:var(--muted)!important;font-size:11px!important;font-weight:800!important;transition:background .2s ease,color .2s ease,transform .2s ease,border-color .2s ease}.currencyChoiceGroup button[aria-pressed="true"]{background:var(--blue)!important;color:#fff!important;border-color:var(--blue)!important;box-shadow:0 3px 10px #1685c533;transform:translateY(-1px)}.walletCurrencyPicker{margin:9px 0!important;animation:walletChoicePop .2s ease both}.walletCurrencyPicker[hidden]{display:none!important}.walletCurrencyPicker .currencyChoiceGroup{width:min(100%,330px)}@keyframes walletChoicePop{from{opacity:0;transform:translateY(-5px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}.walletCardChip{width:29px!important;height:29px!important;min-width:29px!important;max-width:29px!important;padding:0!important;display:grid!important;place-items:center!important;line-height:1!important;border-radius:50%!important;aspect-ratio:1/1!important;font-size:17px!important;position:absolute!important;top:14px!important;left:14px!important;right:auto!important}.walletCardChip.depositCardAddButton{display:grid!important}.checkoutDirectProviders{margin:8px 0 12px!important}.checkoutPaymentChooser #checkoutPaymentInfo{margin:8px 0;padding:12px}.checkoutPaymentChooser #checkoutAsiacellCardGroup{margin:8px 0;padding:10px;border:1px solid var(--border);border-radius:11px}.checkoutPaymentChooser #checkoutAsiacellCardNumber{width:100%;margin-top:6px}.checkoutPaymentChooser #proofFile{width:100%;margin:7px 0}.checkoutPaymentChooser #checkoutPaymentInfo[hidden],.checkoutPaymentChooser #checkoutAsiacellCardGroup[hidden]{display:none!important}
+.headerActions{gap:7px!important}.zenithBalanceWrap{order:3}.headerAccountButton{order:1}.themeToggle{order:2}.menuBtn{order:4}.zenithBalancePill{width:62px!important;min-width:62px!important;max-width:62px!important;height:32px!important;padding:0 4px!important;border-radius:18px!important;font-size:8px!important;letter-spacing:-.25px!important;overflow:hidden;text-overflow:clip}.zenithBalancePopover{left:50%;transform:translateX(-50%);top:calc(100% + 8px);width:172px;padding:10px;animation:walletChoicePop .2s ease both}.zenithBalancePopover[hidden]{display:none!important}.currencyChoiceGroup{display:flex;align-items:center;justify-content:center;gap:5px;padding:3px;border-radius:12px;background:var(--page);border:1px solid var(--border)}.currencyChoiceGroup button{flex:1;min-width:0;padding:7px 5px!important;border:1px solid transparent!important;border-radius:9px!important;background:transparent!important;color:var(--muted)!important;font-size:11px!important;font-weight:800!important;transition:background .2s ease,color .2s ease,transform .2s ease,border-color .2s ease}.currencyChoiceGroup button[aria-pressed="true"]{background:var(--blue)!important;color:#fff!important;border-color:var(--blue)!important;box-shadow:0 3px 10px #1685c533;transform:translateY(-1px)}.walletCurrencyPicker{margin:9px 0!important;animation:walletChoicePop .2s ease both}.walletCurrencyPicker[hidden]{display:none!important}.walletCurrencyPicker .currencyChoiceGroup{width:100%;max-width:100%;flex-wrap:wrap}.headerCurrencyChoices{flex-wrap:wrap}.headerCurrencyChoices button{min-width:38px}@keyframes walletChoicePop{from{opacity:0;transform:translateY(-5px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}.walletCardChip{width:29px!important;height:29px!important;min-width:29px!important;max-width:29px!important;padding:0!important;display:grid!important;place-items:center!important;line-height:1!important;border-radius:50%!important;aspect-ratio:1/1!important;font-size:17px!important;position:absolute!important;top:14px!important;left:14px!important;right:auto!important}.walletCardChip.depositCardAddButton{display:grid!important}.checkoutDirectProviders{margin:8px 0 12px!important}.checkoutPaymentChooser #checkoutPaymentInfo{margin:8px 0;padding:12px}.checkoutPaymentChooser #checkoutAsiacellCardGroup{margin:8px 0;padding:10px;border:1px solid var(--border);border-radius:11px}.checkoutPaymentChooser #checkoutAsiacellCardNumber{width:100%;margin-top:6px}.checkoutPaymentChooser #proofFile{width:100%;margin:7px 0}.checkoutPaymentChooser #checkoutPaymentInfo[hidden],.checkoutPaymentChooser #checkoutAsiacellCardGroup[hidden]{display:none!important}
 @media(max-width:390px){.headerActions{gap:5px!important}.zenithBalancePill{width:59px!important;min-width:59px!important;max-width:59px!important;height:32px!important;font-size:8px!important}.zenithBalancePopover{left:auto;right:-36px;transform:none}}
 </style>
 <style id="zenith-wallet-size-and-product-grid-recovery">
@@ -2048,7 +2048,7 @@ html[data-theme="light"] .reviewStatsCard{background:#fff!important;border-color
       <div class="brandImagePlaceholder"><img class="brandLogoDark" src="images/logo.png" alt="شعار ZenithStore" decoding="async"><img class="brandLogoLight" src="images/logo-black.png" alt="شعار ZenithStore" decoding="async"></div>
       <div class="brand brandStack"><span class="brandZenith">ZENITH</span><span class="brandStore">store</span></div>
     </div>
-    <div class="headerActions"><button type="button" class="headerAccountButton" id="headerAccountButton" aria-label="الحساب"><img id="headerAccountAvatar" alt="" hidden><span id="headerAccountFallback" aria-hidden="true">♙</span></button><button type="button" class="themeToggle" id="themeToggle" aria-label="تفعيل الوضع النهاري" title="تبديل الوضع">☀</button><div class="zenithBalanceWrap"><button type="button" id="headerWalletBalance" class="zenithBalancePill" aria-expanded="false" aria-label="رصيد المحفظة">0 IQD</button><div id="headerWalletPopover" class="zenithBalancePopover" hidden><strong id="headerWalletFullBalance">0 IQD</strong><div class="currencyChoiceGroup headerCurrencyChoices" role="group" aria-label="اختيار العملة"><button type="button" data-wallet-currency="IQD" aria-pressed="true">IQD</button><button type="button" data-wallet-currency="SAR" aria-pressed="false">SAR</button><button type="button" data-wallet-currency="USD" aria-pressed="false">USD</button></div></div></div><button type="button" class="menuBtn" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false" hidden></button></div>
+    <div class="headerActions"><button type="button" class="headerAccountButton" id="headerAccountButton" aria-label="الحساب"><img id="headerAccountAvatar" alt="" hidden><span id="headerAccountFallback" aria-hidden="true">♙</span></button><button type="button" class="themeToggle" id="themeToggle" aria-label="تفعيل الوضع النهاري" title="تبديل الوضع">☀</button><div class="zenithBalanceWrap"><button type="button" id="headerWalletBalance" class="zenithBalancePill" aria-expanded="false" aria-label="رصيد المحفظة">0 IQD</button><div id="headerWalletPopover" class="zenithBalancePopover" hidden><strong id="headerWalletFullBalance">0 IQD</strong><div class="currencyChoiceGroup headerCurrencyChoices" role="group" aria-label="اختيار العملة"><button type="button" data-wallet-currency="IQD">IQD</button><button type="button" data-wallet-currency="SAR">SAR</button><button type="button" data-wallet-currency="USD">USD</button><button type="button" data-wallet-currency="QAR">QAR</button><button type="button" data-wallet-currency="AED">AED</button><button type="button" data-wallet-currency="EGP">EGP</button><button type="button" data-wallet-currency="JOD">JOD</button><button type="button" data-wallet-currency="TRY">TRY</button><button type="button" data-wallet-currency="YER">YER</button><button type="button" data-wallet-currency="SYP">SYP</button><button type="button" data-wallet-currency="MAD">MAD</button><button type="button" data-wallet-currency="KWD">KWD</button><button type="button" data-wallet-currency="OMR">OMR</button><button type="button" data-wallet-currency="BHD">BHD</button></div></div></div><button type="button" class="menuBtn" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false" hidden></button></div>
   </div>
   <nav class="menuBox" id="mainMenu" hidden>
     <div class="menuAccountArea">
@@ -2296,37 +2296,46 @@ html[data-theme="light"] .reviewStatsCard{background:#fff!important;border-color
   <section class="panel walletPage" id="customerWalletPanel" hidden>
     <div class="walletPageHead">
       <div><span class="walletEyebrow">ZENITH STORE</span><h2>المحفظة</h2><p class="muted">إدارة رصيدك وطلبات إضافة الأموال بكل سهولة.</p></div>
-    <div class="walletCurrencyPicker" id="walletCurrencyPicker" hidden><div class="currencyChoiceGroup" role="group" aria-label="اختيار عملة المحفظة"><button type="button" data-wallet-currency="IQD" aria-pressed="true">دينار IQD</button><button type="button" data-wallet-currency="SAR" aria-pressed="false">ريال SAR</button><button type="button" data-wallet-currency="USD" aria-pressed="false">دولار USD</button></div></div>
+    <div class="walletCurrencyPicker" id="walletCurrencyPicker" hidden><div class="currencyChoiceGroup currencyVerticalList" role="listbox" aria-label="اختر عملة المحفظة"><button type="button" data-wallet-currency="IQD"><span class="currencyFlag">🇮🇶</span><span>العراق</span><small>IQD</small></button><button type="button" data-wallet-currency="SAR"><span class="currencyFlag">🇸🇦</span><span>السعودية</span><small>SAR</small></button><button type="button" data-wallet-currency="USD"><span class="currencyFlag">🇺🇸</span><span>الدولار الأمريكي</span><small>USD</small></button><button type="button" data-wallet-currency="QAR"><span class="currencyFlag">🇶🇦</span><span>قطر</span><small>QAR</small></button><button type="button" data-wallet-currency="AED"><span class="currencyFlag">🇦🇪</span><span>الإمارات</span><small>AED</small></button><button type="button" data-wallet-currency="EGP"><span class="currencyFlag">🇪🇬</span><span>مصر</span><small>EGP</small></button><button type="button" data-wallet-currency="JOD"><span class="currencyFlag">🇯🇴</span><span>الأردن</span><small>JOD</small></button><button type="button" data-wallet-currency="TRY"><span class="currencyFlag">🇹🇷</span><span>تركيا</span><small>TRY</small></button><button type="button" data-wallet-currency="YER"><span class="currencyFlag">🇾🇪</span><span>اليمن</span><small>YER</small></button><button type="button" data-wallet-currency="SYP"><span class="currencyFlag">🇸🇾</span><span>سوريا</span><small>SYP</small></button><button type="button" data-wallet-currency="MAD"><span class="currencyFlag">🇲🇦</span><span>المغرب</span><small>MAD</small></button><button type="button" data-wallet-currency="KWD"><span class="currencyFlag">🇰🇼</span><span>الكويت</span><small>KWD</small></button><button type="button" data-wallet-currency="OMR"><span class="currencyFlag">🇴🇲</span><span>عُمان</span><small>OMR</small></button><button type="button" data-wallet-currency="BHD"><span class="currencyFlag">🇧🇭</span><span>البحرين</span><small>BHD</small></button></div></div>
       <button type="button" class="secondary walletBackHome" aria-label="تغيير العملة" id="walletChangeCurrency" aria-expanded="false">تغيير العملة</button>
     </div>
     <div class="walletCardsGrid" aria-label="أرصدة المحافظ">
-      <article class="walletBankCard walletAsiacellCard">
+      <article class="walletBankCard walletAsiacellCard" id="walletAsiacellCard">
         <span class="walletCardBrand">ZENITH WALLET</span>
         <button type="button" class="walletCardChip depositCardAddButton" data-deposit-provider="asiacell" aria-label="إضافة رصيد عبر آسياسيل" title="إضافة رصيد عبر آسياسيل">＋</button>
-        <small>الرصيد المتاح</small>
-        <strong id="customerAsiacellBalance">جارٍ التحميل...</strong>
-        <span class="walletCardType">آسياسيل</span>
+        <small>الرصيد المتاح</small><strong id="customerAsiacellBalance">جارٍ التحميل...</strong>
+        <span class="walletCardType">🇮🇶 آسياسيل · الدينار العراقي</span>
       </article>
-      <article class="walletBankCard walletMastercardCard">
+      <article class="walletBankCard walletMastercardCard" id="walletMastercardCard">
         <span class="walletCardBrand">ZENITH WALLET</span>
         <button type="button" class="walletCardChip depositCardAddButton" data-deposit-provider="mastercard" aria-label="إضافة رصيد عبر ماستركارد" title="إضافة رصيد عبر ماستركارد">＋</button>
-        <small>الرصيد المتاح</small>
-        <strong id="customerMastercardBalance">جارٍ التحميل...</strong>
-        <span class="walletCardType">MasterCard</span>
+        <small>الرصيد المتاح</small><strong id="customerMastercardBalance">جارٍ التحميل...</strong>
+        <span class="walletCardType">🇮🇶 MasterCard · الدينار العراقي</span>
       </article>
-      <article class="walletBankCard walletCurrencyCard walletSarCard" id="walletSarCard" hidden>
-        <span class="walletCardBrand">ZENITH WALLET</span><small>الرصيد المتاح</small><strong id="customerSarBalance">0 SAR</strong><span class="walletCardType">الريال السعودي</span>
-        <a class="walletAgentLink" href="https://wa.me/966530747811" target="_blank" rel="noopener">التواصل مع وكيل السعودية لإضافة الرصيد</a>
+      <article class="walletBankCard walletCurrencyCard walletSarCard" id="walletSarCard">
+        <span class="walletCardBrand">ZENITH WALLET</span><small>الرصيد المتاح</small><strong id="customerSarBalance">0 SAR</strong><span class="walletCardType">🇸🇦 الريال السعودي</span>
+        <a class="walletAgentLink" href="https://wa.me/966530747811" target="_blank" rel="noopener">التواصل مع الوكيل لإضافة الرصيد</a>
       </article>
-      <article class="walletBankCard walletCurrencyCard walletUsdCard" id="walletUsdCard" hidden>
-        <span class="walletCardBrand">ZENITH WALLET</span><button type="button" class="walletCardChip" id="addUsdDeposit">＋</button><small>الرصيد المتاح</small><strong id="customerUsdBalance">0 USD</strong><span class="walletCardType">الدولار الأمريكي · Binance</span>
+      <article class="walletBankCard walletCurrencyCard walletUsdCard" id="walletUsdCard">
+        <span class="walletCardBrand">ZENITH WALLET</span><button type="button" class="walletCardChip depositCardAddButton" id="addUsdDeposit" aria-label="إضافة رصيد بالدولار عبر Binance" title="إضافة رصيد بالدولار عبر Binance">＋</button><small>الرصيد المتاح</small><strong id="customerUsdBalance">0 USD</strong><span class="walletCardType">🇺🇸 الدولار الأمريكي · Binance</span>
       </article>
+      <article class="walletBankCard walletCurrencyCard" id="walletQarCard"><span class="walletCardBrand">ZENITH WALLET</span><small>الرصيد المتاح</small><strong id="customerQarBalance">0 QAR</strong><span class="walletCardType">🇶🇦 الريال القطري</span><a class="walletAgentLink" href="https://wa.me/966530747811" target="_blank" rel="noopener">التواصل مع الوكيل لإضافة الرصيد</a></article>
+      <article class="walletBankCard walletCurrencyCard" id="walletAedCard"><span class="walletCardBrand">ZENITH WALLET</span><small>الرصيد المتاح</small><strong id="customerAedBalance">0 AED</strong><span class="walletCardType">🇦🇪 الدرهم الإماراتي</span><a class="walletAgentLink" href="https://wa.me/966530747811" target="_blank" rel="noopener">التواصل مع الوكيل لإضافة الرصيد</a></article>
+      <article class="walletBankCard walletCurrencyCard" id="walletEgpCard"><span class="walletCardBrand">ZENITH WALLET</span><small>الرصيد المتاح</small><strong id="customerEgpBalance">0 EGP</strong><span class="walletCardType">🇪🇬 الجنيه المصري</span><a class="walletAgentLink" href="https://wa.me/966530747811" target="_blank" rel="noopener">التواصل مع الوكيل لإضافة الرصيد</a></article>
+      <article class="walletBankCard walletCurrencyCard" id="walletJodCard"><span class="walletCardBrand">ZENITH WALLET</span><small>الرصيد المتاح</small><strong id="customerJodBalance">0 JOD</strong><span class="walletCardType">🇯🇴 الدينار الأردني</span><a class="walletAgentLink" href="https://wa.me/966530747811" target="_blank" rel="noopener">التواصل مع الوكيل لإضافة الرصيد</a></article>
+      <article class="walletBankCard walletCurrencyCard" id="walletTryCard"><span class="walletCardBrand">ZENITH WALLET</span><small>الرصيد المتاح</small><strong id="customerTryBalance">0 TRY</strong><span class="walletCardType">🇹🇷 الليرة التركية</span><a class="walletAgentLink" href="https://wa.me/966530747811" target="_blank" rel="noopener">التواصل مع الوكيل لإضافة الرصيد</a></article>
+      <article class="walletBankCard walletCurrencyCard" id="walletYerCard"><span class="walletCardBrand">ZENITH WALLET</span><small>الرصيد المتاح</small><strong id="customerYerBalance">0 YER</strong><span class="walletCardType">🇾🇪 الريال اليمني</span><a class="walletAgentLink" href="https://wa.me/966530747811" target="_blank" rel="noopener">التواصل مع الوكيل لإضافة الرصيد</a></article>
+      <article class="walletBankCard walletCurrencyCard" id="walletSypCard"><span class="walletCardBrand">ZENITH WALLET</span><small>الرصيد المتاح</small><strong id="customerSypBalance">0 SYP</strong><span class="walletCardType">🇸🇾 الليرة السورية</span><a class="walletAgentLink" href="https://wa.me/966530747811" target="_blank" rel="noopener">التواصل مع الوكيل لإضافة الرصيد</a></article>
+      <article class="walletBankCard walletCurrencyCard" id="walletMadCard"><span class="walletCardBrand">ZENITH WALLET</span><small>الرصيد المتاح</small><strong id="customerMadBalance">0 MAD</strong><span class="walletCardType">🇲🇦 الدرهم المغربي</span><a class="walletAgentLink" href="https://wa.me/966530747811" target="_blank" rel="noopener">التواصل مع الوكيل لإضافة الرصيد</a></article>
+      <article class="walletBankCard walletCurrencyCard" id="walletKwdCard"><span class="walletCardBrand">ZENITH WALLET</span><small>الرصيد المتاح</small><strong id="customerKwdBalance">0 KWD</strong><span class="walletCardType">🇰🇼 الدينار الكويتي</span><a class="walletAgentLink" href="https://wa.me/966530747811" target="_blank" rel="noopener">التواصل مع الوكيل لإضافة الرصيد</a></article>
+      <article class="walletBankCard walletCurrencyCard" id="walletOmrCard"><span class="walletCardBrand">ZENITH WALLET</span><small>الرصيد المتاح</small><strong id="customerOmrBalance">0 OMR</strong><span class="walletCardType">🇴🇲 الريال العُماني</span><a class="walletAgentLink" href="https://wa.me/966530747811" target="_blank" rel="noopener">التواصل مع الوكيل لإضافة الرصيد</a></article>
+      <article class="walletBankCard walletCurrencyCard" id="walletBhdCard"><span class="walletCardBrand">ZENITH WALLET</span><small>الرصيد المتاح</small><strong id="customerBhdBalance">0 BHD</strong><span class="walletCardType">🇧🇭 الدينار البحريني</span><a class="walletAgentLink" href="https://wa.me/966530747811" target="_blank" rel="noopener">التواصل مع الوكيل لإضافة الرصيد</a></article>
     </div>
-    <div class="walletCardsActions"><span class="muted">كل محفظة تُستخدم مع طريقة الدفع المطابقة لها.</span><button type="button" class="walletRefreshBtn" id="refreshCustomerWallet">↻ تحديث الأرصدة</button></div>
+    <div class="walletCardsActions"><span class="muted">تظهر محافظ العملة المحددة فقط: الدينار عبر آسياسيل أو ماستركارد، الدولار عبر Binance، وبقية العملات عبر الوكيل.</span><button type="button" class="walletRefreshBtn" id="refreshCustomerWallet">↻ تحديث الأرصدة</button></div>
     <div id="customerWalletMsg" class="msg" aria-live="polite"></div>
     <section class="notice" aria-labelledby="depositHeading">
       <h3 id="depositHeading">إضافة رصيد للمحفظة</h3>
-      <div class="muted">الدينار عبر آسياسيل أو ماستركارد، الدولار عبر Binance مع إثبات التحويل ومراجعة الإدارة، والريال عبر وكيل السعودية على واتساب.</div>
+      <div class="muted">الدينار العراقي عبر آسياسيل أو ماستركارد، والدولار عبر Binance. بقية العملات تُضاف عن طريق الوكيل.</div>
       <form id="depositForm">
         <input id="depositProvider" type="hidden" value="" form="depositForm">
         <div id="depositEntryPlaceholder" aria-hidden="true"></div>
@@ -2460,7 +2469,7 @@ html[data-theme="light"] .reviewStatsCard{background:#fff!important;border-color
           </div>
         </section>
       </div>
-      <div class="checkoutPaymentChooser"><span>طريقة الدفع</span><div class="checkoutPaymentOptions"><label><input type="radio" name="checkoutPaymentChoice" value="wallet" checked> رصيد المحفظة</label><label><input type="radio" name="checkoutPaymentChoice" value="direct"> دفع مباشر</label></div><div id="directPaymentFields" hidden><p class="muted">اختر وسيلة الدفع لإظهار نافذة التحويل.</p><div class="checkoutPaymentOptions checkoutDirectProviders"><label><input type="radio" name="checkoutDirectProvider" value="asiacell"> آسياسيل</label><label><input type="radio" name="checkoutDirectProvider" value="mastercard"> ماستركارد</label></div><div id="checkoutDirectModal" class="zenithModalOverlay checkoutDirectModal" hidden aria-hidden="true"><section class="zenithConfirmCard checkoutDirectModalCard" role="dialog" aria-modal="true" aria-labelledby="checkoutDirectModalTitle"><h3 id="checkoutDirectModalTitle">بيانات الدفع المباشر</h3><button type="button" class="secondary checkoutDirectModalClose" id="closeCheckoutDirectModal">إلغاء</button><div id="checkoutPaymentInfo" class="notice depositPaymentCard" aria-live="polite" hidden></div><div id="checkoutAsiacellCardGroup" hidden><label for="checkoutAsiacellCardNumber">ادخل رقم الكارت فقط</label><input id="checkoutAsiacellCardNumber" type="text" inputmode="numeric" autocomplete="off" maxlength="24" pattern="[0-9]{10,24}" placeholder="رقم كارت آسياسيل"><p class="depositAsiacellHelp">إذا كان التحويل عن طريق رقم الهاتف يرجى التواصل مع دعم المتجر.</p></div><div id="checkoutMastercardAmountGroup" hidden><label for="checkoutMastercardAmount">المبلغ المراد تحويله (دينار عراقي)</label><input id="checkoutMastercardAmount" type="number" min="1" step="1" inputmode="numeric" placeholder="أدخل مبلغ التحويل"><label for="proofFile">صورة إثبات الدفع</label><input id="proofFile" type="file" accept="image/*"><label for="transactionRef">رقم التحويل (اختياري)</label><input id="transactionRef" type="text" maxlength="100" placeholder="رقم العملية أو مرجع التحويل"></div></section></div></div></div>
+      <div class="checkoutPaymentChooser"><span>طريقة الدفع</span><div class="checkoutPaymentOptions"><label><input type="radio" name="checkoutPaymentChoice" value="wallet" checked> رصيد المحفظة</label><label><input type="radio" name="checkoutPaymentChoice" value="direct"> دفع مباشر</label></div><div id="directPaymentFields" hidden><p class="muted">اختر وسيلة الدفع لإظهار نافذة التحويل.</p><div class="checkoutPaymentOptions checkoutDirectProviders"><label data-direct-currency="IQD"><input type="radio" name="checkoutDirectProvider" value="asiacell"> آسياسيل</label><label data-direct-currency="IQD"><input type="radio" name="checkoutDirectProvider" value="mastercard"> ماستركارد</label><label data-direct-currency="USD"><input type="radio" name="checkoutDirectProvider" value="binance"> Binance (USD)</label></div><div id="checkoutDirectModal" class="zenithModalOverlay checkoutDirectModal" hidden aria-hidden="true"><section class="zenithConfirmCard checkoutDirectModalCard" role="dialog" aria-modal="true" aria-labelledby="checkoutDirectModalTitle"><h3 id="checkoutDirectModalTitle">بيانات الدفع المباشر</h3><button type="button" class="secondary checkoutDirectModalClose" id="closeCheckoutDirectModal">إلغاء</button><div id="checkoutPaymentInfo" class="notice depositPaymentCard" aria-live="polite" hidden></div><div id="checkoutAsiacellCardGroup" hidden><label for="checkoutAsiacellCardNumber">ادخل رقم الكارت فقط</label><input id="checkoutAsiacellCardNumber" type="text" inputmode="numeric" autocomplete="off" maxlength="24" pattern="[0-9]{10,24}" placeholder="رقم كارت آسياسيل"><p class="depositAsiacellHelp">إذا كان التحويل عن طريق رقم الهاتف يرجى التواصل مع دعم المتجر.</p></div><div id="checkoutMastercardAmountGroup" hidden><label for="checkoutMastercardAmount">المبلغ المراد تحويله (دينار عراقي)</label><input id="checkoutMastercardAmount" type="number" min="1" step="1" inputmode="numeric" placeholder="أدخل مبلغ التحويل"><label for="proofFile">صورة إثبات الدفع</label><input id="proofFile" type="file" accept="image/*"><label for="transactionRef">رقم التحويل (اختياري)</label><input id="transactionRef" type="text" maxlength="100" placeholder="رقم العملية أو مرجع التحويل"></div></section></div></div></div>
       <input id="paymentMethod" type="hidden" value="wallet">
       <button type="submit" id="submitOrderBtn">إتمام الطلب</button>
       <button type="button" class="secondary" id="cancelPurchase">إلغاء</button>
@@ -2674,7 +2683,8 @@ const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 // بيانات التحويل المعتمدة من إدارة ZenithStore
 const PAYMENT_DETAILS = {
   mastercard: {label: "ماستركارد", number: "910172198525"},
-  asiacell: {label: "آسياسيل", number: "07766214212"}
+  asiacell: {label: "آسياسيل", number: "07766214212"},
+  binance: {label: "Binance", number: "1239308153"}
 };
 
 let productsCache = [];
@@ -2778,12 +2788,18 @@ function applyRoleUI(isAdmin) {
 }
 
 const money = n => Number(n).toLocaleString("en-US") + " د.ع";
+const ZENITH_USD_EXCHANGE_RATES = {USD:1,SAR:4,QAR:4,AED:4,EGP:58,JOD:0.75,TRY:53,YER:575,SYP:155,MAD:10.90,KWD:1/3,OMR:0.4,BHD:0.4};
 function formatStorePrice(iqdValue) {
-  const value = Number(iqdValue);
-  if (!Number.isFinite(value)) return money(iqdValue);
-  if (zenithWalletCurrency === "USD") return `${(Math.floor(value / 1600 * 100 + 1e-9) / 100).toFixed(2).replace(/\.?0+$/, "") } USD`;
-  if (zenithWalletCurrency === "SAR") return `${(Math.floor(value / 380 * 100 + 1e-9) / 100).toFixed(2).replace(/\.?0+$/, "") } SAR`;
-  return money(value);
+  const iqd = Number(iqdValue);
+  if (!Number.isFinite(iqd)) return money(iqdValue);
+  if (zenithWalletCurrency === "IQD") return money(iqd);
+  // Existing product price convention: 1 USD = 1,600 IQD. This is display-only;
+  // checkout and Supabase continue using the original provider-specific IQD price.
+  const usdBase = iqd / 1600;
+  const converted = usdBase * (ZENITH_USD_EXCHANGE_RATES[zenithWalletCurrency] || 1);
+  const decimals = ["KWD","JOD","OMR","BHD"].includes(zenithWalletCurrency) ? 3 : (["YER","SYP"].includes(zenithWalletCurrency) ? 0 : 2);
+  const shown = converted.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:decimals});
+  return `${shown} ${zenithWalletCurrency}`;
 }
 const el = id => document.getElementById(id);
 const CART_STORAGE_KEY = "zenithstore:shoppingCart:" + location.pathname;
@@ -2821,10 +2837,10 @@ function renderCart() {
     const amount = document.createElement("strong"); amount.textContent = String(item.qty);
     const plus = document.createElement("button"); plus.type = "button"; plus.textContent = "+"; plus.setAttribute("aria-label","زيادة الكمية"); plus.addEventListener("click", () => changeCartQty(index,1));
     qty.append(minus,amount,plus); const remove = document.createElement("button"); remove.type = "button"; remove.className = "cartRemove"; remove.textContent = "حذف"; remove.addEventListener("click", () => removeCartItem(index));
-    actions.append(qty,remove); details.append(title,meta,actions); const lineTotal = document.createElement("strong"); lineTotal.textContent = validForCheckout ? money(price * Number(item.qty)) : "—"; row.append(details,lineTotal); box.appendChild(row);
+    actions.append(qty,remove); details.append(title,meta,actions); const lineTotal = document.createElement("strong"); lineTotal.textContent = validForCheckout ? formatStorePrice(price * Number(item.qty)) : "—"; row.append(details,lineTotal); box.appendChild(row);
   });
   const hasItems = resolved.length > 0; el("cartEmpty").hidden = hasItems; el("cartSummary").hidden = !hasItems;
-  el("cartCount").textContent = String(count); el("cartTotal").textContent = money(total);
+  el("cartCount").textContent = String(count); el("cartTotal").textContent = formatStorePrice(total);
   const allCartLinesValid = cartItems.length > 0 && resolved.length === cartItems.length && resolved.every(({item,product}) => {
     const price = getPrice(product, item.provider);
     return price != null && !product.__unavailable && !product.__pendingSupabase && !product.__previewOnly;
@@ -3669,34 +3685,56 @@ function renderCheckoutPaymentInfo() {
   if (!target) return;
   target.replaceChildren();
   const choice = document.querySelector('input[name="checkoutDirectProvider"]:checked')?.value || "";
-  target.hidden = choice !== "mastercard";
+  target.hidden = !["mastercard", "binance"].includes(choice);
   if (!choice || choice === "asiacell") return;
-  const details = PAYMENT_DETAILS.mastercard;
+  const details = PAYMENT_DETAILS[choice];
   const eyebrow = document.createElement("small"); eyebrow.className = "depositInfoEyebrow"; eyebrow.textContent = "بيانات التحويل المعتمدة";
-  const title = document.createElement("strong"); title.className = "depositInfoTitle"; title.textContent = choice === "mastercard" ? "حوّل المبلغ إلى بطاقة ماستركارد" : "حوّل المبلغ عبر آسياسيل";
-  const label = document.createElement("span"); label.className = "depositNumberLabel"; label.textContent = choice === "mastercard" ? "رقم البطاقة" : "رقم كارت آسياسيل";
+  const title = document.createElement("strong"); title.className = "depositInfoTitle"; title.textContent = choice === "mastercard" ? "حوّل المبلغ إلى بطاقة ماستركارد" : "حوّل المبلغ عبر Binance";
+  const label = document.createElement("span"); label.className = "depositNumberLabel"; label.textContent = choice === "mastercard" ? "رقم البطاقة" : "رقم حساب Binance";
   const number = document.createElement("div"); number.className = "depositCardNumber"; number.textContent = details.number;
   const copy = document.createElement("button"); copy.type = "button"; copy.className = "depositCopyNumber"; copy.textContent = "نسخ الرقم";
   copy.addEventListener("click", async () => { try { await navigator.clipboard.writeText(details.number); copy.textContent = "تم نسخ الرقم ✓"; } catch (_) { copy.textContent = "انسخ الرقم يدوياً"; } });
   const note = document.createElement("p"); note.className = "depositInfoNote"; note.textContent = "بعد إتمام التحويل، أرفق صورة واضحة لإثبات الدفع في المكان المخصص أدناه.";
   target.append(eyebrow, label, number, title, copy, note);
+  const amountLabel = document.querySelector('label[for="checkoutMastercardAmount"]');
+  if (amountLabel) amountLabel.textContent = choice === "binance" ? "المبلغ المراد تحويله (دولار أمريكي)" : "المبلغ المراد تحويله (دينار عراقي)";
+  const amountInput = el("checkoutMastercardAmount");
+  if (amountInput) { amountInput.step = choice === "binance" ? "0.01" : "1"; amountInput.placeholder = choice === "binance" ? "أدخل مبلغ الدولار" : "أدخل مبلغ التحويل"; }
 }
-
 function updatePaymentFields() {
   const payment = el("paymentMethod");
   const selected = document.querySelector('input[name="checkoutPaymentChoice"]:checked');
-  if (payment) payment.value = selected?.value || "wallet";
+  const currency = zenithWalletCurrency || "IQD";
+  const directAllowed = currency === "IQD" || currency === "USD";
+  const directChoiceLabel = document.querySelector('input[name="checkoutPaymentChoice"][value="direct"]')?.closest("label");
+  if (directChoiceLabel) directChoiceLabel.hidden = !directAllowed;
+  if (!directAllowed && selected?.value === "direct") {
+    const walletRadio = document.querySelector('input[name="checkoutPaymentChoice"][value="wallet"]');
+    if (walletRadio) walletRadio.checked = true;
+  }
+  if (payment) payment.value = (directAllowed && selected?.value === "direct") ? "direct" : "wallet";
   const direct = payment?.value === "direct";
   if (el("directPaymentFields")) el("directPaymentFields").hidden = !direct;
-  const provider = document.querySelector('input[name="checkoutDirectProvider"]:checked')?.value || "";
+  document.querySelectorAll("[data-direct-currency]").forEach(label => {
+    const visible = label.dataset.directCurrency === currency;
+    label.hidden = !visible;
+    const input = label.querySelector("input");
+    if (input && !visible && input.checked) input.checked = false;
+  });
+  let provider = document.querySelector('input[name="checkoutDirectProvider"]:checked')?.value || "";
+  if (direct && ((currency === "IQD" && provider === "binance") || (currency === "USD" && provider !== "binance"))) provider = "";
+  if (direct && !provider) {
+    const first = document.querySelector(`input[name="checkoutDirectProvider"][value="${currency === "USD" ? "binance" : "asiacell"}"]`);
+    if (first) { first.checked = true; provider = first.value; }
+  }
   renderCheckoutPaymentInfo();
   if (el("checkoutAsiacellCardGroup")) el("checkoutAsiacellCardGroup").hidden = !direct || provider !== "asiacell";
-  if (el("checkoutMastercardAmountGroup")) el("checkoutMastercardAmountGroup").hidden = !direct || provider !== "mastercard";
+  if (el("checkoutMastercardAmountGroup")) el("checkoutMastercardAmountGroup").hidden = !direct || !["mastercard", "binance"].includes(provider);
   if (el("checkoutAsiacellCardNumber")) el("checkoutAsiacellCardNumber").required = !!direct && provider === "asiacell";
-  if (el("checkoutMastercardAmount")) el("checkoutMastercardAmount").required = !!direct && provider === "mastercard";
-  if (el("proofFile")) el("proofFile").required = !!direct && provider === "mastercard";
+  if (el("checkoutMastercardAmount")) el("checkoutMastercardAmount").required = !!direct && ["mastercard", "binance"].includes(provider);
+  if (el("proofFile")) el("proofFile").required = !!direct && ["mastercard", "binance"].includes(provider);
   if (el("transactionRef")) el("transactionRef").placeholder = "رقم العملية أو مرجع التحويل";
-  document.querySelectorAll('input[name="checkoutDirectProvider"]').forEach(input => { input.required = !!direct; });
+  document.querySelectorAll('input[name="checkoutDirectProvider"]').forEach(input => { input.required = !!direct && !input.closest("label")?.hidden; });
   if (!direct || !provider) closeCheckoutDirectModal();
 }
 function openCheckoutDirectModal() {
@@ -3906,31 +3944,41 @@ async function submitDepositRequest(e) {
   } finally { btn.disabled = false; btn.textContent = "إرسال طلب إضافة الرصيد"; }
 }
 
+const ZENITH_SUPPORTED_CURRENCIES = ["IQD","SAR","USD","QAR","AED","EGP","JOD","TRY","YER","SYP","MAD","KWD","OMR","BHD"];
+const ZENITH_CURRENCY_NAMES = {IQD:"الدينار العراقي",SAR:"الريال السعودي",USD:"الدولار الأمريكي",QAR:"الريال القطري",AED:"الدرهم الإماراتي",EGP:"الجنيه المصري",JOD:"الدينار الأردني",TRY:"الليرة التركية",YER:"الريال اليمني",SYP:"الليرة السورية",MAD:"الدرهم المغربي",KWD:"الدينار الكويتي",OMR:"الريال العُماني",BHD:"الدينار البحريني"};
 let zenithWalletCurrency = "IQD";
-let zenithCurrencyBalances = {IQD:0,SAR:0,USD:0};
+let zenithCurrencyBalances = Object.fromEntries(ZENITH_SUPPORTED_CURRENCIES.map(code=>[code,0]));
 function formatCurrencyBalance(value, currency) {
-  const digits = currency === "IQD" ? 0 : 2;
+  const digits = ["IQD","YER","SYP"].includes(currency) ? 0 : 2;
   return `${Number(value || 0).toLocaleString("en-US", {minimumFractionDigits:digits, maximumFractionDigits:digits})} ${currency}`;
 }
 function applyWalletCurrency(currency) {
-  zenithWalletCurrency = ["IQD","SAR","USD"].includes(currency) ? currency : "IQD";
-  const iqd = zenithWalletCurrency === "IQD", sar = zenithWalletCurrency === "SAR", usd = zenithWalletCurrency === "USD";
-  document.querySelectorAll(".walletAsiacellCard,.walletMastercardCard").forEach(x=>x.hidden=!iqd);
-  if (el("walletSarCard")) el("walletSarCard").hidden=!sar;
-  if (el("walletUsdCard")) el("walletUsdCard").hidden=!usd;
+  zenithWalletCurrency = ZENITH_SUPPORTED_CURRENCIES.includes(currency) ? currency : "IQD";
   document.querySelectorAll("[data-wallet-currency]").forEach(button=>button.setAttribute("aria-pressed",String(button.dataset.walletCurrency===zenithWalletCurrency)));
-  const balance = Number(zenithCurrencyBalances[zenithWalletCurrency] || 0);
-  if (el("headerWalletBalance")) el("headerWalletBalance").textContent = `${balance.toLocaleString("en-US",{maximumFractionDigits:0})}${zenithWalletCurrency}`;
+  document.querySelectorAll(".walletCardsGrid .walletBankCard").forEach(card=>{card.hidden=true;});
+  if (zenithWalletCurrency === "IQD") {
+    if (el("walletAsiacellCard")) el("walletAsiacellCard").hidden=false;
+    if (el("walletMastercardCard")) el("walletMastercardCard").hidden=false;
+  } else {
+    const cardId = "wallet" + zenithWalletCurrency[0] + zenithWalletCurrency.slice(1).toLowerCase() + "Card";
+    const selectedCard = el(cardId);
+    if (selectedCard) selectedCard.hidden=false;
+  }
+  const balance = zenithWalletCurrency === "IQD"
+    ? Number(zenithCurrencyBalances.IQD || 0)
+    : Number(zenithCurrencyBalances[zenithWalletCurrency] || 0);
+  if (el("headerWalletBalance")) el("headerWalletBalance").textContent = `${balance.toLocaleString("en-US",{maximumFractionDigits:2})} ${zenithWalletCurrency}`;
   if (el("headerWalletFullBalance")) el("headerWalletFullBalance").textContent = formatCurrencyBalance(balance, zenithWalletCurrency);
   try { localStorage.setItem("zenith-wallet-currency", zenithWalletCurrency); } catch (_) {}
+  if (typeof updatePaymentFields === "function" && el("purchasePanel") && !el("purchasePanel").hidden) updatePaymentFields();
 }
 async function loadExtraCurrencyWallets(userId) {
   const {data,error}=await db.from("wallet_currency_transactions").select("currency_code,amount").eq("user_id",userId);
   if (error) throw error;
-  const extraBalances=(data||[]).reduce((o,r)=>{if(r.currency_code==="SAR"||r.currency_code==="USD")o[r.currency_code]+=Number(r.amount||0);return o;},{SAR:0,USD:0});
-  zenithCurrencyBalances.SAR=extraBalances.SAR; zenithCurrencyBalances.USD=extraBalances.USD;
-  if(el("customerSarBalance"))el("customerSarBalance").textContent=formatCurrencyBalance(zenithCurrencyBalances.SAR,"SAR");
-  if(el("customerUsdBalance"))el("customerUsdBalance").textContent=formatCurrencyBalance(zenithCurrencyBalances.USD,"USD");
+  const extraBalances=Object.fromEntries(ZENITH_SUPPORTED_CURRENCIES.filter(code=>code!=="IQD").map(code=>[code,0]));
+  (data||[]).forEach(row=>{const code=String(row.currency_code||"").toUpperCase();if(Object.prototype.hasOwnProperty.call(extraBalances,code))extraBalances[code]+=Number(row.amount||0);});
+  Object.assign(zenithCurrencyBalances,extraBalances);
+  Object.keys(extraBalances).forEach(code=>{const id="customer"+code[0]+code.slice(1).toLowerCase()+"Balance";const node=el(id);if(node)node.textContent=formatCurrencyBalance(zenithCurrencyBalances[code],code);});
   applyWalletCurrency(zenithWalletCurrency);
 }
 document.querySelectorAll("[data-wallet-currency]").forEach(button=>button.addEventListener("click",()=>{applyWalletCurrency(button.dataset.walletCurrency);if(button.closest("#headerWalletPopover"))el("headerWalletPopover").hidden=false;if(!el("productsPanel").hidden){renderProducts();renderPopularProducts();}}));
@@ -3964,7 +4012,7 @@ document.querySelectorAll('input[name="checkoutDirectProvider"]').forEach(x=>{
   x.addEventListener("change",()=>{updatePaymentFields();if(x.checked && el("paymentMethod").value==="direct")openCheckoutDirectModal();});
   x.addEventListener("click",()=>{if(x.checked && el("paymentMethod").value==="direct")openCheckoutDirectModal();});
 });
-try { const saved=localStorage.getItem("zenith-wallet-currency"); if(saved)zenithWalletCurrency=saved; } catch (_) {}
+try { const saved=localStorage.getItem("zenith-wallet-currency"); if(ZENITH_SUPPORTED_CURRENCIES.includes(saved))zenithWalletCurrency=saved; } catch (_) {}
 
 async function loadCustomerWallet() {
   if (customerWalletLoadBusy) return;
@@ -4032,7 +4080,8 @@ async function refreshSession() {
   el("accountStatus").textContent = user
     ? "تم تسجيل الدخول: " + user.email
     : "أنت تتصفح المتجر كزائر. سجّل الدخول حتى تتمكن من إرسال طلب.";
-  await updateHeaderAccountAvatar(user);
+  // Avatar/profile enrichment must not delay restoring the last visible section.
+  updateHeaderAccountAvatar(user).catch(error => console.warn("تعذر تحديث صورة الحساب", error));
   el("logout").hidden = !user;
   el("loginBtn").hidden = !!user;
   el("signup").hidden = !!user;
@@ -4045,7 +4094,8 @@ async function refreshSession() {
     el("menuToggle").setAttribute("aria-expanded", "false");
   }
   if (error) setMessage("authMsg", error.message, "error");
-  await Promise.all([loadMyOrders(), loadCustomerWallet()]);
+  // Refresh badges and balances in the background; the saved page can be shown immediately.
+  Promise.all([loadMyOrders(), loadCustomerWallet()]).catch(loadError => console.warn("تعذر تحديث بيانات الحساب بالخلفية", loadError));
 }
 
 el("loginForm").addEventListener("submit", async e => {
@@ -4200,14 +4250,15 @@ async function submitPurchaseOrder() {
     const paymentMethod = el("paymentMethod").value;
     let proofPath = null;
     const directProviderChoice = document.querySelector('input[name="checkoutDirectProvider"]:checked')?.value || "";
-    if (paymentMethod === "direct" && !directProviderChoice) throw new Error("اختر آسياسيل أو ماستركارد أولاً.");
+    if (paymentMethod === "direct" && !directProviderChoice) throw new Error("اختر طريقة الدفع المباشر.");
     const directProvider = directProviderChoice || "asiacell";
     if (paymentMethod === "direct") {
       const asiacellCard = el("checkoutAsiacellCardNumber")?.value.replace(/\D/g, "") || "";
       if (directProvider === "asiacell" && !/^[0-9]{10,24}$/.test(asiacellCard)) throw new Error("أدخل رقم كارت آسياسيل بشكل صحيح.");
-      if (directProvider === "mastercard") {
+      if (directProvider === "mastercard" || directProvider === "binance") {
         const transferAmount = Number(el("checkoutMastercardAmount")?.value);
         if (!Number.isFinite(transferAmount) || transferAmount <= 0) throw new Error("أدخل مبلغ التحويل.");
+        if (directProvider === "mastercard" && !Number.isSafeInteger(transferAmount)) throw new Error("أدخل مبلغاً صحيحاً بالدينار العراقي.");
         const file = el("proofFile")?.files?.[0];
         if (!file) throw new Error("ارفع صورة إثبات التحويل أولاً.");
         if (!file.type || !file.type.startsWith("image/")) throw new Error("الملف لازم يكون صورة.");
@@ -4225,7 +4276,7 @@ async function submitPurchaseOrder() {
       p_payment_method:paymentMethod,
       p_payment_provider:items[0].provider || selectedProvider,
       p_proof_path:proofPath,
-      p_transaction_ref:paymentMethod === "direct" && directProvider === "asiacell" ? ("ASIACELL_CARD:" + (el("checkoutAsiacellCardNumber")?.value.replace(/\D/g, "") || "")) : paymentMethod === "direct" && directProvider === "mastercard" ? (["المبلغ المحوّل: " + Number(el("checkoutMastercardAmount")?.value || 0).toLocaleString("en-US") + " د.ع", el("transactionRef")?.value.trim()].filter(Boolean).join(" | ")) : (el("transactionRef")?.value.trim() || null),
+      p_transaction_ref:paymentMethod === "direct" && directProvider === "asiacell" ? ("ASIACELL_CARD:" + (el("checkoutAsiacellCardNumber")?.value.replace(/\D/g, "") || "")) : paymentMethod === "direct" && directProvider === "mastercard" ? (["المبلغ المحوّل: " + Number(el("checkoutMastercardAmount")?.value || 0).toLocaleString("en-US") + " د.ع", el("transactionRef")?.value.trim()].filter(Boolean).join(" | ")) : paymentMethod === "direct" && directProvider === "binance" ? (["BINANCE_USD:" + Number(el("checkoutMastercardAmount")?.value || 0).toFixed(2), el("transactionRef")?.value.trim()].filter(Boolean).join(" | ")) : (el("transactionRef")?.value.trim() || null),
       p_checkout_code:activeCheckoutCode
     });
     result = {data:orderData,error:orderError};
@@ -5736,22 +5787,25 @@ db.auth.onAuthStateChange(() => {
   }, 0);
 });
 
-// Remember the current scroll position across reloads / leaving and returning to this tab.
-// Session-scoped storage avoids persisting sensitive form contents or account data.
+// Persist only the visible page and scroll position so reopening the browser
+// restores the last customer view. Clearing site data naturally resets to home.
 try { history.scrollRestoration = "manual"; } catch (_) {}
 (function installScrollRestoration() {
   const storageKey = "zenithstore:scrollY:" + location.pathname;
   let saveTimer = 0;
   const savePosition = () => {
-    try { sessionStorage.setItem(storageKey, String(Math.max(0, window.scrollY || 0))); } catch (_) {}
+    const y = String(Math.max(0, window.scrollY || 0));
+    try { sessionStorage.setItem(storageKey, y); } catch (_) {}
+    try { localStorage.setItem(storageKey, y); } catch (_) {}
   };
   window.addEventListener("scroll", () => {
     if (saveTimer) return;
     saveTimer = window.setTimeout(() => { saveTimer = 0; savePosition(); }, 120);
   }, { passive: true });
   window.addEventListener("pagehide", () => {
+    if (saveTimer) { clearTimeout(saveTimer); saveTimer = 0; }
     savePosition();
-    // Capture the actual visible customer section before the browser refreshes.
+    // Capture the actual visible customer section before the browser closes or refreshes.
     try {
       if (!el("productsPanel").hidden) {
         localStorage.setItem(activePageStorageKey, "products");
@@ -5772,15 +5826,21 @@ try { history.scrollRestoration = "manual"; } catch (_) {}
         localStorage.setItem(activePageStorageKey, "home");
       } else if (!el("purchasePanel").hidden) {
         localStorage.setItem(activePageStorageKey, "purchase");
+      } else if (!el("supportPanel").hidden) {
+        localStorage.setItem(activePageStorageKey, "support");
+      } else if (!el("accountPanel").hidden) {
+        localStorage.setItem(activePageStorageKey, "account");
       }
     } catch (_) {}
   });
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "hidden") savePosition();
   });
+  // Some mobile browsers freeze/terminate a tab without a normal unload event.
+  window.addEventListener("freeze", savePosition);
 })();
 
-// Restore the last section after refresh (same tab), not only the gems section.
+// Restore the last section after refresh or a full browser restart.
 async function restoreActivePage(pageOverride = null, fromPopState = false) {
   // A confirmed admin session always opens the administration dashboard, not a saved customer page.
   if (currentUserIsAdmin) {
@@ -5801,11 +5861,11 @@ async function restoreActivePage(pageOverride = null, fromPopState = false) {
   let savedPage = pageOverride || "home";
   if (!pageOverride) {
     try {
-      const navigationEntry = performance.getEntriesByType("navigation")[0];
-      // Keep the current view only for an explicit refresh; a fresh visit/reopen starts at home.
-      savedPage = navigationEntry?.type === "reload"
-        ? (sessionStorage.getItem(activePageStorageKey) || "home")
-        : "home";
+      // localStorage survives tab/browser termination; no key means first visit
+      // or cleared site data, in which case the correct default is the home page.
+      savedPage = localStorage.getItem(activePageStorageKey)
+        || sessionStorage.getItem(activePageStorageKey)
+        || "home";
     } catch (_) { savedPage = "home"; }
   }
   if (el("productSearch")) el("productSearch").value = "";
@@ -5908,7 +5968,10 @@ async function restoreActivePage(pageOverride = null, fromPopState = false) {
     const scrollKey = "zenithstore:scrollY:" + location.pathname;
     let savedScroll = 0;
     if (!fromPopState) {
-      try { savedScroll = Number(sessionStorage.getItem(scrollKey) || 0); } catch (_) {}
+      try {
+        const persistedScroll = localStorage.getItem(scrollKey);
+        savedScroll = Number(persistedScroll != null ? persistedScroll : (sessionStorage.getItem(scrollKey) || 0));
+      } catch (_) {}
     }
     if (fromPopState) window.scrollTo({top:0,behavior:"instant"});
     else if (Number.isFinite(savedScroll) && savedScroll > 0) window.scrollTo({top:savedScroll,behavior:"instant"});
@@ -5988,12 +6051,12 @@ updatePaymentFields();
 // Startup order: restore the session, verify the role, then show exactly one interface.
 (async function bootZenithStore() {
   try {
-    const results = await Promise.allSettled([refreshSession(), loadProducts()]);
-    results.forEach((result, index) => {
-      if (result.status === "rejected") {
-        console.error(index === 0 ? "تعذر تحديث الجلسة" : "تعذر تحميل المنتجات", result.reason);
-      }
+    // Start product loading in parallel, but do not make page restoration wait for the product query.
+    // This lets the saved section appear immediately; the product list fills in when its request completes.
+    const productLoadTask = loadProducts().catch(error => {
+      console.error("تعذر تحميل المنتجات", error);
     });
+    await refreshSession();
 
     // Verify the account role before restoring a previously saved customer page.
     await loadAdminOrders();
@@ -6011,6 +6074,7 @@ updatePaymentFields();
       appNavigationStack = [];
     }
     installZenithBackNavigation();
+    productLoadTask.catch(() => {});
   } catch (bootError) {
     console.error("تعذر إكمال تهيئة المتجر", bootError);
     if (!currentUserIsAdmin) {
@@ -6692,6 +6756,22 @@ body.asiacell-deposit-open #depositEntryFields #cancelDepositModal {
 @keyframes zenithCheckPop { 60% {transform:scale(1.12);opacity:1;box-shadow:0 0 0 22px rgba(22,166,106,.12)} 100% {transform:scale(1);opacity:1;box-shadow:0 0 0 0 rgba(22,166,106,0)} }
 body.zenith-modal-open { overflow:hidden; }
 @media(prefers-reduced-motion:reduce) { .zenithConfirmCard,.zenithSuccessCheck {animation:none!important;transform:none!important;opacity:1!important} }
+
+/* Zenith currency selector: polished vertical country list */
+.walletCurrencyPicker{width:100%;margin:12px 0!important;display:block!important;}
+.walletCurrencyPicker[hidden]{display:none!important;}
+.walletCurrencyPicker .currencyVerticalList{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;gap:6px!important;max-height:min(54vh,430px);overflow-y:auto;overscroll-behavior:contain;padding:8px!important;border-radius:15px!important;}
+.walletCurrencyPicker .currencyVerticalList button{display:grid!important;grid-template-columns:34px 1fr auto;align-items:center;text-align:right;gap:9px;width:100%;min-height:43px;padding:8px 11px!important;border:1px solid var(--border)!important;border-radius:11px!important;background:var(--surface)!important;color:var(--text)!important;font-size:13px!important;font-weight:800!important;transition:transform .18s ease,background .18s ease,border-color .18s ease,box-shadow .18s ease!important;}
+.walletCurrencyPicker .currencyVerticalList button:active{transform:scale(.985)}
+.walletCurrencyPicker .currencyVerticalList button[aria-pressed="true"]{background:var(--blue)!important;color:#fff!important;border-color:var(--blue)!important;box-shadow:0 5px 14px #1685c533}
+.currencyFlag{font-size:22px;line-height:1;text-align:center}.currencyVerticalList button small{font-size:10px;opacity:.72;direction:ltr}
+.walletCardsGrid .walletBankCard[hidden]{display:none!important}
+.walletCurrencyCard{grid-column:1/-1}
+.walletAgentLink{align-self:flex-start;padding:5px 0 0;text-decoration:none!important;font-weight:800}
+@keyframes currencyListEnter{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.walletCurrencyPicker:not([hidden]) .currencyVerticalList{animation:currencyListEnter .24s ease both}
+@media(prefers-reduced-motion:reduce){.walletCurrencyPicker:not([hidden]) .currencyVerticalList{animation:none}}
+
 </style>
 
 
@@ -8504,6 +8584,18 @@ main > #homePanel{
 }
 #allCustomerReviewsPanel[hidden]{display:none!important}
 #allCustomerReviewsPanel:not([hidden]){display:block!important}
+</style>
+
+
+<style id="zenith-final-user-wallet-reviews-rules">
+/* Iraqi dinar uses the two original, separate funding cards. */
+.walletAsiacellCard[hidden],.walletMastercardCard[hidden],.walletCurrencyCard[hidden]{display:none!important}
+/* The all-reviews page is a clean list: no panel or card rectangles behind comments. */
+#allCustomerReviewsPanel{background:transparent!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;padding:0!important}
+#allCustomerReviewsPanel #allPublicCustomerReviews{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
+#allCustomerReviewsPanel #allPublicCustomerReviews .publicReviewCard{background:transparent!important;border:0!important;border-bottom:1px solid rgba(145,160,180,.18)!important;border-radius:0!important;box-shadow:none!important;padding:12px 0!important}
+#allCustomerReviewsPanel #allPublicCustomerReviews .publicReviewCard:last-child{border-bottom:0!important}
+#allCustomerReviewsPanel #allPublicCustomerReviews .publicReviewBody{background:transparent!important;border:0!important;box-shadow:none!important}
 </style>
 
 </body>
