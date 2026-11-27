@@ -2392,6 +2392,52 @@ html[data-theme="light"] .reviewStatsCard{background:#fff!important;border-color
     <form class="zenithChatForm" id="zenithChatForm"><input id="zenithChatInput" type="text" maxlength="500" autocomplete="off" placeholder="اكتب سؤالك هنا..." aria-label="اكتب سؤالك"><button type="submit">إرسال</button></form>
     <div class="zenithChatLimit" id="zenithChatLimit">محادثة مجانية — تُمسح تلقائياً بعد 24 ساعة.</div>
   </section>
+  <section class="panel zenithWheelPanel" id="luckyWheelPanel" hidden>
+    <div class="wheelHead wheelHeadMinimal"><div></div><button type="button" class="secondary wheelBackBtn" id="wheelBackHome" aria-label="العودة">←</button></div>
+    <div class="wheelDailyTitle">سَحبة واحدة يومياً</div>
+    <div class="wheelStage" id="wheelGestureArea"><div class="wheelPointer" aria-hidden="true"></div><div class="wheelDisc" id="luckyWheelDisc" role="img" aria-label="عجلة جوائز زينيث"><button type="button" class="wheelCenter" id="wheelCenterSpin" aria-label="ابدأ تدوير العجلة"><span>ZENITH</span><small id="wheelCenterMode">Free Spin</small></button></div></div>
+    <div class="wheelWinOverlay" id="wheelWinOverlay" hidden><div class="wheelWinCard"><button type="button" class="wheelWinClose" id="wheelWinClose" aria-label="إغلاق">×</button><div class="wheelWinSpark">✦</div><div class="wheelWinTitle">مبروك!</div><div class="wheelWinMessage" id="wheelWinMessage"></div></div></div>
+    <section class="wheelHistory" id="wheelHistory"><div class="wheelSectionTitle"><span>جوائزك الأخيرة</span><small>سجل مكافآتك</small></div><div id="wheelHistoryList" class="wheelHistoryList"><div class="wheelHistoryEmpty">ستظهر جوائزك هنا بعد أول فوز.</div></div><button type="button" id="wheelHistoryMore" class="wheelHistoryMore" hidden>عرض المزيد</button></section>
+    <section class="wheelRules" aria-labelledby="wheelRulesHeading">
+      <h2 id="wheelRulesHeading">طريقة السحب ونظام نقاط زينيث</h2>
+      <p class="wheelRulesLead">عجلة زينيث تمنحك فرصة يومية للفوز بمكافآت وخصومات ورصيد إضافي. اقرأ التفاصيل التالية لمعرفة طريقة المشاركة والاستفادة من نقاطك.</p>
+      <h3>قواعد السحب والجوائز</h3>
+      <ul>
+        <li><strong>السحبة اليومية:</strong> يحصل كل حساب على سحبة مجانية واحدة كل يوم، وتتجدد حسب توقيت بغداد.</li>
+        <li><strong>السحبات الإضافية:</strong> بعد استهلاك السحبة المجانية، تكلف السحبة الإضافية 20 نقطة زينيث.</li>
+        <li><strong>طريقة تدوير العجلة:</strong> اضغط على منتصف العجلة أو اسحب داخل الدائرة بسرعة إلى اليمين أو اليسار.</li>
+        <li><strong>استلام الجوائز:</strong> تضاف نقاط زينيث والجوائز النقدية إلى الحساب، أما الجواهر والاشتراكات فقد تظهر بحالة «قيد التجهيز» إلى أن يتم تنفيذها.</li>
+        <li><strong>كوبونات الخصم:</strong> كوبون 5% أو 7% صالح لمدة 24 ساعة ولمرة استخدام واحدة فقط؛ ينتهي عند استخدامه أو انتهاء المدة، أيهما يحدث أولاً.</li>
+        <li><strong>النتيجة:</strong> نتيجة كل سحبة يحددها نظام المتجر، وتظهر جائزتك في نافذة النتيجة ثم في سجل الجوائز.</li>
+      </ul>
+      <h3>ما هي نقاط زينيث؟ وكيف تحصل عليها؟</h3>
+      <p>نقاط زينيث هي رصيد مكافآت داخل حسابك في المتجر. تحصل عليها من مشترياتك المؤهلة، بمعدل نقطة واحدة لكل 1,000 دينار عراقي من قيمة الشراء، كما يمكنك الفوز بنقاط إضافية من عجلة الحظ مثل 25 أو 50 نقطة.</p>
+      <h3>قيمة النقاط والعملات</h3>
+      <p>كل <strong>75 نقطة زينيث = 1 دولار أمريكي</strong>. وبحسب قيمة الدولار المعتمدة لنقاط زينيث، فإن 75 نقطة تساوي <strong>1,500 دينار عراقي</strong>، أي أن النقطة الواحدة تساوي 20 ديناراً.</p>
+      <div class="wheelPointsTable" role="list" aria-label="قيمة 75 نقطة زينيث بالعملات">
+        <div role="listitem"><span>الدولار الأمريكي USD</span><strong>1.00 USD</strong></div>
+        <div role="listitem"><span>الدينار العراقي IQD</span><strong>1,500 IQD</strong></div>
+        <div role="listitem"><span>الريال السعودي SAR</span><strong>4 SAR</strong></div>
+        <div role="listitem"><span>الدرهم الإماراتي AED</span><strong>4 AED</strong></div>
+        <div role="listitem"><span>الريال القطري QAR</span><strong>4 QAR</strong></div>
+        <div role="listitem"><span>الجنيه المصري EGP</span><strong>58 EGP</strong></div>
+        <div role="listitem"><span>الدينار الأردني JOD</span><strong>0.75 JOD</strong></div>
+        <div role="listitem"><span>الليرة التركية TRY</span><strong>53 TRY</strong></div>
+        <div role="listitem"><span>الدرهم المغربي MAD</span><strong>10.90 MAD</strong></div>
+        <div role="listitem"><span>الريال اليمني YER</span><strong>575 YER</strong></div>
+        <div role="listitem"><span>الليرة السورية SYP</span><strong>155 SYP</strong></div>
+        <div role="listitem"><span>الدينار الكويتي KWD</span><strong>0.333 KWD</strong></div>
+        <div role="listitem"><span>الريال العُماني OMR</span><strong>0.40 OMR</strong></div>
+        <div role="listitem"><span>الدينار البحريني BHD</span><strong>0.40 BHD</strong></div>
+      </div>
+      <p class="wheelRulesNote">تُحسب قيمة النقاط وفق أسعار التحويل المحددة في المتجر، وقد تتغير إذا تم تحديث أسعار العملات. لا تُعد هذه القيم أسعار صرف مصرفية مستقلة.</p>
+      <h3>استخدام النقاط عند الشحن</h3>
+      <p>يمكن اعتماد نقاط زينيث كقيمة خصم من إجمالي طلب الشحن؛ فمثلاً 75 نقطة تعادل 1,500 دينار عراقي من قيمة الطلب، و150 نقطة تعادل 3,000 دينار. يجب أن يظهر خيار استخدام النقاط في صفحة إتمام الطلب وأن يُخصم الرصيد من الحساب بعد تأكيد الطلب بنجاح.</p>
+      <div class="wheelPointsValue" id="wheelPointsValue">75 نقطة زينيث = 1 USD = 1,500 IQD</div>
+    </section>
+    <div class="wheelStatusGrid" hidden aria-hidden="true"><div class="wheelStatusCard"><span>حالة اللفة</span><strong id="wheelFreeStatus">جارٍ التحقق…</strong></div></div>
+    <div class="wheelResult" id="wheelResult" aria-live="polite" hidden></div>
+  </section>
   <section class="panel zenithAccountPanel" id="accountPanel" hidden>
     <h2>حسابي</h2>
     <button type="button" class="secondary backBtn" id="accountBackHome">← الرئيسية</button>
@@ -2651,6 +2697,7 @@ html[data-theme="light"] .reviewStatsCard{background:#fff!important;border-color
   <div class="sectionsGrid">
     <button type="button" data-section-action="assistant"><span class="sectionTileIcon"><svg viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="13" rx="4"/><path d="M12 3v4M8 12h.01M16 12h.01M9 16h6M2 12h2M20 12h2"/></svg></span><strong>مساعد زينيث الذكي</strong></button>
     <button type="button" data-section-action="accounts"><span class="sectionTileIcon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c.5-3.4 2.5-5 6-5s5.5 1.6 6 5M16 5a3 3 0 0 1 0 6M17 15c2.2.3 3.5 1.9 4 5"/></svg></span><strong>الحسابات</strong></button>
+    <button type="button" data-section-action="wheel"><span class="sectionTileIcon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2"/><path d="M12 3v7m9 2h-7m-2 9v-7M3 12h7"/></svg></span><strong>عجلة الحظ</strong></button>
     <button type="button" data-section-action="reviews"><span class="sectionTileIcon"><svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></span><strong>آراء العملاء</strong></button>
     <button type="button" data-section-action="account"><span class="sectionTileIcon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 21c.8-3.8 3.3-5.7 7.5-5.7s6.7 1.9 7.5 5.7"/></svg></span><strong>حسابي</strong></button>
     <button type="button" data-section-action="search"><span class="sectionTileIcon"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg></span><strong>البحث</strong></button>
@@ -2710,6 +2757,7 @@ let currentUserIsAdmin = false;
 let customerWalletLoadBusy = false;
 let activeCheckoutCode = null;
 let activeCheckoutCodeType = null;
+let activeCheckoutDiscountPercent = 0;
 let checkoutPointsBalance = 0;
 let verifiedMlbbAccount = null;
 
@@ -4175,6 +4223,7 @@ el("logout").addEventListener("click", async () => {
 function resetCheckoutRewards() {
   activeCheckoutCode = null;
   activeCheckoutCodeType = null;
+  activeCheckoutDiscountPercent = 0;
   if (el("checkoutCode")) el("checkoutCode").value = "";
   if (el("checkoutCodeMsg")) { el("checkoutCodeMsg").textContent = ""; el("checkoutCodeMsg").className = "msg"; }
 }
@@ -4188,17 +4237,18 @@ el("applyCheckoutCode")?.addEventListener("click", async () => {
     if (!data?.valid) throw new Error(data?.message || "الرمز غير صالح");
     activeCheckoutCode = code;
     activeCheckoutCodeType = data.type;
+    activeCheckoutDiscountPercent = data.type === "redemption" ? Number(data.discount_percent || 0) : 0;
     updateCheckoutSummaryUI();
     setMessage("checkoutCodeMsg", data.type === "invite"
       ? `تم تفعيل رمز الدعوة بنجاح. صاحب الرمز: ${data.inviter_username || "مستخدم زينيث"}.`
-      : "تم تفعيل رمز الاسترداد — سيُخصم 1.5% من إجمالي الطلب.", "success");
+      : `تم تفعيل رمز الخصم — سيُخصم ${activeCheckoutDiscountPercent}% من إجمالي الطلب.`, "success");
   } catch (error) {
-    activeCheckoutCode = null; activeCheckoutCodeType = null;
+    activeCheckoutCode = null; activeCheckoutCodeType = null; activeCheckoutDiscountPercent = 0;
     setMessage("checkoutCodeMsg", error?.message || "تعذر التحقق من الرمز.", "error");
   } finally { button.disabled = false; button.textContent = "تطبيق"; }
 });
 el("checkoutCode")?.addEventListener("input", () => {
-  activeCheckoutCode = null; activeCheckoutCodeType = null;
+  activeCheckoutCode = null; activeCheckoutCodeType = null; activeCheckoutDiscountPercent = 0;
   updateCheckoutSummaryUI();
   if (el("checkoutCodeMsg")) { el("checkoutCodeMsg").textContent = "اضغط تطبيق للتحقق من الرمز."; el("checkoutCodeMsg").className = "msg"; }
 });
@@ -4311,7 +4361,7 @@ async function submitPurchaseOrder() {
 }
 
 function getCheckoutDiscountRate() {
-  return activeCheckoutCodeType === "redemption" ? 0.015 : 0;
+  return activeCheckoutCodeType === "redemption" ? Math.max(0, Math.min(100, activeCheckoutDiscountPercent)) / 100 : 0;
 }
 function checkoutGameLabel() {
   return ({mlbb:"Mobile Legends",honor:"Honor of Kings",pubg:"PUBG Mobile",genshin:"Genshin Impact",freefire:"Free Fire"})[activeStoreGame] || activeStoreGame || "—";
@@ -5192,7 +5242,7 @@ function saveActivePage(page, trackNavigation = true) {
 }
 function hideCustomerPanels() {
   if (el("accountPanel")) el("accountPanel").hidden = true;
-  ["homePanel", "serviceAppPage", "mlbbCategoryPanel", "freeFireCategoryPanel", "productsPanel", "cartPanel", "customerWalletPanel", "myOrdersPanel", "purchasePanel", "accountsMarketPanel", "allCustomerReviewsPanel", "termsPanel", "policyPanel", "supportPanel"].forEach(id => {
+  ["homePanel", "serviceAppPage", "mlbbCategoryPanel", "freeFireCategoryPanel", "productsPanel", "cartPanel", "customerWalletPanel", "myOrdersPanel", "purchasePanel", "accountsMarketPanel", "allCustomerReviewsPanel", "termsPanel", "policyPanel", "supportPanel", "luckyWheelPanel"].forEach(id => {
     const node = el(id); if (node) node.hidden = true;
   });
 }
@@ -5253,6 +5303,7 @@ document.addEventListener("keydown",event=>{if(event.key==="Escape")closeSection
 document.querySelectorAll("[data-section-action]").forEach(button=>button.addEventListener("click",()=>{
   const action=button.dataset.sectionAction; closeSectionsSheet();
   if(action==="assistant") { hideCustomerPanels(); el("supportPanel").hidden=false; saveActivePage("support"); el("supportPanel").scrollIntoView({behavior:"smooth",block:"start"}); return; }
+  if(action==="wheel") { window.openLuckyWheel(); return; }
   if(action==="account") { el("menuAccount").click(); return; }
   if(action==="search") { el("navSearch").click(); return; }
   if(action==="reviews") { el("homePanel").hidden=false; hideCustomerPanels(); el("homePanel").hidden=false; saveActivePage("home"); setActiveNav(""); el("customerReviewsSection").scrollIntoView({behavior:"smooth",block:"center"}); return; }
@@ -5462,7 +5513,7 @@ async function loadAccountPanel() {
     const z = zenithResult.data || {};
     el("accountInviteCode").textContent = z.invite_code || "—";
     el("accountZenithPoints").textContent = Number(z.points || 0).toFixed(2) + " نقطة";
-    el("accountZenithPointsValue").textContent = money(z.points_value_iqd || 0);
+    el("accountZenithPointsValue").textContent = money((Number(z.points || 0) / 75) * 1500);
     el("accountInviteUsers").textContent = Number(z.invite_users_count || 0).toLocaleString("en-US");
   } else {
     el("accountInviteCode").textContent = "تعذر التحميل";
@@ -5826,6 +5877,8 @@ try { history.scrollRestoration = "manual"; } catch (_) {}
         localStorage.setItem(activePageStorageKey, "home");
       } else if (!el("purchasePanel").hidden) {
         localStorage.setItem(activePageStorageKey, "purchase");
+      } else if (!el("luckyWheelPanel").hidden) {
+        localStorage.setItem(activePageStorageKey, "lucky-wheel");
       } else if (!el("supportPanel").hidden) {
         localStorage.setItem(activePageStorageKey, "support");
       } else if (!el("accountPanel").hidden) {
@@ -5898,6 +5951,10 @@ async function restoreActivePage(pageOverride = null, fromPopState = false) {
   } else if (savedPage === "support") {
     el("supportPanel").hidden = false;
     setActiveNav("");
+  } else if (savedPage === "lucky-wheel") {
+    el("luckyWheelPanel").hidden = false;
+    setActiveNav("");
+    window.dispatchEvent(new Event("zenithWheelRestored"));
   } else if (savedPage === "mlbb") {
     el("mlbbCategoryPanel").hidden = false;
     setActiveNav("navHome");
@@ -8598,8 +8655,335 @@ main > #homePanel{
 #allCustomerReviewsPanel #allPublicCustomerReviews .publicReviewBody{background:transparent!important;border:0!important;box-shadow:none!important}
 </style>
 
+
+<style id="zenith-lucky-wheel-styles">
+.zenithWheelPanel{width:100%!important;max-width:none!important;min-height:calc(100vh - 70px);margin:0!important;padding:clamp(10px,2vw,20px)!important;border:0!important;border-radius:0!important;background:linear-gradient(155deg,rgba(11,25,47,.97),rgba(5,12,25,.98))!important;box-shadow:none!important;color:#f5f8ff;overflow:hidden}
+.wheelHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.wheelHead h2{margin:5px 0;font-size:clamp(22px,5vw,30px);font-weight:950}.wheelHead p{margin:0;color:#aebed2;font-size:13px}.wheelEyebrow{font-size:10px;letter-spacing:2px;color:#70c5ff;font-weight:900}.wheelBackBtn{white-space:nowrap}
+.wheelStatusGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:18px 0}.wheelStatusCard{padding:11px 13px;border:1px solid #ffffff18;border-radius:14px;background:#ffffff08;display:grid;gap:5px}.wheelStatusCard span{font-size:11px;color:#aebed2}.wheelStatusCard strong{font-size:14px;color:#fff}
+.wheelStage{position:relative;width:min(88vw,420px);aspect-ratio:1;margin:28px auto 22px;display:grid;place-items:center;isolation:isolate;filter:none;touch-action:auto;user-select:none;-webkit-user-select:none}.wheelStage:before{content:none!important;display:none!important}
+.wheelDisc{width:100%;height:100%;border-radius:50%;border:0;position:relative;overflow:hidden;cursor:grab;background:conic-gradient(from -18deg,#244f87 0deg 36deg,#a87931 36deg 72deg,#5d3d83 72deg 108deg,#245e68 108deg 144deg,#183a66 144deg 180deg,#23647c 180deg 216deg,#8d6630 216deg 252deg,#326b9c 252deg 288deg,#3e6b9a 288deg 324deg,#142d4d 324deg 360deg);box-shadow:inset 0 0 0 3px #fff3,0 0 0 3px #10243e;will-change:transform;transform:rotate(0deg)}
+.wheelDisc:before{content:"";position:absolute;inset:10px;border-radius:50%;border:1px solid #ffffff55;pointer-events:none;z-index:1}.wheelDisc:after{content:"";position:absolute;inset:0;border-radius:50%;background:repeating-conic-gradient(from -18deg,transparent 0deg 35.4deg,#f7dfad 35.4deg 36deg);pointer-events:none;opacity:.8}
+.wheelPrizeLabel{position:absolute;left:50%;top:50%;width:25%;height:24%;margin-left:-12.5%;margin-top:-12%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;text-shadow:0 2px 3px #000b;z-index:2;pointer-events:none;font-weight:950;line-height:1.12}.wheelPrizeLabel .wheelPrizeIcon{font-size:clamp(17px,4.7vw,25px);line-height:1.1;margin-bottom:4px;filter:drop-shadow(0 2px 2px #0008)}.wheelPrizeLabel .wheelPrizeName{font-size:clamp(8px,2.35vw,11px);max-width:100%;padding:0 2px}.wheelPrizeLabel .wheelPrizeSub{font-size:clamp(7px,1.8vw,9px);margin-top:3px;color:#ffe6a7}
+.wheelCenter{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:25%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 25%,#fff8d9,#e0b75e 53%,#815a22 100%);border:5px solid #fff0bc;box-shadow:0 5px 17px #000b,inset 0 0 0 3px #9a6d2b;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#17283d;font-weight:1000;z-index:4;cursor:pointer;padding:0;touch-action:manipulation}.wheelCenter span{font-size:clamp(10px,3vw,15px);letter-spacing:1px}.wheelCenter small{font-size:clamp(7px,1.8vw,9px);letter-spacing:1.4px}.wheelCenter:active{transform:translate(-50%,-50%) scale(.94)}.wheelPointer{position:absolute;z-index:5;top:-15px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:17px solid transparent;border-right:17px solid transparent;border-top:38px solid #fff0b8;border-bottom:0;filter:drop-shadow(0 4px 3px #000b)}.wheelDisc.isSpinning{transition:transform 5.2s cubic-bezier(.12,.72,.08,1);cursor:default}
+.wheelHint{text-align:center;color:#b9cbe0;font-size:12px;margin:-7px 0 15px}.wheelActionRow{display:grid;grid-template-columns:1fr 1fr;gap:9px}.wheelActionRow button{min-height:48px;border-radius:13px!important;font-weight:900!important;font-size:13px!important}.wheelPrimaryBtn{background:linear-gradient(120deg,#e6bd68,#ffe7a8)!important;color:#152238!important;border:0!important}.wheelSecondaryBtn{background:linear-gradient(120deg,#1467a8,#238bd0)!important;color:white!important;border:1px solid #75caff55!important}.wheelActionRow button:disabled{opacity:.45!important;filter:grayscale(.3)}.wheelResult{margin:14px 0 0;padding:14px;border:1px solid #5aa5df45;border-radius:14px;background:#0b2038;text-align:center;font-size:14px;font-weight:850;line-height:1.8;min-height:50px}.wheelIqdChoice{display:flex;justify-content:center;gap:8px;margin-top:10px;flex-wrap:wrap}.wheelIqdChoice button{border:1px solid #79c5f5;background:#123c60;color:#fff;border-radius:10px;padding:9px 15px;font-weight:850}.wheelIqdChoice button:disabled{opacity:.5}.wheelFinePrint{margin:9px 2px 0;color:#91a4ba;font-size:10px;line-height:1.7;text-align:center}
+@keyframes wheelWinPulse{0%,100%{box-shadow:0 0 0 #e9c36b00}50%{box-shadow:0 0 28px #e9c36b55}}.wheelResult.isWin{animation:wheelWinPulse 1.2s ease 2}
+/* Keep the page completely still: only the wheel itself rotates. */
+html,body{overscroll-behavior-x:none}.zenithWheelPanel,.wheelStage,.wheelDisc{animation:none!important;translate:none!important}.zenithWheelPanel{border:0!important;border-radius:0!important;box-shadow:none!important}
+@media(max-width:420px){.wheelStage{width:min(88vw,360px)}.wheelActionRow{grid-template-columns:1fr}.wheelPrizeLabel{width:27%;margin-left:-13.5%}.wheelPrizeLabel .wheelPrizeIcon{font-size:clamp(16px,5vw,22px)}.wheelPrizeLabel .wheelPrizeName{font-size:clamp(7px,2.2vw,9px)}}
+@media(prefers-reduced-motion:reduce){.wheelDisc.isSpinning{transition:none!important}.wheelResult.isWin{animation:none!important}}
+html[data-theme="light"] .zenithWheelPanel{background:linear-gradient(155deg,#f7fbff,#e9f3ff)!important;color:#152238}html[data-theme="light"] .wheelStatusCard{background:#fff;border-color:#d8e6f4}html[data-theme="light"] .wheelStatusCard strong{color:#172a40}html[data-theme="light"] .wheelResult{background:#e8f4ff;color:#17344f}
+</style>
+<script id="zenith-lucky-wheel-script">
+(()=>{
+  const prizes = [
+    {code:"lose_a",label:"حظ أوفر",chance:38.33180006133088,color:"#244f87",win:false},
+    {code:"discount7",label:"خصم 7% لمدة يوم",chance:1.53327200245324,color:"#a87931",win:true},
+    {code:"points25",label:"25 نقطة زينيث",chance:6.13308800981294,color:"#5d3d83",win:true},
+    {code:"diamonds5",label:"5 جواهر ML",chance:9.19963201471941,color:"#245e68",win:true},
+    {code:"lose_b",label:"حظ أوفر",chance:38.33180006133088,color:"#183a66",win:false},
+    {code:"dollar1",label:"1 دولار",chance:0.30665440049065,color:"#23647c",win:true},
+    {code:"points50",label:"50 نقطة زينيث",chance:3.06654400490647,color:"#8d6630",win:true},
+    {code:"weekly",label:"اشتراك أسبوعي ML",chance:0.03066544004906,color:"#326b9c",win:true},
+    {code:"discount5",label:"خصم 5% لمدة يوم",chance:3.06654400490647,color:"#3e6b9a",win:true}
+  ];
+  const total=prizes.reduce((a,p)=>a+p.chance,0);
+  if(Math.abs(total-100)>0.000001) console.error("Wheel probabilities must total 100%",total);
+  let wheelBusy=false;
+  const byId=id=>document.getElementById(id);
+  const wheel=byId("luckyWheelDisc");
+  if(!wheel) return;
+  // The visual wheel uses equal, readable sectors. Actual odds remain server-side
+  // and are intentionally never displayed to customers.
+  const visualSegment=360/prizes.length;
+  const wheelIcons={lose_a:"🍀",lose_b:"✨",discount7:"🎟️",discount5:"🎫",points25:"⭐",points50:"🌟",diamonds5:"💎",weekly:"👑",dollar1:"💵"};
+  const wheelNames={lose_a:["حظ أوفر",""],lose_b:["حظ أوفر",""],discount7:["خصم 7%","ليوم كامل"],discount5:["خصم 5%","ليوم كامل"],points25:["25 نقطة","زينيث"],points50:["50 نقطة","زينيث"],diamonds5:["5 جواهر","MLBB"],weekly:["اشتراك","أسبوعي ML"],dollar1:["1 دولار","رصيد محفظتك"]};
+  const visualColors=prizes.map(p=>p.color);
+  wheel.style.background=`conic-gradient(from 0deg,${prizes.map((p,i)=>`${visualColors[i]} ${i*visualSegment}deg ${(i+1)*visualSegment}deg`).join(",")})`;
+  prizes.forEach((p,i)=>{
+    const angle=(-90+visualSegment/2+i*visualSegment)*Math.PI/180;
+    const radius=34; // percentage of the wheel radius
+    const label=document.createElement("div");label.className="wheelPrizeLabel";
+    label.style.left=`${50+Math.cos(angle)*radius}%`;label.style.top=`${50+Math.sin(angle)*radius}%`;
+    label.dataset.baseRotation="0";
+    const parts=wheelNames[p.code]||[p.label,""];
+    const icon = p.code==="weekly" ? "👑" : p.code==="diamonds5" ? "💎" : (wheelIcons[p.code]||"🎁");
+    label.innerHTML=`<span class="wheelPrizeIcon">${icon}</span><span class="wheelPrizeName">${parts[0]}</span>${parts[1]?`<small class="wheelPrizeSub">${parts[1]}</small>`:""}`;
+    wheel.appendChild(label);
+  });
+  const setResult=(msg,win=false)=>{const n=byId("wheelResult");n.textContent=msg;n.classList.toggle("isWin",win);};
+  async function getUser(){const {data,error}=await db.auth.getUser();if(error)throw error;if(!data?.user)throw new Error("سجّل الدخول أولاً حتى تتمكن من استخدام عجلة الحظ.");return data.user;}
+  let wheelHistoryExpanded=false;
+  async function loadWheelHistory(expand=false){
+    try{
+      const {data,error}=await db.from("zenith_wheel_claims").select("reward_label,reward_code,status,created_at").order("created_at",{ascending:false}).limit(50);
+      if(error) throw error;
+      const list=byId("wheelHistoryList"), more=byId("wheelHistoryMore"); if(!list||!more)return;
+      const rows=Array.isArray(data)?data:[]; wheelHistoryExpanded=!!expand;
+      const shown=wheelHistoryExpanded?rows:rows.slice(0,3);
+      list.innerHTML="";
+      if(!shown.length){list.innerHTML='<div class="wheelHistoryEmpty">لم تحصل على جوائز بعد. نتمنى لك حظاً سعيداً!</div>';more.hidden=true;return;}
+      shown.forEach(row=>{const item=document.createElement("article");item.className="wheelHistoryItem";const icon=document.createElement("span");icon.className="wheelHistoryIcon";icon.textContent=({discount7:"🎟️",discount5:"🎫",points25:"⭐",points50:"🌟",diamonds5:"💎",weekly:"👑",dollar1:"💵"})[row.reward_code]||"🎁";const body=document.createElement("div");body.className="wheelHistoryBody";const title=document.createElement("strong");title.textContent=row.reward_label||"جائزة عجلة زينيث";const date=document.createElement("small");date.textContent=new Date(row.created_at).toLocaleDateString("ar-IQ",{year:"numeric",month:"short",day:"numeric"});body.append(title,date);const status=document.createElement("span");status.className="wheelHistoryStatus";status.textContent=row.status==="pending"?"قيد التجهيز":"تم الاستلام";item.append(icon,body,status);list.appendChild(item);});
+      more.hidden=rows.length<=3;more.textContent=wheelHistoryExpanded?"عرض أقل":"عرض المزيد";
+    }catch(err){const list=byId("wheelHistoryList");if(list)list.innerHTML='<div class="wheelHistoryEmpty">تعذر تحميل سجل الجوائز حالياً.</div>';}
+  }
+  byId("wheelHistoryMore")?.addEventListener("click",()=>loadWheelHistory(!wheelHistoryExpanded));
+  async function loadLuckyWheelStatus(){
+    try{
+      await getUser();
+      const {data,error}=await db.rpc("zenith_wheel_status");
+      if(error) throw error;
+      byId("wheelFreeStatus").textContent=data?.unlimited_free_spins?"لفات اختبار غير محدودة":(data?.free_spin_available?"متاحة اليوم":"استخدمتها اليوم");
+      byId("wheelFreeSpinBtn") && (byId("wheelFreeSpinBtn").disabled=!data?.free_spin_available);
+      byId("wheelPointsSpinBtn") && (byId("wheelPointsSpinBtn").disabled=!data?.paid_spin_enabled);
+      const mode=byId("wheelCenterMode"); if(mode) mode.textContent=data?.free_spin_available?"Free Spin":"Spin For 20 points"; window.__zenithWheelPaidEnabled=!!data?.paid_spin_enabled;
+      const center=byId("wheelCenterSpin"); if(center) center.disabled=!(data?.free_spin_available||data?.paid_spin_enabled);
+      const value=byId("wheelPointsValue"); if(value) value.textContent=`${Number(data?.points||0).toLocaleString("en-US")} نقطة زينيث · كل 75 نقطة = 1 USD`;
+      await loadWheelHistory(false);
+    }catch(e){byId("wheelFreeStatus").textContent="سجّل الدخول";const c=byId("wheelCenterSpin");if(c)c.disabled=true;setResult(e.message||"تعذر تحميل حالة العجلة. تأكد من تطبيق ملف SQL.");}
+  }
+  async function openLuckyWheel(){
+    hideCustomerPanels();byId("luckyWheelPanel").hidden=false;saveActivePage("lucky-wheel");setActiveNav("");window.scrollTo({top:0,behavior:"smooth"});
+    byId("wheelCenterSpin").disabled=true;await loadLuckyWheelStatus();
+  }
+  async function spin(paid,direction=1){
+    if(wheelBusy)return;wheelBusy=true;
+    const centerBtn=byId("wheelCenterSpin");centerBtn.disabled=true;wheel.querySelectorAll(".wheelPrizeLabel").forEach(label=>{label.style.transform="translate(-50%,-50%)";});setResult("تدور العجلة… بالتوفيق!");
+    try{
+      await getUser();
+      const currency=(typeof zenithWalletCurrency!=="undefined"&&ZENITH_SUPPORTED_CURRENCIES.includes(zenithWalletCurrency))?zenithWalletCurrency:"IQD";
+      const {data,error}=await db.rpc("zenith_wheel_spin",{p_paid:!!paid,p_currency:currency});
+      if(error)throw error;
+      const result=Array.isArray(data)?data[0]:data;
+      if(!result||result.success!==true)throw new Error(result?.message||"لم تكتمل اللفة.");
+      const index=Number(result.segment_index);
+      if(!Number.isInteger(index)||index<0||index>=prizes.length)throw new Error("استلمنا نتيجة غير صالحة من الخادم.");
+      const center=index*visualSegment+visualSegment/2;
+      const normalized=(360-center%360)%360;
+      const current=((Number(wheel.dataset.rotation)||0)%360+360)%360;
+      const delta=direction>=0?((normalized-current)+360)%360:-((current-normalized+360)%360);
+      const rotation=(Number(wheel.dataset.rotation)||0)+direction*360*7+delta;
+      wheel.style.transition="none";wheel.style.transform=`rotate(${Number(wheel.dataset.rotation)||0}deg)`;void wheel.offsetWidth;wheel.style.transition="transform 5.2s cubic-bezier(.12,.72,.08,1)";wheel.style.transform=`rotate(${rotation}deg)`;wheel.dataset.rotation=String(rotation);
+      await new Promise(resolve=>setTimeout(resolve,5350));
+      // Keep prize captions readable after the wheel settles, while their sectors remain correctly positioned.
+      wheel.querySelectorAll(".wheelPrizeLabel").forEach(label=>{label.style.transform=`translate(-50%,-50%) rotate(${-rotation}deg)`;});
+      const prize=prizes[index];
+      setResult(result.message|| (prize.win?`مبروك! ربحت: ${prize.label}`:"حظ أوفر! جرّب مرة ثانية غداً."),prize.win);
+      showWheelPrize(prize,result.message|| (prize.win?`مبروك! ربحت: ${prize.label}`:"حظ أوفر! جرّب مرة ثانية غداً."));
+      if(result.iqd_claim_spin_id){
+        const choices=document.createElement("div");choices.className="wheelIqdChoice";
+        for(const [provider,label] of [["asiacell","إضافة إلى آسياسيل"],["mastercard","إضافة إلى ماستركارد"]]){
+          const choice=document.createElement("button");choice.type="button";choice.textContent=label;
+          choice.addEventListener("click",async()=>{
+            choices.querySelectorAll("button").forEach(b=>b.disabled=true);
+            try{
+              const {data:credit,error:creditError}=await db.rpc("zenith_wheel_choose_iqd_wallet",{p_spin_id:Number(result.iqd_claim_spin_id),p_provider:provider});
+              if(creditError)throw creditError;
+              choices.remove();setResult(`تمت إضافة ${Number(credit.amount_iqd).toLocaleString("en-US")} د.ع إلى محفظة ${provider==="asiacell"?"آسياسيل":"ماستركارد"} بنجاح.`,true);
+              if(typeof loadCustomerWallet==="function") await loadCustomerWallet();
+              if(typeof loadAccountPanel==="function") await loadAccountPanel();
+            }catch(err){setResult(err.message||"تعذر إضافة الرصيد.");choices.querySelectorAll("button").forEach(b=>b.disabled=false);}
+          });choices.appendChild(choice);
+        }
+        byId("wheelResult").appendChild(choices);
+      }
+      if(typeof loadCustomerWallet==="function") await loadCustomerWallet();
+      await loadLuckyWheelStatus();
+    }catch(e){setResult(e.message||"حدث خطأ أثناء اللفة.");await loadLuckyWheelStatus();}
+    finally{wheelBusy=false;await loadLuckyWheelStatus();}
+  }
+  const centerButton=byId("wheelCenterSpin");
+  const gestureArea=byId("wheelGestureArea");
+  const spinDefault=(direction=1)=>{
+    if(wheelBusy)return;
+    const freeAvailable=byId("wheelFreeStatus").textContent.includes("متاحة اليوم")||byId("wheelFreeStatus").textContent.includes("غير محدودة");
+    const paidAvailable=!!(window.__zenithWheelPaidEnabled);
+    if(freeAvailable)spin(false,direction);else if(paidAvailable)spin(true,direction);else setResult("انتهت لفتك المجانية. تحتاج 20 نقطة للفة التالية.");
+  };
+  centerButton.addEventListener("click",()=>spinDefault(1));
+  let drag=null;
+  wheel.addEventListener("pointerdown",event=>{
+    if(wheelBusy||event.target===centerButton)return;
+    event.preventDefault();const rect=wheel.getBoundingClientRect();
+    const angle=Math.atan2(event.clientY-(rect.top+rect.height/2),event.clientX-(rect.left+rect.width/2))*180/Math.PI;
+    drag={id:event.pointerId,lastAngle:angle,lastTime:performance.now(),velocity:0,moved:0,rotation:Number(wheel.dataset.rotation)||0};
+    wheel.setPointerCapture?.(event.pointerId);wheel.style.cursor="grabbing";
+  });
+  wheel.addEventListener("pointermove",event=>{
+    if(!drag||drag.id!==event.pointerId||wheelBusy)return;
+    const rect=wheel.getBoundingClientRect();const angle=Math.atan2(event.clientY-(rect.top+rect.height/2),event.clientX-(rect.left+rect.width/2))*180/Math.PI;
+    const now=performance.now();let delta=angle-drag.lastAngle;if(delta>180)delta-=360;else if(delta< -180)delta+=360;
+    const elapsed=Math.max(1,now-drag.lastTime);drag.velocity=delta/elapsed;drag.moved+=Math.abs(delta);drag.rotation+=delta;
+    wheel.style.transition="none";wheel.style.transform=`rotate(${drag.rotation}deg)`;wheel.dataset.rotation=String(drag.rotation);drag.lastAngle=angle;drag.lastTime=now;
+  });
+  const finishWheelDrag=event=>{
+    if(!drag||drag.id!==event.pointerId)return;const direction=drag.velocity>=0?1:-1;const fast=Math.abs(drag.velocity)>=0.32&&drag.moved>=18;
+    drag=null;wheel.style.cursor="grab";if(fast)spinDefault(direction);
+  };
+  wheel.addEventListener("pointerup",finishWheelDrag);
+  wheel.addEventListener("pointercancel",event=>{if(drag&&drag.id===event.pointerId){drag=null;wheel.style.cursor="grab";}});
+  byId("wheelBackHome").addEventListener("click",()=>byId("navHome").click());
+
+function showWheelPrize(prize,message){const overlay=document.getElementById("wheelWinOverlay"),msg=document.getElementById("wheelWinMessage"),title=overlay?.querySelector(".wheelWinTitle");if(!overlay||!msg)return;if(title)title.textContent=prize.win?"مبروك!":"حظ أوفر";msg.textContent=message||prize.label;overlay.hidden=false;overlay.classList.remove("show");requestAnimationFrame(()=>overlay.classList.add("show"));}
+const wheelWinClose=document.getElementById("wheelWinClose");if(wheelWinClose)wheelWinClose.addEventListener("click",()=>{document.getElementById("wheelWinOverlay").hidden=true;});
+const wheelWinOverlay=document.getElementById("wheelWinOverlay");if(wheelWinOverlay)wheelWinOverlay.addEventListener("click",e=>{if(e.target===wheelWinOverlay)wheelWinOverlay.hidden=true;});
+  window.openLuckyWheel=openLuckyWheel;window.loadLuckyWheelStatus=loadLuckyWheelStatus;
+  window.addEventListener("zenithWheelRestored",()=>loadLuckyWheelStatus());
+  if(!byId("luckyWheelPanel").hidden) loadLuckyWheelStatus();
+})();
+</script>
+
+
+<style id="zenith-wheel-fullscreen-fix">
+html,body{max-width:100%;overflow-x:hidden!important}
+#luckyWheelPanel.zenithWheelPanel{position:relative!important;left:50%!important;width:100vw!important;max-width:100vw!important;margin-left:-50vw!important;padding:12px clamp(8px,2vw,24px) 90px!important;border:0!important;border-radius:0!important;box-shadow:none!important;overflow:visible!important;min-height:100svh!important}
+#luckyWheelPanel .wheelStage{width:min(94vw,560px)!important;max-width:calc(100vw - 12px)!important;margin:20px auto 24px!important;filter:none!important;outline:0!important}
+#luckyWheelPanel .wheelDisc{border:0!important;outline:0!important;box-shadow:none!important;background-image:conic-gradient(from -18deg,#244f87 0deg 36deg,#a87931 36deg 72deg,#5d3d83 72deg 108deg,#245e68 108deg 144deg,#183a66 144deg 180deg,#23647c 180deg 216deg,#8d6630 216deg 252deg,#326b9c 252deg 288deg,#3e6b9a 288deg 324deg,#142d4d 324deg 360deg)!important}
+#luckyWheelPanel .wheelDisc:before{display:none!important;content:none!important}
+#luckyWheelPanel .wheelDisc:after{display:none!important;content:none!important}
+#luckyWheelPanel .wheelPrizeArtwork{width:clamp(28px,7vw,48px);height:clamp(28px,7vw,48px);object-fit:contain;display:block;margin:0 auto 3px;filter:drop-shadow(0 2px 3px #0008)}
+#luckyWheelPanel .wheelPrizeLabel{width:27%;height:27%;margin-left:-13.5%;margin-top:-13.5%;}
+#luckyWheelPanel .wheelPointer{top:-3px;transform:translateX(-50%);border-top:30px solid #fff0b8;border-left:14px solid transparent;border-right:14px solid transparent;filter:none}
+#luckyWheelPanel .wheelCenter{width:27%;border:3px solid #fff0bc;box-shadow:none!important}
+#luckyWheelPanel .wheelCenter small{font-size:clamp(7px,2vw,10px);letter-spacing:.3px;text-align:center}
+#luckyWheelPanel .wheelHint{margin:0 auto 14px;max-width:560px}
+#luckyWheelPanel .wheelActionRow{display:none!important}
+#luckyWheelPanel .wheelWinOverlay{position:fixed;inset:0;z-index:1000000;display:grid;place-items:center;padding:20px;background:rgba(2,8,20,.76);backdrop-filter:blur(8px);opacity:0;transition:opacity .25s ease}
+#luckyWheelPanel .wheelWinOverlay[hidden]{display:none!important}
+#luckyWheelPanel .wheelWinOverlay.show{opacity:1}
+#luckyWheelPanel .wheelWinCard{position:relative;width:min(90vw,390px);padding:34px 22px 28px;text-align:center;border:1px solid #e9c36b;border-radius:24px;background:linear-gradient(145deg,#122b4b,#071427);color:#fff;box-shadow:0 18px 70px #0009;transform:translateY(25px) scale(.88);transition:transform .35s cubic-bezier(.2,.9,.25,1.2)}
+#luckyWheelPanel .wheelWinOverlay.show .wheelWinCard{transform:translateY(0) scale(1)}
+#luckyWheelPanel .wheelWinClose{position:absolute;top:8px;left:10px;width:34px;height:34px;border-radius:50%;background:#ffffff18;color:white;font-size:24px;box-shadow:none}
+#luckyWheelPanel .wheelWinSpark{font-size:48px;color:#f5d17c;text-shadow:0 0 24px #e9c36b}
+#luckyWheelPanel .wheelWinTitle{font-size:25px;font-weight:1000;color:#ffe4a1;margin:5px 0 12px}
+#luckyWheelPanel .wheelWinMessage{font-size:17px;font-weight:850;line-height:1.8;overflow-wrap:anywhere}
+@media(max-width:480px){#luckyWheelPanel.zenithWheelPanel{padding-left:5px!important;padding-right:5px!important}#luckyWheelPanel .wheelStage{width:96vw!important;max-width:96vw!important;margin-top:16px!important}#luckyWheelPanel .wheelPrizeLabel .wheelPrizeName{font-size:clamp(7px,2.1vw,10px)}#luckyWheelPanel .wheelPrizeLabel .wheelPrizeSub{font-size:7px}}
+
+/* Final mobile viewport and wheel geometry correction */
+html,body{width:100%!important;max-width:100%!important;min-width:0!important;overflow-x:clip!important}
+#luckyWheelPanel.zenithWheelPanel{
+  position:fixed!important;inset:60px 0 76px 0!important;left:0!important;right:0!important;
+  width:100%!important;max-width:none!important;height:auto!important;min-height:0!important;
+  margin:0!important;transform:none!important;box-sizing:border-box!important;
+  padding:12px 12px 28px!important;overflow-x:hidden!important;overflow-y:auto!important;
+  border:0!important;border-radius:0!important;box-shadow:none!important;z-index:999!important;
+}
+#luckyWheelPanel .wheelHead,#luckyWheelPanel .wheelStatusGrid,#luckyWheelPanel .wheelHint,
+#luckyWheelPanel .wheelResult,#luckyWheelPanel .wheelFinePrint{width:100%!important;max-width:620px!important;margin-left:auto!important;margin-right:auto!important;box-sizing:border-box!important}
+#luckyWheelPanel .wheelStage{width:min(88vw,460px)!important;max-width:calc(100vw - 24px)!important;height:auto!important;aspect-ratio:1/1!important;margin:22px auto 24px!important;overflow:visible!important;box-sizing:border-box!important}
+#luckyWheelPanel .wheelDisc{width:100%!important;height:100%!important;overflow:hidden!important;border:0!important;outline:0!important;box-shadow:none!important;isolation:isolate!important}
+#luckyWheelPanel .wheelDisc:before{content:none!important;display:none!important}
+#luckyWheelPanel .wheelDisc:after{content:""!important;display:block!important;position:absolute!important;inset:0!important;border-radius:50%!important;pointer-events:none!important;z-index:3!important;opacity:1!important;
+ background:repeating-conic-gradient(from -18deg,transparent 0deg 35.35deg,rgba(255,235,185,.95) 35.35deg 36deg)!important}
+#luckyWheelPanel .wheelPrizeLabel{position:absolute!important;width:26%!important;height:26%!important;margin:0!important;
+ transform:translate(-50%,-50%)!important;box-sizing:border-box!important;z-index:2!important;overflow:visible!important}
+#luckyWheelPanel .wheelPrizeArtwork{width:clamp(27px,7vw,44px)!important;height:clamp(27px,7vw,44px)!important;object-fit:contain!important}
+#luckyWheelPanel .wheelPrizeLabel .wheelPrizeName{font-size:clamp(8px,2.3vw,11px)!important;white-space:normal!important}
+#luckyWheelPanel .wheelPrizeLabel .wheelPrizeSub{font-size:clamp(7px,1.8vw,9px)!important}
+#luckyWheelPanel .wheelCenter{width:27%!important;aspect-ratio:1!important;box-sizing:border-box!important;z-index:5!important}
+#luckyWheelPanel .wheelPointer{top:-2px!important;left:50%!important;transform:translateX(-50%)!important;z-index:6!important}
+#luckyWheelPanel .wheelWinOverlay{position:fixed!important;inset:0!important;z-index:1000001!important}
+@media(max-width:420px){
+ #luckyWheelPanel.zenithWheelPanel{inset:56px 0 72px 0!important;padding:10px 8px 24px!important}
+ #luckyWheelPanel .wheelStage{width:min(90vw,390px)!important;max-width:calc(100vw - 16px)!important;margin:18px auto 20px!important}
+ #luckyWheelPanel .wheelStatusGrid{gap:7px!important;margin:12px auto!important}
+}
+
+</style>
+
 </body>
 
 
 
 </html>
+
+<style id="zenith-wheel-clean-touch-final">
+#luckyWheelPanel .wheelHeadMinimal{display:flex!important;justify-content:flex-start!important;align-items:center!important;min-height:32px!important;margin:0 0 4px!important}
+#luckyWheelPanel .wheelHeadMinimal>div{display:none!important}
+#luckyWheelPanel .wheelBackBtn{width:34px!important;min-width:34px!important;height:30px!important;min-height:30px!important;padding:0!important;border-radius:9px!important;font-size:16px!important;line-height:1!important}
+#luckyWheelPanel .wheelStatusGrid,#luckyWheelPanel .wheelHint,#luckyWheelPanel .wheelResult,#luckyWheelPanel .wheelFinePrint{display:none!important}
+#luckyWheelPanel .wheelStage{touch-action:auto!important;user-select:none!important;-webkit-user-select:none!important}
+#luckyWheelPanel .wheelDisc{touch-action:none!important;user-select:none!important;-webkit-user-select:none!important;cursor:grab!important}
+#luckyWheelPanel .wheelCenter{touch-action:manipulation!important;cursor:pointer!important}
+#luckyWheelPanel .wheelDisc.isSpinning{cursor:default!important}
+</style>
+
+
+<style id="zenith-wheel-premium-redesign">
+#luckyWheelPanel.zenithWheelPanel{width:100%!important;max-width:none!important;margin:0!important;padding:8px clamp(10px,3vw,22px) 28px!important;box-sizing:border-box!important;background:linear-gradient(180deg,#0b1423 0%,#0c1929 100%)!important;border:0!important;border-radius:0!important;box-shadow:none!important;overflow:visible!important}
+#luckyWheelPanel .wheelHeadMinimal{min-height:30px!important;margin:0 0 6px!important;justify-content:flex-start!important}
+#luckyWheelPanel .wheelBackBtn{width:34px!important;height:30px!important;min-width:34px!important;padding:0!important;margin:0!important;border-radius:9px!important;font-size:16px!important}
+#luckyWheelPanel .wheelDailyTitle{display:block;text-align:center;color:#f2d99b;font-weight:1000;font-size:clamp(25px,6vw,36px);line-height:1.3;margin:8px 0 4px;text-shadow:0 2px 12px #c08a342e}
+#luckyWheelPanel .wheelStage{width:min(88vw,440px)!important;max-width:100%!important;aspect-ratio:1!important;height:auto!important;margin:12px auto 28px!important;overflow:visible!important;filter:none!important;touch-action:auto!important}
+#luckyWheelPanel .wheelDisc{width:100%!important;height:100%!important;border-radius:50%!important;overflow:hidden!important;position:relative!important;border:5px solid #e8c982!important;box-shadow:0 0 0 2px #6d512b,0 12px 30px #0008!important;background-image:conic-gradient(from 0deg,#244f87 0deg 40deg,#a87931 40deg 80deg,#5d3d83 80deg 120deg,#245e68 120deg 160deg,#183a66 160deg 200deg,#23647c 200deg 240deg,#8d6630 240deg 280deg,#326b9c 280deg 320deg,#3e6b9a 320deg 360deg)!important}
+#luckyWheelPanel .wheelDisc:before{content:""!important;display:block!important;position:absolute!important;inset:8px!important;border:1px solid #ffedbd88!important;border-radius:50%!important;pointer-events:none!important;z-index:2!important}
+#luckyWheelPanel .wheelDisc:after{content:""!important;display:block!important;position:absolute!important;inset:0!important;border-radius:50%!important;background:repeating-conic-gradient(from 0deg,transparent 0deg 39.35deg,#f7e4b8 39.35deg 40deg)!important;opacity:1!important;pointer-events:none!important;z-index:3!important}
+#luckyWheelPanel .wheelPrizeLabel{width:29%!important;height:25%!important;margin:0!important;transform:translate(-50%,-50%)!important;z-index:4!important;gap:1px!important}
+#luckyWheelPanel .wheelPrizeLabel .wheelPrizeIcon{font-size:clamp(21px,5.6vw,31px)!important;line-height:1.15!important;margin:0 0 3px!important}
+#luckyWheelPanel .wheelPrizeLabel .wheelPrizeName{font-size:clamp(9px,2.6vw,13px)!important;line-height:1.2!important;font-weight:1000!important}
+#luckyWheelPanel .wheelPrizeLabel .wheelPrizeSub{font-size:clamp(8px,2vw,10px)!important;margin-top:2px!important;color:#ffedbf!important}
+#luckyWheelPanel .wheelCenter{width:27%!important;border:5px solid #fff0bd!important;box-shadow:0 0 0 2px #926a2d,0 5px 16px #0009,inset 0 0 0 2px #b58b42!important;z-index:6!important}
+#luckyWheelPanel .wheelPointer{top:-17px!important;border-left-width:16px!important;border-right-width:16px!important;border-top:34px solid #fff0b8!important;border-bottom:0!important;filter:drop-shadow(0 3px 3px #0009)!important}
+#luckyWheelPanel .wheelHistory,#luckyWheelPanel .wheelRules{max-width:650px;width:100%;margin:24px auto 0;padding:17px;border:1px solid #263c56;border-radius:18px;background:linear-gradient(145deg,#111f31,#0d1828);box-sizing:border-box;color:#eaf2ff}
+#luckyWheelPanel .wheelSectionTitle{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:13px}
+#luckyWheelPanel .wheelSectionTitle span{font-size:18px;font-weight:950;color:#f3d99d}
+#luckyWheelPanel .wheelSectionTitle small{font-size:11px;color:#8fa7c1}
+#luckyWheelPanel .wheelHistoryList{display:grid;gap:8px}
+#luckyWheelPanel .wheelHistoryItem{display:flex;align-items:center;gap:11px;padding:10px 11px;border-radius:12px;background:#ffffff08;border:1px solid #ffffff12}
+#luckyWheelPanel .wheelHistoryIcon{width:38px;height:38px;flex:0 0 38px;border-radius:11px;background:#d7b56a18;display:grid;place-items:center;font-size:21px}
+#luckyWheelPanel .wheelHistoryBody{display:grid;gap:3px;min-width:0;flex:1}
+#luckyWheelPanel .wheelHistoryBody strong{font-size:13px;color:#f4f7fc}
+#luckyWheelPanel .wheelHistoryBody small{font-size:10px;color:#91a6bf}
+#luckyWheelPanel .wheelHistoryStatus{font-size:10px;color:#e9cb87;white-space:nowrap}
+#luckyWheelPanel .wheelHistoryEmpty{padding:14px;text-align:center;color:#9db0c5;font-size:12px}
+#luckyWheelPanel .wheelHistoryMore{display:block;width:auto;min-width:110px;margin:12px auto 0;padding:8px 16px;border:1px solid #8f713c;border-radius:10px;background:#172a40;color:#f3d99d;font-size:12px}
+#luckyWheelPanel .wheelRules ul{margin:0;padding:0 20px 0 0;display:grid;gap:10px;color:#c7d4e4;font-size:12px;line-height:1.85}
+#luckyWheelPanel .wheelRules li::marker{color:#e4bd70}
+#luckyWheelPanel .wheelPointsValue{margin-top:14px;padding:11px;border:1px solid #8b6b39;border-radius:12px;background:#d5ad5a12;text-align:center;color:#f3d99d;font-size:13px;font-weight:950}
+@media(max-width:420px){#luckyWheelPanel .wheelStage{width:min(90vw,390px)!important}#luckyWheelPanel .wheelPrizeLabel{width:30%!important;height:27%!important}#luckyWheelPanel .wheelPrizeLabel .wheelPrizeName{font-size:9px!important}#luckyWheelPanel .wheelPrizeLabel .wheelPrizeSub{font-size:8px!important}#luckyWheelPanel .wheelHistory,#luckyWheelPanel .wheelRules{padding:14px}}
+html[data-theme="light"] #luckyWheelPanel.zenithWheelPanel{background:#edf4fb!important}html[data-theme="light"] #luckyWheelPanel .wheelHistory,html[data-theme="light"] #luckyWheelPanel .wheelRules{background:linear-gradient(145deg,#fff,#eaf2fa);border-color:#d5e1ee;color:#20334a}html[data-theme="light"] #luckyWheelPanel .wheelHistoryBody strong{color:#20334a}html[data-theme="light"] #luckyWheelPanel .wheelRules ul{color:#425a73}
+</style>
+
+
+<style id="zenith-wheel-natural-page-scroll-fix">
+/* Wheel page stays in normal document flow so the whole page (history + rules) scrolls. */
+html, body { height:auto!important; min-height:100%!important; overflow-x:clip!important; overflow-y:auto!important; overscroll-behavior-y:auto!important; }
+body { padding-bottom:calc(92px + env(safe-area-inset-bottom))!important; }
+#luckyWheelPanel.zenithWheelPanel {
+  position:relative!important; inset:auto!important; top:auto!important; right:auto!important; bottom:auto!important; left:auto!important;
+  width:100%!important; max-width:100%!important; height:auto!important; min-height:calc(100svh - 150px)!important; max-height:none!important;
+  margin:0!important; padding:8px 10px calc(112px + env(safe-area-inset-bottom))!important;
+  overflow:visible!important; overflow-x:clip!important; overflow-y:visible!important;
+  transform:none!important; z-index:auto!important; contain:none!important; touch-action:pan-y!important;
+}
+#luckyWheelPanel .wheelHead, #luckyWheelPanel .wheelDailyTitle, #luckyWheelPanel .wheelStage,
+#luckyWheelPanel .wheelHistory, #luckyWheelPanel .wheelRules { position:relative!important; }
+#luckyWheelPanel .wheelStage { touch-action:pan-y!important; }
+#luckyWheelPanel .wheelDisc { touch-action:none!important; }
+#luckyWheelPanel .wheelCenter { touch-action:manipulation!important; }
+#luckyWheelPanel .wheelHistory, #luckyWheelPanel .wheelRules { flex:none!important; height:auto!important; max-height:none!important; overflow:visible!important; margin-bottom:18px!important; }
+@media(max-width:480px){ #luckyWheelPanel.zenithWheelPanel{padding-bottom:calc(120px + env(safe-area-inset-bottom))!important;} }
+</style>
+
+<style id="zenith-wheel-rules-typography-v2">
+/* Rules are plain editorial content on the page background, not a card. */
+#luckyWheelPanel .wheelRules{width:100%!important;max-width:760px!important;margin:30px auto 24px!important;padding:8px 12px 24px!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;color:var(--ink,#eaf2ff)!important;box-sizing:border-box!important}
+#luckyWheelPanel .wheelRules h2{margin:0 0 14px!important;font-size:clamp(23px,5.4vw,30px)!important;line-height:1.45!important;font-weight:1000!important;color:#f1d58f!important}
+#luckyWheelPanel .wheelRules h3{margin:24px 0 9px!important;font-size:clamp(19px,4.6vw,23px)!important;line-height:1.5!important;font-weight:950!important;color:#e9c77e!important}
+#luckyWheelPanel .wheelRules p{margin:8px 0 13px!important;font-size:clamp(16px,3.9vw,18px)!important;line-height:2!important;color:#d2deec!important}
+#luckyWheelPanel .wheelRules .wheelRulesLead{font-size:clamp(17px,4.1vw,19px)!important;color:#f1f5fb!important;font-weight:650!important}
+#luckyWheelPanel .wheelRules ul{margin:10px 0 0!important;padding:0 23px 0 0!important;display:grid!important;gap:12px!important;color:#d2deec!important;font-size:clamp(16px,3.8vw,18px)!important;line-height:2!important}
+#luckyWheelPanel .wheelRules li{padding-right:3px!important}
+#luckyWheelPanel .wheelRules li strong{color:#f3d99d!important}
+#luckyWheelPanel .wheelRules .wheelRulesNote{font-size:14px!important;color:#9fb1c6!important}
+#luckyWheelPanel .wheelPointsTable{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:14px 0 18px}
+#luckyWheelPanel .wheelPointsTable>div{display:flex;flex-direction:column;gap:5px;min-width:0;padding:10px 11px;border-bottom:1px solid #7890aa55;background:transparent}
+#luckyWheelPanel .wheelPointsTable span{font-size:13px;color:#aebfd2;line-height:1.5}
+#luckyWheelPanel .wheelPointsTable strong{font-size:16px;color:#f3d99d;font-weight:950;direction:ltr;text-align:right}
+#luckyWheelPanel .wheelRules .wheelPointsValue{margin:20px 0 0!important;padding:12px 0!important;border:0!important;border-top:1px solid #b8955555!important;border-bottom:1px solid #b8955555!important;border-radius:0!important;background:transparent!important;font-size:19px!important;color:#f3d99d!important}
+#luckyWheelPanel .wheelHistoryMore{font-size:15px!important;min-height:42px!important}
+html[data-theme="light"] #luckyWheelPanel .wheelRules{background:transparent!important;color:#20334a!important}
+html[data-theme="light"] #luckyWheelPanel .wheelRules p,html[data-theme="light"] #luckyWheelPanel .wheelRules ul{color:#344c65!important}
+html[data-theme="light"] #luckyWheelPanel .wheelRules .wheelRulesLead{color:#20334a!important}
+html[data-theme="light"] #luckyWheelPanel .wheelRules h2,html[data-theme="light"] #luckyWheelPanel .wheelRules h3,html[data-theme="light"] #luckyWheelPanel .wheelPointsTable strong{color:#8b6728!important}
+@media(max-width:380px){#luckyWheelPanel .wheelPointsTable{grid-template-columns:1fr}#luckyWheelPanel .wheelRules{padding-left:6px!important;padding-right:6px!important}}
+</style>
