@@ -2040,6 +2040,43 @@ html[data-theme="light"] .reviewStatsCard{background:#fff!important;border-color
 .checkoutDirectModal[hidden]{display:none!important}
 </style>
 
+
+<style id="zenith-user-request-final-fixes">
+/* Header is part of normal document flow and scrolls away with the page. */
+body>header,header{position:relative!important;top:auto!important;inset:auto!important;z-index:20!important;transform:none!important;}
+html{scroll-padding-top:12px!important}
+/* Keep account stats data intact, but remove the two wallet cards from the account UI. */
+#accountAsiacellBalance,#accountMastercardBalance{display:none!important}
+#accountAsiacellBalance,#accountMastercardBalance{visibility:hidden!important}
+.accountStatsGrid .accountStat:nth-child(-n+2){display:none!important}
+/* Small pencil controls matching the account interface. */
+.accountEditIcon{width:28px!important;min-width:28px!important;height:28px!important;min-height:28px!important;padding:0!important;margin:0 6px!important;border-radius:50%!important;display:inline-grid!important;place-items:center!important;background:rgba(76,161,231,.13)!important;border:1px solid rgba(93,173,236,.32)!important;color:#75bdff!important;font-size:15px!important;line-height:1!important;box-shadow:none!important}
+.accountDisplayNameValue,.accountPhoneValue,.accountUsernameValue{display:flex;align-items:center;gap:5px;min-width:0}
+.accountPhoneValue #addAccountPhone{background:rgba(76,161,231,.13)!important;color:#75bdff!important;border:1px solid rgba(93,173,236,.32)!important;font-size:16px!important}
+.accountNameEditor small,.accountUsernameEditor small{display:block;grid-column:1/-1;color:var(--muted);font-size:11px}
+.accountUsernameEditor{display:flex;align-items:center;gap:7px;margin-top:8px}
+.accountUsernameEditor[hidden]{display:none!important}
+.accountUsernameEditor input{flex:1;min-width:0;margin:0!important}
+.accountUsernameEditor button{width:auto!important;min-width:65px!important;margin:0!important}
+.wheelPrizeIcon img{width:34px;height:34px;object-fit:contain;display:block;filter:drop-shadow(0 2px 2px #0005)}
+.wheelSparkles{display:inline-block;color:#35aaff;filter:hue-rotate(185deg) saturate(2.2);font-size:24px;letter-spacing:-4px;line-height:1}
+.wheelHistoryAction{width:auto!important;min-width:92px!important;max-width:116px!important;padding:7px 10px!important;margin:0!important;font-size:11px!important;border-radius:9px!important;white-space:nowrap!important;flex:0 0 auto}
+.wheelHistoryItem{gap:8px!important}
+.zenithPrizeModal{position:fixed;inset:0;z-index:2147483200;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(2,8,20,.38);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.zenithPrizeModal[hidden]{display:none!important}
+.zenithPrizeModalCard{position:relative;width:min(100%,390px);padding:22px 18px 18px;border:1px solid rgba(130,190,240,.35);border-radius:18px;background:var(--surface,#101b2b);color:var(--ink,#fff);box-shadow:0 18px 60px #0008;text-align:center}
+.zenithPrizeModalClose{position:absolute;top:8px;left:8px;width:32px!important;min-width:32px!important;height:32px!important;min-height:32px!important;padding:0!important;margin:0!important;border-radius:50%!important;font-size:22px!important;line-height:1!important;background:rgba(130,150,180,.18)!important;color:var(--ink,#fff)!important}
+.zenithPrizeModalCard h3{margin:4px 30px 14px;font-size:17px}
+.zenithCouponCode{direction:ltr;display:block;margin:12px 0;padding:13px 10px;border:1px dashed #55aaff;border-radius:12px;background:rgba(50,140,220,.1);font-size:23px;font-weight:900;letter-spacing:1.5px;color:#66baff;user-select:all}
+.zenithGameDetailsForm{text-align:right;display:grid;gap:8px}
+.zenithGameDetailsForm label{margin:5px 0 0}
+.zenithGameDetailsForm input{margin:0}
+/* Wheel tile uses the same theme-colored icon treatment as its neighboring section tiles. */
+[data-section-action="wheel"] .sectionTileIcon{color:var(--blue)!important}
+[data-section-action="wheel"] .sectionTileIcon svg{width:25px;height:25px;fill:none!important;stroke:currentColor!important;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+[data-section-action="wheel"] .sectionTileIcon svg *{fill:none!important;stroke:currentColor!important}
+</style>
+
 </head>
 <body>
 <header>
@@ -2406,34 +2443,17 @@ html[data-theme="light"] .reviewStatsCard{background:#fff!important;border-color
         <li><strong>السحبة اليومية:</strong> يحصل كل حساب على سحبة مجانية واحدة كل يوم، وتتجدد حسب توقيت بغداد.</li>
         <li><strong>السحبات الإضافية:</strong> بعد استهلاك السحبة المجانية، تكلف السحبة الإضافية 20 نقطة زينيث.</li>
         <li><strong>طريقة تدوير العجلة:</strong> اضغط على منتصف العجلة أو اسحب داخل الدائرة بسرعة إلى اليمين أو اليسار.</li>
-        <li><strong>استلام الجوائز:</strong> تضاف نقاط زينيث والجوائز النقدية إلى الحساب، أما الجواهر والاشتراكات فقد تظهر بحالة «قيد التجهيز» إلى أن يتم تنفيذها.</li>
+        <li><strong>استلام الجوائز:</strong> تُضاف نقاط زينيث إلى الحساب مباشرة، أما الجواهر والاشتراكات فتظهر بحالة «قيد التجهيز» إلى أن يتم تنفيذها.</li>
         <li><strong>كوبونات الخصم:</strong> كوبون 5% أو 7% صالح لمدة 24 ساعة ولمرة استخدام واحدة فقط؛ ينتهي عند استخدامه أو انتهاء المدة، أيهما يحدث أولاً.</li>
         <li><strong>النتيجة:</strong> نتيجة كل سحبة يحددها نظام المتجر، وتظهر جائزتك في نافذة النتيجة ثم في سجل الجوائز.</li>
       </ul>
       <h3>ما هي نقاط زينيث؟ وكيف تحصل عليها؟</h3>
-      <p>نقاط زينيث هي رصيد مكافآت داخل حسابك. تحصل على نقطة واحدة مقابل كل 1 USD من مشترياتك المؤهلة، ويمكنك الفوز بنقاط إضافية من عجلة الحظ. كما يمكنك استخدام رمز دعوة شخص آخر مرة واحدة فقط؛ يحصل صاحب الرمز على نصف عدد النقاط التي تكسبها أنت من عملية الشراء، من دون أن تُخصم منك أي نقطة. ويمكن استخدام رمز الدعوة مرة واحدة فقط لكل مستخدم.</p>
-      <h3>قيمة النقاط والعملات</h3>
-      <p>كل <strong>75 نقطة زينيث = 1 دولار أمريكي</strong>. وسعر الصرف التوضيحي هو <strong>1 USD = 1,520 IQD</strong>.</p>
-      <div class="wheelPointsTable" role="list" aria-label="قيمة 75 نقطة زينيث بالعملات">
-        <div role="listitem"><span>الدولار الأمريكي USD</span><strong>1.00 USD</strong></div>
-        
-        <div role="listitem"><span>الريال السعودي SAR</span><strong>4 SAR</strong></div>
-        <div role="listitem"><span>الدرهم الإماراتي AED</span><strong>4 AED</strong></div>
-        <div role="listitem"><span>الريال القطري QAR</span><strong>4 QAR</strong></div>
-        <div role="listitem"><span>الجنيه المصري EGP</span><strong>58 EGP</strong></div>
-        <div role="listitem"><span>الدينار الأردني JOD</span><strong>0.75 JOD</strong></div>
-        <div role="listitem"><span>الليرة التركية TRY</span><strong>53 TRY</strong></div>
-        <div role="listitem"><span>الدرهم المغربي MAD</span><strong>10.90 MAD</strong></div>
-        <div role="listitem"><span>الريال اليمني YER</span><strong>575 YER</strong></div>
-        <div role="listitem"><span>الليرة السورية SYP</span><strong>155 SYP</strong></div>
-        <div role="listitem"><span>الدينار الكويتي KWD</span><strong>0.333 KWD</strong></div>
-        <div role="listitem"><span>الريال العُماني OMR</span><strong>0.40 OMR</strong></div>
-        <div role="listitem"><span>الدينار البحريني BHD</span><strong>0.40 BHD</strong></div>
-      </div>
-      <p class="wheelRulesNote">تُحسب قيمة النقاط وفق أسعار التحويل المحددة في المتجر، وقد تتغير إذا تم تحديث أسعار العملات. لا تُعد هذه القيم أسعار صرف مصرفية مستقلة.</p>
-      <h3>استخدام النقاط عند الشحن</h3>
-      <p>يمكن اعتماد نقاط زينيث كقيمة خصم من إجمالي طلب الشحن؛ فمثلاً 75 نقطة تعادل 1,500 دينار عراقي من قيمة الطلب، و150 نقطة تعادل 3,000 دينار. يجب أن يظهر خيار استخدام النقاط في صفحة إتمام الطلب وأن يُخصم الرصيد من الحساب بعد تأكيد الطلب بنجاح.</p>
-      <div class="wheelPointsValue" id="wheelPointsValue">75 نقطة زينيث = 1 USD = 1,500 IQD</div>
+      <p>نقاط زينيث رصيد مكافآت تحصل عليه من مشترياتك المؤهلة، ويمكنك أيضاً الفوز بها من عجلة الحظ.</p>
+      <h3>قيمة نقاط زينيث</h3>
+      <p><strong>75 نقطة زينيث = 1 دولار أمريكي.</strong> وسعر الصرف المعتمد للشرح هو <strong>1 دولار = 1,520 دينار عراقي.</strong></p>
+      <p><strong>رمز الدعوة:</strong> إذا استخدمت رمز دعوة شخص آخر، يحصل صاحب الرمز على نصف النقاط التي ستكسبها أنت، من دون أن تخسر أي نقطة من رصيدك. يمكن لكل شخص استخدام رمز الدعوة مرة واحدة فقط.</p>
+      <p>تظهر قيمة نقاطك في صفحة الحساب حسب العملة التي اخترتها في المحفظة.</p>
+      <div class="wheelPointsValue" id="wheelPointsValue">75 نقطة زينيث = 1 USD</div>
     </section>
     <div class="wheelStatusGrid" hidden aria-hidden="true"><div class="wheelStatusCard"><span>حالة اللفة</span><strong id="wheelFreeStatus">جارٍ التحقق…</strong></div></div>
     <div class="wheelResult" id="wheelResult" aria-live="polite" hidden></div>
@@ -2449,8 +2469,8 @@ html[data-theme="light"] .reviewStatsCard{background:#fff!important;border-color
     </div>
     <div class="zenithAvatarPreviewOverlay" id="zenithAvatarPreviewOverlay" hidden><button type="button" id="closeAvatarPreview" aria-label="إغلاق">×</button><img id="zenithAvatarPreviewImage" alt="الصورة الشخصية بالحجم الكامل"></div>
     <div class="accountStatsGrid">
-      
-      
+      <div class="accountStat"><span>رصيد المحفظة (آسياسيل)</span><strong id="accountAsiacellBalance">—</strong></div>
+      <div class="accountStat"><span>رصيد المحفظة (ماستركارد)</span><strong id="accountMastercardBalance">—</strong></div>
       <div class="accountStat"><span>رمز الدعوة</span><strong id="accountInviteCode" dir="ltr">—</strong></div>
       <div class="accountStat"><span>النقاط</span><strong id="accountZenithPoints">—</strong></div>
       <div class="accountStat"><span>إجمالي الطلبات</span><strong id="accountOrderCount">—</strong></div>
@@ -2458,13 +2478,13 @@ html[data-theme="light"] .reviewStatsCard{background:#fff!important;border-color
     </div>
     <div class="accountInformationCard">
       <h3>معلومات الحساب</h3>
-      <div class="accountInfoRow accountDisplayNameRow"><span>اسم الحساب</span><div class="accountDisplayNameValue"><strong id="accountFullName">—</strong><button type="button" id="editAccountNameBtn" class="accountPencilBtn" aria-label="تعديل اسم الحساب" title="تعديل الاسم">✎</button></div></div>
+      <div class="accountInfoRow accountDisplayNameRow"><span>اسم الحساب</span><div class="accountDisplayNameValue"><strong id="accountFullName">—</strong><button type="button" class="accountEditIcon" id="editAccountNameBtn" aria-label="تعديل اسم الحساب" title="تعديل">✎</button></div></div>
       <div class="accountNameEditor" id="accountNameEditor" hidden><input id="accountNameInput" type="text" maxlength="32" placeholder="اكتب اسم الحساب الجديد"><button type="button" id="saveAccountNameBtn">حفظ الاسم</button><small id="accountNameCooldown"></small></div>
-      <div class="accountInfoRow"><span>اسم المستخدم</span><div class="accountDisplayNameValue"><strong id="accountUsername">—</strong><button type="button" id="editAccountUsernameBtn" class="accountPencilBtn" aria-label="تعديل اسم المستخدم" title="تعديل اسم المستخدم">✎</button></div></div><div class="accountNameEditor" id="accountUsernameEditor" hidden><input id="accountUsernameInput" type="text" maxlength="24" minlength="3" pattern="[A-Za-z0-9_]{3,24}" dir="ltr" placeholder="username"><button type="button" id="saveAccountUsernameBtn">حفظ اسم المستخدم</button><small id="accountUsernameCooldown"></small></div>
+      <div class="accountInfoRow"><span>اسم المستخدم</span><div class="accountUsernameValue"><strong id="accountUsername">—</strong><button type="button" class="accountEditIcon" id="editAccountUsernameBtn" aria-label="تعديل اسم المستخدم" title="تعديل">✎</button></div></div><div class="accountUsernameEditor" id="accountUsernameEditor" hidden><input id="accountUsernameInput" type="text" maxlength="24" autocomplete="username" placeholder="اسم المستخدم الجديد"><button type="button" id="saveAccountUsernameBtn">حفظ</button><small id="accountUsernameCooldown"></small></div>
       <div class="accountInfoRow"><span>البريد الإلكتروني</span><strong id="accountEmail">—</strong></div>
       <div class="accountInfoRow accountPhoneRow">
         <span>رقم الهاتف <small>(اختياري)</small></span>
-        <div class="accountPhoneValue"><strong id="accountPhoneDisplay">غير مضاف</strong><button type="button" id="addAccountPhone" aria-label="إضافة رقم الهاتف">+</button></div>
+        <div class="accountPhoneValue"><strong id="accountPhoneDisplay">غير مضاف</strong><button type="button" class="accountEditIcon" id="addAccountPhone" aria-label="تعديل رقم الهاتف" title="تعديل">✎</button></div>
         <div class="accountPhoneEditor" id="accountPhoneEditor" hidden><input id="accountPhoneInput" type="tel" inputmode="tel" maxlength="24" placeholder="أدخل رقم هاتفك اختيارياً"><button type="button" id="saveAccountPhone">حفظ</button></div>
       </div>
       <div class="accountInfoRow"><span>قيمة نقاط زينيث</span><strong id="accountZenithPointsValue">—</strong></div>
@@ -2697,7 +2717,7 @@ html[data-theme="light"] .reviewStatsCard{background:#fff!important;border-color
   <div class="sectionsGrid">
     <button type="button" data-section-action="assistant"><span class="sectionTileIcon"><svg viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="13" rx="4"/><path d="M12 3v4M8 12h.01M16 12h.01M9 16h6M2 12h2M20 12h2"/></svg></span><strong>مساعد زينيث الذكي</strong></button>
     <button type="button" data-section-action="accounts"><span class="sectionTileIcon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c.5-3.4 2.5-5 6-5s5.5 1.6 6 5M16 5a3 3 0 0 1 0 6M17 15c2.2.3 3.5 1.9 4 5"/></svg></span><strong>الحسابات</strong></button>
-    <button type="button" data-section-action="wheel"><span class="sectionTileIcon"><svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="zenithWheelIconGold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff0a6"/><stop offset="1" stop-color="#d99a27"/></linearGradient></defs><path d="M16 4 19.2 1.5 22 6.1 27.2 5.5 27.7 10.7 32 13.3 28.8 17.5 30.1 22.6 24.9 24 23.4 29 18.5 26.8 14.2 30 11.2 25.6 6 26 5.8 20.8 1.4 18.2 4.8 14 3.5 8.9 8.7 7.5 10.2 2.5 15.1 4.7Z" fill="url(#zenithWheelIconGold)"/><circle cx="16" cy="16" r="10.4" fill="#112b4c" stroke="#fff0b8" stroke-width="1.4"/><path d="M16 5.8A10.2 10.2 0 0 1 25.5 12L16 16Z" fill="#ff6b6b"/><path d="M25.5 12A10.2 10.2 0 0 1 22 24.2L16 16Z" fill="#ffc857"/><path d="M22 24.2A10.2 10.2 0 0 1 9.5 24L16 16Z" fill="#42c7a5"/><path d="M9.5 24A10.2 10.2 0 0 1 6.5 12L16 16Z" fill="#58a6ff"/><path d="M6.5 12A10.2 10.2 0 0 1 16 5.8V16Z" fill="#b18cff"/><circle cx="16" cy="16" r="3" fill="#fff4c8" stroke="#d9a53a" stroke-width="1.2"/><path d="M13.2 3.4 16 0l2.8 3.4-2.8 1.7Z" fill="#fff0a6" stroke="#b87c1d" stroke-width=".8"/></svg></span><strong>عجلة الحظ</strong></button>
+    <button type="button" data-section-action="wheel"><span class="sectionTileIcon"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="11.5"/><path d="M16 4.5v23M4.5 16h23M7.9 7.9l16.2 16.2M24.1 7.9 7.9 24.1"/><circle cx="16" cy="16" r="3"/></svg></span><strong>عجلة الحظ</strong></button>
     <button type="button" data-section-action="reviews"><span class="sectionTileIcon"><svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></span><strong>آراء العملاء</strong></button>
     <button type="button" data-section-action="account"><span class="sectionTileIcon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 21c.8-3.8 3.3-5.7 7.5-5.7s6.7 1.9 7.5 5.7"/></svg></span><strong>حسابي</strong></button>
     <button type="button" data-section-action="search"><span class="sectionTileIcon"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg></span><strong>البحث</strong></button>
@@ -4018,6 +4038,11 @@ function applyWalletCurrency(currency) {
   if (el("headerWalletBalance")) el("headerWalletBalance").textContent = `${balance.toLocaleString("en-US",{maximumFractionDigits:2})} ${zenithWalletCurrency}`;
   if (el("headerWalletFullBalance")) el("headerWalletFullBalance").textContent = formatCurrencyBalance(balance, zenithWalletCurrency);
   try { localStorage.setItem("zenith-wallet-currency", zenithWalletCurrency); } catch (_) {}
+  if (el("accountZenithPointsValue") && Number.isFinite(Number(window.__zenithAccountPointCount))) {
+    const usdValue = Number(window.__zenithAccountPointCount || 0) / 75;
+    const rate = zenithWalletCurrency === "IQD" ? 1520 : (ZENITH_USD_EXCHANGE_RATES[zenithWalletCurrency] || 1);
+    el("accountZenithPointsValue").textContent = formatCurrencyBalance(usdValue * rate, zenithWalletCurrency);
+  }
   if (typeof updatePaymentFields === "function" && el("purchasePanel") && !el("purchasePanel").hidden) updatePaymentFields();
 }
 async function loadExtraCurrencyWallets(userId) {
@@ -4649,8 +4674,8 @@ async function loadMyOrders() {
         const reviewButton = document.createElement("button");
         reviewButton.type = "button";
         reviewButton.className = "reviewOrderButton";
-        reviewButton.textContent = reviewCheckFailed ? "تعذر التحقق من التقييم" : hasAccountReview ? "سبق أن قيّم حسابك" : "قيّم طلبك";
-        reviewButton.disabled = reviewCheckFailed || hasAccountReview;
+        reviewButton.textContent = reviewCheckFailed ? "تعذر التحقق من التقييم" : "قيّم طلبك";
+        reviewButton.disabled = reviewCheckFailed;
         if (!reviewButton.disabled) reviewButton.addEventListener("click", () => openCustomerReview(order, productInfo));
         card.appendChild(reviewButton);
       }
@@ -5514,11 +5539,14 @@ async function loadAccountPanel() {
   el("accountNameInput").value = metadata.full_name || metadata.name || "";
   el("accountNameEditor").hidden = true;
   const nameChangedAt = metadata.name_changed_at ? new Date(metadata.name_changed_at) : null;
-  const nameWait = nameChangedAt ? Math.max(0, 24*60*60*1000 - (Date.now()-nameChangedAt.getTime())) : 0;
+  const nameWait = nameChangedAt ? Math.max(0, 1*24*60*60*1000 - (Date.now()-nameChangedAt.getTime())) : 0;
   el("editAccountNameBtn").disabled = nameWait > 0;
   el("accountNameCooldown").textContent = nameWait > 0 ? `يمكنك تغيير اسمك بعد ${Math.ceil(nameWait/86400000)} يوم.` : "يمكن تغيير اسم الحساب مرة واحدة كل يوم.";
   el("accountUsername").textContent = metadata.username ? "@" + metadata.username : "غير متوفر في بيانات الحساب";
-  if(typeof refreshUsernameCooldown==="function")refreshUsernameCooldown(metadata);
+  const usernameChangedAt = metadata.username_changed_at ? new Date(metadata.username_changed_at) : null;
+  const usernameWait = usernameChangedAt ? Math.max(0,14*24*60*60*1000-(Date.now()-usernameChangedAt.getTime())) : 0;
+  el("editAccountUsernameBtn").disabled = usernameWait > 0;
+  el("accountUsernameCooldown").textContent = usernameWait > 0 ? `يمكنك تغيير اسم المستخدم بعد ${Math.ceil(usernameWait/86400000)} يوم.` : "يمكن تغيير اسم المستخدم مرة واحدة كل 14 يوماً.";
   el("accountEmail").textContent = user.email || "—";
   const savedPhone = metadata.phone_number || "";
   el("accountPhoneInput").value = savedPhone;
@@ -5540,13 +5568,11 @@ async function loadAccountPanel() {
     const z = zenithResult.data || {};
     el("accountInviteCode").textContent = z.invite_code || "—";
     el("accountZenithPoints").textContent = Number(z.points || 0).toFixed(2) + " نقطة";
-    {
-      const usdValue=Number(z.points||0)/75;
-      const currency=(typeof zenithWalletCurrency!=="undefined"?zenithWalletCurrency:"IQD");
-      const rates={IQD:1520,USD:1,SAR:4,QAR:4,AED:4,EGP:58,JOD:.75,TRY:53,YER:575,SYP:155,MAD:10.90,KWD:1/3,OMR:.4,BHD:.4};
-      const amount=usdValue*(rates[currency]||1);
-      el("accountZenithPointsValue").textContent=amount.toLocaleString("en-US",{maximumFractionDigits:currency==="IQD"||currency==="YER"||currency==="SYP"?0:2})+" "+currency;
-    }
+    window.__zenithAccountPointCount = Number(z.points || 0);
+    const pointUsd = Number(z.points || 0) / 75;
+    const pointCurrency = (typeof zenithWalletCurrency !== "undefined" ? zenithWalletCurrency : "IQD");
+    const pointRate = pointCurrency === "IQD" ? 1520 : (ZENITH_USD_EXCHANGE_RATES[pointCurrency] || 1);
+    el("accountZenithPointsValue").textContent = formatCurrencyBalance(pointUsd * pointRate, pointCurrency);
     el("accountInviteUsers").textContent = Number(z.invite_users_count || 0).toLocaleString("en-US");
   } else {
     el("accountInviteCode").textContent = "تعذر التحميل";
@@ -5558,14 +5584,14 @@ async function loadAccountPanel() {
   const totals = walletTotalsResult.data || {};
   if (walletTotalsResult.error) {
     // Never download the entire wallet ledger as a fallback; that can freeze the account page.
-    if(el("accountAsiacellBalance"))el("accountAsiacellBalance").textContent = "تعذر التحميل";
-    if(el("accountMastercardBalance"))el("accountMastercardBalance").textContent = "تعذر التحميل";
+    el("accountAsiacellBalance").textContent = "تعذر التحميل";
+    el("accountMastercardBalance").textContent = "تعذر التحميل";
     el("accountTotalUsed").textContent = "تعذر التحميل";
     msg.textContent = "تعذر تحميل ملخص المحفظة. بقية بيانات الحساب متاحة؛ تحقق من دالة get_my_wallet_totals في Supabase.";
     msg.className = "msg error";
   } else {
-    if(el("accountAsiacellBalance"))el("accountAsiacellBalance").textContent = money(totals.asiacell_balance || 0);
-    if(el("accountMastercardBalance"))el("accountMastercardBalance").textContent = money(totals.mastercard_balance || 0);
+    el("accountAsiacellBalance").textContent = money(totals.asiacell_balance || 0);
+    el("accountMastercardBalance").textContent = money(totals.mastercard_balance || 0);
     el("accountTotalUsed").textContent = money(totals.total_used || 0);
     msg.textContent = "تم تحميل بيانات حسابك الفعلية."; msg.className = "msg success";
   }
@@ -5592,34 +5618,14 @@ el("addAccountPhone")?.addEventListener("click", () => {
 });
 
 el("editAccountNameBtn")?.addEventListener("click",()=>{if(el("editAccountNameBtn").disabled)return;el("accountNameEditor").hidden=false;el("accountNameInput").focus();});
-function refreshUsernameCooldown(metadata={}){
- const changed=metadata.username_changed_at?new Date(metadata.username_changed_at):null;
- const wait=changed?Math.max(0,14*86400000-(Date.now()-changed.getTime())):0;
- const b=el("editAccountUsernameBtn");if(b)b.disabled=wait>0;
- const t=el("accountUsernameCooldown");if(t)t.textContent=wait?`يمكنك تغيير اسم المستخدم بعد ${Math.ceil(wait/86400000)} يوم.`:"يمكن تغيير اسم المستخدم مرة واحدة كل 14 يوماً.";
-}
-el("editAccountUsernameBtn")?.addEventListener("click",async()=>{const {data}=await db.auth.getUser();refreshUsernameCooldown(data?.user?.user_metadata||{});if(el("editAccountUsernameBtn").disabled)return;el("accountUsernameInput").value=data?.user?.user_metadata?.username||"";el("accountUsernameEditor").hidden=false;el("accountUsernameInput").focus();});
-el("saveAccountUsernameBtn")?.addEventListener("click",async()=>{
- const value=el("accountUsernameInput").value.trim().toLowerCase();if(!/^[a-z0-9_]{3,24}$/.test(value)){setMessage("accountPanelMsg","اسم المستخدم يجب أن يكون من 3 إلى 24 حرفاً إنجليزياً أو رقماً أو _.","error");return;}
- const button=el("saveAccountUsernameBtn");button.disabled=true;
- try{const {data:authData,error:authErr}=await db.auth.getUser();if(authErr||!authData?.user)throw authErr||new Error("سجّل الدخول أولاً.");const user=authData.user;refreshUsernameCooldown(user.user_metadata||{});if(el("editAccountUsernameBtn").disabled)throw new Error("لا يمكنك تغيير اسم المستخدم قبل انتهاء مدة 14 يوماً.");
- const {data:exists,error:checkErr}=await db.from("profiles").select("id").ilike("username",value).neq("id",user.id).limit(1);if(checkErr)throw checkErr;if(exists?.length)throw new Error("اسم المستخدم مستخدم بالفعل.");
- const {error:updateErr}=await db.auth.updateUser({data:{username:value,username_changed_at:new Date().toISOString()}});if(updateErr)throw updateErr;
- const {error:profileErr}=await db.from("customer_public_profiles").upsert({user_id:user.id,username:value,display_name:user.user_metadata?.full_name||user.user_metadata?.name||"",updated_at:new Date().toISOString()},{onConflict:"user_id"});if(profileErr)console.warn(profileErr);
- el("accountUsername").textContent="@"+value;el("accountUsernameEditor").hidden=true;refreshUsernameCooldown({username_changed_at:new Date().toISOString()});setMessage("accountPanelMsg","تم تحديث اسم المستخدم.","success");
- }catch(e){setMessage("accountPanelMsg",e.message||"تعذر تحديث اسم المستخدم.","error");}finally{button.disabled=false;}
-});
 el("saveAccountNameBtn")?.addEventListener("click",async()=>{
   const button=el("saveAccountNameBtn"), value=el("accountNameInput").value.trim();
   if(value.length<2||value.length>32){setMessage("accountPanelMsg","اسم الحساب يجب أن يكون بين حرفين و32 حرفاً.","error");return;}
   button.disabled=true;button.textContent="جارٍ الحفظ...";
   try{
-    const {data:before}=await db.auth.getUser();
-    const previous=before?.user?.user_metadata||{};
-    const changedAt=previous.name_changed_at?new Date(previous.name_changed_at):null;
-    if(changedAt && Date.now()-changedAt.getTime()<86400000)throw new Error("يمكنك تغيير اسم الحساب مرة واحدة كل يوم.");
-    const {data:authData,error}=await db.auth.updateUser({data:{full_name:value,name:value,name_changed_at:new Date().toISOString()}});
+    const {data,error}=await db.rpc("change_my_display_name",{p_display_name:value});
     if(error)throw error;
+    const {data:authData}=await db.auth.getUser();
     if (authData?.user) {
       const {error:publicProfileError}=await db.from("customer_public_profiles").upsert({
         user_id:authData.user.id,
@@ -5636,6 +5642,30 @@ el("saveAccountNameBtn")?.addEventListener("click",async()=>{
     setMessage("accountPanelMsg","تم تحديث اسم الحساب.","success");
   }catch(error){setMessage("accountPanelMsg",error.message||"تعذر تحديث اسم الحساب.","error");}
   finally{button.disabled=false;button.textContent="حفظ الاسم";}
+});
+
+
+// Username editor: 14-day cooldown stored in authenticated user metadata and mirrored to profiles.
+el("editAccountUsernameBtn")?.addEventListener("click",async()=>{
+  const {data}=await db.auth.getUser(); const meta=data?.user?.user_metadata||{};
+  const changed=meta.username_changed_at?new Date(meta.username_changed_at):null;
+  const wait=changed?Math.max(0,14*86400000-(Date.now()-changed.getTime())):0;
+  if(wait>0){setMessage("accountPanelMsg",`يمكنك تغيير اسم المستخدم بعد ${Math.ceil(wait/86400000)} يوم.` ,"error");return;}
+  el("accountUsernameInput").value=meta.username||"";el("accountUsernameEditor").hidden=false;el("accountUsernameInput").focus();
+});
+el("saveAccountUsernameBtn")?.addEventListener("click",async()=>{
+  const btn=el("saveAccountUsernameBtn"), username=el("accountUsernameInput").value.trim().replace(/^@/,"").toLowerCase();
+  if(!/^[a-z0-9_]{3,24}$/.test(username)){setMessage("accountPanelMsg","اسم المستخدم يجب أن يكون 3–24 حرفاً إنجليزياً أو رقماً أو _.","error");return;}
+  btn.disabled=true;btn.textContent="جارٍ الحفظ...";
+  try{
+    const {data,error}=await db.rpc("change_my_username",{p_username:username});if(error)throw error;
+    const now=new Date().toISOString();
+    const {data:authData,error:metaError}=await db.auth.updateUser({data:{username,username_changed_at:now}});if(metaError)throw metaError;
+    const u=authData?.user;
+    if(u){const {error:profileError}=await db.from("customer_public_profiles").upsert({user_id:u.id,username,display_name:u.user_metadata?.full_name||u.user_metadata?.name||null,updated_at:now},{onConflict:"user_id"});if(profileError)console.warn(profileError);}
+    el("accountUsername").textContent="@"+username;el("accountUsernameEditor").hidden=true;el("accountUsernameCooldown").textContent="يمكن تغيير اسم المستخدم بعد 14 يوماً.";setMessage("accountPanelMsg","تم تحديث اسم المستخدم.","success");
+  }catch(e){setMessage("accountPanelMsg",e.message||"تعذر تحديث اسم المستخدم.","error");}
+  finally{btn.disabled=false;btn.textContent="حفظ";}
 });
 
 async function saveAccountAvatar(file) {
@@ -5709,17 +5739,16 @@ el("menuAccount").addEventListener("click", async () => {
 });
 
 el("headerAccountButton")?.addEventListener("click", async () => {
-  const accountPanel=el("accountPanel");
-  if(accountPanel && !accountPanel.hidden){
-    hideCustomerPanels(); saveActivePage("home"); setActiveNav("navHome");
-    if(el("homePanel"))el("homePanel").hidden=false;
-    window.scrollTo({top:0,behavior:"smooth"}); return;
+  if (!el("accountPanel").hidden) {
+    el("accountPanel").hidden = true;
+    el("homePanel").hidden = false;
+    saveActivePage("home");
+    setActiveNav("navHome");
+    window.scrollTo({top:0,behavior:"smooth"});
+    return;
   }
   const {data} = await db.auth.getSession();
-  if (data?.session?.user) {
-    hideCustomerPanels(); accountPanel.hidden=false; saveActivePage("account"); setActiveNav("");
-    await loadAccountPanel(); accountPanel.scrollIntoView({behavior:"smooth",block:"start"}); return;
-  }
+  if (data?.session?.user) { el("menuAccount").click(); return; }
   el("mainMenu").hidden = false;
   el("loginForm").scrollIntoView({behavior:"smooth",block:"center"});
 });
@@ -8743,7 +8772,7 @@ html[data-theme="light"] .zenithWheelPanel{background:linear-gradient(155deg,#f7
     {code:"points25",label:"25 نقطة زينيث",chance:6.13308800981294,color:"#5d3d83",win:true},
     {code:"diamonds5",label:"5 جواهر ML",chance:9.19963201471941,color:"#245e68",win:true},
     {code:"lose_b",label:"حظ أوفر",chance:38.33180006133088,color:"#183a66",win:false},
-    {code:"dollar1",label:"1 دولار",chance:0.30665440049065,color:"#23647c",win:true},
+    {code:"points75",label:"75 نقطة زينيث",chance:0.30665440049065,color:"#23647c",win:true},
     {code:"points50",label:"50 نقطة زينيث",chance:3.06654400490647,color:"#8d6630",win:true},
     {code:"weekly",label:"اشتراك أسبوعي ML",chance:0.03066544004906,color:"#326b9c",win:true},
     {code:"discount5",label:"خصم 5% لمدة يوم",chance:3.06654400490647,color:"#3e6b9a",win:true}
@@ -8758,8 +8787,8 @@ html[data-theme="light"] .zenithWheelPanel{background:linear-gradient(155deg,#f7
   // The visual wheel uses equal, readable sectors. Actual odds remain server-side
   // and are intentionally never displayed to customers.
   const visualSegment=360/prizes.length;
-  const wheelIcons={lose_a:"🍀",lose_b:"✨",discount7:"🎟️",discount5:"🎫",points25:"⭐",points50:"🌟",diamonds5:"💎",weekly:"👑",dollar1:"💵"};
-  const wheelNames={lose_a:["حظ أوفر",""],lose_b:["حظ أوفر",""],discount7:["خصم 7%","ليوم كامل"],discount5:["خصم 5%","ليوم كامل"],points25:["25 نقطة","زينيث"],points50:["50 نقطة","زينيث"],diamonds5:["5 جواهر","MLBB"],weekly:["اشتراك","أسبوعي ML"],dollar1:["1 دولار","رصيد المحفظة"]};
+  const wheelIcons={lose_a:"🍀",lose_b:"✨",discount7:"🎟️",discount5:"🎫",points25:"✨",points50:"✨✨",points75:"✨✨✨",diamonds5:"💎",weekly:"👑"};
+  const wheelNames={lose_a:["حظ أوفر",""],lose_b:["حظ أوفر",""],discount7:["خصم 7%","ليوم كامل"],discount5:["خصم 5%","ليوم كامل"],points25:["25 نقطة","زينيث"],points50:["50 نقطة","زينيث"],points75:["75 نقطة","زينيث"],diamonds5:["5 جواهر","MLBB"],weekly:["اشتراك","أسبوعي ML"]};
   const visualColors=prizes.map(p=>p.color);
   wheel.style.background=`conic-gradient(from 0deg,${prizes.map((p,i)=>`${visualColors[i]} ${i*visualSegment}deg ${(i+1)*visualSegment}deg`).join(",")})`;
   prizes.forEach((p,i)=>{
@@ -8769,54 +8798,28 @@ html[data-theme="light"] .zenithWheelPanel{background:linear-gradient(155deg,#f7
     label.style.left=`${50+Math.cos(angle)*radius}%`;label.style.top=`${50+Math.sin(angle)*radius}%`;
     label.dataset.baseRotation="0";
     const parts=wheelNames[p.code]||[p.label,""];
-    const icon = p.code==="weekly" ? '<img src="images/membership.png" alt="اشتراك أسبوعي" style="width:34px;height:34px;object-fit:contain">' : p.code==="diamonds5" ? "💎" : p.code==="points25" ? '<span style=\"color:#54aaff\">✨</span>' : p.code==="points50" ? '<span style=\"color:#54aaff\">✨✨</span>' : (wheelIcons[p.code]||"🎁");
+    const icon = p.code==="weekly" ? '<img src="images/weekly.png" alt="الاشتراك الأسبوعي" loading="lazy">' : p.code==="diamonds5" ? "💎" : (p.code.startsWith("points") ? `<span class="wheelSparkles">${wheelIcons[p.code]}</span>` : (wheelIcons[p.code]||"🎁"));
     label.innerHTML=`<span class="wheelPrizeIcon">${icon}</span><span class="wheelPrizeName">${parts[0]}</span>${parts[1]?`<small class="wheelPrizeSub">${parts[1]}</small>`:""}`;
     wheel.appendChild(label);
   });
   const setResult=(msg,win=false)=>{const n=byId("wheelResult");n.textContent=msg;n.classList.toggle("isWin",win);};
   async function getUser(){const {data,error}=await db.auth.getUser();if(error)throw error;if(!data?.user)throw new Error("سجّل الدخول أولاً حتى تتمكن من استخدام عجلة الحظ.");return data.user;}
-  function openWheelClaimModal(mode,row){
-    document.getElementById("zenithWheelClaimOverlay")?.remove();
-    const overlay=document.createElement("div");overlay.id="zenithWheelClaimOverlay";overlay.className="zenithWheelClaimOverlay";
-    const panel=document.createElement("section");panel.className="zenithWheelClaimModal";panel.setAttribute("role","dialog");panel.setAttribute("aria-modal","true");
-    const close=document.createElement("button");close.type="button";close.className="zenithWheelClaimClose";close.textContent="×";close.setAttribute("aria-label","إغلاق");close.onclick=()=>overlay.remove();
-    const heading=document.createElement("h3");heading.textContent=mode==="code"?"كود الخصم الخاص بك":"بيانات استلام الجائزة";panel.append(close,heading);
-    if(mode==="code"){
-      const payload=row.reward_payload||{};const code=payload.coupon_code||payload.code||payload.coupon||payload.redemption_code||"لم يظهر الكود في بيانات الجائزة";
-      const value=document.createElement("div");value.className="wheelCouponCode";value.textContent=code;panel.append(value);
-      const hint=document.createElement("p");hint.textContent="استخدم هذا الكود عند إتمام الطلب قبل انتهاء صلاحيته.";panel.append(hint);
-      if(code!=="لم يظهر الكود في بيانات الجائزة"){const copy=document.createElement("button");copy.type="button";copy.className="wheelClaimSubmit";copy.textContent="نسخ الكود";copy.onclick=async()=>{try{await navigator.clipboard.writeText(code);copy.textContent="تم النسخ";}catch(_){copy.textContent="تعذر النسخ";}};panel.append(copy);}
-    }else{
-      const form=document.createElement("form");form.className="wheelClaimForm";
-      const idLabel=document.createElement("label");idLabel.textContent="Player ID";const player=document.createElement("input");player.required=true;player.inputMode="numeric";player.placeholder="أدخل Player ID";
-      const zoneLabel=document.createElement("label");zoneLabel.textContent="Server / Zone ID";const zone=document.createElement("input");zone.required=true;zone.inputMode="numeric";zone.placeholder="أدخل Server ID";
-      const submit=document.createElement("button");submit.type="submit";submit.className="wheelClaimSubmit";submit.textContent="إرسال المعلومات";
-      const note=document.createElement("p");note.textContent="تم تجهيز نموذج إدخال البيانات. حفظها وإرسالها للإدارة يحتاجان تفعيل إجراء آمن في قاعدة البيانات؛ لم يتم إرسالها أو حفظها حالياً.";
-      form.append(idLabel,player,zoneLabel,zone,submit,note);form.addEventListener("submit",e=>{e.preventDefault();note.textContent="لم تُرسل البيانات بعد. يلزم ربط النموذج بدالة آمنة في Supabase قبل تفعيل الإرسال.";});panel.append(form);
-    }
-    overlay.append(panel);overlay.addEventListener("click",e=>{if(e.target===overlay)overlay.remove();});document.body.append(overlay);close.focus();
-  }
   let wheelHistoryExpanded=false;
   async function loadWheelHistory(expand=false){
     try{
-      const {data,error}=await db.from("zenith_wheel_claims").select("reward_label,reward_code,reward_payload,status,created_at").order("created_at",{ascending:false}).limit(50);
+      const {data,error}=await db.from("zenith_wheel_claims").select("spin_id,reward_label,reward_code,reward_payload,status,created_at").order("created_at",{ascending:false}).limit(50);
       if(error) throw error;
       const list=byId("wheelHistoryList"), more=byId("wheelHistoryMore"); if(!list||!more)return;
       const rows=Array.isArray(data)?data:[]; wheelHistoryExpanded=!!expand;
       const shown=wheelHistoryExpanded?rows:rows.slice(0,3);
       list.innerHTML="";
       if(!shown.length){list.innerHTML='<div class="wheelHistoryEmpty">لم تحصل على جوائز بعد. نتمنى لك حظاً سعيداً!</div>';more.hidden=true;return;}
-      shown.forEach(row=>{const item=document.createElement("article");item.className="wheelHistoryItem";const icon=document.createElement("span");icon.className="wheelHistoryIcon";icon.textContent=({discount7:"🎟️",discount5:"🎫",points25:"⭐",points50:"🌟",diamonds5:"💎",weekly:"👑",dollar1:"💵"})[row.reward_code]||"🎁";const body=document.createElement("div");body.className="wheelHistoryBody";const title=document.createElement("strong");title.textContent=row.reward_label||"جائزة عجلة زينيث";const date=document.createElement("small");date.textContent=new Date(row.created_at).toLocaleDateString("ar-IQ",{year:"numeric",month:"short",day:"numeric"});body.append(title,date);const action=document.createElement("button");action.type="button";action.className="wheelClaimAction";
-        if(row.reward_code==="discount5"||row.reward_code==="discount7"){
-          action.textContent="عرض الكود";action.addEventListener("click",()=>openWheelClaimModal("code",row));
-        }else if(row.reward_code==="weekly"||row.reward_code==="diamonds5"){
-          action.textContent="أضف معلوماتك";action.addEventListener("click",()=>openWheelClaimModal("details",row));
-        }else{action.textContent=row.status==="pending"?"قيد التجهيز":"مكتملة";action.disabled=true;}
-        item.append(icon,body,action);list.appendChild(item);});
+      shown.forEach(row=>{const item=document.createElement("article");item.className="wheelHistoryItem";const icon=document.createElement("span");icon.className="wheelHistoryIcon";icon.textContent=({discount7:"🎟️",discount5:"🎫",diamonds5:"💎",weekly:"👑"})[row.reward_code]||"🎁";if(row.reward_code.startsWith("points")){icon.classList.add("wheelSparkles");icon.textContent=({points25:"✨",points50:"✨✨",points75:"✨✨✨"})[row.reward_code];}const body=document.createElement("div");body.className="wheelHistoryBody";const title=document.createElement("strong");title.textContent=row.reward_label||"جائزة عجلة زينيث";const date=document.createElement("small");date.textContent=new Date(row.created_at).toLocaleDateString("ar-IQ",{year:"numeric",month:"short",day:"numeric"});body.append(title,date);item.append(icon,body);if(row.reward_code==="discount7"||row.reward_code==="discount5"){const action=document.createElement("button");action.type="button";action.className="wheelHistoryAction";action.textContent="عرض الكود";action.addEventListener("click",()=>showZenithCoupon(row.reward_payload?.coupon_code));item.append(action);}else if((row.reward_code==="weekly"||row.reward_code==="diamonds5")&&row.status==="pending"&&!row.reward_payload?.details_submitted_at){const action=document.createElement("button");action.type="button";action.className="wheelHistoryAction";action.textContent="أضف معلوماتك";action.addEventListener("click",()=>openZenithGameDetails(row));item.append(action);}else{const status=document.createElement("span");status.className="wheelHistoryStatus";status.textContent=row.reward_payload?.details_submitted_at?"تم حفظ المعلومات":(row.status==="pending"?"قيد التجهيز":"تم الاستلام");item.append(status);}list.appendChild(item);});
       more.hidden=rows.length<=3;more.textContent=wheelHistoryExpanded?"عرض أقل":"عرض المزيد";
     }catch(err){const list=byId("wheelHistoryList");if(list)list.innerHTML='<div class="wheelHistoryEmpty">تعذر تحميل سجل الجوائز حالياً.</div>';}
   }
   byId("wheelHistoryMore")?.addEventListener("click",()=>loadWheelHistory(!wheelHistoryExpanded));
+  window.addEventListener("zenithWheelClaimsUpdated",()=>loadWheelHistory());
   async function loadLuckyWheelStatus(){
     try{
       await getUser();
@@ -9041,28 +9044,19 @@ html,body{width:100%!important;max-width:100%!important;min-width:0!important;ov
 </style>
 
 
-<style id="zenith-requested-ui-adjustments">
-/* Header remains in normal document flow and scrolls away with the page. */
-body>header{position:relative!important;top:auto!important;}
-#accountPanel .accountStatsGrid .accountStat:has(#accountAsiacellBalance),#accountPanel .accountStatsGrid .accountStat:has(#accountMastercardBalance){display:none!important}
-.accountPencilBtn{width:28px!important;height:28px!important;min-width:28px!important;padding:0!important;border-radius:50%!important;display:inline-grid!important;place-items:center!important;background:rgba(45,150,235,.14)!important;border:1px solid rgba(75,170,245,.4)!important;color:#63baff!important;font-size:17px!important;line-height:1!important}
-.accountPencilBtn:disabled{opacity:.35!important}
-.wheelClaimAction{border:1px solid #398bd0!important;background:#123b60!important;color:#e9f6ff!important;border-radius:10px!important;padding:8px 10px!important;font-size:11px!important;font-weight:900!important;white-space:nowrap!important}
-.zenithWheelClaimOverlay{position:fixed;inset:0;z-index:100500;background:rgba(2,8,18,.68);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:grid;place-items:center;padding:18px}
-.zenithWheelClaimModal{position:relative;width:min(100%,390px);padding:22px 18px 18px;border:1px solid #5daee866;border-radius:19px;background:linear-gradient(155deg,#142b43,#0b192b);color:#f4f8ff;box-shadow:0 20px 70px #0009;text-align:center}
-.zenithWheelClaimModal h3{margin:5px 28px 18px;font-size:18px}.zenithWheelClaimClose{position:absolute;top:8px;right:10px;width:34px;height:34px;border:0;border-radius:50%;background:#ffffff18;color:#fff;font-size:25px;line-height:1}
-.wheelCouponCode{padding:16px 10px;border:1px dashed #65b9f4;border-radius:12px;background:#ffffff0a;color:#8bd0ff;font-size:22px;font-weight:1000;letter-spacing:1px;direction:ltr;overflow-wrap:anywhere}
-.zenithWheelClaimModal p{font-size:12px;line-height:1.8;color:#b9cce0}.wheelClaimForm{display:grid;gap:8px;text-align:right}.wheelClaimForm label{font-size:12px;font-weight:800}.wheelClaimForm input{width:100%;padding:12px;border:1px solid #ffffff2b;border-radius:10px;background:#081729;color:#fff;direction:ltr;text-align:left}.wheelClaimSubmit{margin-top:8px;padding:11px 16px;border:0;border-radius:11px;background:#1684cf;color:#fff;font-weight:900}
-#luckyWheelPanel .wheelPrizeIcon span{color:#59aaff!important;filter:drop-shadow(0 0 5px #269bff88)}
-#luckyWheelPanel .wheelPrizeLabel .wheelPrizeName{font-size:clamp(8px,2.35vw,11px)!important}
-#luckyWheelPanel .wheelPrizeLabel .wheelPrizeSub{color:#d7ebff!important}
-/* Wheel section follows the store's blue/neutral cards, not a separate purple theme. */
-#luckyWheelPanel.zenithWheelPanel{background:var(--page)!important;color:var(--text)!important}
-#luckyWheelPanel .wheelHistory,#luckyWheelPanel .wheelRules{background:var(--surface)!important;border:1px solid var(--border)!important;color:var(--text)!important}
-#luckyWheelPanel .wheelHistoryBody strong{color:var(--text)!important}
-#luckyWheelPanel .wheelHistoryStatus{display:none!important}
-</style>
-<script id="zenith-account-cooldown-init">document.addEventListener("DOMContentLoaded",async()=>{try{const {data}=await db.auth.getUser();const m=data?.user?.user_metadata||{};const changed=m.username_changed_at?new Date(m.username_changed_at):null;const wait=changed?Math.max(0,14*86400000-(Date.now()-changed.getTime())):0;const b=document.getElementById("editAccountUsernameBtn");if(b)b.disabled=wait>0;const t=document.getElementById("accountUsernameCooldown");if(t)t.textContent=wait?`يمكنك تغيير اسم المستخدم بعد ${Math.ceil(wait/86400000)} يوم.`:"يمكن تغيير اسم المستخدم مرة واحدة كل 14 يوماً.";}catch(_){}});</script>
+<div class="zenithPrizeModal" id="zenithCouponModal" hidden><div class="zenithPrizeModalCard"><button type="button" class="zenithPrizeModalClose" data-close-prize-modal aria-label="إغلاق">×</button><h3>كود الخصم الخاص بك</h3><span class="zenithCouponCode" id="zenithPersonalCoupon">—</span><button type="button" id="copyZenithCoupon">نسخ الكود</button></div></div>
+<div class="zenithPrizeModal" id="zenithGameDetailsModal" hidden><div class="zenithPrizeModalCard"><button type="button" class="zenithPrizeModalClose" data-close-prize-modal aria-label="إغلاق">×</button><h3 id="zenithGameDetailsTitle">أضف معلوماتك لاستلام الجائزة</h3><form class="zenithGameDetailsForm" id="zenithGameDetailsForm"><label for="zenithRewardPlayerId">Player ID</label><input id="zenithRewardPlayerId" inputmode="numeric" required maxlength="24" placeholder="أدخل Player ID"><label for="zenithRewardZoneId">Server / Zone ID</label><input id="zenithRewardZoneId" inputmode="numeric" required maxlength="16" placeholder="أدخل Server / Zone ID"><button type="submit" id="zenithGameDetailsSubmit">إرسال المعلومات</button><div class="msg" id="zenithGameDetailsMsg" aria-live="polite"></div></form></div></div>
+
+
+<script id="zenith-wheel-claim-modal-handlers">
+let zenithCurrentGameClaim=null;
+function showZenithCoupon(code){const modal=document.getElementById("zenithCouponModal"),value=document.getElementById("zenithPersonalCoupon");value.textContent=code||"تعذر العثور على كود الخصم";modal.hidden=false;}
+function openZenithGameDetails(row){zenithCurrentGameClaim=row;document.getElementById("zenithGameDetailsForm").reset();document.getElementById("zenithGameDetailsMsg").textContent="";document.getElementById("zenithGameDetailsTitle").textContent=row.reward_code==="weekly"?"أضف معلوماتك لاستلام الاشتراك الأسبوعي":"أضف معلوماتك لاستلام 5 جواهر";document.getElementById("zenithGameDetailsModal").hidden=false;}
+document.querySelectorAll("[data-close-prize-modal]").forEach(b=>b.addEventListener("click",()=>{b.closest(".zenithPrizeModal").hidden=true;}));
+document.querySelectorAll(".zenithPrizeModal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)m.hidden=true;}));
+document.getElementById("copyZenithCoupon")?.addEventListener("click",async()=>{const code=document.getElementById("zenithPersonalCoupon").textContent;try{await navigator.clipboard.writeText(code);document.getElementById("copyZenithCoupon").textContent="تم النسخ";}catch(_){document.getElementById("zenithPersonalCoupon").select?.();}});
+document.getElementById("zenithGameDetailsForm")?.addEventListener("submit",async e=>{e.preventDefault();if(!zenithCurrentGameClaim)return;const btn=document.getElementById("zenithGameDetailsSubmit"),msg=document.getElementById("zenithGameDetailsMsg"),player=document.getElementById("zenithRewardPlayerId").value.trim(),zone=document.getElementById("zenithRewardZoneId").value.trim();if(!player||!zone){msg.textContent="أدخل Player ID وServer / Zone ID.";return;}btn.disabled=true;msg.textContent="جارٍ حفظ معلومات الجائزة...";try{const {data,error}=await db.rpc("submit_zenith_wheel_game_details",{p_spin_id:Number(zenithCurrentGameClaim.spin_id),p_player_id:player,p_zone_id:zone});if(error)throw error;msg.textContent="تم حفظ معلوماتك بنجاح. سيتم تجهيز الجائزة.";msg.className="msg success";setTimeout(()=>{document.getElementById("zenithGameDetailsModal").hidden=true;window.dispatchEvent(new Event("zenithWheelClaimsUpdated"));},900);}catch(err){msg.textContent=err.message||"تعذر حفظ المعلومات حالياً.";msg.className="msg error";}finally{btn.disabled=false;}});
+</script>
 
 </body>
 
